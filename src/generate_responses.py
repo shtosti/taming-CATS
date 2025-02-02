@@ -2,7 +2,8 @@ import os
 import json
 from openai import OpenAI
 from dotenv import load_dotenv
-load_dotenv(dotenv_path="./../.env", override=True)
+load_dotenv(dotenv_path="./.env", override=True)
+from Metrics import Metrics
 
 
 OPENAI_TOKEN = os.getenv("OPENAI_API_KEY")
@@ -68,59 +69,54 @@ def simplify_text_consequtive_simplifications(input_text, prompt, model=MODEL):
 
 def main():
 
-    experiment_name = "basic" # with_reasoning, consequtive_simplifications, basic
+    experiment_name = "consequtive" # reasoning, consequtive, basic
     dataset_name = "sample_sentence_neuroscience"
+    # TODO setup iteration over our datasets
+    input_text = "Mice have long been a central part of neuroscience research, providing a flexible model that scientists can control and study to learn more about the intricate inner workings of the brain. Historically, researchers have favored male mice over female mice in experiments, in part due to concern that the hormone cycle in females causes behavioral variation that could throw off results."
+    print("Input text:\n", input_text)
 
     # create output dir
-    OUTPUT_DIR = f"./output/prompting/{experiment_name}/{MODEL}/{dataset_name}"
-    os.makedirs(os.path.dirname(OUTPUT_DIR), exist_ok=True)
+    output_dir = f"./output/prompting/{experiment_name}/{MODEL}/{dataset_name}"
+    os.makedirs(os.path.dirname(output_dir), exist_ok=True)
 
     with open("./data/prompts/prompts.json", "r") as file:
         prompts = json.load(file)
         with open("./data/prompts/justifications.json", "r") as file:
             justifications = json.load(file)
 
-    # TODO setup iteration over our datasets
-    INPUT_TEXT = "Mice have long been a central part of neuroscience research, providing a flexible model that scientists can control and study to learn more about the intricate inner workings of the brain. Historically, researchers have favored male mice over female mice in experiments, in part due to concern that the hormone cycle in females causes behavioral variation that could throw off results."
-
     # Iterate through prompt categories and variations
     for category, variations in prompts.items():
         for prompt_id, prompt in variations.items():
 
-            if experiment_name == "with_reasoning":
-                reasoning, simplified_text = simplify_text_with_reasoning(INPUT_TEXT, prompt)
+            if experiment_name == "reasoning":
+                reasoning, simplified_text = simplify_text_with_reasoning(input_text, prompt)
                 output_data = {
-                    "category": category,
-                    "prompt_id": prompt_id,
-                    "reasoning": reasoning,
-                    "prompt_used": prompt,
-                    "original_text": INPUT_TEXT,
-                    "simplified_text": simplified_text,
+                    "reasoning": reasoning
                 }
-            elif experiment_name == "consequtive_simplifications":
-                syntactic, lexical, paraphrase, simplified_text = simplify_text_consequtive_simplifications(INPUT_TEXT, prompt)
+            elif experiment_name == "consequtive":
+                syntactic, lexical, paraphrase, simplified_text = simplify_text_consequtive_simplifications(input_text, prompt)
                 output_data = {
-                    "category": category,
-                    "prompt_id": prompt_id,
-                    "prompt_used": prompt,
                     "syntactic_simplification": syntactic,
                     "lexical_simplification": lexical,
-                    "paraphrase_or_explanation": paraphrase,
-                    "original_text": INPUT_TEXT,
-                    "simplified_text": simplified_text,
+                    "paraphrase_or_explanation": paraphrase
                 }
             else:
-                simplified_text = simplify_text(INPUT_TEXT, prompt)
-                output_data = {
-                    "category": category,
-                    "prompt_id": prompt_id,
-                    "prompt_used": prompt,
-                    "original_text": INPUT_TEXT,
-                    "simplified_text": simplified_text
-                }
+                simplified_text = simplify_text(input_text, prompt)
+                output_data = {}
 
-            # Output file name
-            output_file = f"{OUTPUT_DIR}/{category}_{prompt_id}.json"
+            source_metrics = Metrics(input_text).compute_metrics()
+            target_metrics = Metrics(simplified_text).compute_metrics()
+            output_data.update({
+                "category": category,
+                "prompt_used": prompt,
+                "prompt_id": prompt_id,
+                "source_text": input_text,
+                "target_text": simplified_text,
+                "source_metrics": source_metrics,
+                "target_metrics": target_metrics
+            })
+
+            output_file = f"{output_dir}/{category}_{prompt_id}.json"
             os.makedirs(os.path.dirname(output_file), exist_ok=True)
             with open(output_file, "w") as file:
                 json.dump(output_data, file, indent=4)
