@@ -68,17 +68,5 @@ class Metrics:
         }
     
 
-text = "Love and peace, but also whatever 1,2,3!! haha@."
-metrics = Metrics(text)
-print(text)
-print(metrics.compute_metrics())
-# print(metrics.count_chars())
-# print(metrics.count_alphanum())
-# print(metrics.count_words())
-# print(metrics.count_sents_nltk())
-# print(metrics.compute_fre())
-# print(metrics.compute_ari())
-# print(metrics.compute_fkgl())
-
 
 
