@@ -19,7 +19,7 @@ def generate_response(messages, model=MODEL):
     )
     return response.choices[0].message.content
 
-def simplify_text(input_text, prompt):
+def simplify(input_text, prompt):
     messages = [
         {"role": "system", "content": prompt},
         {"role": "user", "content": f"Simplify this text: {input_text}"}
@@ -28,7 +28,7 @@ def simplify_text(input_text, prompt):
 
     return response
 
-def simplify_text_with_reasoning(input_text, prompt):
+def simplify_with_reasoning(input_text, prompt):
     messages = [
         {"role": "system", "content": prompt},
         {"role": "user", "content": f"Briefly describe the needs of the target group, if such is specified. Using the instructions you were given, briefly explain how you would simplify the following source text and why: {input_text}. Think step by step, and very explain the changes you would make bake to satisfy the instructions, including any calculations, if required. Do not yet generate the simplification! Be very brief."}
@@ -42,7 +42,7 @@ def simplify_text_with_reasoning(input_text, prompt):
 
     return reasoning, simplification
 
-def simplify_text_consequtive_simplifications(input_text, prompt, model=MODEL):
+def simplify_with_consecutive_transformations(input_text, prompt):
     messages = [
         {"role": "system", "content": prompt},
         {"role": "user", "content": f"You will perform a step-by-step simplification of the following text: {input_text}."},
@@ -67,12 +67,31 @@ def simplify_text_consequtive_simplifications(input_text, prompt, model=MODEL):
 
     return syntactic_symplification, lexical_simplification, paraphrase_or_explanation, simplification
 
+def simplify_with_corrections(input_text, prompt):
+
+    initial_simplification = simplify(input_text, prompt)
+
+    messages = [
+        {"role": "user", "content": f"A text simplification assistant was given the following task formulation: {prompt}."},
+        {"role": "user", "content": f"This is the source text: {input_text}."},
+        {"role": "user", "content": f"Given the task formulation and the source text, critically assess the simplification. Be brief (1-2 sentences)."}
+    ]
+
+    judgement = generate_response(messages)
+
+    messages.append({"role": "assistant", "content": judgement})
+    messages.append({"role": "user", "content": f"Take into account your critical assessment of the simplification. Now it is your turn to further improve upon the simplification to align it with the task, but make only necessary changes. Output only the simplification, no notes or comments are allowed."})
+
+    final_simplification = generate_response(messages)
+
+    return initial_simplification, judgement, final_simplification
+
 def main():
 
-    experiment_name = "consequtive" # reasoning, consequtive, basic
-    dataset_name = "sample_sentence_neuroscience"
+    experiment_name = "metacorrections" # reasoning, consecutive, basic, metacorrections
+    dataset_name = "sample_sentence_imaging"
     # TODO setup iteration over our datasets
-    input_text = "Mice have long been a central part of neuroscience research, providing a flexible model that scientists can control and study to learn more about the intricate inner workings of the brain. Historically, researchers have favored male mice over female mice in experiments, in part due to concern that the hormone cycle in females causes behavioral variation that could throw off results."
+    input_text = "Neuroscientists have long utilized sophisticated imaging techniques, such as functional magnetic resonance imaging (fMRI), to investigate the intricate neural mechanisms underlying cognitive processes like memory formation, decision-making, and language comprehension."
     print("Input text:\n", input_text)
 
     # create output dir
@@ -89,19 +108,28 @@ def main():
         for prompt_id, prompt in variations.items():
 
             if experiment_name == "reasoning":
-                reasoning, simplified_text = simplify_text_with_reasoning(input_text, prompt)
+                reasoning, simplified_text = simplify_with_reasoning(input_text, prompt)
                 output_data = {
                     "reasoning": reasoning
                 }
-            elif experiment_name == "consequtive":
-                syntactic, lexical, paraphrase, simplified_text = simplify_text_consequtive_simplifications(input_text, prompt)
+            elif experiment_name == "consecutive":
+                syntactic, lexical, paraphrase, simplified_text = simplify_with_consecutive_transformations(input_text, prompt)
                 output_data = {
                     "syntactic_simplification": syntactic,
                     "lexical_simplification": lexical,
                     "paraphrase_or_explanation": paraphrase
                 }
+            elif experiment_name == "metacorrections":
+                initial_simplification, judgement, simplified_text = simplify_with_corrections(input_text, prompt)
+                initial_simplification_metrics = Metrics(initial_simplification).compute_metrics()
+                output_data = {
+                    "initial_simplification": initial_simplification,
+                    "initial_simplification_metrics": initial_simplification_metrics,
+                    "metajudgement": judgement
+                }
+
             else:
-                simplified_text = simplify_text(input_text, prompt)
+                simplified_text = simplify(input_text, prompt)
                 output_data = {}
 
             source_metrics = Metrics(input_text).compute_metrics()
