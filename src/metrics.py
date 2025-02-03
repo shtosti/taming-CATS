@@ -56,6 +56,13 @@ class Metrics:
         """
         return textstat.flesch_kincaid_grade(self.text)
 
+    def compute_dale_chall(self) -> float:
+        """
+        Computes the Dale-Chall Readability Score. 
+        Estimates reading difficulty based on lists of words.
+        """
+        return textstat.dale_chall_readability_score(self.text)
+
     def compute_metrics(self) -> dict:
         return {
             'word_count': self.count_words(),
@@ -64,7 +71,8 @@ class Metrics:
             'sent_count_nltk': self.count_sents_nltk(),
             'FRE': self.compute_fre(),
             'ARI': self.compute_ari(),
-            'FKGL': self.compute_fkgl()
+            'FKGL': self.compute_fkgl(),
+            'Dale-Chall': self.compute_dale_chall()
         }
     
 
