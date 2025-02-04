@@ -6,7 +6,8 @@ from Metrics import Metrics
 
 # Load the dataset
 DATA_DIR = "./../data"
-DATASET_PATH = f"{DATA_DIR}/datasets/newsela/dataset.jsonl"
+DATASET_NAME = "newsela" 
+DATASET_PATH = f"{DATA_DIR}/datasets/{DATASET_NAME}/dataset.jsonl"
 
 def load_jsonl(filepath):
     data = []
