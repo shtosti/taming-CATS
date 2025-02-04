@@ -18,6 +18,7 @@ class NewselaDataset(TSDataset):
         self.domain = "news"
         self.annotation = "human"
         self.alignment_level = "text"
+
         # relevant columns
         self.grade_level = "grade_level"
         self.simplification_version = "version"
@@ -26,6 +27,7 @@ class NewselaDataset(TSDataset):
         self.grouping_tag = "slug"
 
     def load_data(self):
+        """ Loads Newsela onto a pandas df. """
         metadata = pd.read_csv(self.metadata_path, sep=",")
         data = []
         loaded_files = 0
@@ -43,21 +45,42 @@ class NewselaDataset(TSDataset):
         articles_df = pd.DataFrame(data)
         self.data_df = pd.merge(articles_df, metadata, on="filename", how="inner")
 
-    def preprocess_text(self):
-        pass
-
     
+class MedEASiDataset(TSDataset):
+    def __init__(self, limit=None):
+        super().__init__()
+        self.file_path = "./../../datasets/Med-EASi/Med-EASi.full.ori.csv"
+        self.limit = limit # None as default, else select int to slice
+        # dataset metainfo
+        self.dataset_name = "med_easi"
+        self.domain = "medical"
+        self.annotation = "human"
+        self.alignment_level = "sentence"
+
+        # relevant columns
+        self.source_text = "Expert"
+        self.target_text = "Simple"
+        self.split = "split"
+        self.grouping_tag = "idx"
+
+    def load_data(self):
+        """ Loads Med-EASi onto a pandas df. """
+        try:
+            data = pd.read_csv(self.file_path, sep=",")
+        except Exception as e:
+            print(f"Error loading dataset: {e}")
+            return
+
+        if self.limit:
+            data = data.head(self.limit)
+
+        self.data_df = data
 
 
-# # NEWSELA_DIR_PATH = "./../datasets/newsela/newsela_article_corpus_2016-01-29/articles"
-# # NEWSELA_METADATA_PATH = "./../datasets/newsela/newsela_article_corpus_2016-01-29/articles_metadata.csv"
+# dataset = MedEASiDataset(limit=10)
+# dataset.load_data()
+# print(dataset.data_df)
 
-# # dataset = NewselaDataset(NEWSELA_DIR_PATH, NEWSELA_METADATA_PATH, limit=10)
-# # dataset.load_data()
-# # print(dataset.data_df.head())  # Check if preprocessing worked
-
-# # df = dataset.data_df
-# # print(df.columns)
 
 # # class WikiLargeDataset(TSDataset):
 # #     def __init__(self, base_path, base_filename):
@@ -77,14 +100,4 @@ class NewselaDataset(TSDataset):
 # #         self.data_df = valid_df[valid_df["source"].str.strip().astype(bool) & valid_df["target"].str.strip().astype(bool)]
 
 
-# # class MedEASiDataset(TSDataset):
-# #     def __init__(self, file_path):
-# #         super().__init__()
-# #         self.file_path = file_path
 
-# #     def load_data(self):
-# #         self.data_df = pd.read_csv(self.file_path)
-# #         self.data_df.rename(columns={"Expert": "source", "Simple": "target"}, inplace=True)
-# #         self.data_df = self.data_df[
-# #             self.data_df["source"].str.strip().astype(bool) & self.data_df["target"].str.strip().astype(bool)
-# #         ]
