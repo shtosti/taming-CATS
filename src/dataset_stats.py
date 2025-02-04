@@ -2,6 +2,7 @@ import json
 import pandas as pd
 import matplotlib.pyplot as plt
 from collections import Counter
+import sys
 
 # Load the dataset
 DATA_DIR = "./../data"
@@ -86,12 +87,15 @@ def compute_target_metrics_by_grade(data):
         for simp in entry["simplifications"]:
             grade = simp["grade_level"]
             if grade not in metrics_by_grade:
-                metrics_by_grade[grade] = {"FKGL": [], "FRE": [], "ARI": [], "Dale-Chall": []}
+                metrics_by_grade[grade] = {"FKGL": [], "FRE": [], "ARI": [], "Dale-Chall": [], "words": [], "sentences": [], "characters": []}
 
             metrics_by_grade[grade]["FKGL"].append(simp["target_metrics"]["FKGL"])
             metrics_by_grade[grade]["FRE"].append(simp["target_metrics"]["FRE"])
             metrics_by_grade[grade]["ARI"].append(simp["target_metrics"]["ARI"])
             metrics_by_grade[grade]["Dale-Chall"].append(simp["target_metrics"]["Dale-Chall"])
+            metrics_by_grade[grade]["words"].append(simp["target_metrics"]["word_count"])
+            metrics_by_grade[grade]["sentences"].append(simp["target_metrics"]["sentence_count"])
+            metrics_by_grade[grade]["characters"].append(simp["target_metrics"]["char_count"])
 
     # Compute averages
     avg_metrics = {
@@ -99,22 +103,27 @@ def compute_target_metrics_by_grade(data):
             "FKGL": sum(values["FKGL"]) / len(values["FKGL"]),
             "FRE": sum(values["FRE"]) / len(values["FRE"]),
             "ARI": sum(values["ARI"]) / len(values["ARI"]),
-            "Dale-Chall": sum(values["Dale-Chall"]) / len(values["Dale-Chall"])
+            "Dale-Chall": sum(values["Dale-Chall"]) / len(values["Dale-Chall"]),
+            "words": sum(values["words"]) / len(values["words"]),
+            "sentences": sum(values["sentences"]) / len(values["sentences"]),
+            "characters": sum(values["characters"]) / len(values["characters"])
         }
         for grade, values in metrics_by_grade.items()
     }
 
     return avg_metrics
 
-def plot_target_metrics_by_metrics(avg_metrics):
+def plot_target_metrics_by_grade(avg_metrics):
     grades = sorted(avg_metrics.keys())
-
     fkgl_scores = [avg_metrics[grade]["FKGL"] for grade in grades]
     fre_scores = [avg_metrics[grade]["FRE"] for grade in grades]
     ari_scores = [avg_metrics[grade]["ARI"] for grade in grades]
     dale_chall_scores = [avg_metrics[grade]["Dale-Chall"] for grade in grades]
+    words = [avg_metrics[grade]["words"] for grade in grades]
+    sentences = [avg_metrics[grade]["sentences"] for grade in grades]
+    characters = [avg_metrics[grade]["characters"] for grade in grades]
 
-    # ARI, FKGL, FRE
+    # ARI, FKGL, FRE, Dale-Chall
     plt.figure(figsize=(10, 5))
     plt.plot(grades, fkgl_scores, marker="o", label="FKGL")
     plt.plot(grades, fre_scores, marker="s", label="FRE")
@@ -129,7 +138,7 @@ def plot_target_metrics_by_metrics(avg_metrics):
     # plt.show()
     plt.close()
 
-    # without FRE
+    # without FRE (for better scaling)
     plt.figure(figsize=(10, 5))
     plt.plot(grades, fkgl_scores, marker="o", label="FKGL")
     plt.plot(grades, ari_scores, marker="^", label="ARI")
@@ -141,6 +150,36 @@ def plot_target_metrics_by_metrics(avg_metrics):
     plt.grid(True)
     plt.savefig(f"{DATASET_DIR}/ARI_FKGL_DC.png", dpi=400, bbox_inches="tight")
     # plt.show()
+    plt.close()
+
+    plt.figure(figsize=(10, 5))
+    plt.plot(grades, words, marker="o", label="Words")
+    plt.xlabel("Grade Level")
+    plt.ylabel("Mean Words per Simplification")
+    plt.title("Grade vs. Mean Words per Simplification")
+    plt.legend()
+    plt.grid(True)
+    plt.savefig(f"{DATASET_DIR}/grade_vs_words.png", dpi=400, bbox_inches="tight")
+    plt.close()
+    
+    plt.figure(figsize=(10, 5))
+    plt.plot(grades, sentences, marker="s", label="Sentences")
+    plt.xlabel("Grade Level")
+    plt.ylabel("Mean Sentences per Simplification")
+    plt.title("Grade vs. Mean Sentences per Simplification")
+    plt.legend()
+    plt.grid(True)
+    plt.savefig(f"{DATASET_DIR}/grade_vs_sentences.png", dpi=400, bbox_inches="tight")
+    plt.close()
+    
+    plt.figure(figsize=(10, 5))
+    plt.plot(grades, characters, marker="^", label="Characters")
+    plt.xlabel("Grade Level")
+    plt.ylabel("Mean Characters per Simplification")
+    plt.title("Grade vs. Mean Characters per Simplification")
+    plt.legend()
+    plt.grid(True)
+    plt.savefig(f"{DATASET_DIR}/grade_vs_characters.png", dpi=400, bbox_inches="tight")
     plt.close()
 
 def compute_source_metrics(data):
@@ -162,23 +201,31 @@ def main():
     stats = compute_statistics(dataset)
 
     metrics_by_grade = compute_target_metrics_by_grade(dataset)
-    plot_target_metrics_by_metrics(metrics_by_grade)
+    plot_target_metrics_by_grade(metrics_by_grade)
 
     source_metrics = compute_source_metrics(dataset)
+
+    log_file = f"{DATASET_DIR}/log.txt"
+    with open(log_file, "w", encoding="utf-8") as log:
+        original_stdout = sys.stdout
+        sys.stdout = log
     
-    print(f"Dataset Statistics: {DATASET_NAME}")
-    for key, value in stats.items():
-        print(f"{key}: {value}")
+        print(f"Dataset Statistics: {DATASET_NAME}")
+        for key, value in stats.items():
+            print(f"{key}: {value}")
 
-    print()
-    print(f"Average by grade: {DATASET_NAME}")
-    for key, value in metrics_by_grade.items():
-        print(f"{key}: {value}")
+        print(f"\nAverage by grade:")
+        for key, value in metrics_by_grade.items():
+            print(f"{key}: {value}")
 
-    print()
-    print(f"Readability of Source Texts: {DATASET_NAME}")
-    for key, value in source_metrics.items():
-        print(f"{key}: {value}")
+        print(f"\nReadability of Source Texts:")
+        for key, value in source_metrics.items():
+            print(f"{key}: {value}")
+
+        sys.stdout = original_stdout
+    
+    print(f"Log saved to {log_file}.")
+
 
 if __name__ == "__main__":
     main()
