@@ -52,12 +52,13 @@ class MedEASiDataset(TSDataset):
         self.file_path = "./../../datasets/Med-EASi/Med-EASi.full.ori.csv"
         self.limit = limit # None as default, else select int to slice
         # dataset metainfo
-        self.dataset_name = "med_easi"
+        self.dataset_name = "medeasi"
         self.domain = "medical"
         self.annotation = "human"
         self.alignment_level = "sentence"
 
         # relevant columns
+        self.text = "Expert"
         self.source_text = "Expert"
         self.target_text = "Simple"
         self.split = "split"

@@ -5,8 +5,8 @@ from collections import Counter
 import sys
 
 # Load the dataset
-DATA_DIR = "./../data"
-DATASET_NAME = "newsela" 
+DATASET_NAME = "newsela"
+DATA_DIR = "./../data" 
 DATASET_DIR = f"{DATA_DIR}/datasets/{DATASET_NAME}"
 DATASET_PATH = f"{DATASET_DIR}/dataset.jsonl"
 
