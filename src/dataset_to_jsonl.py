@@ -5,7 +5,6 @@ from Dataset import NewselaDataset
 from Metrics import Metrics
 import os
 
-# common
 DATA_DIR = "./../data"
 
 def load_newsela():
@@ -21,8 +20,10 @@ def convert_to_jsonl(dataset, grouped_df):
     jsonl_data = []
 
     for slug, group in grouped_df:
-        group = group.sort_values(by=dataset.grade_level)
-        source_text = group.iloc[0][dataset.text]
+        # group = group.sort_values(by=dataset.grade_level)
+        source_row = group[group[dataset.simplification_version] == 0]
+        source_text = source_row.iloc[0][dataset.text]
+        # source_text = group.iloc[0][dataset.text]
         source_metrics = Metrics(source_text).compute_metrics()
 
         # iterate through all grade levels ~ simplifications

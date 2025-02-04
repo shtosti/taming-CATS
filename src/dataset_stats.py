@@ -1,13 +1,13 @@
 import json
 import pandas as pd
+import matplotlib.pyplot as plt
 from collections import Counter
-from Dataset import NewselaDataset
-from Metrics import Metrics
 
 # Load the dataset
 DATA_DIR = "./../data"
 DATASET_NAME = "newsela" 
-DATASET_PATH = f"{DATA_DIR}/datasets/{DATASET_NAME}/dataset.jsonl"
+DATASET_DIR = f"{DATA_DIR}/datasets/{DATASET_NAME}"
+DATASET_PATH = f"{DATASET_DIR}/dataset.jsonl"
 
 def load_jsonl(filepath):
     data = []
@@ -15,6 +15,9 @@ def load_jsonl(filepath):
         for line in f:
             data.append(json.loads(line))
     return data
+
+def keep_eng(data):
+    return [entry for entry in data if entry["metadata"]["language"] == "en"]
 
 def compute_statistics(data):
     num_sources = len(data)
@@ -31,30 +34,150 @@ def compute_statistics(data):
     # Text length stats
     source_word_counts = [entry["source_metrics"]["word_count"] for entry in data]
     simplification_word_counts = [simp["target_metrics"]["word_count"] for entry in data for simp in entry["simplifications"]]
+    source_sent_counts = [entry["source_metrics"]["sentence_count"] for entry in data]
+    simplification_sent_counts = [simp["target_metrics"]["sentence_count"] for entry in data for simp in entry["simplifications"]]
     
     # Readability scores
-    fkgl_scores = [simp["target_metrics"]["FKGL"] for entry in data for simp in entry["simplifications"]]
-    fre_scores = [simp["target_metrics"]["FRE"] for entry in data for simp in entry["simplifications"]]
+    # source
+    source_fkgl_scores = [entry["source_metrics"]["FKGL"] for entry in data]
+    source_fre_scores = [entry["source_metrics"]["FRE"] for entry in data]
+    source_ari_scores = [entry["source_metrics"]["ARI"] for entry in data]
+    source_dale_chall_scores = [entry["source_metrics"]["Dale-Chall"] for entry in data]
+    # target
+    target_fkgl_scores = [simp["target_metrics"]["FKGL"] for entry in data for simp in entry["simplifications"]]
+    target_fre_scores = [simp["target_metrics"]["FRE"] for entry in data for simp in entry["simplifications"]]
+    target_ari_scores = [simp["target_metrics"]["ARI"] for entry in data for simp in entry["simplifications"]]
+    target_dale_chall_scores = [simp["target_metrics"]["Dale-Chall"] for entry in data for simp in entry["simplifications"]]
     
     stats = {
-        "Number of unique source texts": num_sources,
-        "Total simplifications": num_simplifications,
+        "n source texts": num_sources,
+        "n simplifications (total)": num_simplifications,
+        "mean n simplifications per source text": round(num_simplifications/num_sources, 2),
         "Grade level distribution": grade_level_counts,
         "Language distribution": language_counts,
+        # words
         "Average words per source text": sum(source_word_counts) / len(source_word_counts),
         "Average words per simplification": sum(simplification_word_counts) / len(simplification_word_counts),
-        "Average FKGL score": sum(fkgl_scores) / len(fkgl_scores),
-        "Average FRE score": sum(fre_scores) / len(fre_scores)
+        # sentences
+        "Average sentences per source text": sum(source_sent_counts) / len(source_sent_counts),
+        "Average sentences per simplification": sum(simplification_sent_counts) / len(simplification_sent_counts),
+        # metrics
+        # FKGL
+        "Source Average FKGL score": sum(source_fkgl_scores) / len(source_fkgl_scores),
+        "Target Average FKGL score": sum(target_fkgl_scores) / len(target_fkgl_scores),
+        # FRE
+        "Source Average FRE score": sum(source_fre_scores) / len(source_fre_scores),
+        "Target Average FRE score": sum(target_fre_scores) / len(target_fre_scores),
+        # ARI
+        "Source Average ARI score": sum(source_ari_scores) / len(source_ari_scores),
+        "Target Average ARI score": sum(target_ari_scores) / len(target_ari_scores),
+        # Dale-Chall
+        "Source Average Dale-Chal score": sum(source_dale_chall_scores) / len(source_dale_chall_scores),
+        "Target Average Dale-Chal score": sum(target_dale_chall_scores) / len(target_dale_chall_scores),
     }
     
     return stats
 
+def compute_target_metrics_by_grade(data):
+
+    metrics_by_grade = {}
+
+    for entry in data:
+        for simp in entry["simplifications"]:
+            grade = simp["grade_level"]
+            if grade not in metrics_by_grade:
+                metrics_by_grade[grade] = {"FKGL": [], "FRE": [], "ARI": [], "Dale-Chall": []}
+
+            metrics_by_grade[grade]["FKGL"].append(simp["target_metrics"]["FKGL"])
+            metrics_by_grade[grade]["FRE"].append(simp["target_metrics"]["FRE"])
+            metrics_by_grade[grade]["ARI"].append(simp["target_metrics"]["ARI"])
+            metrics_by_grade[grade]["Dale-Chall"].append(simp["target_metrics"]["Dale-Chall"])
+
+    # Compute averages
+    avg_metrics = {
+        grade: {
+            "FKGL": sum(values["FKGL"]) / len(values["FKGL"]),
+            "FRE": sum(values["FRE"]) / len(values["FRE"]),
+            "ARI": sum(values["ARI"]) / len(values["ARI"]),
+            "Dale-Chall": sum(values["Dale-Chall"]) / len(values["Dale-Chall"])
+        }
+        for grade, values in metrics_by_grade.items()
+    }
+
+    return avg_metrics
+
+def plot_target_metrics_by_metrics(avg_metrics):
+    grades = sorted(avg_metrics.keys())
+
+    fkgl_scores = [avg_metrics[grade]["FKGL"] for grade in grades]
+    fre_scores = [avg_metrics[grade]["FRE"] for grade in grades]
+    ari_scores = [avg_metrics[grade]["ARI"] for grade in grades]
+    dale_chall_scores = [avg_metrics[grade]["Dale-Chall"] for grade in grades]
+
+    # ARI, FKGL, FRE
+    plt.figure(figsize=(10, 5))
+    plt.plot(grades, fkgl_scores, marker="o", label="FKGL")
+    plt.plot(grades, fre_scores, marker="s", label="FRE")
+    plt.plot(grades, ari_scores, marker="^", label="ARI")
+    plt.plot(grades, dale_chall_scores, marker="*", label="Dale-Chall")
+    plt.xlabel("Grade Level")
+    plt.ylabel("Score")
+    plt.title("Readability by Grade Level")
+    plt.legend()
+    plt.grid(True)
+    plt.savefig(f"{DATASET_DIR}/ARI_FKGL_FRE_DC.png", dpi=400, bbox_inches="tight")
+    # plt.show()
+    plt.close()
+
+    # without FRE
+    plt.figure(figsize=(10, 5))
+    plt.plot(grades, fkgl_scores, marker="o", label="FKGL")
+    plt.plot(grades, ari_scores, marker="^", label="ARI")
+    plt.plot(grades, dale_chall_scores, marker="*", label="Dale-Chall")
+    plt.xlabel("Grade Level")
+    plt.ylabel("Score")
+    plt.title("Readability by Grade Level")
+    plt.legend()
+    plt.grid(True)
+    plt.savefig(f"{DATASET_DIR}/ARI_FKGL_DC.png", dpi=400, bbox_inches="tight")
+    # plt.show()
+    plt.close()
+
+def compute_source_metrics(data):
+    source_fkgl_scores = [entry["source_metrics"]["FKGL"] for entry in data]
+    source_ari_scores = [entry["source_metrics"]["ARI"] for entry in data]
+    source_dale_chall_scores = [entry["source_metrics"]["Dale-Chall"] for entry in data]
+
+    avg_metrics = {
+        "FKGL": sum(source_fkgl_scores) / len(source_fkgl_scores),
+        "ARI": sum(source_ari_scores) / len(source_ari_scores),
+        "Dale-Chall": sum(source_dale_chall_scores) / len(source_dale_chall_scores),
+    }
+
+    return avg_metrics
+
 def main():
     dataset = load_jsonl(DATASET_PATH)
+    dataset = keep_eng(dataset)
     stats = compute_statistics(dataset)
+
+    metrics_by_grade = compute_target_metrics_by_grade(dataset)
+    plot_target_metrics_by_metrics(metrics_by_grade)
+
+    source_metrics = compute_source_metrics(dataset)
     
-    print("Dataset Statistics:")
+    print(f"Dataset Statistics: {DATASET_NAME}")
     for key, value in stats.items():
+        print(f"{key}: {value}")
+
+    print()
+    print(f"Average by grade: {DATASET_NAME}")
+    for key, value in metrics_by_grade.items():
+        print(f"{key}: {value}")
+
+    print()
+    print(f"Readability of Source Texts: {DATASET_NAME}")
+    for key, value in source_metrics.items():
         print(f"{key}: {value}")
 
 if __name__ == "__main__":
