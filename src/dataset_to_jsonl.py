@@ -7,26 +7,35 @@ import os
 
 DATA_DIR = "./../data"
 
-def load_newsela():
-    dataset = NewselaDataset(limit=None)
+# def load_newsela():
+#     dataset = NewselaDataset(limit=None)
+#     dataset.load_data()
+#     df = dataset.data_df
+#     grouped = df.groupby(dataset.grouping_tag) # to group simplificaitions by source text id
+#     return dataset, grouped
+
+def load_dataset(dataset_class):
+    dataset = dataset_class(limit=None)
     dataset.load_data()
+    
     df = dataset.data_df
-    grouped = df.groupby(dataset.grouping_tag) # to group simplificaitions by source text id
+    grouped = df.groupby(dataset.grouping_tag)
+    
     return dataset, grouped
 
-def load_medeasi():
-    dataset = MedEASiDataset(limit=None)
-    dataset.load_data()
-    df = dataset.data_df
-    grouped = df.groupby(dataset.grouping_tag) # to group simplificaitions by source text id (unnecessary)
-    return dataset, grouped
+# def load_medeasi():
+#     dataset = MedEASiDataset(limit=None)
+#     dataset.load_data()
+#     df = dataset.data_df
+#     grouped = df.groupby(dataset.grouping_tag) # to group simplificaitions by source text id (unnecessary)
+#     return dataset, grouped
 
-def load_wikilarge():
-    dataset = WikiLargeDataset(limit=None)
-    dataset.load_data()
-    df = dataset.data_df
-    grouped = df.groupby(dataset.grouping_tag) # to group simplificaitions by source text id (unnecessary)
-    return dataset, grouped
+# def load_wikilarge():
+#     dataset = WikiLargeDataset(limit=None)
+#     dataset.load_data()
+#     df = dataset.data_df
+#     grouped = df.groupby(dataset.grouping_tag) # to group simplificaitions by source text id (unnecessary)
+#     return dataset, grouped
 
 def convert_to_jsonl(dataset, grouped_df):
 
@@ -201,20 +210,18 @@ def save_jsonl(dataset, jsonl_data):
 
 def main():
 
-    # Process WikiLarge
-    wikilarge_dataset, wikilarge_grouped = load_wikilarge()
-    wikilarge_jsonl_data = convert_to_jsonl(wikilarge_dataset, wikilarge_grouped)
-    save_jsonl(wikilarge_dataset, wikilarge_jsonl_data)
-    
-    # # process Newsela
-    # newesela_dataset, newsela_grouped = load_newsela()
-    # newsela_jsonl_data = convert_to_jsonl(newesela_dataset, newsela_grouped)
-    # save_jsonl(newesela_dataset, newsela_jsonl_data)
+    dataset, dataset_grouped = load_dataset(WikiLargeDataset)
+    jsonl_data = convert_to_jsonl(dataset, dataset_grouped)
+    save_jsonl(dataset, jsonl_data)
 
-    # # Process Med-EASi
-    # med_easi_dataset, med_easi_grouped = load_medeasi()
-    # med_easi_jsonl_data = convert_to_jsonl(med_easi_dataset, med_easi_grouped)
-    # save_jsonl(med_easi_dataset, med_easi_jsonl_data)
+    # dataset, dataset_grouped = load_dataset(NewselaDataset)
+    # jsonl_data = convert_to_jsonl(dataset, dataset_grouped)
+    # save_jsonl(dataset, jsonl_data)
+
+    # dataset, dataset_grouped = load_dataset(MedEASiDataset)
+    # jsonl_data = convert_to_jsonl(dataset, dataset_grouped)
+    # save_jsonl(dataset, jsonl_data)
+
 
 
 if __name__=="__main__":
