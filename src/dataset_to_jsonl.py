@@ -7,13 +7,6 @@ import os
 
 DATA_DIR = "./../data"
 
-# def load_newsela():
-#     dataset = NewselaDataset(limit=None)
-#     dataset.load_data()
-#     df = dataset.data_df
-#     grouped = df.groupby(dataset.grouping_tag) # to group simplificaitions by source text id
-#     return dataset, grouped
-
 def load_dataset(dataset_class):
     dataset = dataset_class(limit=None)
     dataset.load_data()
@@ -22,20 +15,6 @@ def load_dataset(dataset_class):
     grouped = df.groupby(dataset.grouping_tag)
     
     return dataset, grouped
-
-# def load_medeasi():
-#     dataset = MedEASiDataset(limit=None)
-#     dataset.load_data()
-#     df = dataset.data_df
-#     grouped = df.groupby(dataset.grouping_tag) # to group simplificaitions by source text id (unnecessary)
-#     return dataset, grouped
-
-# def load_wikilarge():
-#     dataset = WikiLargeDataset(limit=None)
-#     dataset.load_data()
-#     df = dataset.data_df
-#     grouped = df.groupby(dataset.grouping_tag) # to group simplificaitions by source text id (unnecessary)
-#     return dataset, grouped
 
 def convert_to_jsonl(dataset, grouped_df):
 
