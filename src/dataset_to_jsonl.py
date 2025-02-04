@@ -207,3 +207,20 @@ def main():
 
 if __name__=="__main__":
     main()
+
+
+
+
+
+
+
+
+    # # averages
+    # # source text
+    # avg_source_words = sum(source_word_counts) / len(source_word_counts)
+    # avg_source_sentences = sum(source_sent_counts) / len(source_sent_counts)
+    # avg_source_chars = sum(source_char_counts) / len(source_char_counts)
+    # # simplifications
+    # avg_simplification_words = sum(simplification_word_counts) / len(simplification_word_counts)
+    # avg_simplification_sentences = sum(simplification_sent_counts) / len(simplification_sent_counts)
+    # avg_simplification_chars = sum(simplification_char_counts) / len(simplification_char_counts)

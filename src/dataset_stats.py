@@ -6,6 +6,7 @@ import sys
 
 # Load the dataset
 DATASET_NAME = "newsela"
+# DATASET_NAME = "medeasi"
 DATA_DIR = "./../data" 
 DATASET_DIR = f"{DATA_DIR}/datasets/{DATASET_NAME}"
 DATASET_PATH = f"{DATASET_DIR}/dataset.jsonl"
@@ -33,11 +34,18 @@ def compute_statistics(data):
     language_counts = Counter(languages)
     
     # Text length stats
+    source_char_counts = [entry["source_metrics"]["char_count"] for entry in data]
+    simplification_char_counts = [simp["target_metrics"]["char_count"] for entry in data for simp in entry["simplifications"]]
     source_word_counts = [entry["source_metrics"]["word_count"] for entry in data]
     simplification_word_counts = [simp["target_metrics"]["word_count"] for entry in data for simp in entry["simplifications"]]
     source_sent_counts = [entry["source_metrics"]["sentence_count"] for entry in data]
     simplification_sent_counts = [simp["target_metrics"]["sentence_count"] for entry in data for simp in entry["simplifications"]]
-    
+
+    # compression rates
+    char_compression_rate = [simp["target_metrics"]["char_compression_rate"] for entry in data for simp in entry["simplifications"]]
+    word_compression_rate = [simp["target_metrics"]["word_compression_rate"] for entry in data for simp in entry["simplifications"]]
+    sent_compression_rate = [simp["target_metrics"]["sentence_compression_rate"] for entry in data for simp in entry["simplifications"]]
+
     # Readability scores
     # source
     source_fkgl_scores = [entry["source_metrics"]["FKGL"] for entry in data]
@@ -56,12 +64,16 @@ def compute_statistics(data):
         "mean n simplifications per source text": round(num_simplifications/num_sources, 2),
         "Grade level distribution": grade_level_counts,
         "Language distribution": language_counts,
-        # words
+        # average words
         "Average words per source text": sum(source_word_counts) / len(source_word_counts),
         "Average words per simplification": sum(simplification_word_counts) / len(simplification_word_counts),
-        # sentences
+        # average sentences
         "Average sentences per source text": sum(source_sent_counts) / len(source_sent_counts),
         "Average sentences per simplification": sum(simplification_sent_counts) / len(simplification_sent_counts),
+        # average compression rates
+        "Average char compression rate": sum(char_compression_rate) / len(char_compression_rate),
+        "Average word compression rate": sum(word_compression_rate) / len(word_compression_rate),
+        "Average sentence compression rate": sum(sent_compression_rate) / len(sent_compression_rate),
         # metrics
         # FKGL
         "Source Average FKGL score": sum(source_fkgl_scores) / len(source_fkgl_scores),
@@ -112,6 +124,39 @@ def compute_target_metrics_by_grade(data):
     }
 
     return avg_metrics
+
+def compute_target_metrics_average(data):
+    target_word_counts = []
+    target_sentence_counts = []
+    target_char_counts = []
+    target_fkgl_scores = []
+    target_fre_scores = []
+    target_ari_scores = []
+    target_dale_chall_scores = []
+
+    # Iterate through all the data and simplifications
+    for entry in data:
+        for simp in entry["simplifications"]:
+            target_word_counts.append(simp["target_metrics"]["word_count"])
+            target_sentence_counts.append(simp["target_metrics"]["sentence_count"])
+            target_char_counts.append(simp["target_metrics"]["char_count"])
+            target_fkgl_scores.append(simp["target_metrics"]["FKGL"])
+            target_fre_scores.append(simp["target_metrics"]["FRE"])
+            target_ari_scores.append(simp["target_metrics"]["ARI"])
+            target_dale_chall_scores.append(simp["target_metrics"]["Dale-Chall"])
+
+    # Calculate the averages for each metric
+    avg_target_metrics = {
+        "word_count": sum(target_word_counts) / len(target_word_counts),
+        "sentence_count": sum(target_sentence_counts) / len(target_sentence_counts),
+        "char_count": sum(target_char_counts) / len(target_char_counts),
+        "FKGL": sum(target_fkgl_scores) / len(target_fkgl_scores),
+        "FRE": sum(target_fre_scores) / len(target_fre_scores),
+        "ARI": sum(target_ari_scores) / len(target_ari_scores),
+        "Dale-Chall": sum(target_dale_chall_scores) / len(target_dale_chall_scores),
+    }
+
+    return avg_target_metrics
 
 def plot_target_metrics_by_grade(avg_metrics):
     grades = sorted(avg_metrics.keys())
@@ -182,15 +227,44 @@ def plot_target_metrics_by_grade(avg_metrics):
     plt.savefig(f"{DATASET_DIR}/grade_vs_characters.png", dpi=400, bbox_inches="tight")
     plt.close()
 
+def plot_comparison(source_metrics, simplification_metrics):
+    # Unpacking the metrics
+    metrics = ['Words', 'Sentences', 'Characters']
+    source_values = [source_metrics['word_count'], source_metrics['sentence_count'], source_metrics['char_count']]
+    simplification_values = [simplification_metrics['word_count'], simplification_metrics['sentence_count'], simplification_metrics['char_count']]
+    
+    # Plotting each metric separately
+    for i, metric in enumerate(metrics):
+        plt.figure(figsize=(10, 5))
+        plt.bar(['Source Text'], source_values[i], width=0.4, label='Source Text')
+        plt.bar(['Simplifications'], simplification_values[i], width=0.4, label='Simplifications')
+        plt.xlabel(metric)
+        plt.ylabel('Count')
+        plt.title(f'Comparison of {metric} Count')
+        plt.legend()
+        plt.grid(True)
+        plt.savefig(f"{DATASET_DIR}/comparison_count_{metric.lower()}.png", dpi=400, bbox_inches="tight")
+        plt.close()
+    
+    print("Plots saved successfully!")
+
 def compute_source_metrics(data):
     source_fkgl_scores = [entry["source_metrics"]["FKGL"] for entry in data]
+    source_fre_scores = [entry["source_metrics"]["FRE"] for entry in data]
     source_ari_scores = [entry["source_metrics"]["ARI"] for entry in data]
     source_dale_chall_scores = [entry["source_metrics"]["Dale-Chall"] for entry in data]
+    source_word_count = [entry["source_metrics"]["word_count"] for entry in data]
+    source_char_count = [entry["source_metrics"]["char_count"] for entry in data]
+    source_sent_count = [entry["source_metrics"]["sentence_count"] for entry in data]
 
     avg_metrics = {
         "FKGL": sum(source_fkgl_scores) / len(source_fkgl_scores),
+        "FRE": sum(source_fre_scores) / len(source_fre_scores),
         "ARI": sum(source_ari_scores) / len(source_ari_scores),
         "Dale-Chall": sum(source_dale_chall_scores) / len(source_dale_chall_scores),
+        "char_count": sum(source_char_count) / len(source_char_count),
+        "word_count": sum(source_word_count) / len(source_word_count),
+        "sentence_count": sum(source_sent_count) / len(source_sent_count)
     }
 
     return avg_metrics
@@ -204,6 +278,8 @@ def main():
     plot_target_metrics_by_grade(metrics_by_grade)
 
     source_metrics = compute_source_metrics(dataset)
+    target_metrics_average = compute_target_metrics_average(dataset)
+    plot_comparison(source_metrics, target_metrics_average)
 
     log_file = f"{DATASET_DIR}/log.txt"
     with open(log_file, "w", encoding="utf-8") as log:
