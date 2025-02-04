@@ -78,27 +78,80 @@ class MedEASiDataset(TSDataset):
         self.data_df = data
 
 
+class WikiLargeDataset(TSDataset):
+    def __init__(self, limit=None):
+        super().__init__()
+        self.data_dir = "./../../datasets/wiki/wikilarge"
+        self.base_filename = "wiki.full.aner."
+        self.limit = limit
+
+        # Dataset metainfo
+        self.dataset_name = "wikilarge"
+        self.domain = "general"
+        self.annotation = "automatic"
+        self.alignment_level = "sentence"
+
+        # Relevant columns
+        self.source_text = "source"
+        self.target_text = "target"
+        self.split = "split"
+
+    def load_data(self):
+
+        splits = ["train", "valid", "test"]
+        all_data = []
+
+        for split in splits:
+            src_path = os.path.join(self.data_dir, f"{self.base_filename}{split}.src")
+            dst_path = os.path.join(self.data_dir, f"{self.base_filename}{split}.dst")
+
+            # check if the files exist
+            if not os.path.exists(src_path) or not os.path.exists(dst_path):
+                print(f"Warning: Missing files for {split} split.")
+                continue
+
+            with open(src_path, "r", encoding="utf-8") as src_file, open(dst_path, "r", encoding="utf-8") as dst_file:
+                src_lines = src_file.readlines()
+                dst_lines = dst_file.readlines()
+
+            # Ensure same number of lines in source and target
+            if len(src_lines) != len(dst_lines):
+                print(f"Warning: Mismatched line counts in {split} split.")
+
+            # to df with cols source, target and split
+            split_df = pd.DataFrame({
+                "source": src_lines,
+                "target": dst_lines,
+                "split": split
+            })
+
+            # for dev
+            if self.limit:
+                split_df = split_df.head(self.limit)
+
+            all_data.append(split_df)
+
+        # combine into one df
+        if all_data:
+            self.data_df = pd.concat(all_data, ignore_index=True)
+            self.data_df['idx'] = pd.Series(range(1, len(self.data_df) + 1), index=self.data_df.index)
+        else:
+            print("Error: No data loaded.")
+
+
+dataset = WikiLargeDataset(limit=10)
+dataset.load_data()
+print(dataset.data_df)
+
+
 # dataset = MedEASiDataset(limit=10)
 # dataset.load_data()
 # print(dataset.data_df)
 
 
-# # class WikiLargeDataset(TSDataset):
-# #     def __init__(self, base_path, base_filename):
-# #         super().__init__()
-# #         self.base_path = base_path
-# #         self.base_filename = base_filename
-
-# #     def load_data(self):
-# #         valid_src_path = os.path.join(self.base_path, f"{self.base_filename}valid.src")
-# #         valid_dst_path = os.path.join(self.base_path, f"{self.base_filename}valid.dst")
-
-# #         with open(valid_src_path, "r") as src_file, open(valid_dst_path, "r") as dst_file:
-# #             valid_src = src_file.readlines()
-# #             valid_dst = dst_file.readlines()
-
-# #         valid_df = pd.DataFrame({"source": valid_src, "target": valid_dst})
-# #         self.data_df = valid_df[valid_df["source"].str.strip().astype(bool) & valid_df["target"].str.strip().astype(bool)]
+# dataset = Newsela(limit=10)
+# dataset.load_data()
+# print(dataset.data_df)
 
 
 
