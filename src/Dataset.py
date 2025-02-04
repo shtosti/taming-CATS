@@ -8,11 +8,11 @@ class TSDataset:
 
 
 class NewselaDataset(TSDataset):
-    def __init__(self, data_dir, metadata_path, limit=None):
+    def __init__(self, limit=None):
         super().__init__()
-        self.data_dir = data_dir
-        self.metadata_path = metadata_path
-        self.limit = limit
+        self.data_dir = "./../../datasets/newsela/newsela_article_corpus_2016-01-29/articles"
+        self.metadata_path = "./../../datasets/newsela/newsela_article_corpus_2016-01-29/articles_metadata.csv"
+        self.limit = limit # None as default, else select int to slice
         # dataset metainfo
         self.dataset_name = "newsela"
         self.domain = "news"
@@ -45,6 +45,8 @@ class NewselaDataset(TSDataset):
 
     def preprocess_text(self):
         pass
+
+    
 
 
 # # NEWSELA_DIR_PATH = "./../datasets/newsela/newsela_article_corpus_2016-01-29/articles"
