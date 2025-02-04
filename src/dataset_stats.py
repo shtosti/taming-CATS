@@ -5,9 +5,9 @@ from collections import Counter
 import sys
 
 # TODO select the correct dataset name 
-DATASET_NAME = "newsela"
+# DATASET_NAME = "newsela"
 # DATASET_NAME = "medeasi"
-# DATASET_NAME = "wikilarge"
+DATASET_NAME = "wikilarge"
 
 DATA_DIR = "./../data" 
 DATASET_DIR = f"{DATA_DIR}/datasets/{DATASET_NAME}"
