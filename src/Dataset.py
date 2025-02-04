@@ -58,7 +58,6 @@ class MedEASiDataset(TSDataset):
         self.alignment_level = "sentence"
 
         # relevant columns
-        self.text = "Expert"
         self.source_text = "Expert"
         self.target_text = "Simple"
         self.split = "split"
@@ -95,6 +94,7 @@ class WikiLargeDataset(TSDataset):
         self.source_text = "source"
         self.target_text = "target"
         self.split = "split"
+        self.grouping_tag = "idx"
 
     def load_data(self):
 
@@ -139,9 +139,9 @@ class WikiLargeDataset(TSDataset):
             print("Error: No data loaded.")
 
 
-dataset = WikiLargeDataset(limit=10)
-dataset.load_data()
-print(dataset.data_df)
+# dataset = WikiLargeDataset(limit=10)
+# dataset.load_data()
+# print(dataset.data_df)
 
 
 # dataset = MedEASiDataset(limit=10)

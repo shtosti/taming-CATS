@@ -4,9 +4,11 @@ import matplotlib.pyplot as plt
 from collections import Counter
 import sys
 
-# Load the dataset
+# TODO select the correct dataset name 
 DATASET_NAME = "newsela"
 # DATASET_NAME = "medeasi"
+# DATASET_NAME = "wikilarge"
+
 DATA_DIR = "./../data" 
 DATASET_DIR = f"{DATA_DIR}/datasets/{DATASET_NAME}"
 DATASET_PATH = f"{DATASET_DIR}/dataset.jsonl"

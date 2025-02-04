@@ -21,6 +21,13 @@ def load_medeasi():
     grouped = df.groupby(dataset.grouping_tag) # to group simplificaitions by source text id (unnecessary)
     return dataset, grouped
 
+def load_wikilarge():
+    dataset = WikiLargeDataset(limit=None)
+    dataset.load_data()
+    df = dataset.data_df
+    grouped = df.groupby(dataset.grouping_tag) # to group simplificaitions by source text id (unnecessary)
+    return dataset, grouped
+
 def convert_to_jsonl(dataset, grouped_df):
 
     jsonl_data = []
@@ -28,9 +35,10 @@ def convert_to_jsonl(dataset, grouped_df):
     for slug, group in grouped_df:
         if dataset.dataset_name == "newsela":
             source_row = group[group[dataset.simplification_version] == 0]
-        elif dataset.dataset_name == "medeasi":
+        elif dataset.dataset_name == "medeasi" \
+            or dataset.dataset_name == "wikilarge":
             source_row = group.iloc[[0]]
-        source_text = source_row.iloc[0][dataset.text]
+        source_text = source_row.iloc[0][dataset.source_text]
         source_metrics = Metrics(source_text).compute_metrics()
 
         # iterate through all grade levels ~ simplifications
@@ -39,7 +47,8 @@ def convert_to_jsonl(dataset, grouped_df):
                 language = row[dataset.language]
                 split = ""
                 simplification_version = int(row[dataset.simplification_version])
-            elif dataset.dataset_name == "medeasi":
+            elif dataset.dataset_name == "medeasi" \
+                or dataset.dataset_name == "wikilarge":
                 language = "en"
                 split = row[dataset.split]
                 simplification_version = 1
@@ -122,7 +131,8 @@ def convert_to_jsonl(dataset, grouped_df):
 
                 json_entry["simplifications"].append(simplification_entry)
         
-        elif dataset.dataset_name == "medeasi":
+        elif dataset.dataset_name == "medeasi" \
+            or dataset.dataset_name == "wikilarge":
             simplification_text = source_row.iloc[0][dataset.target_text]  # usse the "Simple" column
             simplification_version = 1 # single version, since 1-to-1 mapping
             grade_level = -1  # no grade levels!
@@ -172,9 +182,6 @@ def convert_to_jsonl(dataset, grouped_df):
             }
             json_entry["simplifications"].append(simplification_entry)
 
-
-
-
         jsonl_data.append(json_entry)
 
     return jsonl_data
@@ -194,33 +201,21 @@ def save_jsonl(dataset, jsonl_data):
 
 def main():
 
+    # Process WikiLarge
+    wikilarge_dataset, wikilarge_grouped = load_wikilarge()
+    wikilarge_jsonl_data = convert_to_jsonl(wikilarge_dataset, wikilarge_grouped)
+    save_jsonl(wikilarge_dataset, wikilarge_jsonl_data)
+    
     # # process Newsela
     # newesela_dataset, newsela_grouped = load_newsela()
     # newsela_jsonl_data = convert_to_jsonl(newesela_dataset, newsela_grouped)
     # save_jsonl(newesela_dataset, newsela_jsonl_data)
 
-    # Process Med-EASi
-    med_easi_dataset, med_easi_grouped = load_medeasi()
-    med_easi_jsonl_data = convert_to_jsonl(med_easi_dataset, med_easi_grouped)
-    save_jsonl(med_easi_dataset, med_easi_jsonl_data)
+    # # Process Med-EASi
+    # med_easi_dataset, med_easi_grouped = load_medeasi()
+    # med_easi_jsonl_data = convert_to_jsonl(med_easi_dataset, med_easi_grouped)
+    # save_jsonl(med_easi_dataset, med_easi_jsonl_data)
 
 
 if __name__=="__main__":
     main()
-
-
-
-
-
-
-
-
-    # # averages
-    # # source text
-    # avg_source_words = sum(source_word_counts) / len(source_word_counts)
-    # avg_source_sentences = sum(source_sent_counts) / len(source_sent_counts)
-    # avg_source_chars = sum(source_char_counts) / len(source_char_counts)
-    # # simplifications
-    # avg_simplification_words = sum(simplification_word_counts) / len(simplification_word_counts)
-    # avg_simplification_sentences = sum(simplification_sent_counts) / len(simplification_sent_counts)
-    # avg_simplification_chars = sum(simplification_char_counts) / len(simplification_char_counts)
