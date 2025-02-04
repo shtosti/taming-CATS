@@ -11,16 +11,6 @@ DATA_DIR = "./../data"
 NEWSELA_DIR_PATH = "./../../datasets/newsela/newsela_article_corpus_2016-01-29/articles"
 NEWSELA_METADATA_PATH = "./../../datasets/newsela/newsela_article_corpus_2016-01-29/articles_metadata.csv"
 
-# dataset_name = "newsela"
-# domain = "news"
-# annotation = "human"
-# alignment_level = "text"
-# # relevant columns
-# grade_level = "grade_level"
-# simplification_version = "version"
-# text = "content"
-# language = "language"
-# grouping_tag = "slug"
 
 def load_newsela():
 
@@ -50,7 +40,7 @@ def convert_to_jsonl(dataset, grouped_df):
                 "dataset": dataset.dataset_name,
                 "split": "",
                 "domain": dataset.domain,
-                "language": dataset.language, 
+                "language": row[dataset.language], 
                 "annotation": dataset.annotation,
                 "level": dataset.alignment_level
             },
