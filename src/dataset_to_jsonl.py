@@ -1,139 +1,60 @@
 import json
 import uuid
 import pandas as pd
-from Dataset import NewselaDataset, MedEASiDataset, WikiLargeDataset, SimPALex, SimPASyn
+from Dataset import Newsela, MedEASi, WikiLarge, SimPALex, SimPASyn
 from Metrics import Metrics
 import os
 
 DATA_DIR = "./../data"
 
 def load_dataset(dataset_class):
-    dataset = dataset_class(limit=None)
+    dataset = dataset_class(limit=12)
     dataset.load_data()
-    
-    df = dataset.data_df
-    grouped = df.groupby(dataset.grouping_tag)
-    
-    return dataset, grouped
+    return dataset, dataset.data_df.groupby(dataset.grouping_tag)
 
 def find_source_text(dataset, group):
-    # find source text and compute metrics on it
-    if dataset.dataset_name == "newsela"\
-        or dataset.dataset_name == "simpa_lexical"\
-            or dataset.dataset_name == "simpa_syntactic":
+    if dataset.dataset_name in ["newsela", "simpa_lexical", "simpa_syntactic"]:
         source_row = group[group[dataset.simplification_version] == 0]
-        source_text = source_row.iloc[0][dataset.text]
-    elif dataset.dataset_name == "medeasi" \
-        or dataset.dataset_name == "wikilarge":
+        source_text = source_row.iloc[0][dataset.text] if not source_row.empty else ""
+    elif dataset.dataset_name in ["medeasi", "wikilarge"]:
         source_row = group.iloc[[0]]
         source_text = source_row.iloc[0][dataset.source_text]
+    else:
+        raise ValueError(f"Unsupported dataset: {dataset.dataset_name}")
+    
     source_metrics = Metrics(source_text).compute_metrics()
-
-    return source_row, source_text, source_metrics
+    return source_text, source_metrics
 
 def find_language(dataset, group):
-    # set correct language
-    for _, row in group.iterrows():
-        if dataset.dataset_name == "newsela":
-            language = row[dataset.language]
-        elif dataset.dataset_name == "medeasi" \
-            or dataset.dataset_name == "wikilarge" \
-                or dataset.dataset_name == "simpa_lexical"\
-                    or dataset.dataset_name == "simpa_syntactic":
-            language = dataset.language
-
-    return language
+    return group.iloc[0][dataset.language] if dataset.dataset_name == "newsela" else dataset.language
 
 def find_split(dataset, group):
-    # set correct original split (as in the original dataset)
-    for _, row in group.iterrows():
-        if dataset.dataset_name == "newsela" \
-            or dataset.dataset_name == "simpa_lexical"\
-                or dataset.dataset_name == "simpa_syntactic":
-            split = ""
-        elif dataset.dataset_name == "medeasi" \
-            or dataset.dataset_name == "wikilarge":
-            split = row[dataset.split]
-    
-    return split
-
-def find_simplification_version(dataset, group):
-    # set correct simplification version
-    for _, row in group.iterrows():
-        if dataset.dataset_name == "newsela" \
-            or dataset.dataset_name == "simpa_lexical":
-            simplification_version = int(row[dataset.simplification_version])
-        elif dataset.dataset_name == "medeasi" \
-            or dataset.dataset_name == "wikilarge"\
-                or dataset.dataset_name == "sympa_syntactic":
-            simplification_version = 1
-
-    return simplification_version
+    return "" if dataset.dataset_name in ["newsela", "simpa_lexical", "simpa_syntactic"] else group.iloc[0][dataset.split]
 
 def convert_to_jsonl(dataset, grouped_df):
 
     jsonl_data = []
     counter = 1
 
-    for slug, group in grouped_df:
-        # # find source text and compute metrics on it
-        # if dataset.dataset_name == "newsela" \
-        #     or dataset.dataset_name == "simpa_lexical":
-        #     source_row = group[group[dataset.simplification_version] == 0]
-        # elif dataset.dataset_name == "medeasi" \
-        #     or dataset.dataset_name == "wikilarge":
-        #     source_row = group.iloc[[0]]
-        # source_text = source_row.iloc[0][dataset.source_text]
-        # source_metrics = Metrics(source_text).compute_metrics()
-
-        source_row, source_text, source_metrics = find_source_text(dataset, group)
-
-        # # set correct language
-        # for _, row in group.iterrows():
-        #     if dataset.dataset_name == "newsela":
-        #         language = row[dataset.language]
-        #     elif dataset.dataset_name == "medeasi" \
-        #         or dataset.dataset_name == "wikilarge" \
-        #             or dataset.dataset_name == "simpa_lexical":
-        #         language = dataset.language
-
+    for _, group in grouped_df:
+        source_text, source_metrics = find_source_text(dataset, group)
         language = find_language(dataset, group)
-  
-        # # set correct original split (in the original dataset)
-        # for _, row in group.iterrows():
-        #     if dataset.dataset_name == "newsela" \
-        #         or dataset.dataset_name == "simpa_lexical":
-        #         split = ""
-        #     elif dataset.dataset_name == "medeasi" \
-        #         or dataset.dataset_name == "wikilarge":
-        #         split = row[dataset.split]
-
         split = find_split(dataset, group)
 
-        # # set correct simplification version
-        # for _, row in group.iterrows():
-        #     if dataset.dataset_name == "newsela" \
-        #         or dataset.dataset_name == "simpa_lexical":
-        #         simplification_version = int(row[dataset.simplification_version])
-        #     elif dataset.dataset_name == "medeasi" \
-        #         or dataset.dataset_name == "wikilarge":
-        #         simplification_version = 1
-
-        simplification_version = find_simplification_version(dataset, group)
-
+        ######## source ########
         json_entry = {
             "global_id": f"{dataset.dataset_name}_{counter:06d}",
             "source_text": source_text,
             "metadata": {
                 "dataset": dataset.dataset_name,
                 "original_split": split,
+                "experiment_split": "", # TODO
                 "domain": dataset.domain,
                 "language": language, 
                 "annotation": dataset.annotation,
                 "level": dataset.alignment_level
             },
             "source_metrics": {
-                "CEFR": "",
                 "FRE": source_metrics["FRE"],
                 "ARI": source_metrics["ARI"],
                 "FKGL": source_metrics["FKGL"],
@@ -146,144 +67,31 @@ def convert_to_jsonl(dataset, grouped_df):
             "simplifications": []
         }
 
-        if dataset.dataset_name == "newsela"\
-            or dataset.dataset_name == "simpa_lexical":
-            for _, row in group.iterrows():
-                # add a check to exclude source from the list of simplifications
-                if row[dataset.simplification_version] == 0:
-                    continue
+        ######## target ########
+        for _, row in group.iterrows():
+            if dataset.dataset_name in ["newsela", "simpa_lexical", "simpa_syntactic"] and row[dataset.simplification_version] == 0:
+                continue
+            if dataset.dataset_name in ["newsela", "simpa_lexical", "simpa_syntactic"]:
                 simplification_text = row[dataset.text]
-                simplification_metrics = Metrics(simplification_text).compute_metrics()
-
-                simplification_entry = {
-                    "simplification_text": simplification_text,
-                    "simplification_version": simplification_version,
-                    "CEFR_level": "",  # Placeholder, to be computed later
-                    "grade_level": int(row[dataset.grade_level]),
-                    "control_attributes": {
-                        "LevSim": 0.0,
-                        "NbChar": 0.0 # TODO expand as needed
-                    },
-                    "simplification_dimensions": {
-                        "linguistic": {
-                            "lexical": False,
-                            "syntactic": False,
-                            "not_specified": False
-                        },
-                        "information": {
-                            "explicitation": False,
-                            "omission": False,
-                            "generalization": False
-                        }
-                    },
-                    "target_metrics": {
-                        "CEFR": "", # TODO
-                        "FRE": simplification_metrics["FRE"],
-                        "ARI": simplification_metrics["ARI"],
-                        "FKGL": simplification_metrics["FKGL"],
-                        "Dale-Chall": simplification_metrics["Dale-Chall"],
-                        "char_count": simplification_metrics["char_count"],
-                        "alphanum_count": simplification_metrics["alphanum_count"],
-                        "word_count": simplification_metrics["word_count"],
-                        "sentence_count": simplification_metrics["sent_count_nltk"],
-                        "char_compression_rate": round(simplification_metrics["char_count"]/source_metrics["char_count"], 2),
-                        "word_compression_rate": round(simplification_metrics["word_count"]/source_metrics["word_count"], 2),
-                        "sentence_compression_rate": round(simplification_metrics["sent_count_nltk"]/source_metrics["sent_count_nltk"], 2)
-                    },
-                    "evaluation_metrics": { # TODO
-                        "BLEU": 0.0,
-                        "ROUGE": 0.0,
-                        "SARI": 0.0,
-                        "BERTScore": 0.0
-                    }
-                }
-
-                json_entry["simplifications"].append(simplification_entry)
-
-        elif dataset.dataset_name == "simpa_lexical":
-            for _, row in group.iterrows():
-                # add a check to exclude source from the list of simplifications
-                if row[dataset.simplification_version] == 0:
-                    continue
-                simplification_text = row[dataset.text]
-                simplification_metrics = Metrics(simplification_text).compute_metrics()
-
-                simplification_entry = {
-                    "simplification_text": simplification_text,
-                    "simplification_version": simplification_version,
-                    "CEFR_level": "",  # Placeholder, might be computed later
-                    "grade_level": -1,
-                    "control_attributes": {
-                        "LevSim": 0.0,
-                        "NbChar": 0.0 # TODO expand as needed
-                    },
-                    "simplification_dimensions": {
-                        "linguistic": {
-                            "lexical": True,
-                            "syntactic": False,
-                            "not_specified": False
-                        },
-                        "information": {
-                            "explicitation": False,
-                            "omission": False,
-                            "generalization": False
-                        }
-                    },
-                    "target_metrics": {
-                        "CEFR": "", # TODO
-                        "FRE": simplification_metrics["FRE"],
-                        "ARI": simplification_metrics["ARI"],
-                        "FKGL": simplification_metrics["FKGL"],
-                        "Dale-Chall": simplification_metrics["Dale-Chall"],
-                        "char_count": simplification_metrics["char_count"],
-                        "alphanum_count": simplification_metrics["alphanum_count"],
-                        "word_count": simplification_metrics["word_count"],
-                        "sentence_count": simplification_metrics["sent_count_nltk"],
-                        "char_compression_rate": round(simplification_metrics["char_count"]/source_metrics["char_count"], 2),
-                        "word_compression_rate": round(simplification_metrics["word_count"]/source_metrics["word_count"], 2),
-                        "sentence_compression_rate": round(simplification_metrics["sent_count_nltk"]/source_metrics["sent_count_nltk"], 2),
-                    },
-                    "evaluation_metrics": { # TODO
-                        "BLEU": 0.0,
-                        "ROUGE": 0.0,
-                        "SARI": 0.0,
-                        "BERTScore": 0.0
-                    }
-                }
-
-                json_entry["simplifications"].append(simplification_entry)
-        
-        elif dataset.dataset_name == "medeasi" \
-            or dataset.dataset_name == "wikilarge"\
-                or dataset.dataset_name == "simpa_syntactic":
-            simplification_text = source_row.iloc[0][dataset.target_text]  # usse the "Simple" column
-            simplification_version = 1 # single version, since 1-to-1 mapping
-            grade_level = -1  # no grade levels!
-
+            else:
+                simplification_text = row[dataset.target_text]
             simplification_metrics = Metrics(simplification_text).compute_metrics()
+
             simplification_entry = {
                 "simplification_text": simplification_text,
-                "simplification_version": simplification_version,
-                "CEFR_level": "",
-                "grade_level": grade_level,
+                "simplification_version": 1 if dataset.dataset_name in ["medeasi", "wikilarge", "simpa_syntactic"] else int(row[dataset.simplification_version]),
+                "grade_level": int(row[dataset.grade_level]) if dataset.dataset_name == "newsela" else -1,
                 "control_attributes": {
                     "LevSim": 0.0,
-                    "NbChar": 0.0
+                    "NbChar": 0.0 # TODO expand as needed
                 },
                 "simplification_dimensions": {
                     "linguistic": {
-                        "lexical": False,
-                        "syntactic": True if dataset.dataset_name == "simpa_syntactic" else False,
-                        "not_specified": True if dataset.dataset_name != "simpa_syntactic" else False
-                    },
-                    "information": {
-                        "explicitation": False,
-                        "omission": False,
-                        "generalization": False
+                        "lexical": dataset.dataset_name == "simpa_lexical",
+                        "syntactic": dataset.dataset_name == "simpa_syntactic"
                     }
                 },
                 "target_metrics": {
-                    "CEFR": "",
                     "FRE": simplification_metrics["FRE"],
                     "ARI": simplification_metrics["ARI"],
                     "FKGL": simplification_metrics["FKGL"],
@@ -292,21 +100,20 @@ def convert_to_jsonl(dataset, grouped_df):
                     "alphanum_count": simplification_metrics["alphanum_count"],
                     "word_count": simplification_metrics["word_count"],
                     "sentence_count": simplification_metrics["sent_count_nltk"],
-                    "char_compression_rate": round(simplification_metrics["char_count"]/source_metrics["char_count"], 2),
-                    "word_compression_rate": round(simplification_metrics["word_count"]/source_metrics["word_count"], 2),
-                    "sentence_compression_rate": round(simplification_metrics["sent_count_nltk"]/source_metrics["sent_count_nltk"], 2)
-                },
-                "evaluation_metrics": {
+                    # avoid division by zero
+                    "char_compression_rate": round(simplification_metrics["char_count"]/source_metrics["char_count"], 2) if source_metrics["char_count"] > 0 else 0.0,
+                    "word_compression_rate": round(simplification_metrics["word_count"]/source_metrics["word_count"], 2) if source_metrics["word_count"] > 0 else 0.0,
+                    "sentence_compression_rate": round(simplification_metrics["sent_count_nltk"]/source_metrics["sent_count_nltk"], 2)if source_metrics["sent_count_nltk"] > 0 else 0.0,
                     "BLEU": 0.0,
                     "ROUGE": 0.0,
                     "SARI": 0.0,
                     "BERTScore": 0.0
                 }
             }
+
             json_entry["simplifications"].append(simplification_entry)
 
         jsonl_data.append(json_entry)
-
         counter += 1
 
     return jsonl_data
@@ -326,21 +133,25 @@ def save_jsonl(dataset, jsonl_data):
 
 def main():
 
-    dataset, dataset_grouped = load_dataset(SimPALex)
+    # dataset, dataset_grouped = load_dataset(SimPASyn)
+    # jsonl_data = convert_to_jsonl(dataset, dataset_grouped)
+    # save_jsonl(dataset, jsonl_data)
+
+    # dataset, dataset_grouped = load_dataset(SimPALex)
+    # jsonl_data = convert_to_jsonl(dataset, dataset_grouped)
+    # save_jsonl(dataset, jsonl_data)
+
+    # dataset, dataset_grouped = load_dataset(WikiLarge)
+    # jsonl_data = convert_to_jsonl(dataset, dataset_grouped)
+    # save_jsonl(dataset, jsonl_data)
+
+    # dataset, dataset_grouped = load_dataset(Newsela)
+    # jsonl_data = convert_to_jsonl(dataset, dataset_grouped)
+    # save_jsonl(dataset, jsonl_data)
+
+    dataset, dataset_grouped = load_dataset(MedEASi)
     jsonl_data = convert_to_jsonl(dataset, dataset_grouped)
     save_jsonl(dataset, jsonl_data)
-
-    # dataset, dataset_grouped = load_dataset(WikiLargeDataset)
-    # jsonl_data = convert_to_jsonl(dataset, dataset_grouped)
-    # save_jsonl(dataset, jsonl_data)
-
-    # dataset, dataset_grouped = load_dataset(NewselaDataset)
-    # jsonl_data = convert_to_jsonl(dataset, dataset_grouped)
-    # save_jsonl(dataset, jsonl_data)
-
-    # dataset, dataset_grouped = load_dataset(MedEASiDataset)
-    # jsonl_data = convert_to_jsonl(dataset, dataset_grouped)
-    # save_jsonl(dataset, jsonl_data)
 
 
 
