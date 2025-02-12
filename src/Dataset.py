@@ -56,6 +56,7 @@ class MedEASiDataset(TSDataset):
         self.domain = "medical"
         self.annotation = "human"
         self.alignment_level = "sentence"
+        self.language = "en"
 
         # relevant columns
         self.source_text = "Expert"
@@ -89,6 +90,7 @@ class WikiLargeDataset(TSDataset):
         self.domain = "general"
         self.annotation = "automatic"
         self.alignment_level = "sentence"
+        self.language = "en"
 
         # Relevant columns
         self.source_text = "source"
@@ -137,6 +139,123 @@ class WikiLargeDataset(TSDataset):
             self.data_df['idx'] = pd.Series(range(1, len(self.data_df) + 1), index=self.data_df.index)
         else:
             print("Error: No data loaded.")
+
+class SimPA(TSDataset):
+    """ 
+    Parent class for the SimPA dataset.
+    Includes children classes for the lexical and syntactic simplification subsets.
+    """
+    def __init__(self, data_dir="./../../datasets/simpa", limit=None):
+        super().__init__()
+        self.data_dir = data_dir
+        self.limit = limit
+
+        # Dataset metainfo
+        self.domain = "public_administration"
+        self.annotation = "human"
+        self.alignment_level = "sentence"
+        self.language = "en"
+
+        # Relevant columns
+        self.text = "content"
+        self.simplification_version = "version"
+        self.grouping_tag = "slug"
+
+    def load_data(self):
+        raise NotImplementedError("Subclasses must implement this method")
+
+class SimPALex(SimPA):
+    def __init__(self, limit=None):
+        super().__init__(limit=limit)
+        self.dataset_name = "simpa_lexical"
+
+    def load_data(self):
+        ls_orig_path = os.path.join(self.data_dir, "ls.original")
+        ls_simp_path = os.path.join(self.data_dir, "ls.simplified")
+        
+        # check the files exist
+        if not os.path.exists(ls_orig_path) or not os.path.exists(ls_simp_path):
+            print("Warning: Files missing.")
+            return
+
+        with open(ls_orig_path, "r", encoding="utf-8") as f_orig, open(ls_simp_path, "r", encoding="utf-8") as f_simp:
+            ls_orig_lines = f_orig.readlines()
+            ls_simp_lines = f_simp.readlines()
+        
+        # double-check correct alignment
+        # there are 3 identical lines for each source sentence
+        # to align with 3 simplifications per source sentence
+        if len(ls_orig_lines) % 3 != 0 or len(ls_orig_lines) != len(ls_simp_lines):
+            print("Warning: source and target datasets differ in size.")
+            return
+        
+        data = []
+        group_id = 1
+        for i in range(0, len(ls_orig_lines), 3):
+            original_sentence = ls_orig_lines[i].strip()
+            data.append((original_sentence, group_id, 0))  # Original sentence version 0
+            for j in range(3):
+                simplified_sentence = ls_simp_lines[i + j].strip()
+                data.append((simplified_sentence, group_id, j + 1))  # Simplifications version 1,2,3
+            group_id += 1
+        
+        df_ls = pd.DataFrame(data, columns=["content", "slug", "version"])
+        
+        # apply limit if specified (for dev only)
+        if self.limit:
+            df_ls = df_ls.head(self.limit)
+        
+        self.data_df = df_ls
+
+class SimPASyn(SimPA):
+    def __init__(self, limit=None):
+        super().__init__(limit=limit)
+        self.dataset_name = "simpa_syntactic"
+
+    def load_data(self):
+        ss_orig_path = os.path.join(self.data_dir, "ss.original")
+        ss_simp_path = os.path.join(self.data_dir, "ss.simplified")
+        
+        # check the files exist
+        if not os.path.exists(ss_orig_path) or not os.path.exists(ss_simp_path):
+            print("Warning: Files missing.")
+            return
+
+        with open(ss_orig_path, "r", encoding="utf-8") as f_orig, open(ss_simp_path, "r", encoding="utf-8") as f_simp:
+            ss_orig_lines = f_orig.readlines()
+            ss_simp_lines = f_simp.readlines()
+        
+        # double-check correct alignment
+        if len(ss_orig_lines) != len(ss_simp_lines):
+            print("Warning: source and target datasets differ in size.")
+            return
+        
+        data = []
+        for i in range(len(ss_orig_lines)):
+            original_sentence = ss_orig_lines[i].strip()
+            syntactically_simplified_sentence = ss_simp_lines[i].strip()
+            
+            data.append((original_sentence, i + 1, 0))  # Original sentence version 0
+            data.append((syntactically_simplified_sentence, i + 1, 1))  # Syntactic simplification version 1
+        
+        df_ss = pd.DataFrame(data, columns=["content", "slug", "version"])
+        
+        # apply limit if specified (for dev only)
+        if self.limit:
+            df_ss = df_ss.head(self.limit)
+        
+        self.data_df = df_ss
+
+
+
+# dataset = SimPASyn(limit=10)
+# dataset.load_data()
+# print(dataset.data_df)
+
+
+# dataset = SimPALex(limit=10)
+# dataset.load_data()
+# print(dataset.data_df)
 
 
 # dataset = WikiLargeDataset(limit=10)
