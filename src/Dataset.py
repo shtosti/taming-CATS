@@ -7,7 +7,7 @@ class TSDataset:
         self.data_df = pd.DataFrame()
 
 
-class NewselaDataset(TSDataset):
+class Newsela(TSDataset):
     def __init__(self, limit=None):
         super().__init__()
         self.data_dir = "./../../datasets/newsela/newsela_article_corpus_2016-01-29/articles"
@@ -46,7 +46,7 @@ class NewselaDataset(TSDataset):
         self.data_df = pd.merge(articles_df, metadata, on="filename", how="inner")
 
     
-class MedEASiDataset(TSDataset):
+class MedEASi(TSDataset):
     def __init__(self, limit=None):
         super().__init__()
         self.file_path = "./../../datasets/Med-EASi/Med-EASi.full.ori.csv"
@@ -78,7 +78,7 @@ class MedEASiDataset(TSDataset):
         self.data_df = data
 
 
-class WikiLargeDataset(TSDataset):
+class WikiLarge(TSDataset):
     def __init__(self, limit=None):
         super().__init__()
         self.data_dir = "./../../datasets/wiki/wikilarge"
