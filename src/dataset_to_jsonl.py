@@ -1,5 +1,4 @@
 import json
-import uuid
 import pandas as pd
 from Dataset import Newsela, MedEASi, WikiLarge, SimPALex, SimPASyn
 from Metrics import Metrics
