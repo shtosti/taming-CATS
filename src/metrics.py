@@ -1,166 +1,137 @@
 import os
-import pandas as pd
 import textstat
-from nltk.tokenize import sent_tokenize
 import sacrebleu
 import evaluate
+from evaluate import load
+import nltk
+from nltk.tokenize import sent_tokenize, word_tokenize
 from comet.models import download_model, load_from_checkpoint
 
+nltk.download('punkt')
 
 class Metrics:
+    bertscore_model = None # on first use if ref provided
+    comet_model = None 
+    sari_model = None
 
-    def __init__(self, input_text, reference_text=None):
-
-        # arguments
+    def __init__(self, input_text, reference_text=None, source_text=None):
         self.text = input_text
         self.reference = reference_text
+        self.source = source_text
+        self.metrics = {}
 
-        # load rouge
-        self.rouge = evaluate.load("rouge")
-        self.bertscore = evaluate.load("bertscore")
+    @staticmethod
+    def load_bertscore():
+        """Loads BERTScore model once for efficiency."""
+        if Metrics.bertscore_model is None:
+            Metrics.bertscore_model = evaluate.load("bertscore")
 
-        # initialize metrics
-        self.word_count = 0
-        self.char_count = 0
-        self.alphanum_count = 0
-        self.sentence_count  = 0
-        self.FRE = 0.0
-        self.ARI = 0.0
-        self.FKGL = 0.0
-        self.Dale_Chall = 0.0
-        self.BLEU = 0.0
-        self.BERTScore = 0.0
-        self.COMET = 0.0
-        self.ROUGE = 0.0
+    @staticmethod
+    def load_sari():
+        """Loads SARI model once for efficiency."""
+        if Metrics.sari_model is None:
+            Metrics.sari_model = evaluate.load("sari")
 
-    def count_words(self) -> int:
-        """
-        Counts the number of words in the input sentence/text.
-        """
-        self.word_count = len(self.text.split())
-        return self.word_count
-    
-    def count_chars(self) -> int:
-        """
-        Counts the number of all characters in the input sentence/text.
-        Includes both alphanumeric chars and punction, etc.
-        """
+    @staticmethod
+    def load_comet():
+        """Loads COMET model once for efficiency."""
+        if Metrics.comet_model is None:
+            model_path = download_model("Unbabel/wmt22-comet-da")
+            Metrics.comet_model = load_from_checkpoint(model_path)
+
+    def count_words(self):
+        return len(word_tokenize(self.text))
+
+    def count_chars(self):
         return len(self.text)
-    
-    def count_alphanum(self) -> int:
-        """
-        Counts the number of alphanumeric characters in the input.
-        """   
-        count = 0
-        for char in self.text:
-            if char.isalpha():
-                count += 1
-        return count
 
-    def count_sents_nltk(self) -> int:
-        """
-        Counts the number of sentences with NLTK.
-        """
+    def count_alphanum(self):
+        return sum(1 for char in self.text if char.isalpha())
+
+    def count_sents(self):
         return len(sent_tokenize(self.text))
 
-    def compute_fre(self) -> float:
-        """
-        Computes Flesh Reading Ease score.
-        """
+    def compute_fre(self):
         return textstat.flesch_reading_ease(self.text)
 
-    def compute_ari(self) -> float:
-        """
-        Computes automated readability index score.
-        """
-        return textstat.automated_readability_index(self.text) 
+    def compute_ari(self):
+        return textstat.automated_readability_index(self.text)
 
-    def compute_fkgl(self) -> float:
-        """
-        Computes the Flesch-Kincaid Grade Level (FKGL) score using textstat.
-        """
+    def compute_fkgl(self):
         return textstat.flesch_kincaid_grade(self.text)
 
-    def compute_dale_chall(self) -> float:
-        """
-        Computes the Dale-Chall Readability Score. 
-        Estimates reading difficulty based on lists of words.
-        """
+    def compute_dale_chall(self):
         return textstat.dale_chall_readability_score(self.text)
-    
-    def compute_BLEU(self) -> float:
-        """
-        Computes BLEU score using SacreBLEU.
-        """
+
+    def compute_bleu(self):
+        """Computes BLEU score using SacreBLEU."""
+        if not self.source:
+            return None  # Skip if no source
+        return sacrebleu.corpus_bleu([self.text], [[self.source]]).score
+
+    def compute_bertscore(self):
+        """Computes BERTScore using evaluate library."""
+        if not self.source:
+            return None
+        self.load_bertscore()
+        results = Metrics.bertscore_model.compute(
+            predictions=[self.text], references=[self.source], lang="en"
+        )
+        return results["f1"][0]  # get only first value, F1
+
+    def compute_comet(self):
+        """Computes COMET score."""
         if not self.reference:
-            raise ValueError("Reference text is necessary to compute BLEU.")
-        bleu = sacrebleu.corpus_bleu(
-                                        [self.text], # hypothesis
-                                        [[self.reference]] # reference
-                                        )
-        self.BLEU = bleu.score
-        return self.BLEU
+            return None
+        self.load_comet()
+        data = [{"src": self.source, "mt": self.text, "ref": self.reference}]
+        scores = Metrics.comet_model.predict(data)
+        return scores["scores"][0]  # get only first value
 
-    def compute_BERTScore(self) -> float:
-        """
-        Computes BERTScore using the evaluate library.
-        """
-        if not self.reference:
-            raise ValueError("Reference text is necessary to compute BERTScore.")
-        results = self.bertscore.compute(predictions=[self.text], references=[self.reference], lang="en")
-        self.BERTScore = results["f1"][0] # extract the first value from the array
-        return self.BERTScore
+    def compute_sari(self):
+        """Computes SARI score."""
+        if not self.reference or not self.source:
+            return None  # SARI requires source (original) and reference (target)
+        self.load_sari()
+        source = [self.source]
+        prediction = [self.text]
+        reference = [[self.reference]] # NB expects a list of list
+        sari_score = Metrics.sari_model.compute(sources=source, predictions=prediction, references=reference)
+        # score = sari.corpus_score([self.text], [[self.reference]], [self.source])
+        return sari_score["sari"]  # Extract SARI score
 
-
-    def compute_COMET(self) -> float:
-        """
-        Computes the COMET score for the given text and reference.
-        """
-        if not self.reference:
-            raise ValueError("Reference text is necessary to compute COMET.")
-
-        # Load COMET model (downloads if not available)
-        model_path = download_model("Unbabel/wmt22-comet-da")
-        model = load_from_checkpoint(model_path)
-
-        data = [{"src": self.text, "mt": self.text, "ref": self.reference}]
-
-        # Compute scores
-        scores = model.predict(data)
-
-        self.COMET = scores["scores"]  # Extract scores
-        return self.COMET
-
-
-
-
-    def compute_metrics(self) -> dict:
-        metrics = {
+    def compute_metrics(self):
+        """Computes all required metrics and returns them as a dictionary."""
+        self.metrics = {
             'word_count': self.count_words(),
             'char_count': self.count_chars(),
             'alphanum_count': self.count_alphanum(),
-            'sent_count_nltk': self.count_sents_nltk(),
+            'sent_count': self.count_sents(),
             'FRE': self.compute_fre(),
             'ARI': self.compute_ari(),
             'FKGL': self.compute_fkgl(),
-            'Dale-Chall': self.compute_dale_chall()
+            'Dale-Chall': self.compute_dale_chall(),
         }
-        if self.reference:
-            metrics.update({
+
+        if self.reference and self.source:
+            self.metrics['SARI'] = self.compute_sari()
+
+        if self.source:
+            self.metrics.update({
                 'BLEU': self.compute_bleu(),
-                'ROUGE': self.compute_rouge()
+                'BERTScore': self.compute_bertscore(),
+                'COMET': self.compute_comet()
             })
 
-        return metrics
-    
+        return self.metrics
 
+prediction = "This is a whale."
+reference = "That is a killer whale."
+source = "This is a bird."
+metrics = Metrics(input_text=prediction, reference_text=reference, source_text=source) # no ref, no source
+print(metrics.compute_metrics())
+print(metrics.text)
+print(metrics.count_words())
+print(metrics.compute_bertscore())
+print(metrics.compute_sari())
 
-predictions = "Corneal ulcers cause redness, pain, usually a feeling like a foreign object is in the eye (foreign body sensation), aching, sensitivity to bright light, and increased tear production."
-references = "Conjunctival redness, eye ache, foreign body sensation, photophobia, and lacrimation may be minimal initially."
-metrics = Metrics(input_text=predictions, reference_text=references)
-
-# metrics.compute_BERTScore()
-# print(f"current BERTScore: {metrics.BERTScore}")
-
-print("COMET Score:", metrics.compute_COMET())
-print(f"current COMET: {metrics.COMET}")
