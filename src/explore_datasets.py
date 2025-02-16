@@ -97,7 +97,7 @@ def main():
         "simpa_syntactic",
         "newsela",
         "medeasi",
-        "wikilarge"
+        # "wikilarge"
     ]
     DATA_DIR = "./../data" 
 
@@ -107,7 +107,15 @@ def main():
 
         dataset = load_jsonl(DATASET_PATH)
         # dataset = dataset[:500]
-        metrics_to_plot = ["char", "word", "sentence", "FRE", "ARI", "FKGL", "Dale-Chall"]
+        metrics_to_plot = [
+                            "char", 
+                            "word", 
+                            "sentence", 
+                            "FRE", 
+                            "ARI", 
+                            "FKGL", 
+                            "Dale-Chall"
+                            ]
         for metric in metrics_to_plot:
             plot_compression(data=dataset, metric=metric, dataset_dir=DATASET_DIR)
 
