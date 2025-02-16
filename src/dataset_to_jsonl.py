@@ -1,13 +1,15 @@
 import json
 import pandas as pd
 from Dataset import Newsela, MedEASi, WikiLarge, SimPALex, SimPASyn
+from ControlTokensAccess import ControlTokensAccess
+from ControlTokensMuss import ControlTokensMuss
 from Metrics import Metrics
 import os
 
 DATA_DIR = "./../data"
 
 def load_dataset(dataset_class):
-    dataset = dataset_class(limit=12)
+    dataset = dataset_class(limit=None)
     dataset.load_data()
     return dataset, dataset.data_df.groupby(dataset.grouping_tag)
 
@@ -32,17 +34,13 @@ def find_language(dataset, group):
 def find_split(dataset, group):
     return "" if dataset.dataset_name in ["newsela", "simpa_lexical", "simpa_syntactic"] else group.iloc[0][dataset.split]
 
-def compute_control_tokens_MUSS(source_metrics, target_metrics):
-    # 
-    chars_compression_percentage = 0
-    num_chars = f"<NumChars_{chars_compression_percentage}%>"
-    lev_sim_replace_only = 0
-    lev_sim = f"<LevSim_{lev_sim_replace_only}%>"
+def get_control_tokens_access(source=None, target=None):
+    control_tokens = ControlTokensAccess(source_text=source, target_text=target)
+    return control_tokens.as_dict()
 
-     <WordFreq ZZ%> <DepTreeDepth TT%>.
-
-
-    pass
+def get_control_tokens_muss(source=None, target=None):
+    control_tokens = ControlTokensMuss(source_text=source, target_text=target)
+    return control_tokens.as_dict()
 
 def convert_to_jsonl(dataset, grouped_df):
 
@@ -92,15 +90,15 @@ def convert_to_jsonl(dataset, grouped_df):
                                             input_text=simplification_text, 
                                             source_text=source_text
                                             ).compute_metrics()
+            control_tokens_access = get_control_tokens_access()
+            control_tokens_muss = get_control_tokens_muss()
 
             simplification_entry = {
                 "simplification_text": simplification_text,
                 "simplification_version": 1 if dataset.dataset_name in ["medeasi", "wikilarge", "simpa_syntactic"] else int(row[dataset.simplification_version]),
                 "grade_level": int(row[dataset.grade_level]) if dataset.dataset_name == "newsela" else -1,
-                "control_attributes": {
-                    "LevSim": 0.0,
-                    "NbChar": 0.0 # TODO expand as needed
-                },
+                "control_attributes_access": control_tokens_access,
+                "control_attributes_muss": control_tokens_muss,
                 "simplification_dimensions": {
                     "linguistic": {
                         "lexical": dataset.dataset_name == "simpa_lexical",
@@ -147,21 +145,21 @@ def save_jsonl(dataset, jsonl_data):
 
 def main():
 
-    # dataset, dataset_grouped = load_dataset(SimPASyn)
-    # jsonl_data = convert_to_jsonl(dataset, dataset_grouped)
-    # save_jsonl(dataset, jsonl_data)
+    dataset, dataset_grouped = load_dataset(SimPASyn)
+    jsonl_data = convert_to_jsonl(dataset, dataset_grouped)
+    save_jsonl(dataset, jsonl_data)
 
-    # dataset, dataset_grouped = load_dataset(SimPALex)
-    # jsonl_data = convert_to_jsonl(dataset, dataset_grouped)
-    # save_jsonl(dataset, jsonl_data)
+    dataset, dataset_grouped = load_dataset(SimPALex)
+    jsonl_data = convert_to_jsonl(dataset, dataset_grouped)
+    save_jsonl(dataset, jsonl_data)
 
-    # dataset, dataset_grouped = load_dataset(WikiLarge)
-    # jsonl_data = convert_to_jsonl(dataset, dataset_grouped)
-    # save_jsonl(dataset, jsonl_data)
+    dataset, dataset_grouped = load_dataset(WikiLarge)
+    jsonl_data = convert_to_jsonl(dataset, dataset_grouped)
+    save_jsonl(dataset, jsonl_data)
 
-    # dataset, dataset_grouped = load_dataset(Newsela)
-    # jsonl_data = convert_to_jsonl(dataset, dataset_grouped)
-    # save_jsonl(dataset, jsonl_data)
+    dataset, dataset_grouped = load_dataset(Newsela)
+    jsonl_data = convert_to_jsonl(dataset, dataset_grouped)
+    save_jsonl(dataset, jsonl_data)
 
     dataset, dataset_grouped = load_dataset(MedEASi)
     jsonl_data = convert_to_jsonl(dataset, dataset_grouped)
