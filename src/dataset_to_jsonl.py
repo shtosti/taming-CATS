@@ -11,6 +11,10 @@ DATA_DIR = "./../data"
 def load_dataset(dataset_class):
     dataset = dataset_class(limit=None)
     dataset.load_data()
+
+     # Filter out non-English instances for Newsela
+    if dataset.dataset_name == "newsela":
+        dataset.data_df = dataset.data_df[dataset.data_df[dataset.language] == "en"]
     return dataset, dataset.data_df.groupby(dataset.grouping_tag)
 
 def find_source_text(dataset, group):
@@ -145,25 +149,37 @@ def save_jsonl(dataset, jsonl_data):
 
 def main():
 
-    dataset, dataset_grouped = load_dataset(SimPASyn)
-    jsonl_data = convert_to_jsonl(dataset, dataset_grouped)
-    save_jsonl(dataset, jsonl_data)
+    # print("Processing SimPA (syntactic simplifications)...")
+    # dataset, dataset_grouped = load_dataset(SimPASyn)
+    # jsonl_data = convert_to_jsonl(dataset, dataset_grouped)
+    # save_jsonl(dataset, jsonl_data)
+    # print("SimPA (syntactic simplifications) successfuly saved to jsonl.\n***\n")
 
-    dataset, dataset_grouped = load_dataset(SimPALex)
-    jsonl_data = convert_to_jsonl(dataset, dataset_grouped)
-    save_jsonl(dataset, jsonl_data)
+    # print("Processing SimPA (lexical simplifications)...")
+    # dataset, dataset_grouped = load_dataset(SimPALex)
+    # jsonl_data = convert_to_jsonl(dataset, dataset_grouped)
+    # save_jsonl(dataset, jsonl_data)
+    # print("SimPA (lexical simplifications) successfuly saved to jsonl.\n***\n")
 
-    dataset, dataset_grouped = load_dataset(WikiLarge)
-    jsonl_data = convert_to_jsonl(dataset, dataset_grouped)
-    save_jsonl(dataset, jsonl_data)
-
+    print("Processing Newsela...")
     dataset, dataset_grouped = load_dataset(Newsela)
     jsonl_data = convert_to_jsonl(dataset, dataset_grouped)
     save_jsonl(dataset, jsonl_data)
+    print("Newsela successfuly saved to jsonl.\n***\n")
 
+    print("Processing MedEASi...")
     dataset, dataset_grouped = load_dataset(MedEASi)
     jsonl_data = convert_to_jsonl(dataset, dataset_grouped)
     save_jsonl(dataset, jsonl_data)
+    print("MedEASi successfully saved to jsonl.\n***\n")
+
+    print("Processing WikiLarge...")
+    dataset, dataset_grouped = load_dataset(WikiLarge)
+    jsonl_data = convert_to_jsonl(dataset, dataset_grouped)
+    save_jsonl(dataset, jsonl_data)
+    print("WikiLarge successfully saved to jsonl.\n---\n")
+
+    print("\nAll datasets have been successfully processed.")
 
 
 
