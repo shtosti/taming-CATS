@@ -39,7 +39,10 @@ def plot_compression(data, metric, dataset_dir):
         sns.kdeplot(source_lengths, color='blue', linewidth=1, label="Original KDE")
     if len(set(target_lengths)) > 1:
         sns.kdeplot(target_lengths, color='green', linewidth=1, label="Simplification KDE")
-    plt.xlabel(f'{metric} Count')
+    if metric in ["char_count", "sentence_count", "word_count"]:
+        plt.xlabel(f'{metric} Count')
+    else:
+        plt.xlabel(f'{metric}')
     plt.ylabel('Frequency')
     plt.legend()
 
@@ -73,12 +76,16 @@ def get_compression_values(data, metric):
 
         simplifications = line["simplifications"]
         for simplification in simplifications:
-            target_value = simplification["target_metrics"][f"{metric}_count"]
-            target_lengths.append(target_value)
-
-            # Get the source character length
-            source_value = line["source_metrics"][f"{metric}_count"]
-            source_lengths.append(source_value)
+            if metric in ["char", "sentence", "word"]:
+                target_value = simplification["target_metrics"][f"{metric}_count"]
+                target_lengths.append(target_value)
+                source_value = line["source_metrics"][f"{metric}_count"]
+                source_lengths.append(source_value)
+            else:
+                target_value = simplification["target_metrics"][f"{metric}"]
+                target_lengths.append(target_value)
+                source_value = line["source_metrics"][f"{metric}"]
+                source_lengths.append(source_value)
     
     return source_lengths, target_lengths
     
@@ -88,9 +95,9 @@ def main():
     DATASETS = [
         "simpa_lexical",
         "simpa_syntactic",
-        # "newsela",
-        # "medeasi",
-        # "wikilarge"
+        "newsela",
+        "medeasi",
+        "wikilarge"
     ]
     DATA_DIR = "./../data" 
 
@@ -100,7 +107,7 @@ def main():
 
         dataset = load_jsonl(DATASET_PATH)
         # dataset = dataset[:500]
-        metrics_to_plot = ["char", "word", "sentence"]
+        metrics_to_plot = ["char", "word", "sentence", "FRE", "ARI", "FKGL", "Dale-Chall"]
         for metric in metrics_to_plot:
             plot_compression(data=dataset, metric=metric, dataset_dir=DATASET_DIR)
 
