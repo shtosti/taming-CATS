@@ -20,6 +20,13 @@ class Metrics:
         self.source = source_text
         self.metrics = {}
 
+        self.bertscore = 0.0 # comparison with the source
+        self.bertscore_ref = 0.0 # comparison with a ref
+        self.bleu = 0.0 # comparison with the source
+        self.bleu_ref = 0.0 # comparison with the ref
+        self.comet = 0.0
+        self.sari = 0.0
+
     @staticmethod
     def load_bertscore():
         """Loads BERTScore model once for efficiency."""
@@ -64,41 +71,75 @@ class Metrics:
         return textstat.dale_chall_readability_score(self.text)
 
     def compute_bleu(self):
-        """Computes BLEU score using SacreBLEU."""
+        """
+        Computes BLEU score between the source and the target.
+        Corpus version used to account for possible text-level alignement.
+        """
         if not self.source:
-            return None  # Skip if no source
-        return sacrebleu.corpus_bleu([self.text], [[self.source]]).score
+            return 0.0
+        self.bleu = sacrebleu.corpus_bleu(hypotheses=[self.text], references=[[self.source]]).score
+        return self.bleu
+    
+    def compute_bleu_w_reference(self):
+        """
+        Computes BLEU score between the target and the refrence.
+        Corpus version used to account for possible text-level alignement.
+        """
+        if not self.reference:
+            return 0.0
+        self.bleu_ref = sacrebleu.corpus_bleu(hypotheses=[self.text], references=[[self.reference]]).score
+        return self.bleu_ref
 
     def compute_bertscore(self):
-        """Computes BERTScore using evaluate library."""
+        """
+        Computes BERTScore using evaluate library.
+        Compares the source and the target.
+        """
         if not self.source:
-            return None
+            return 0.0
         self.load_bertscore()
         results = Metrics.bertscore_model.compute(
             predictions=[self.text], references=[self.source], lang="en"
         )
-        return results["f1"][0]  # get only first value, F1
+        self.bertscore = results["f1"][0]  # get only first value, F1
+        return self.bertscore
+    
+    def compute_bertscore_w_reference(self):
+        """
+        Computes BERTScore using evaluate library.
+        Compares the target and the reference.
+        """
+        if not self.reference:
+            return 0.0
+        self.load_bertscore()
+        results = Metrics.bertscore_model.compute(
+            predictions=[self.text], references=[self.reference], lang="en"
+        )
+        self.bertscore_ref = results["f1"][0]  # get only first value, F1
+        return self.bertscore_ref
 
     def compute_comet(self):
         """Computes COMET score."""
         if not self.reference:
-            return None
+            return 0.0
         self.load_comet()
         data = [{"src": self.source, "mt": self.text, "ref": self.reference}]
         scores = Metrics.comet_model.predict(data)
-        return scores["scores"][0]  # get only first value
+        self.comet_ref = scores["scores"][0]  # get only first value
+        return self.comet_ref
 
     def compute_sari(self):
         """Computes SARI score."""
         if not self.reference or not self.source:
-            return None  # SARI requires source (original) and reference (target)
+            return 0.0  # SARI requires source (original) and reference (target)
         self.load_sari()
         source = [self.source]
         prediction = [self.text]
         reference = [[self.reference]] # NB expects a list of list
         sari_score = Metrics.sari_model.compute(sources=source, predictions=prediction, references=reference)
         # score = sari.corpus_score([self.text], [[self.reference]], [self.source])
-        return sari_score["sari"]  # Extract SARI score
+        self.sari_ref = sari_score["sari"]  # Extract SARI score
+        return self.sari_ref
 
     def compute_metrics(self):
         """Computes all required metrics and returns them as a dictionary."""
@@ -111,27 +152,24 @@ class Metrics:
             'ARI': self.compute_ari(),
             'FKGL': self.compute_fkgl(),
             'Dale-Chall': self.compute_dale_chall(),
+            'BLEU': self.compute_bleu(),
+            'BERTScore': self.compute_bertscore(),
+            'BLEU_ref': self.compute_bleu_w_reference(),
+            'BERTScore_ref': self.compute_bertscore_w_reference(),
+            'COMET': self.compute_comet(),
+            'SARI': self.compute_sari()
         }
-
-        if self.reference and self.source:
-            self.metrics['SARI'] = self.compute_sari()
-
-        if self.source:
-            self.metrics.update({
-                'BLEU': self.compute_bleu(),
-                'BERTScore': self.compute_bertscore(),
-                'COMET': self.compute_comet()
-            })
 
         return self.metrics
 
-prediction = "This is a whale."
-reference = "That is a killer whale."
-source = "This is a bird."
-metrics = Metrics(input_text=prediction, reference_text=reference, source_text=source) # no ref, no source
-print(metrics.compute_metrics())
-print(metrics.text)
-print(metrics.count_words())
-print(metrics.compute_bertscore())
-print(metrics.compute_sari())
+# prediction = "This is a whale."
+# reference = "That is a killer whale which is more like a dolphin, actually."
+# source = "This is a bird."
+# metrics = Metrics(input_text=prediction, reference_text=reference, source_text=source)
+# print(metrics.text)
+# print(metrics.compute_metrics())
+# print(f"BLEU: {metrics.compute_bleu()}")
+# print(f"BLEU ref: {metrics.compute_bleu_w_reference()}")
+# print(f"BERTScore: {metrics.compute_bertscore()}")
+# print(f"BERTScore ref: {metrics.compute_bertscore_w_reference()}")
 

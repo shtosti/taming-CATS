@@ -21,7 +21,9 @@ def find_source_text(dataset, group):
     else:
         raise ValueError(f"Unsupported dataset: {dataset.dataset_name}")
     
-    source_metrics = Metrics(source_text).compute_metrics()
+    source_metrics = Metrics(
+                            input_text=source_text
+                            ).compute_metrics()
     return source_text, source_metrics
 
 def find_language(dataset, group):
@@ -29,6 +31,18 @@ def find_language(dataset, group):
 
 def find_split(dataset, group):
     return "" if dataset.dataset_name in ["newsela", "simpa_lexical", "simpa_syntactic"] else group.iloc[0][dataset.split]
+
+def compute_control_tokens_MUSS(source_metrics, target_metrics):
+    # 
+    chars_compression_percentage = 0
+    num_chars = f"<NumChars_{chars_compression_percentage}%>"
+    lev_sim_replace_only = 0
+    lev_sim = f"<LevSim_{lev_sim_replace_only}%>"
+
+     <WordFreq ZZ%> <DepTreeDepth TT%>.
+
+
+    pass
 
 def convert_to_jsonl(dataset, grouped_df):
 
@@ -61,7 +75,7 @@ def convert_to_jsonl(dataset, grouped_df):
                 "char_count": source_metrics["char_count"],
                 "alphanum_count": source_metrics["alphanum_count"],
                 "word_count": source_metrics["word_count"],
-                "sentence_count": source_metrics["sent_count_nltk"]
+                "sentence_count": source_metrics["sent_count"]
             },
             "simplifications": []
         }
@@ -74,7 +88,10 @@ def convert_to_jsonl(dataset, grouped_df):
                 simplification_text = row[dataset.text]
             else:
                 simplification_text = row[dataset.target_text]
-            simplification_metrics = Metrics(simplification_text).compute_metrics()
+            simplification_metrics = Metrics(
+                                            input_text=simplification_text, 
+                                            source_text=source_text
+                                            ).compute_metrics()
 
             simplification_entry = {
                 "simplification_text": simplification_text,
@@ -98,15 +115,13 @@ def convert_to_jsonl(dataset, grouped_df):
                     "char_count": simplification_metrics["char_count"],
                     "alphanum_count": simplification_metrics["alphanum_count"],
                     "word_count": simplification_metrics["word_count"],
-                    "sentence_count": simplification_metrics["sent_count_nltk"],
+                    "sentence_count": simplification_metrics["sent_count"],
                     # avoid division by zero
                     "char_compression_rate": round(simplification_metrics["char_count"]/source_metrics["char_count"], 2) if source_metrics["char_count"] > 0 else 0.0,
                     "word_compression_rate": round(simplification_metrics["word_count"]/source_metrics["word_count"], 2) if source_metrics["word_count"] > 0 else 0.0,
-                    "sentence_compression_rate": round(simplification_metrics["sent_count_nltk"]/source_metrics["sent_count_nltk"], 2)if source_metrics["sent_count_nltk"] > 0 else 0.0,
-                    "BLEU": 0.0,
-                    "ROUGE": 0.0,
-                    "SARI": 0.0,
-                    "BERTScore": 0.0
+                    "sentence_compression_rate": round(simplification_metrics["sent_count"]/source_metrics["sent_count"], 2)if source_metrics["sent_count"] > 0 else 0.0,
+                    "BLEU": simplification_metrics["BLEU"],
+                    "BERTScore": simplification_metrics["BERTScore"]
                 }
             }
 
