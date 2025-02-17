@@ -32,8 +32,8 @@ def plot_compression(data, metric, dataset_dir):
     
     ############ histograms with aligned bins ############
     plt.subplot(1, 2, 1)
-    plt.hist(source_lengths, bins=bins, alpha=0.4, label="Original", color='blue', density=True)
-    plt.hist(target_lengths, bins=bins, alpha=0.4, label="Simplification", color='green', density=True)
+    plt.hist(source_lengths, bins=bins, alpha=0.3, label="Original", color='blue', density=True, edgecolor="black")
+    plt.hist(target_lengths, bins=bins, alpha=0.3, label="Simplification", color='green', density=True, edgecolor="black")
     # Add KDE for smooth distribution curves
     if len(set(source_lengths)) > 1:  # More than one unique value
         sns.kdeplot(source_lengths, color='blue', linewidth=1, label="Original KDE")
@@ -48,10 +48,10 @@ def plot_compression(data, metric, dataset_dir):
 
     ############ scatter plot ############
     plt.subplot(1, 2, 2)
-    plt.scatter(target_lengths, source_lengths, alpha=0.4, color='green', label="Source vs Target")
+    plt.scatter(target_lengths, source_lengths, alpha=0.3, color='green', label="Source vs Target")
 
     plt.subplot(1,2,2)
-    plt.scatter(target_lengths, source_lengths, alpha=0.4, color='green', label="Source vs Target")
+    plt.scatter(target_lengths, source_lengths, alpha=0.3, color='green', label="Source vs Target")
     # Set the same scale for both axes
     # min_val = min(min(source_lengths), min(target_lengths))
     min_val = 0
@@ -62,7 +62,7 @@ def plot_compression(data, metric, dataset_dir):
     plt.ylabel(f'Original {metric} Count')
     
     # save plots
-    output_dir = f"{dataset_dir}/stats/visuals"
+    output_dir = f"{dataset_dir}/stats/comparison_source_target"
     os.makedirs(output_dir, exist_ok=True)
     plt.tight_layout()
     plt.savefig(f"{output_dir}/{metric}.png", dpi=400)
@@ -116,7 +116,7 @@ def plot_eval_values(data, metric, dataset_dir):
 
     ############ histograms with aligned bins ############
     plt.subplot(1, 2, 1)
-    plt.hist(target_vals, bins=bins, alpha=0.4, label="Simplification", color='green', density=True)
+    plt.hist(target_vals, bins=bins, alpha=0.4, label="Simplification", color='green', density=True, edgecolor="black")
     # Add KDE for smooth distribution curves
     if len(set(target_vals)) > 1:
         sns.kdeplot(target_vals, color='green', linewidth=1, label="Simplification KDE")
@@ -132,7 +132,7 @@ def plot_eval_values(data, metric, dataset_dir):
     plt.title(f'Distribution of {metric} Scores')
     
     # save plots
-    output_dir = f"{dataset_dir}/stats/visuals"
+    output_dir = f"{dataset_dir}/stats/comparison_source_target"
     os.makedirs(output_dir, exist_ok=True)
     plt.tight_layout()
     plt.savefig(f"{output_dir}/{metric}.png", dpi=400)
@@ -164,8 +164,8 @@ def main():
                             "FKGL", 
                             "Dale-Chall"
                             ]
-        for metric in metrics_to_plot:
-            plot_compression(data=dataset, metric=metric, dataset_dir=DATASET_DIR)
+        # for metric in metrics_to_plot:
+        #     plot_compression(data=dataset, metric=metric, dataset_dir=DATASET_DIR)
 
         eval_metrics_to_plot = [
                                 "BLEU",
