@@ -31,10 +31,10 @@ def plot_distributions(metrics, full_metric_values, train_metric_values, val_met
     for metric in metrics:
         plt.figure(figsize=(10, 6))
 
-        sns.kdeplot(train_metric_values[metric], color="green", label="Train", linewidth=2, bw_adjust=1, alpha=0.7)
-        sns.kdeplot(val_metric_values[metric], color="orange", label="Validation", linewidth=2, bw_adjust=0.9, alpha=0.7)
-        sns.kdeplot(test_metric_values[metric], color="red", label="Test", linewidth=2, bw_adjust=1, alpha=0.7)
-        sns.kdeplot(full_metric_values[metric], color="blue", label="Full Dataset", linewidth=2, bw_adjust=0.9, alpha=0.7)
+        sns.kdeplot(train_metric_values[metric], color="green", label="Train", linewidth=2, bw_adjust=0.7, alpha=0.7)
+        sns.kdeplot(val_metric_values[metric], color="orange", label="Validation", linewidth=2, bw_adjust=0.7, alpha=0.7)
+        sns.kdeplot(test_metric_values[metric], color="red", label="Test", linewidth=2, bw_adjust=0.7, alpha=0.7)
+        sns.kdeplot(full_metric_values[metric], color="blue", label="Full Dataset", linewidth=2, bw_adjust=0.7, alpha=0.7)
 
         
         plt.xlabel(f"{metric}")
@@ -61,15 +61,23 @@ def generate_splits(data, metric_values, strat_metric, num_bins=20, subset_size=
     df = pd.DataFrame({"data": data, "bin": bin_indices})
     
     # Split into train, validation, and test (80%, 10%, 10%)
-    train_size = int(subset_size * 0.8)
-    val_size = int(subset_size * 0.1)
-    test_size = int(subset_size * 0.1)
+    train_data, val_data, test_data = [], [], []
 
-    train_subset = df.groupby("bin", group_keys=False).apply(lambda x: x.sample(frac=train_size / len(df), random_state=42))
-    val_subset = df.groupby("bin", group_keys=False).apply(lambda x: x.sample(frac=val_size / len(df), random_state=42))
-    test_subset = df.groupby("bin", group_keys=False).apply(lambda x: x.sample(frac=test_size / len(df), random_state=42))
+    # Loop through each bin and create splits
+    for bin_id in np.unique(bin_indices):
+        bin_data = df[df["bin"] == bin_id]["data"].tolist()
+        
+        # Shuffle the bin data and split it
+        np.random.shuffle(bin_data)
+        
+        # Add 80% to train, 10% to validation, and 10% to test
+        train_data.extend(bin_data[:int(len(bin_data) * 0.8)])  # 80% train
+        val_data.extend(bin_data[int(len(bin_data) * 0.8):int(len(bin_data) * 0.9)])  # 10% validation
+        test_data.extend(bin_data[int(len(bin_data) * 0.9):])  # 10% test
 
-    return train_subset["data"].tolist(), val_subset["data"].tolist(), test_subset["data"].tolist()
+    # Return the non-overlapping splits
+    return train_data, val_data, test_data
+
 
 def main():
     DATASETS = [
