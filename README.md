@@ -1,18 +1,27 @@
 # keep-it-simple
 
-## Pipeline
-### Classes
+## Classes
 - Dataset
 - Metrics
 - ControlTokensAccess
 - ControlTokensMuss
 
-
-### scripts
+## scripts
 - `generate_responses.py` - generate responses from the model to explore simplification via prompting
 - `create_wikilarge_subset.py` - create a subset of the wikilarge dataset using stratification metrics
 - `explore_datasets.py` - explore dataset stats and plot them
 - `dataset_stats.py` - (old) compute dataset stats. Replace through `explore_datasets.py`?
+
+## Pipeline
+
+### Datasets
+1. create jsonl from the datasets wwith `dataset_to_jsonl.py`
+2. create a subset of the wikilarge dataset with `create_wikilarge_subset.py`
+3. explore the datasets with `explore_datasets.py`
+
+### Prompting
+1. explore with `generate_responses.py`
+
 
 
 ## Stratification metrics (wikilarge experiment)
