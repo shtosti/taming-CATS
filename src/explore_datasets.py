@@ -4,7 +4,9 @@ import matplotlib.pyplot as plt
 from collections import Counter
 import os
 import numpy as np
-import seaborn as sns # to fit hist 
+import seaborn as sns
+from scipy.stats import pearsonr
+
 
 
 def load_jsonl(filepath):
@@ -17,6 +19,12 @@ def load_jsonl(filepath):
 def plot_compression(data, metric, dataset_dir):
 
     source_lengths, target_lengths = get_compression_values(data, metric)
+
+    # Check if either source_lengths or target_lengths is empty
+    if not source_lengths or not target_lengths:
+        print(f"Warning: No valid values for metric '{metric}' found. Skipping plot for this metric.")
+        return  # Skip plotting for this metric if no values are found
+
     # ensure the arrays have equal lengths
     # NB: the original is repeated for every corresponding simplification instance 
     print("Equal length:", len(source_lengths) == len(target_lengths))
@@ -47,11 +55,29 @@ def plot_compression(data, metric, dataset_dir):
     plt.legend()
 
     ############ scatter plot ############
-    plt.subplot(1, 2, 2)
-    plt.scatter(target_lengths, source_lengths, alpha=0.3, color='green', label="Source vs Target")
-
     plt.subplot(1,2,2)
-    plt.scatter(target_lengths, source_lengths, alpha=0.3, color='green', label="Source vs Target")
+    plt.scatter(target_lengths, source_lengths, alpha=0.3, color='orchid', label="Source vs Target")
+
+    if len(source_lengths) > 1 and len(target_lengths) > 1:
+
+        corr_coeff, _ = pearsonr(source_lengths, target_lengths)
+
+        # Calculate average direction (slope) using the mean of the target values
+        avg_source = np.mean(source_lengths)
+        avg_target = np.mean(target_lengths)
+
+        # Calculate slope (rise over run)
+        slope = avg_source / avg_target if avg_target != 0 else 0
+
+        # Plot the line starting from the origin
+        line_x = np.linspace(0, max(target_lengths), 100)  # Line range
+        line_y = slope * line_x  # y = mx (Line passing through origin)
+        plt.plot(line_x, line_y, color='orchid', linestyle='-', label="Mean value")
+
+        # Display the Pearson correlation on the plot
+        plt.text(0.05, 0.95, f"Pearson: {corr_coeff:.4f}", transform=plt.gca().transAxes,
+                 fontsize=12, verticalalignment='top', color='black')
+
     # Set the same scale for both axes
     # min_val = min(min(source_lengths), min(target_lengths))
     min_val = 0
@@ -126,7 +152,7 @@ def plot_eval_values(data, metric, dataset_dir):
 
     ############ violin plot ############
     plt.subplot(1, 2, 2)
-    sns.violinplot(x=target_vals, color='green', inner="quartile")
+    sns.violinplot(x=target_vals, color='orchid', inner="quartile")
     sns.boxplot(x=target_vals, color='black', width=0.15, fliersize=3)  # Add box plot for summary stats
     plt.xlabel(f'{metric} Score')
     plt.title(f'Distribution of {metric} Scores')
@@ -145,6 +171,12 @@ def main():
         "simpa_syntactic",
         "newsela",
         "medeasi",
+        "wikilarge_1000",
+        "wikilarge_1000_from_splits",
+        "wikilarge_2000",
+        "wikilarge_2000_from_splits",
+        "wikilarge_3000",
+        "wikilarge_3000_from_splits",
         # "wikilarge"
     ]
     DATA_DIR = "./../data" 
@@ -164,15 +196,15 @@ def main():
                             "FKGL", 
                             "Dale-Chall"
                             ]
-        for metric in metrics_to_plot:
-            plot_compression(data=dataset, metric=metric, dataset_dir=DATASET_DIR)
+        # for metric in metrics_to_plot:
+        #     plot_compression(data=dataset, metric=metric, dataset_dir=DATASET_DIR)
 
         eval_metrics_to_plot = [
                                 "BLEU",
                                 "BERTScore"
                                 ]
-        # for metric in eval_metrics_to_plot:
-        #     plot_eval_values(data=dataset, metric=metric, dataset_dir=DATASET_DIR)
+        for metric in eval_metrics_to_plot:
+            plot_eval_values(data=dataset, metric=metric, dataset_dir=DATASET_DIR)
 
 
 if __name__ == "__main__":

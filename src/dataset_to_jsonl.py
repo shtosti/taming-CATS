@@ -122,8 +122,8 @@ def convert_to_jsonl(dataset, grouped_df):
                     "char_compression_rate": round(simplification_metrics["char_count"]/source_metrics["char_count"], 2) if source_metrics["char_count"] > 0 else 0.0,
                     "word_compression_rate": round(simplification_metrics["word_count"]/source_metrics["word_count"], 2) if source_metrics["word_count"] > 0 else 0.0,
                     "sentence_compression_rate": round(simplification_metrics["sent_count"]/source_metrics["sent_count"], 2)if source_metrics["sent_count"] > 0 else 0.0,
-                    # "BLEU": simplification_metrics["BLEU"],
-                    # "BERTScore": simplification_metrics["BERTScore"]
+                    "BLEU": simplification_metrics["BLEU"],
+                    "BERTScore": simplification_metrics["BERTScore"]
                 }
             }
 
@@ -167,17 +167,17 @@ def main():
     # save_jsonl(dataset, jsonl_data)
     # print("Newsela successfuly saved to jsonl.\n***\n")
 
-    # print("Processing MedEASi...")
-    # dataset, dataset_grouped = load_dataset(MedEASi)
-    # jsonl_data = convert_to_jsonl(dataset, dataset_grouped)
-    # save_jsonl(dataset, jsonl_data)
-    # print("MedEASi successfully saved to jsonl.\n***\n")
-
-    print("Processing WikiLarge...")
-    dataset, dataset_grouped = load_dataset(WikiLarge)
+    print("Processing MedEASi...")
+    dataset, dataset_grouped = load_dataset(MedEASi)
     jsonl_data = convert_to_jsonl(dataset, dataset_grouped)
     save_jsonl(dataset, jsonl_data)
-    print("WikiLarge successfully saved to jsonl.\n---\n")
+    print("MedEASi successfully saved to jsonl.\n***\n")
+
+    # print("Processing WikiLarge...")
+    # dataset, dataset_grouped = load_dataset(WikiLarge)
+    # jsonl_data = convert_to_jsonl(dataset, dataset_grouped)
+    # save_jsonl(dataset, jsonl_data)
+    # print("WikiLarge successfully saved to jsonl.\n---\n")
 
     print("\nAll datasets have been successfully processed.")
 

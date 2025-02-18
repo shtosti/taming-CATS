@@ -6,6 +6,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 from scipy.spatial.distance import jensenshannon
 from scipy.stats import wasserstein_distance, ks_2samp
+from Metrics import Metrics
 
 def load_jsonl(filepath):
     """Load dataset from a JSONL file."""
@@ -14,9 +15,25 @@ def load_jsonl(filepath):
 
 def save_jsonl(data, filepath):
     """Save dataset to a JSONL file."""
+
     os.makedirs(os.path.dirname(filepath), exist_ok=True)
     with open(filepath, "w", encoding="utf-8") as f:
         for line in data:
+            source_text = line["source_text"]
+            for simplification in line["simplifications"]:
+                bleu = Metrics(
+                    input_text=simplification["simplification_text"], 
+                    source_text=source_text
+                    ).compute_bleu()
+                bertscore = Metrics(
+                    input_text=simplification["simplification_text"], 
+                    source_text=source_text
+                    ).compute_bertscore()
+                
+                # Append the scores to the target_metrics
+                simplification['target_metrics']['BLEU'] = bleu
+                simplification['target_metrics']['BERTScore'] = bertscore
+
             f.write(json.dumps(line) + "\n")
 
 def extract_metrics(data, metrics):
@@ -158,7 +175,7 @@ def main():
 
     full_dataset_path = "./../data/datasets/wikilarge/dataset.jsonl"
     save_path = "./../data/datasets"
-    subset_dir = f"{save_path}/wikilarge_{subset_size}"
+    subset_dir = f"{save_path}/wikilarge_{subset_size}_from_splits"
     metrics = ["char_count", "word_count", "sentence_count", "FKGL", "ARI", "FRE", "Dale-Chall"]
     
     data = load_jsonl(full_dataset_path)
@@ -169,22 +186,22 @@ def main():
 
     for strat_metric in metrics:
         # TODO if using stratified sampling from corresponding splits
-        # subset_data = stratified_sampling_from_split(
-        #     data, 
-        #     metric_values, 
-        #     strat_metric, 
-        #     num_bins=num_bins, 
-        #     subset_size=subset_size
-        # )
-
-        # TODO if using simple stratified sampling, regardless of the split
-        subset_data = stratified_sampling(
+        subset_data = stratified_sampling_from_split(
             data, 
             metric_values, 
             strat_metric, 
             num_bins=num_bins, 
             subset_size=subset_size
         )
+
+        # # TODO if using simple stratified sampling, regardless of the split
+        # subset_data = stratified_sampling(
+        #     data, 
+        #     metric_values, 
+        #     strat_metric, 
+        #     num_bins=num_bins, 
+        #     subset_size=subset_size
+        # )
 
         subset_metric_values = extract_metrics(subset_data, metrics)
 
@@ -200,22 +217,22 @@ def main():
     best_strat_metric = ranked_strats[0][0]
 
     # TODO if using stratified sampling from corresponding splits
-    # best_subset_data = stratified_sampling_from_split(
-    #     data, 
-    #     metric_values, 
-    #     best_strat_metric, 
-    #     num_bins=num_bins, 
-    #     subset_size=subset_size
-    # )
-
-    # TODO if using simple stratified sampling, regardless of the split
-    best_subset_data = stratified_sampling(
+    best_subset_data = stratified_sampling_from_split(
         data, 
         metric_values, 
         best_strat_metric, 
         num_bins=num_bins, 
         subset_size=subset_size
     )
+
+    # TODO if using simple stratified sampling, regardless of the split
+    # best_subset_data = stratified_sampling(
+    #     data, 
+    #     metric_values, 
+    #     best_strat_metric, 
+    #     num_bins=num_bins, 
+    #     subset_size=subset_size
+    # )
 
     # Save only the best subset
     best_subset_filepath = f"{subset_dir}/dataset.jsonl"
