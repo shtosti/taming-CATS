@@ -18,6 +18,8 @@
 ## Stratification metrics (wikilarge experiment)
 - **number of characters** is statistically the best stratification metric to create a subset of the dataset or create train/dev/test splits. Problem: this is only true when sampling from the whole dataset.
 - unstable top ranking metric when sampling from corresponding splits of the source dataset (wikilarge). What shall we do? I will use **char_count** for creating the splits for all datasets, for now.
+- Tried to create a larget subset with from-split sampling, but not possibel due to the small test-set size of the original wikilarge dataset.
+- problem with the **original wikilarge splits**: not really representative for the whole dataset.
 
 
 ## Wikilarge alignment analysis
