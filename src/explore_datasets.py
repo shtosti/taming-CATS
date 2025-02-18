@@ -164,15 +164,15 @@ def main():
                             "FKGL", 
                             "Dale-Chall"
                             ]
-        # for metric in metrics_to_plot:
-        #     plot_compression(data=dataset, metric=metric, dataset_dir=DATASET_DIR)
+        for metric in metrics_to_plot:
+            plot_compression(data=dataset, metric=metric, dataset_dir=DATASET_DIR)
 
         eval_metrics_to_plot = [
                                 "BLEU",
                                 "BERTScore"
                                 ]
-        for metric in eval_metrics_to_plot:
-            plot_eval_values(data=dataset, metric=metric, dataset_dir=DATASET_DIR)
+        # for metric in eval_metrics_to_plot:
+        #     plot_eval_values(data=dataset, metric=metric, dataset_dir=DATASET_DIR)
 
 
 if __name__ == "__main__":
