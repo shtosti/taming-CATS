@@ -32,7 +32,40 @@ def stratified_sampling(data, metric_values, metric, num_bins=20, subset_size=20
     subset = df.groupby("bin", group_keys=False).apply(lambda x: x.sample(frac=subset_size / len(df), random_state=42))
     return subset["data"].tolist()
 
-def plot_final_multi_metric(metric_values, all_subset_metric_values, strat_metrics, metrics, save_path, subset_size):
+def stratified_sampling_from_split(data, metric_values, metric, num_bins=20, subset_size=2000):
+    """Perform stratified sampling separately for train, valid, and test to maintain proportions."""
+    # Split dataset into train, valid, test
+    train_data = [line for line in data if line["metadata"]["original_split"] == "train"]
+    valid_data = [line for line in data if line["metadata"]["original_split"] == "valid"]
+    test_data = [line for line in data if line["metadata"]["original_split"] == "test"]
+
+    train_size = int(subset_size * 0.8)
+    valid_size = int(subset_size * 0.1)
+    test_size = int(subset_size * 0.1)
+
+    train_metrics = extract_metrics(train_data, [metric])
+    valid_metrics = extract_metrics(valid_data, [metric])
+    test_metrics = extract_metrics(test_data, [metric])
+
+    def sample_split(split_data, split_metrics, split_size):
+        """Helper function to perform stratified sampling for each split."""
+        if len(split_data) == 0:
+            return []  # In case a split has no data (edge case)
+        values = np.array(split_metrics[metric])
+        bins = np.histogram_bin_edges(values, bins=num_bins)
+        bin_indices = np.digitize(values, bins)
+        df = pd.DataFrame({"data": split_data, "bin": bin_indices})
+        subset = df.groupby("bin", group_keys=False).apply(lambda x: x.sample(frac=split_size / len(df), random_state=42))
+        return subset["data"].tolist()
+
+    # Sample from each split
+    sampled_train = sample_split(train_data, train_metrics, train_size)
+    sampled_valid = sample_split(valid_data, valid_metrics, valid_size)
+    sampled_test = sample_split(test_data, test_metrics, test_size)
+
+    return sampled_train + sampled_valid + sampled_test
+
+def plot_final_multi_metric(metric_values, all_subset_metric_values, strat_metrics, metrics, save_path, subset_dir):
     """Create a single multi-plot where each row represents a stratification metric."""
     num_strat_metrics = len(strat_metrics)
     num_metrics = len(metrics)
@@ -68,7 +101,7 @@ def plot_final_multi_metric(metric_values, all_subset_metric_values, strat_metri
             if row == 0 and col == num_metrics - 1:
                 ax.legend()
 
-    plot_filepath = f"{save_path}/wikilarge_{subset_size}/stratification_metrics.png"
+    plot_filepath = f"{subset_dir}/stratification_metrics.png"
     os.makedirs(os.path.dirname(plot_filepath), exist_ok=True)
     plt.savefig(plot_filepath, dpi=400)
     plt.close()
@@ -109,9 +142,9 @@ def rank_stratifications(all_scores):
     ranked_strats = sorted(strat_ranking.items(), key=lambda x: x[1])
     return ranked_strats
 
-def save_ranking_log(ranked_strats, save_path, subset_size):
+def save_ranking_log(ranked_strats, subset_dir):
     """Save stratification ranking to a log file."""
-    log_filepath = f"{save_path}/wikilarge_{subset_size}/metric_rank_log.txt"
+    log_filepath = f"{subset_dir}/metric_rank_log.txt"
     os.makedirs(os.path.dirname(log_filepath), exist_ok=True)
     with open(log_filepath, "w", encoding="utf-8") as f:
         f.write("=== Stratification Ranking (Lower Score = More Representative) ===\n")
@@ -120,7 +153,7 @@ def save_ranking_log(ranked_strats, save_path, subset_size):
 
 def main():
 
-    subset_size = 10000
+    subset_size = 3000
     num_bins = 25
 
     full_dataset_path = "./../data/datasets/wikilarge/dataset.jsonl"
@@ -135,6 +168,16 @@ def main():
     all_similarity_scores = {}
 
     for strat_metric in metrics:
+        # TODO if using stratified sampling from corresponding splits
+        # subset_data = stratified_sampling_from_split(
+        #     data, 
+        #     metric_values, 
+        #     strat_metric, 
+        #     num_bins=num_bins, 
+        #     subset_size=subset_size
+        # )
+
+        # TODO if using simple stratified sampling, regardless of the split
         subset_data = stratified_sampling(
             data, 
             metric_values, 
@@ -142,6 +185,7 @@ def main():
             num_bins=num_bins, 
             subset_size=subset_size
         )
+
         subset_metric_values = extract_metrics(subset_data, metrics)
 
         all_subset_metric_values[strat_metric] = subset_metric_values
@@ -150,10 +194,21 @@ def main():
     ranked_strats = rank_stratifications(all_similarity_scores)
 
     # Save ranking log
-    save_ranking_log(ranked_strats, save_path, subset_size)
+    save_ranking_log(ranked_strats, subset_dir)
 
     # Select the best stratification method
     best_strat_metric = ranked_strats[0][0]
+
+    # TODO if using stratified sampling from corresponding splits
+    # best_subset_data = stratified_sampling_from_split(
+    #     data, 
+    #     metric_values, 
+    #     best_strat_metric, 
+    #     num_bins=num_bins, 
+    #     subset_size=subset_size
+    # )
+
+    # TODO if using simple stratified sampling, regardless of the split
     best_subset_data = stratified_sampling(
         data, 
         metric_values, 
@@ -167,7 +222,7 @@ def main():
     save_jsonl(best_subset_data, best_subset_filepath)
 
     # Generate and save the final plot
-    plot_final_multi_metric(metric_values, all_subset_metric_values, metrics, metrics, save_path, subset_size)
+    plot_final_multi_metric(metric_values, all_subset_metric_values, metrics, metrics, save_path, subset_dir)
 
     print("\n=== Stratification Ranking (Lower Score = More Representative) ===")
     for rank, (strat, score) in enumerate(ranked_strats, start=1):
