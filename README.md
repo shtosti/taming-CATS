@@ -12,6 +12,25 @@
 - `explore_datasets.py` - explore dataset stats and plot them
 - `dataset_stats.py` - (old) compute dataset stats. Replace through `explore_datasets.py`?
 
+## Data
+Dataset splits have been uploaded to Hugging Face. They can be loaded from `datasets` with e.g. the following code:
+```
+from datasets import load_dataset
+import os
+from dotenv import load_dotenv
+load_dotenv(dotenv_path="./.env", override=True)
+
+
+dataset = load_dataset(
+    "shtosti/SimPA_lex", 
+    token=os.getenv("HF_TOKEN"), 
+    data_files={"train": "train.jsonl", "test": "test.jsonl", "validation": "val.jsonl"}
+    )
+
+validation_dataset = dataset["validation"]
+```
+
+
 ## Pipeline
 
 ### Datasets
