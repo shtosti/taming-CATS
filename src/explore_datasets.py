@@ -163,6 +163,60 @@ def plot_eval_values(data, metric, dataset_dir):
     plt.tight_layout()
     plt.savefig(f"{output_dir}/{metric}.png", dpi=400)
     
+def save_log(data, dataset_name, dataset_dir, comparison_metrics, similarity_metrics):
+    log_data = {}
+    
+    for metric in comparison_metrics:
+        source_vals, target_vals = get_compression_values(data, metric)
+        if source_vals and target_vals:
+            log_data[metric] = {
+                "source_mean": np.mean(source_vals),
+                "source_std": np.std(source_vals),
+                "source_median": np.median(source_vals),
+                "target_mean": np.mean(target_vals),
+                "target_std": np.std(target_vals),
+                "target_median": np.median(target_vals)
+            }
+    
+    for metric in similarity_metrics:
+        target_vals = get_eval_values(data, metric)
+        if target_vals:
+            log_data[metric] = {
+                "mean": np.mean(target_vals),
+                "std": np.std(target_vals),
+                "median": np.median(target_vals)
+            }
+    
+    log_path = os.path.join(dataset_dir, "stats", "dataset_stats.json")
+    os.makedirs(os.path.dirname(log_path), exist_ok=True)
+    
+    with open(log_path, "w", encoding="utf-8") as f:
+        json.dump(log_data, f, indent=4)
+    
+    print(f"Saved log for {dataset_name} at {log_path}")
+
+def plot_source_target_comparison(source_vals, target_vals, metric, dataset_dir):
+    df = pd.DataFrame({"Source": source_vals, "Target": target_vals})
+    plt.figure(figsize=(8, 6))
+    sns.boxplot(data=df, palette=["orchid", "green"], width=0.3)
+    
+    # Plot trajectory from median to median and mean to mean
+    source_mean, target_mean = np.mean(source_vals), np.mean(target_vals)
+    source_median, target_median = np.median(source_vals), np.median(target_vals)
+    
+    plt.plot([0, 1], [source_mean, target_mean], "r-o", label="Mean trajectory")
+    plt.plot([0, 1], [source_median, target_median], "b-o", label="Median trajectory")
+    
+    plt.xticks([0, 1], ["Original", "Simplification"])
+    plt.ylabel(metric)
+    # plt.title(f"Comparison of Source and Target for {metric}")
+    plt.legend()
+    plt.grid()
+    
+    output_dir = f"{dataset_dir}/stats/trajectory"
+    os.makedirs(output_dir, exist_ok=True)
+    plt.savefig(f"{output_dir}/{metric}.png", dpi=400)
+    plt.close()
 
 def main():
 
@@ -187,24 +241,38 @@ def main():
 
         dataset = load_jsonl(DATASET_PATH)
         # dataset = dataset[:500] # for dev
-        metrics_to_plot = [
-                            "char", 
-                            "word", 
-                            "sentence", 
-                            "FRE", 
-                            "ARI", 
-                            "FKGL", 
-                            "Dale-Chall"
-                            ]
-        # for metric in metrics_to_plot:
-        #     plot_compression(data=dataset, metric=metric, dataset_dir=DATASET_DIR)
+        # metrics_to_plot = [
+        #                     "char", 
+        #                     "word", 
+        #                     "sentence", 
+        #                     "FRE", 
+        #                     "ARI", 
+        #                     "FKGL", 
+        #                     "Dale-Chall"
+        #                     ]
+        # # for metric in metrics_to_plot:
+        # #     plot_compression(data=dataset, metric=metric, dataset_dir=DATASET_DIR)
 
-        eval_metrics_to_plot = [
-                                "BLEU",
-                                "BERTScore"
-                                ]
-        for metric in eval_metrics_to_plot:
+        # eval_metrics_to_plot = [
+        #                         "BLEU",
+        #                         "BERTScore"
+        #                         ]
+        # for metric in eval_metrics_to_plot:
+        #     plot_eval_values(data=dataset, metric=metric, dataset_dir=DATASET_DIR)
+
+        comparison_metrics = ["char", "word", "sentence", "FRE", "ARI", "FKGL", "Dale-Chall"]
+        similarity_metrics = ["BLEU", "BERTScore"]
+        
+        for metric in comparison_metrics:
+            plot_compression(data=dataset, metric=metric, dataset_dir=DATASET_DIR)
+            source_vals, target_vals = get_compression_values(dataset, metric)
+            plot_source_target_comparison(source_vals, target_vals, metric, DATASET_DIR)
+        
+        for metric in similarity_metrics:
             plot_eval_values(data=dataset, metric=metric, dataset_dir=DATASET_DIR)
+
+        save_log(data=dataset, dataset_name=DATASET, dataset_dir=DATASET_DIR, 
+                 comparison_metrics=comparison_metrics, similarity_metrics=similarity_metrics)
 
 
 if __name__ == "__main__":
