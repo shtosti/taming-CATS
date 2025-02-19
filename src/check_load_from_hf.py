@@ -3,10 +3,12 @@ import os
 from dotenv import load_dotenv
 load_dotenv(dotenv_path="./.env", override=True)
 
-data_files = {"train": "train.jsonl", "test": "test.jsonl", "validation": "val.jsonl"}
-dataset = load_dataset("shtosti/SimPA_lex", token=os.getenv("HF_TOKEN"), data_files=data_files)
 
-
+dataset = load_dataset(
+    "shtosti/SimPA_lex", 
+    token=os.getenv("HF_TOKEN"), 
+    data_files={"train": "train.jsonl", "test": "test.jsonl", "validation": "val.jsonl"}
+    )
 
 validation_dataset = dataset["validation"]
 
