@@ -8,14 +8,13 @@ from scipy.spatial.distance import jensenshannon
 from scipy.stats import wasserstein_distance, ks_2samp
 from Metrics import Metrics
 
-def load_jsonl(filepath):
+def load_jsonl(filepath: str) -> list:
     """Load dataset from a JSONL file."""
     with open(filepath, "r", encoding="utf-8") as f:
         return [json.loads(line) for line in f]
 
-def save_jsonl(data, filepath):
+def save_jsonl(data: list, filepath: str) -> None:
     """Save dataset to a JSONL file."""
-
     os.makedirs(os.path.dirname(filepath), exist_ok=True)
     with open(filepath, "w", encoding="utf-8") as f:
         for line in data:
@@ -36,11 +35,11 @@ def save_jsonl(data, filepath):
 
             f.write(json.dumps(line) + "\n")
 
-def extract_metrics(data, metrics):
+def extract_metrics(data: list, metrics: list) -> dict:
     """Extract specified metric values from dataset."""
     return {metric: [line["source_metrics"].get(metric, 0) for line in data] for metric in metrics}
 
-def stratified_sampling(data, metric_values, metric, num_bins=20, subset_size=2000):
+def stratified_sampling(data: list, metric_values: dict, metric: str, num_bins=20, subset_size=2000) -> list:
     """Perform stratified sampling based on a single metric."""
     values = np.array(metric_values[metric])
     bins = np.histogram_bin_edges(values, bins=num_bins)
@@ -49,7 +48,7 @@ def stratified_sampling(data, metric_values, metric, num_bins=20, subset_size=20
     subset = df.groupby("bin", group_keys=False).apply(lambda x: x.sample(frac=subset_size / len(df), random_state=42))
     return subset["data"].tolist()
 
-def stratified_sampling_from_split(data, metric_values, metric, num_bins=20, subset_size=2000):
+def stratified_sampling_from_split(data: list, metric, num_bins=20, subset_size=2000):
     """Perform stratified sampling separately for train, valid, and test to maintain proportions."""
     # Split dataset into train, valid, test
     train_data = [line for line in data if line["metadata"]["original_split"] == "train"]
@@ -64,7 +63,7 @@ def stratified_sampling_from_split(data, metric_values, metric, num_bins=20, sub
     valid_metrics = extract_metrics(valid_data, [metric])
     test_metrics = extract_metrics(test_data, [metric])
 
-    def sample_split(split_data, split_metrics, split_size):
+    def sample_split(split_data: list, split_metrics: dict, split_size: int) -> list:
         """Helper function to perform stratified sampling for each split."""
         if len(split_data) == 0:
             return []  # In case a split has no data (edge case)
@@ -82,7 +81,7 @@ def stratified_sampling_from_split(data, metric_values, metric, num_bins=20, sub
 
     return sampled_train + sampled_valid + sampled_test
 
-def plot_final_multi_metric(metric_values, all_subset_metric_values, strat_metrics, metrics, save_path, subset_dir):
+def plot_final_multi_metric(metric_values: dict, all_subset_metric_values: dict, strat_metrics: list, metrics: list, subset_dir: str) -> None:
     """Create a single multi-plot where each row represents a stratification metric."""
     num_strat_metrics = len(strat_metrics)
     num_metrics = len(metrics)
@@ -123,7 +122,7 @@ def plot_final_multi_metric(metric_values, all_subset_metric_values, strat_metri
     plt.savefig(plot_filepath, dpi=400)
     plt.close()
 
-def compute_similarity_scores(full_data, subset_data, metrics):
+def compute_similarity_scores(full_data: dict, subset_data: dict, metrics: list) -> dict:
     """Compute JSD, EMD, and KS scores to quantify similarity between distributions."""
     scores = {metric: {"JSD": None, "EMD": None, "KS": None} for metric in metrics}
     
@@ -144,7 +143,7 @@ def compute_similarity_scores(full_data, subset_data, metrics):
 
     return scores
 
-def rank_stratifications(all_scores):
+def rank_stratifications(all_scores: dict) -> dict:
     """Aggregate similarity scores across all metrics for each stratification method."""
     strat_ranking = {}
     
@@ -159,7 +158,7 @@ def rank_stratifications(all_scores):
     ranked_strats = sorted(strat_ranking.items(), key=lambda x: x[1])
     return ranked_strats
 
-def save_ranking_log(ranked_strats, subset_dir):
+def save_ranking_log(ranked_strats: list, subset_dir: str) -> None:
     """Save stratification ranking to a log file."""
     log_filepath = f"{subset_dir}/metric_rank_log.txt"
     os.makedirs(os.path.dirname(log_filepath), exist_ok=True)
@@ -188,7 +187,6 @@ def main():
         # TODO if using stratified sampling from corresponding splits
         subset_data = stratified_sampling_from_split(
             data, 
-            metric_values, 
             strat_metric, 
             num_bins=num_bins, 
             subset_size=subset_size
@@ -219,7 +217,6 @@ def main():
     # TODO if using stratified sampling from corresponding splits
     best_subset_data = stratified_sampling_from_split(
         data, 
-        metric_values, 
         best_strat_metric, 
         num_bins=num_bins, 
         subset_size=subset_size
@@ -239,7 +236,7 @@ def main():
     save_jsonl(best_subset_data, best_subset_filepath)
 
     # Generate and save the final plot
-    plot_final_multi_metric(metric_values, all_subset_metric_values, metrics, metrics, save_path, subset_dir)
+    plot_final_multi_metric(metric_values, all_subset_metric_values, metrics, metrics, subset_dir)
 
     print("\n=== Stratification Ranking (Lower Score = More Representative) ===")
     for rank, (strat, score) in enumerate(ranked_strats, start=1):
