@@ -9,14 +9,14 @@ from scipy.stats import pearsonr
 
 
 
-def load_jsonl(filepath):
+def load_jsonl(filepath: str) -> list:
     data = []
     with open(filepath, "r", encoding="utf-8") as f:
         for line in f:
             data.append(json.loads(line))
     return data
 
-def plot_compression(data, metric, dataset_dir):
+def plot_compression(data: list, metric: str, dataset_dir: str) -> None:
 
     source_lengths, target_lengths = get_compression_values(data, metric)
 
@@ -94,7 +94,7 @@ def plot_compression(data, metric, dataset_dir):
     plt.savefig(f"{output_dir}/{metric}.png", dpi=400)
     
 
-def get_compression_values(data, metric):
+def get_compression_values(data: list, metric: str) -> tuple:
     source_val_arr = []
     target_val_arr = []
 
@@ -115,7 +115,7 @@ def get_compression_values(data, metric):
     
     return source_val_arr, target_val_arr
 
-def get_eval_values(data, metric):
+def get_eval_values(data: list, metric: str) -> list:
     target_val_arr = []
 
     for line in data:
@@ -127,9 +127,10 @@ def get_eval_values(data, metric):
     
     return target_val_arr
 
-def plot_eval_values(data, metric, dataset_dir):
-    target_vals = get_eval_values(data, metric)
+def plot_eval_values(data: list, metric: str, dataset_dir: str) -> None:
+    """ Plot BLEU and BERTScore. """
 
+    target_vals = get_eval_values(data, metric)
 
     # Plotting the distribution shift
     # Calculate the common bin edges for source and target distributions
@@ -163,7 +164,7 @@ def plot_eval_values(data, metric, dataset_dir):
     plt.tight_layout()
     plt.savefig(f"{output_dir}/{metric}.png", dpi=400)
     
-def save_log(data, dataset_name, dataset_dir, comparison_metrics, similarity_metrics):
+def save_log(data: list, dataset_name: str, dataset_dir: str, comparison_metrics: list, similarity_metrics: list) -> None:
     log_data = {}
     
     for metric in comparison_metrics:
@@ -195,7 +196,7 @@ def save_log(data, dataset_name, dataset_dir, comparison_metrics, similarity_met
     
     print(f"Saved log for {dataset_name} at {log_path}")
 
-def plot_source_target_comparison(source_vals, target_vals, metric, dataset_dir):
+def plot_source_target_comparison(source_vals: list, target_vals: list, metric: str, dataset_dir: str) -> None:
     df = pd.DataFrame({"Source": source_vals, "Target": target_vals})
     plt.figure(figsize=(8, 6))
     sns.boxplot(data=df, palette=["orchid", "green"], width=0.3)
