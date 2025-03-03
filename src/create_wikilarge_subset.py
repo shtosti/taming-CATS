@@ -48,7 +48,7 @@ def stratified_sampling(data: list, metric_values: dict, metric: str, num_bins=2
     subset = df.groupby("bin", group_keys=False).apply(lambda x: x.sample(frac=subset_size / len(df), random_state=42))
     return subset["data"].tolist()
 
-def stratified_sampling_from_split(data: list, metric, num_bins=20, subset_size=2000):
+def stratified_sampling_from_split(data: list, metric_values: dict, metric: str, num_bins=20, subset_size=2000):
     """Perform stratified sampling separately for train, valid, and test to maintain proportions."""
     # Split dataset into train, valid, test
     train_data = [line for line in data if line["metadata"]["original_split"] == "train"]
@@ -166,15 +166,6 @@ def rank_stratifications(all_scores: dict) -> dict:
 
     return ranked_strats
 
-# def save_ranking_log(ranked_strats: list, subset_dir: str) -> None:
-#     """Save stratification ranking to a log file."""
-#     log_filepath = f"{subset_dir}/metric_rank_log.txt"
-#     os.makedirs(os.path.dirname(log_filepath), exist_ok=True)
-#     with open(log_filepath, "w", encoding="utf-8") as f:
-#         f.write("=== Stratification Ranking (Lower Score = More Representative) ===\n")
-#         for rank, (strat, score) in enumerate(ranked_strats, start=1):
-#             f.write(f"{rank}. Stratified by {strat}: Score = {score:.4f}\n")
-
 def save_ranking_log(ranked_strats: dict, subset_dir: str) -> None:
     """Save stratification ranking to a log file and a JSON file."""
     log_filepath = f"{subset_dir}/metric_rank_log.txt"
@@ -187,58 +178,90 @@ def save_ranking_log(ranked_strats: dict, subset_dir: str) -> None:
         for metric, rankings in ranked_strats.items():
             f.write(f"--- {metric} Ranking ---\n")
             for rank, (strat, score) in enumerate(rankings, start=1):
-                f.write(f"{rank}. Stratified by {strat}: Score = {score:.4f}\n")
+                f.write(f"{rank}. Stratified by {strat}: {score:.4f}\n")
             f.write("\n")
 
     with open(json_filepath, "w", encoding="utf-8") as f:
         json.dump(ranked_strats, f, indent=4)
 
+def save_json(data: dict, filepath: str) -> None:
+    """Save dictionary data to a JSON file."""
+    os.makedirs(os.path.dirname(filepath), exist_ok=True)
+    with open(filepath, "w", encoding="utf-8") as f:
+        json.dump(data, f, indent=4)
+
 def main():
 
     subset_size = 1000
     num_bins = 25
-
+    stratification_types = ["splitwise", "global"] 
     full_dataset_path = "./../data/datasets/wikilarge/dataset.jsonl"
     # save_path = "./../data/datasets"
     # subset_dir = f"{save_path}/wikilarge_{subset_size}_from_splits"
-    save_path = "./../experiments/sample_from_wikilarge"
-    subset_dir = f"{save_path}/splitwise_{subset_size}"
-    os.makedirs(subset_dir, exist_ok=True)
+    save_path = f"./../experiments/sample_from_wikilarge/num_bins_{num_bins}"
+    json_output_path = f"{save_path}/all_divergence_results.json"
     metrics = ["char_count", "word_count", "sentence_count", "FKGL", "ARI", "FRE", "Dale-Chall"]
     
     data = load_jsonl(full_dataset_path)
     metric_values = extract_metrics(data, metrics)
 
-    all_subset_metric_values = {}
-    all_similarity_scores = {}
+    # Load previous results if the JSON file exists
+    if os.path.exists(json_output_path):
+        with open(json_output_path, "r", encoding="utf-8") as f:
+            all_results = json.load(f)
+    else:
+        all_results = {}
 
-    for strat_metric in metrics:
-        # TODO if using stratified sampling from corresponding splits
-        subset_data = stratified_sampling_from_split(
-            data, 
-            strat_metric, 
-            num_bins=num_bins, 
-            subset_size=subset_size
-        )
+    # Iterate over subset sizes (100 to 3500, step 10)
+    for subset_size in range(100, 3501, 10):
+        if str(subset_size) in all_results:
+            print(f"Skipping subset size {subset_size}, already computed.")
+            continue
+        
+        # initialize dict to store all data
+        all_results[str(subset_size)] = {}
 
-        # # TODO if using simple stratified sampling, regardless of the split
-        # subset_data = stratified_sampling(
-        #     data, 
-        #     metric_values, 
-        #     strat_metric, 
-        #     num_bins=num_bins, 
-        #     subset_size=subset_size
-        # )
+        for stratification_type in stratification_types:
+            subset_dir = f"{save_path}/{stratification_type}_{subset_size}"
+            os.makedirs(subset_dir, exist_ok=True)
 
-        subset_metric_values = extract_metrics(subset_data, metrics)
+            all_subset_metric_values = {}
+            all_similarity_scores = {}
 
-        all_subset_metric_values[strat_metric] = subset_metric_values
-        all_similarity_scores[strat_metric] = compute_similarity_scores(metric_values, subset_metric_values, metrics)
-    
-    ranked_strats = rank_stratifications(all_similarity_scores)
+            if stratification_type == "splitwise":
+                sampling_function = stratified_sampling_from_split
+            elif stratification_type == "global":
+                sampling_function = stratified_sampling
 
-    # Save ranking log
-    save_ranking_log(ranked_strats, subset_dir)
+
+            for strat_metric in metrics:
+                # TODO if using stratified sampling from corresponding splits
+                subset_data = sampling_function(
+                    data, 
+                    metric_values,
+                    strat_metric, 
+                    num_bins=num_bins, 
+                    subset_size=subset_size
+                )
+
+                subset_metric_values = extract_metrics(subset_data, metrics)
+
+                all_subset_metric_values[strat_metric] = subset_metric_values
+                all_similarity_scores[strat_metric] = compute_similarity_scores(metric_values, subset_metric_values, metrics)
+            
+            ranked_strats = rank_stratifications(all_similarity_scores)
+
+            # Store results for this subset size and stratification type
+            all_results[str(subset_size)][stratification_type] = ranked_strats
+
+            # Save ranking log
+            save_ranking_log(ranked_strats, subset_dir)
+
+        # Save after each subset size to avoid data loss
+        save_json(all_results, json_output_path)
+        print(f"Saved results for subset size {subset_size}.")
+
+
 
     # # Select the best stratification method
     # best_strat_metric = ranked_strats[0][0]
