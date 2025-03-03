@@ -122,15 +122,21 @@ def plot_final_multi_metric(metric_values: dict, all_subset_metric_values: dict,
     plt.savefig(plot_filepath, dpi=400)
     plt.close()
 
-def compute_similarity_scores(full_data: dict, subset_data: dict, metrics: list) -> dict:
-    """Compute JSD, EMD, and KS scores to quantify similarity between distributions."""
+def compute_similarity_scores(full_data: dict, subset_data: dict, metrics: list, n_bins=25) -> dict:
+    """ Compute JSD, EMD, and KS scores to quantify similarity between distributions.
+
+        JSD: Jensen–Shannon divergence
+        EMD: Earth Mover's Distance
+        KS: Kolmogorov-Smirnov Statistic
+    
+    """
     scores = {metric: {"JSD": None, "EMD": None, "KS": None} for metric in metrics}
     
     for metric in metrics:
         full_dist = np.array(full_data[metric])
         subset_dist = np.array(subset_data[metric])
 
-        bins = np.histogram_bin_edges(np.concatenate([full_dist, subset_dist]), bins=50)
+        bins = np.histogram_bin_edges(np.concatenate([full_dist, subset_dist]), bins=n_bins)
         full_hist, _ = np.histogram(full_dist, bins=bins, density=True)
         subset_hist, _ = np.histogram(subset_dist, bins=bins, density=True)
         jsd = jensenshannon(full_hist, subset_hist)
@@ -144,37 +150,60 @@ def compute_similarity_scores(full_data: dict, subset_data: dict, metrics: list)
     return scores
 
 def rank_stratifications(all_scores: dict) -> dict:
-    """Aggregate similarity scores across all metrics for each stratification method."""
-    strat_ranking = {}
-    
+    """Compute separate rankings for JSD, EMD, and KS scores across all stratification methods."""
+    strat_ranking = {metric: {} for metric in ["JSD", "EMD", "KS"]}
+
     for strat_metric, metric_scores in all_scores.items():
-        total_jsd = np.mean([metric_scores[m]["JSD"] for m in metric_scores])
-        total_emd = np.mean([metric_scores[m]["EMD"] for m in metric_scores])
-        total_ks = np.mean([metric_scores[m]["KS"] for m in metric_scores])
+        strat_ranking["JSD"][strat_metric] = np.mean([metric_scores[m]["JSD"] for m in metric_scores])
+        strat_ranking["EMD"][strat_metric] = np.mean([metric_scores[m]["EMD"] for m in metric_scores])
+        strat_ranking["KS"][strat_metric] = np.mean([metric_scores[m]["KS"] for m in metric_scores])
 
-        final_score = (total_jsd + total_emd + total_ks) / 3
-        strat_ranking[strat_metric] = final_score
+    # Rank each metric separately (lower scores mean more similarity)
+    ranked_strats = {
+        metric: sorted(strat_ranking[metric].items(), key=lambda x: x[1])
+        for metric in ["JSD", "EMD", "KS"]
+    }
 
-    ranked_strats = sorted(strat_ranking.items(), key=lambda x: x[1])
     return ranked_strats
 
-def save_ranking_log(ranked_strats: list, subset_dir: str) -> None:
-    """Save stratification ranking to a log file."""
+# def save_ranking_log(ranked_strats: list, subset_dir: str) -> None:
+#     """Save stratification ranking to a log file."""
+#     log_filepath = f"{subset_dir}/metric_rank_log.txt"
+#     os.makedirs(os.path.dirname(log_filepath), exist_ok=True)
+#     with open(log_filepath, "w", encoding="utf-8") as f:
+#         f.write("=== Stratification Ranking (Lower Score = More Representative) ===\n")
+#         for rank, (strat, score) in enumerate(ranked_strats, start=1):
+#             f.write(f"{rank}. Stratified by {strat}: Score = {score:.4f}\n")
+
+def save_ranking_log(ranked_strats: dict, subset_dir: str) -> None:
+    """Save stratification ranking to a log file and a JSON file."""
     log_filepath = f"{subset_dir}/metric_rank_log.txt"
+    json_filepath = f"{subset_dir}/metric_rank_log.json"
+    
     os.makedirs(os.path.dirname(log_filepath), exist_ok=True)
+
     with open(log_filepath, "w", encoding="utf-8") as f:
-        f.write("=== Stratification Ranking (Lower Score = More Representative) ===\n")
-        for rank, (strat, score) in enumerate(ranked_strats, start=1):
-            f.write(f"{rank}. Stratified by {strat}: Score = {score:.4f}\n")
+        f.write("=== Stratification Rankings (Lower Score = More Representative) ===\n\n")
+        for metric, rankings in ranked_strats.items():
+            f.write(f"--- {metric} Ranking ---\n")
+            for rank, (strat, score) in enumerate(rankings, start=1):
+                f.write(f"{rank}. Stratified by {strat}: Score = {score:.4f}\n")
+            f.write("\n")
+
+    with open(json_filepath, "w", encoding="utf-8") as f:
+        json.dump(ranked_strats, f, indent=4)
 
 def main():
 
-    subset_size = 3000
+    subset_size = 1000
     num_bins = 25
 
     full_dataset_path = "./../data/datasets/wikilarge/dataset.jsonl"
-    save_path = "./../data/datasets"
-    subset_dir = f"{save_path}/wikilarge_{subset_size}_from_splits"
+    # save_path = "./../data/datasets"
+    # subset_dir = f"{save_path}/wikilarge_{subset_size}_from_splits"
+    save_path = "./../experiments/sample_from_wikilarge"
+    subset_dir = f"{save_path}/splitwise_{subset_size}"
+    os.makedirs(subset_dir, exist_ok=True)
     metrics = ["char_count", "word_count", "sentence_count", "FKGL", "ARI", "FRE", "Dale-Chall"]
     
     data = load_jsonl(full_dataset_path)
@@ -211,36 +240,36 @@ def main():
     # Save ranking log
     save_ranking_log(ranked_strats, subset_dir)
 
-    # Select the best stratification method
-    best_strat_metric = ranked_strats[0][0]
+    # # Select the best stratification method
+    # best_strat_metric = ranked_strats[0][0]
 
-    # TODO if using stratified sampling from corresponding splits
-    best_subset_data = stratified_sampling_from_split(
-        data, 
-        best_strat_metric, 
-        num_bins=num_bins, 
-        subset_size=subset_size
-    )
-
-    # TODO if using simple stratified sampling, regardless of the split
-    # best_subset_data = stratified_sampling(
+    # # TODO if using stratified sampling from corresponding splits
+    # best_subset_data = stratified_sampling_from_split(
     #     data, 
-    #     metric_values, 
     #     best_strat_metric, 
     #     num_bins=num_bins, 
     #     subset_size=subset_size
     # )
 
-    # Save only the best subset
-    best_subset_filepath = f"{subset_dir}/dataset.jsonl"
-    save_jsonl(best_subset_data, best_subset_filepath)
+    # # TODO if using simple stratified sampling, regardless of the split
+    # # best_subset_data = stratified_sampling(
+    # #     data, 
+    # #     metric_values, 
+    # #     best_strat_metric, 
+    # #     num_bins=num_bins, 
+    # #     subset_size=subset_size
+    # # )
 
-    # Generate and save the final plot
-    plot_final_multi_metric(metric_values, all_subset_metric_values, metrics, metrics, subset_dir)
+    # # Save only the best subset
+    # best_subset_filepath = f"{subset_dir}/dataset.jsonl"
+    # save_jsonl(best_subset_data, best_subset_filepath)
 
-    print("\n=== Stratification Ranking (Lower Score = More Representative) ===")
-    for rank, (strat, score) in enumerate(ranked_strats, start=1):
-        print(f"{rank}. Stratified by {strat}: Score = {score:.4f}")
+    # # Generate and save the final plot
+    # plot_final_multi_metric(metric_values, all_subset_metric_values, metrics, metrics, subset_dir)
+
+    # print("\n=== Stratification Ranking (Lower Score = More Representative) ===")
+    # for rank, (strat, score) in enumerate(ranked_strats, start=1):
+    #     print(f"{rank}. Stratified by {strat}: Score = {score:.4f}")
 
 if __name__ == "__main__":
     main()
