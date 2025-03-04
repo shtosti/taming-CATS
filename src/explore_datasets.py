@@ -222,16 +222,17 @@ def plot_source_target_comparison(source_vals: list, target_vals: list, metric: 
 def main():
 
     DATASETS = [
-        "simpa_lexical",
-        "simpa_syntactic",
-        "newsela",
-        "medeasi",
-        "wikilarge_1000",
-        "wikilarge_1000_from_splits",
-        "wikilarge_2000",
-        "wikilarge_2000_from_splits",
-        "wikilarge_3000",
-        "wikilarge_3000_from_splits",
+        "simpa"
+        # "simpa_lexical",
+        # "simpa_syntactic",
+        # "newsela",
+        # "medeasi",
+        # "wikilarge_1000",
+        # "wikilarge_1000_from_splits",
+        # "wikilarge_2000",
+        # "wikilarge_2000_from_splits",
+        # "wikilarge_3000",
+        # "wikilarge_3000_from_splits",
         # "wikilarge"
     ]
     DATA_DIR = "./../data" 

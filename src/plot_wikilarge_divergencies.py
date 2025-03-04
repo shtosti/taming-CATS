@@ -3,7 +3,7 @@ import os
 import matplotlib.pyplot as plt
 
 # Load the divergences data
-NUM_BINS = 35
+NUM_BINS = 45
 EXPERIMENT_DIR = f"./../experiments/sample_from_wikilarge/num_bins_{NUM_BINS}"
 OUTPUT_DIR = os.path.join(EXPERIMENT_DIR, "plots")
 os.makedirs(OUTPUT_DIR, exist_ok=True)
@@ -29,7 +29,7 @@ def plot_separately() -> None:
 
         for strat_type in STRAT_TYPES:
 
-            plt.figure(figsize=(8, 4))
+            plt.figure(figsize=(8, 5))
             
             for strat_metric in STRAT_METRICS:
                 values = [
@@ -53,14 +53,14 @@ def plot_separately() -> None:
             plt.grid(True)
             plt.tight_layout()
             plt.savefig(f"{OUTPUT_DIR}/{strat_type}_{stat}.png", dpi=400)
-            plt.show()
-            plt.close()
+            # plt.show()
+            # plt.close()
 
 def plot_together() -> None:
 
     for stat in STATS:
 
-        plt.figure(figsize=(8, 4))
+        plt.figure(figsize=(8, 5))
 
         for strat_type in STRAT_TYPES:
             
@@ -86,8 +86,8 @@ def plot_together() -> None:
         plt.grid(True)
         plt.tight_layout()
         plt.savefig(f"{OUTPUT_DIR}/both_{stat}.png", dpi=400)
-        plt.show()
-        plt.close()
+        # plt.show()
+        # plt.close()
 
 
 # call both functions
