@@ -35,6 +35,24 @@ def save_jsonl(data: list, filepath: str) -> None:
 
             f.write(json.dumps(line) + "\n")
 
+def remove_outliers_by_char_length(data: list, lower_percentile=3, upper_percentile=97) -> list:
+    """Remove entries based on character length outliers (3rd and 97th percentiles)."""
+    
+    # Calculate the character length for each entry
+    char_lengths = [len(line["source_text"]) for line in data]
+
+    # Calculate the lower and upper percentiles for character length
+    lower_threshold = np.percentile(char_lengths, lower_percentile)
+    upper_threshold = np.percentile(char_lengths, upper_percentile)
+
+    # Filter out entries based on the character length thresholds
+    filtered_data = [
+        line for line in data
+        if lower_threshold <= len(line["source_text"]) <= upper_threshold
+    ]
+
+    return filtered_data
+
 def extract_metrics(data: list, metrics: list) -> dict:
     """Extract specified metric values from dataset."""
     return {metric: [line["source_metrics"].get(metric, 0) for line in data] for metric in metrics}
@@ -166,23 +184,23 @@ def rank_stratifications(all_scores: dict) -> dict:
 
     return ranked_strats
 
-def save_ranking_log(ranked_strats: dict, subset_dir: str) -> None:
-    """Save stratification ranking to a log file and a JSON file."""
-    log_filepath = f"{subset_dir}/metric_rank_log.txt"
-    json_filepath = f"{subset_dir}/metric_rank_log.json"
+# def save_ranking_log(ranked_strats: dict, subset_dir: str) -> None:
+#     """Save stratification ranking to a log file and a JSON file."""
+#     log_filepath = f"{subset_dir}/metric_rank_log.txt"
+#     json_filepath = f"{subset_dir}/metric_rank_log.json"
     
-    os.makedirs(os.path.dirname(log_filepath), exist_ok=True)
+#     os.makedirs(os.path.dirname(log_filepath), exist_ok=True)
 
-    with open(log_filepath, "w", encoding="utf-8") as f:
-        f.write("=== Stratification Rankings (Lower Score = More Representative) ===\n\n")
-        for metric, rankings in ranked_strats.items():
-            f.write(f"--- {metric} Ranking ---\n")
-            for rank, (strat, score) in enumerate(rankings, start=1):
-                f.write(f"{rank}. Stratified by {strat}: {score:.4f}\n")
-            f.write("\n")
+#     with open(log_filepath, "w", encoding="utf-8") as f:
+#         f.write("=== Stratification Rankings (Lower Score = More Representative) ===\n\n")
+#         for metric, rankings in ranked_strats.items():
+#             f.write(f"--- {metric} Ranking ---\n")
+#             for rank, (strat, score) in enumerate(rankings, start=1):
+#                 f.write(f"{rank}. Stratified by {strat}: {score:.4f}\n")
+#             f.write("\n")
 
-    with open(json_filepath, "w", encoding="utf-8") as f:
-        json.dump(ranked_strats, f, indent=4)
+#     with open(json_filepath, "w", encoding="utf-8") as f:
+#         json.dump(ranked_strats, f, indent=4)
 
 def save_json(data: dict, filepath: str) -> None:
     """Save dictionary data to a JSON file."""
@@ -192,7 +210,7 @@ def save_json(data: dict, filepath: str) -> None:
 
 def main():
 
-    num_bins = 15
+    num_bins = 45
     stratification_types = ["splitwise", "global"] 
     full_dataset_path = "./../data/datasets/wikilarge/dataset.jsonl"
     experiment_dir = f"./../experiments/sample_from_wikilarge/num_bins_{num_bins}"
@@ -203,8 +221,9 @@ def main():
     metrics = ["char_count", "word_count", "sentence_count", "FKGL", "ARI", "FRE", "Dale-Chall"]
     
     data = load_jsonl(full_dataset_path)
+    data = remove_outliers_by_char_length(data) # remove outliers only char length
     metric_values = extract_metrics(data, metrics)
-
+    
     # Load previous results if the JSON file exists
     if os.path.exists(json_output_path):
         with open(json_output_path, "r", encoding="utf-8") as f:
@@ -212,8 +231,8 @@ def main():
     else:
         all_results = {}
 
-    # Iterate over subset sizes (100 to 3500, step 10)
-    for subset_size in range(100, 3501, 10):
+    # Iterate over subset sizes (100 to 3500, step 20)
+    for subset_size in range(100, 3501, 20):
         if str(subset_size) in all_results:
             print(f"Skipping subset size {subset_size}, already computed.")
             continue
@@ -253,44 +272,11 @@ def main():
             all_results[str(subset_size)][stratification_type] = ranked_strats
 
             # Save ranking log
-            save_ranking_log(ranked_strats, log_output_dir)
+            # save_ranking_log(ranked_strats, log_output_dir)
 
         # Save after each subset size to avoid data loss
         save_json(all_results, json_output_path)
         print(f"Saved results for subset size {subset_size}.")
-
-
-
-    # # Select the best stratification method
-    # best_strat_metric = ranked_strats[0][0]
-
-    # # TODO if using stratified sampling from corresponding splits
-    # best_subset_data = stratified_sampling_from_split(
-    #     data, 
-    #     best_strat_metric, 
-    #     num_bins=num_bins, 
-    #     subset_size=subset_size
-    # )
-
-    # # TODO if using simple stratified sampling, regardless of the split
-    # # best_subset_data = stratified_sampling(
-    # #     data, 
-    # #     metric_values, 
-    # #     best_strat_metric, 
-    # #     num_bins=num_bins, 
-    # #     subset_size=subset_size
-    # # )
-
-    # # Save only the best subset
-    # best_subset_filepath = f"{subset_dir}/dataset.jsonl"
-    # save_jsonl(best_subset_data, best_subset_filepath)
-
-    # # Generate and save the final plot
-    # plot_final_multi_metric(metric_values, all_subset_metric_values, metrics, metrics, subset_dir)
-
-    # print("\n=== Stratification Ranking (Lower Score = More Representative) ===")
-    # for rank, (strat, score) in enumerate(ranked_strats, start=1):
-    #     print(f"{rank}. Stratified by {strat}: Score = {score:.4f}")
 
 if __name__ == "__main__":
     main()
