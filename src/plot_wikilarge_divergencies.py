@@ -2,8 +2,7 @@ import json
 import os
 import matplotlib.pyplot as plt
 
-# Load the divergences data
-NUM_BINS = 45
+NUM_BINS = 15
 EXPERIMENT_DIR = f"./../experiments/sample_from_wikilarge/num_bins_{NUM_BINS}"
 OUTPUT_DIR = os.path.join(EXPERIMENT_DIR, "plots")
 os.makedirs(OUTPUT_DIR, exist_ok=True)
@@ -93,4 +92,6 @@ def plot_together() -> None:
 # call both functions
 plot_separately()
 plot_together()
+
+print(f"Plots saved to {OUTPUT_DIR}")
 
