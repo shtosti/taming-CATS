@@ -12,6 +12,7 @@
 - `plot_wikilarge_divergencies` - plot the divergencies of the wikilarge dataset, comparing stats between the original large dataset and the sampled subset
 - `explore_datasets.py` - explore dataset stats and plot them
 - `create_simpa_subset.py` - create a combined dataset from Simpa lexical and Simpa syntactic. No duplicates.
+- `create_splits.py` - create train/dev/test splits from the combined dataset. 9:1:1. Remove bottom 3 and top 3 percentiles of the char_count distribution.
 
 
 ## Data
