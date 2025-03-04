@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 from scipy.spatial.distance import jensenshannon
 from scipy.stats import wasserstein_distance, ks_2samp
-from Metrics import Metrics
+from classes.Metrics import Metrics
 
 def load_jsonl(filepath: str) -> list:
     """Load dataset from a JSONL file."""

@@ -3,7 +3,7 @@ import json
 from openai import OpenAI
 from dotenv import load_dotenv
 load_dotenv(dotenv_path="./.env", override=True)
-from Metrics import Metrics
+from classes.Metrics import Metrics
 
 
 OPENAI_TOKEN = os.getenv("OPENAI_API_KEY")

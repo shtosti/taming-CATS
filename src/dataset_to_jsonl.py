@@ -1,9 +1,9 @@
 import json
 import pandas as pd
-from Dataset import Newsela, MedEASi, WikiLarge, SimPALex, SimPASyn
-from ControlTokensAccess import ControlTokensAccess
-from ControlTokensMuss import ControlTokensMuss
-from Metrics import Metrics
+from classes.Dataset import Newsela, MedEASi, WikiLarge, SimPALex, SimPASyn
+from classes.ControlTokensAccess import ControlTokensAccess
+from classes.ControlTokensMuss import ControlTokensMuss
+from classes.Metrics import Metrics
 import os
 
 DATA_DIR = "./../data"

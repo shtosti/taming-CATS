@@ -9,8 +9,10 @@
 ## scripts
 - `generate_responses.py` - generate responses from the model to explore simplification via prompting
 - `create_wikilarge_subset.py` - create a subset of the wikilarge dataset using stratification metrics
+- `plot_wikilarge_divergencies` - plot the divergencies of the wikilarge dataset, comparing stats between the original large dataset and the sampled subset
 - `explore_datasets.py` - explore dataset stats and plot them
-- `dataset_stats.py` - (old) compute dataset stats. Replace through `explore_datasets.py`?
+- `create_simpa_subset.py` - create a combined dataset from Simpa lexical and Simpa syntactic. No duplicates.
+
 
 ## Data
 Dataset splits have been uploaded to Hugging Face. They can be loaded from `datasets` with e.g. the following code:
