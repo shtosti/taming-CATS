@@ -53,11 +53,19 @@ def remove_outliers_by_char_length(data: list, lower_percentile=3, upper_percent
 
     return filtered_data
 
-def filter_by_fkgl(data: list, fkgl_threshold=0) -> list:
-    """Filter out entries where FKGL score is below the threshold."""
+def filter_by_fkgl(data, min_threshold=0.0):
     filtered_data = [
-        line for line in data
-        if line["source_metrics"].get("FKGL", float('inf')) >= fkgl_threshold
+        entry for entry in data
+        if entry["source_metrics"].get("FKGL", float('inf')) >= min_threshold
+        and entry["simplifications"][0]["target_metrics"].get("FKGL", float('inf')) >= min_threshold
+    ]
+    return filtered_data
+
+def filter_by_ari(data, min_threshold=0.0):
+    filtered_data = [
+        entry for entry in data
+        if entry["source_metrics"].get("ARI", float('inf')) >= min_threshold
+        and entry["simplifications"][0]["target_metrics"].get("ARI", float('inf')) >= min_threshold
     ]
     return filtered_data
 
@@ -218,6 +226,8 @@ def save_json(data: dict, filepath: str) -> None:
 
 def main():
 
+    # experiment = "explore_sampling"
+    experiment = "create_subset"
     num_bins = 35
     stratification_types = ["splitwise", "global"] 
     full_dataset_path = "./../data/datasets/wikilarge/dataset.jsonl"
@@ -230,28 +240,73 @@ def main():
     
     data = load_jsonl(full_dataset_path)
     data = remove_outliers_by_char_length(data) # remove outliers by char length
-    data = filter_by_fkgl(data) # remove outliers below FKGL zero
+    data = filter_by_fkgl(data) # remove outliers by FKGL
+    data = filter_by_ari(data) # remove outliers by ARI
+
     metric_values = extract_metrics(data, metrics)
     
-    # Load previous results if the JSON file exists
-    if os.path.exists(json_output_path):
-        with open(json_output_path, "r", encoding="utf-8") as f:
-            all_results = json.load(f)
-    else:
-        all_results = {}
+    if experiment  == "explore_sampling":
+        # Load previous results if the JSON file exists
+        if os.path.exists(json_output_path):
+            with open(json_output_path, "r", encoding="utf-8") as f:
+                all_results = json.load(f)
+        else:
+            all_results = {}
 
-    # Iterate over subset sizes (100 to 3500, step 20)
-    for subset_size in range(100, 3501, 20):
-        if str(subset_size) in all_results:
-            print(f"Skipping subset size {subset_size}, already computed.")
-            continue
-        
-        # initialize dict to store all data
-        all_results[str(subset_size)] = {}
+        # Iterate over subset sizes (100 to 3500, step 20)
+        for subset_size in range(100, 3501, 20):
+            if str(subset_size) in all_results:
+                print(f"Skipping subset size {subset_size}, already computed.")
+                continue
+            
+            # initialize dict to store all data
+            all_results[str(subset_size)] = {}
 
+            for stratification_type in stratification_types:
+                subset_dir = f"{log_output_dir}/{stratification_type}_{subset_size}"
+                os.makedirs(subset_dir, exist_ok=True)
+
+                all_subset_metric_values = {}
+                all_similarity_scores = {}
+
+                if stratification_type == "splitwise":
+                    sampling_function = stratified_sampling_from_split
+                elif stratification_type == "global":
+                    sampling_function = stratified_sampling
+
+
+                for strat_metric in metrics:
+                    subset_data = sampling_function(
+                        data, 
+                        metric_values,
+                        strat_metric, 
+                        num_bins=num_bins, 
+                        subset_size=subset_size
+                    )
+
+                    subset_metric_values = extract_metrics(subset_data, metrics)
+                    all_subset_metric_values[strat_metric] = subset_metric_values
+                    all_similarity_scores[strat_metric] = compute_similarity_scores(metric_values, subset_metric_values, metrics)
+                
+                ranked_strats = rank_stratifications(all_similarity_scores)
+
+                # Store results for this subset size and stratification type
+                all_results[str(subset_size)][stratification_type] = ranked_strats
+
+            # Save after each subset size to avoid data loss
+            save_json(all_results, json_output_path)
+            print(f"Saved results for subset size {subset_size}.")
+
+    elif experiment == "create_subset":
+
+        subset_size = 2000
+        num_bins = 35
+        strat_metric = "FKGL"
+
+        # Run for both stratification types
         for stratification_type in stratification_types:
-            subset_dir = f"{log_output_dir}/{stratification_type}_{subset_size}"
-            os.makedirs(subset_dir, exist_ok=True)
+            output_dir = f"./../data/datasets/wikilarge_{stratification_type}_{subset_size}"
+            os.makedirs(output_dir, exist_ok=True)
 
             all_subset_metric_values = {}
             all_similarity_scores = {}
@@ -261,32 +316,16 @@ def main():
             elif stratification_type == "global":
                 sampling_function = stratified_sampling
 
+            subset_data = sampling_function(
+                data, 
+                metric_values,
+                strat_metric, 
+                num_bins=num_bins, 
+                subset_size=subset_size
+            )
 
-            for strat_metric in metrics:
-                subset_data = sampling_function(
-                    data, 
-                    metric_values,
-                    strat_metric, 
-                    num_bins=num_bins, 
-                    subset_size=subset_size
-                )
-
-                subset_metric_values = extract_metrics(subset_data, metrics)
-                all_subset_metric_values[strat_metric] = subset_metric_values
-                all_similarity_scores[strat_metric] = compute_similarity_scores(metric_values, subset_metric_values, metrics)
-            
-            ranked_strats = rank_stratifications(all_similarity_scores)
-
-            # Store results for this subset size and stratification type
-            all_results[str(subset_size)][stratification_type] = ranked_strats
-
-            # Save ranking log
-            # save_ranking_log(ranked_strats, log_output_dir)
-
-        # Save after each subset size to avoid data loss
-        save_json(all_results, json_output_path)
-        print(f"Saved results for subset size {subset_size}.")
-
+            subset_filepath = f"{output_dir}/dataset.jsonl"
+            save_jsonl(subset_data, subset_filepath)
 
 if __name__ == "__main__":
     main()
