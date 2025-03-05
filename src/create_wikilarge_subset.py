@@ -2,10 +2,6 @@ import json
 import os
 import numpy as np
 import pandas as pd
-import matplotlib.pyplot as plt
-import seaborn as sns
-from scipy.spatial.distance import jensenshannon
-from scipy.stats import wasserstein_distance, ks_2samp
 from classes.Metrics import Metrics
 
 def load_jsonl(filepath: str) -> list:
@@ -29,29 +25,10 @@ def save_jsonl(data: list, filepath: str) -> None:
                     source_text=source_text
                     ).compute_bertscore()
                 
-                # Append the scores to the target_metrics
                 simplification['target_metrics']['BLEU'] = bleu
                 simplification['target_metrics']['BERTScore'] = bertscore
 
             f.write(json.dumps(line) + "\n")
-
-def remove_outliers_by_char_length(data: list, lower_percentile=3, upper_percentile=97) -> list:
-    """Remove entries based on character length outliers (3rd and 97th percentiles)."""
-    
-    # Calculate the character length for each entry
-    char_lengths = [len(line["source_text"]) for line in data]
-
-    # Calculate the lower and upper percentiles for character length
-    lower_threshold = np.percentile(char_lengths, lower_percentile)
-    upper_threshold = np.percentile(char_lengths, upper_percentile)
-
-    # Filter out entries based on the character length thresholds
-    filtered_data = [
-        line for line in data
-        if lower_threshold <= len(line["source_text"]) <= upper_threshold
-    ]
-
-    return filtered_data
 
 def extract_metrics(data: list, metrics: list) -> dict:
     """Extract specified metric values from dataset."""
@@ -99,184 +76,49 @@ def stratified_sampling_from_split(data: list, metric_values: dict, metric: str,
 
     return sampled_train + sampled_valid + sampled_test
 
-def plot_final_multi_metric(metric_values: dict, all_subset_metric_values: dict, strat_metrics: list, metrics: list, subset_dir: str) -> None:
-    """Create a single multi-plot where each row represents a stratification metric."""
-    num_strat_metrics = len(strat_metrics)
-    num_metrics = len(metrics)
-
-    fig, axes = plt.subplots(num_strat_metrics, num_metrics, figsize=(4 * num_metrics, 4 * num_strat_metrics), constrained_layout=True)
-
-    for row, strat_metric in enumerate(strat_metrics):
-        subset_metric_values = all_subset_metric_values[strat_metric]
-        
-        axes[row, 0].annotate(
-            f"Stratified by {strat_metric}",
-            xy=(0, 0.5),
-            xytext=(-axes[row, 0].yaxis.labelpad - 30, 0),
-            xycoords=axes[row, 0].yaxis.label,
-            textcoords="offset points",
-            size=12,
-            ha="right",
-            va="center",
-            rotation=90,
-            fontweight="bold"
-        )
-        
-        for col, metric in enumerate(metrics):
-            ax = axes[row, col]
-            sns.kdeplot(metric_values[metric], color="blue", label="Full Dataset", ax=ax)
-            sns.kdeplot(subset_metric_values[metric], color="red", label="Subset", ax=ax)
-            ax.set_title(f"{metric}")
-            
-            if col == 0:
-                ax.set_ylabel("Density")
-            if row == num_strat_metrics - 1:
-                ax.set_xlabel(metric)
-            if row == 0 and col == num_metrics - 1:
-                ax.legend()
-
-    plot_filepath = f"{subset_dir}/stratification_metrics.png"
-    os.makedirs(os.path.dirname(plot_filepath), exist_ok=True)
-    plt.savefig(plot_filepath, dpi=400)
-    plt.close()
-
-def compute_similarity_scores(full_data: dict, subset_data: dict, metrics: list, n_bins=25) -> dict:
-    """ Compute JSD, EMD, and KS scores to quantify similarity between distributions.
-
-        JSD: Jensen–Shannon divergence
-        EMD: Earth Mover's Distance
-        KS: Kolmogorov-Smirnov Statistic
-    
-    """
-    scores = {metric: {"JSD": None, "EMD": None, "KS": None} for metric in metrics}
-    
-    for metric in metrics:
-        full_dist = np.array(full_data[metric])
-        subset_dist = np.array(subset_data[metric])
-
-        bins = np.histogram_bin_edges(np.concatenate([full_dist, subset_dist]), bins=n_bins)
-        full_hist, _ = np.histogram(full_dist, bins=bins, density=True)
-        subset_hist, _ = np.histogram(subset_dist, bins=bins, density=True)
-        jsd = jensenshannon(full_hist, subset_hist)
-
-        emd = wasserstein_distance(full_dist, subset_dist)
-
-        ks_stat, _ = ks_2samp(full_dist, subset_dist)
-
-        scores[metric] = {"JSD": jsd, "EMD": emd, "KS": ks_stat}
-
-    return scores
-
-def rank_stratifications(all_scores: dict) -> dict:
-    """Compute separate rankings for JSD, EMD, and KS scores across all stratification methods."""
-    strat_ranking = {metric: {} for metric in ["JSD", "EMD", "KS"]}
-
-    for strat_metric, metric_scores in all_scores.items():
-        strat_ranking["JSD"][strat_metric] = np.mean([metric_scores[m]["JSD"] for m in metric_scores])
-        strat_ranking["EMD"][strat_metric] = np.mean([metric_scores[m]["EMD"] for m in metric_scores])
-        strat_ranking["KS"][strat_metric] = np.mean([metric_scores[m]["KS"] for m in metric_scores])
-
-    # Rank each metric separately (lower scores mean more similarity)
-    ranked_strats = {
-        metric: sorted(strat_ranking[metric].items(), key=lambda x: x[1])
-        for metric in ["JSD", "EMD", "KS"]
-    }
-
-    return ranked_strats
-
-# def save_ranking_log(ranked_strats: dict, subset_dir: str) -> None:
-#     """Save stratification ranking to a log file and a JSON file."""
-#     log_filepath = f"{subset_dir}/metric_rank_log.txt"
-#     json_filepath = f"{subset_dir}/metric_rank_log.json"
-    
-#     os.makedirs(os.path.dirname(log_filepath), exist_ok=True)
-
-#     with open(log_filepath, "w", encoding="utf-8") as f:
-#         f.write("=== Stratification Rankings (Lower Score = More Representative) ===\n\n")
-#         for metric, rankings in ranked_strats.items():
-#             f.write(f"--- {metric} Ranking ---\n")
-#             for rank, (strat, score) in enumerate(rankings, start=1):
-#                 f.write(f"{rank}. Stratified by {strat}: {score:.4f}\n")
-#             f.write("\n")
-
-#     with open(json_filepath, "w", encoding="utf-8") as f:
-#         json.dump(ranked_strats, f, indent=4)
-
-def save_json(data: dict, filepath: str) -> None:
-    """Save dictionary data to a JSON file."""
-    os.makedirs(os.path.dirname(filepath), exist_ok=True)
-    with open(filepath, "w", encoding="utf-8") as f:
-        json.dump(data, f, indent=4)
-
 def main():
-
-    num_bins = 45
-    stratification_types = ["splitwise", "global"] 
-    full_dataset_path = "./../data/datasets/wikilarge/dataset.jsonl"
-    experiment_dir = f"./../experiments/sample_from_wikilarge/num_bins_{num_bins}"
-    log_output_dir = os.path.join(experiment_dir, "logs")
-    os.makedirs(log_output_dir, exist_ok=True)
-    os.makedirs(experiment_dir, exist_ok=True)
-    json_output_path = f"{experiment_dir}/all_divergence_results.json"
-    metrics = ["char_count", "word_count", "sentence_count", "FKGL", "ARI", "FRE", "Dale-Chall"]
+    # Parameters
+    num_bins = 35
+    stratification_metric = "FKGL"
+    subset_size = 2000  # subset size as requested
+    base_dir = "./../data/datasets"
+    full_dataset_path = f"{base_dir}/wikilarge/dataset.jsonl"
     
+    # create output dirs and paths
+    splitwise_output_dir = f"{base_dir}/wikilarge_splitwise"
+    global_output_dir = f"{base_dir}/wikilarge_global"
+    os.makedirs(splitwise_output_dir, exist_ok=True)
+    os.makedirs(global_output_dir, exist_ok=True)
+    splitwise_output_path = f"{splitwise_output_dir}/dataset.jsonl"
+    global_output_path = f"{global_output_dir}/dataset.jsonl"
+    
+    # Load dataset
     data = load_jsonl(full_dataset_path)
-    data = remove_outliers_by_char_length(data) # remove outliers only char length
+    metrics = ["char_count", "word_count", "sentence_count", "FKGL", "ARI", "FRE", "Dale-Chall"]
     metric_values = extract_metrics(data, metrics)
-    
-    # Load previous results if the JSON file exists
-    if os.path.exists(json_output_path):
-        with open(json_output_path, "r", encoding="utf-8") as f:
-            all_results = json.load(f)
-    else:
-        all_results = {}
-
-    # Iterate over subset sizes (100 to 3500, step 20)
-    for subset_size in range(100, 3501, 20):
-        if str(subset_size) in all_results:
-            print(f"Skipping subset size {subset_size}, already computed.")
-            continue
-        
-        # initialize dict to store all data
-        all_results[str(subset_size)] = {}
-
-        for stratification_type in stratification_types:
-            subset_dir = f"{log_output_dir}/{stratification_type}_{subset_size}"
-            os.makedirs(subset_dir, exist_ok=True)
-
-            all_subset_metric_values = {}
-            all_similarity_scores = {}
-
-            if stratification_type == "splitwise":
-                sampling_function = stratified_sampling_from_split
-            elif stratification_type == "global":
-                sampling_function = stratified_sampling
 
 
-            for strat_metric in metrics:
-                subset_data = sampling_function(
-                    data, 
-                    metric_values,
-                    strat_metric, 
-                    num_bins=num_bins, 
-                    subset_size=subset_size
-                )
+    # Stratified Sampling - Splitwise
+    sampled_splitwise = stratified_sampling_from_split(
+        data, 
+        metric_values, 
+        stratification_metric, 
+        num_bins=num_bins, 
+        subset_size=subset_size
+    )
+    save_jsonl(sampled_splitwise, splitwise_output_path)
+    print(f"Saved splitwise stratified dataset to {splitwise_output_path}.")
 
-                subset_metric_values = extract_metrics(subset_data, metrics)
-                all_subset_metric_values[strat_metric] = subset_metric_values
-                all_similarity_scores[strat_metric] = compute_similarity_scores(metric_values, subset_metric_values, metrics)
-            
-            ranked_strats = rank_stratifications(all_similarity_scores)
-
-            # Store results for this subset size and stratification type
-            all_results[str(subset_size)][stratification_type] = ranked_strats
-
-            # Save ranking log
-            # save_ranking_log(ranked_strats, log_output_dir)
-
-        # Save after each subset size to avoid data loss
-        save_json(all_results, json_output_path)
-        print(f"Saved results for subset size {subset_size}.")
+    # Stratified Sampling - Global
+    sampled_global = stratified_sampling(
+        data, 
+        metric_values, 
+        stratification_metric, 
+        num_bins=num_bins, 
+        subset_size=subset_size
+    )
+    save_jsonl(sampled_global, global_output_path)
+    print(f"Saved global stratified dataset to {global_output_path}.")
 
 if __name__ == "__main__":
     main()
