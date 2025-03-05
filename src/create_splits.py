@@ -200,19 +200,19 @@ def main():
             print(f"Splits for {dataset_name} generated and saved.")
 
             # Calculate KL Divergence between distributions
-            kl_train,_ = ks_2samp(full_metric_values[STRAT_METRIC], train_metric_values[STRAT_METRIC])
-            kl_val,_ = ks_2samp(full_metric_values[STRAT_METRIC], val_metric_values[STRAT_METRIC])
-            kl_test,_ = ks_2samp(full_metric_values[STRAT_METRIC], test_metric_values[STRAT_METRIC])
+            ks_train,_ = ks_2samp(full_metric_values[STRAT_METRIC], train_metric_values[STRAT_METRIC])
+            ks_val,_ = ks_2samp(full_metric_values[STRAT_METRIC], val_metric_values[STRAT_METRIC])
+            ks_test,_ = ks_2samp(full_metric_values[STRAT_METRIC], test_metric_values[STRAT_METRIC])
 
             # Store results for each experiment
             EXPERIMENT_RESULTS.append({
                 "dataset": dataset_name,
                 "strat_metric": STRAT_METRIC,
                 "num_bins": NUM_BINS,
-                "KL_full_train": kl_train,
-                "KL_full_val": kl_val,
-                "KL_full_test": kl_test,
-                "average_KL": np.mean([kl_train, kl_val, kl_test])
+                "KS_full_train": ks_train,
+                "KS_full_val": ks_val,
+                "KS_full_test": ks_test,
+                "average_KS": np.mean([ks_train, ks_val, ks_test])
             })
 
     with open(f"./../experiments/splits/stratified_by_{STRAT_METRIC}/all_results.json", "w") as f:
