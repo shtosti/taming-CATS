@@ -1,15 +1,29 @@
 # keep-it-simple
 
+This repository is a thesis project at the University of Zurich. The goal is to explore approaches to text simplification with LLMs, via SFT with control tokens and controlled decoding.
+
+
+See below for often looked up commands and information.
+
 ## Working on Cluster
 
 ### Account
 Project tenant name (account): **iict-sp1.ebling.cl.uzh**
 
 ### conda venv
-Activate virtual environment: `conda activate sft`
-Install additional packages: `conda install package-name`
-Update YAML file with new packages: `conda env export --name sft --from-history > environment.yml`
-Update conda if required: `conda update -n base -c conda-forge conda`
+<br>Activate virtual environment: `conda activate sft`
+<br>Install additional packages: `conda install package-name`
+<br>Update YAML file with new packages: `conda env export --name sft --from-history > environment.yml`
+<br>Update conda if required: `conda update -n base -c conda-forge conda`
+
+## Hugging Face
+### Datasets
+<br>SSH connection to the cluster is required. Connection established. Works like a normal repository.
+<br>NB: issues when uploading large files! Upload them directly via the Hugging Face website.
+
+Commands:
+- Connect to Hugging Face repositories: `huggingface-cli login` (Access token saved in `.env` file)
+- clone repository from Hugging Face: `git clone https://huggingface.co/datasets/<your-username>/<your-dataset-name>`
 
 
 ## Classes
