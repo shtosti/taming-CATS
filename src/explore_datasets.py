@@ -22,6 +22,30 @@ def load_jsonl(filepath: str) -> list:
             data.append(json.loads(line))
     return data
 
+def get_correlation_strength(corr_coeff: float) -> str:
+    """Return the correlation strength description based on the correlation coefficient."""
+    if abs(corr_coeff) < 0.2:
+        return "Very weak"
+    elif abs(corr_coeff) < 0.4:
+        return "Weak"
+    elif abs(corr_coeff) < 0.6:
+        return "Moderate"
+    elif abs(corr_coeff) < 0.8:
+        return "Strong"
+    else:
+        return "Very Strong"
+    
+def get_significance_level(p_value: float) -> str:
+    """Return significance level based on the p-value."""
+    if p_value <= 0.001:
+        return "***"  # Very highly significant
+    elif p_value <= 0.01:
+        return "**"  # Highly significant
+    elif p_value <= 0.05:
+        return "*"  # Significant
+    else:
+        return "n.s."  # Not significant
+
 def plot_compression(data: list, metric: str, dataset_dir: str) -> None:
     source_lengths, target_lengths = get_compression_values(data, metric)
 
@@ -56,13 +80,13 @@ def plot_compression(data: list, metric: str, dataset_dir: str) -> None:
 
     # Plot the overlap as a bar plot with gray color
     # We use the bins[:-1] for proper alignment and width as np.diff(bins)
-    plt.bar(bins[:-1], overlap, width=np.diff(bins), align="edge", color=COLORMAP["overlap_color"], alpha=0.7, edgecolor="black", label="Overlap")
+    plt.bar(bins[:-1], overlap, width=np.diff(bins), align="edge", color=COLORMAP["overlap_color"], alpha=1, edgecolor="black", label="Overlap")
 
     # Add KDE for smooth distribution curves
     if len(set(source_lengths)) > 1:
-        sns.kdeplot(source_lengths, color=COLORMAP["text_type"].get("source"), linewidth=2, label="Original KDE")
+        sns.kdeplot(source_lengths, color=COLORMAP["text_type"].get("source"), linewidth=1.5, label="Original KDE")
     if len(set(target_lengths)) > 1:
-        sns.kdeplot(target_lengths, color=COLORMAP["text_type"].get("target"), linewidth=2, label="Simplification KDE")
+        sns.kdeplot(target_lengths, color=COLORMAP["text_type"].get("target"), linewidth=1.5, label="Simplification KDE")
 
     if metric in ["char_count", "sentence_count", "word_count"]:
         plt.xlabel(f'{metric} Count')
@@ -78,11 +102,24 @@ def plot_compression(data: list, metric: str, dataset_dir: str) -> None:
     ############ scatter plot ############
     plt.figure(figsize=(5, 5))
 
-    plt.scatter(target_lengths, source_lengths, alpha=0.3, color=COLORMAP["common_color"], label="Source vs Target")
+    plt.scatter(
+        target_lengths, 
+        source_lengths, 
+        edgecolor=COLORMAP["common_color"],  # Edge color of the dots
+        linewidth=0.5,
+        alpha=0.4, 
+        color=COLORMAP["common_color"], 
+        label="Source vs Target"
+        )
 
     # Display the Pearson correlation and line as previously defined
     if len(source_lengths) > 1 and len(target_lengths) > 1:
-        corr_coeff, _ = pearsonr(source_lengths, target_lengths)
+        corr_coeff, p_value = pearsonr(source_lengths, target_lengths)
+
+        # compute correlation strength
+        correlation_strength = get_correlation_strength(corr_coeff)
+        # compute significance level
+        p_val_interpretation = get_significance_level(p_value)
 
         avg_source = np.mean(source_lengths)
         avg_target = np.mean(target_lengths)
@@ -92,7 +129,7 @@ def plot_compression(data: list, metric: str, dataset_dir: str) -> None:
         line_y = slope * line_x
         plt.plot(line_x, line_y, color=COLORMAP["common_color"], linestyle='-', label="Mean value")
 
-        plt.text(0.05, 0.95, f"Pearson: {corr_coeff:.4f}", transform=plt.gca().transAxes,
+        plt.text(0.05, 0.95, f"Pearson: {corr_coeff:.4f} ({correlation_strength})", transform=plt.gca().transAxes,
                  fontsize=12, verticalalignment='top', color='black')
 
     # Set the same scale for both axes
@@ -102,6 +139,7 @@ def plot_compression(data: list, metric: str, dataset_dir: str) -> None:
     plt.ylim(min_val, max_val)
     plt.xlabel(f'Simplification {metric} Count')
     plt.ylabel(f'Original {metric} Count')
+    plt.title(p_val_interpretation)
 
     # Save the plot
     output_dir = f"{dataset_dir}/stats/distributions"
@@ -249,18 +287,14 @@ def plot_source_target_comparison(source_vals: list, target_vals: list, metric: 
 def main():
 
     DATASETS = [
-        # "simpa"
-        # "simpa_lexical",
-        # "simpa_syntactic",
-        # "newsela",
-        # "medeasi",
-        # "wikilarge_1000",
-        # "wikilarge_1000_from_splits",
-        # "wikilarge_2000",
-        # "wikilarge_2000_from_splits",
-        # "wikilarge_3000",
-        # "wikilarge_3000_from_splits",
-        "wikilarge"
+        "simpa",
+        "simpa_lexical",
+        "simpa_syntactic",
+        "newsela",
+        "medeasi",
+        "wikilarge",
+        "wikilarge_global_2000",
+        "wikilarge_splitwise_2000"
     ]
     DATA_DIR = "./../data" 
 
