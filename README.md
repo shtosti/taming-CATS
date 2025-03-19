@@ -8,7 +8,7 @@ Project tenant name (account): **iict-sp1.ebling.cl.uzh**
 ### conda venv
 Activate virtual environment: `conda activate sft`
 Install additional packages: `conda install package-name`
-Update YAML file with new packages: `conda env update --name sft --file environment.yml --prune`
+Update YAML file with new packages: `conda env export --name sft --from-history > environment.yml`
 Update conda if required: `conda update -n base -c conda-forge conda`
 
 
