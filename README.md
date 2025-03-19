@@ -1,7 +1,15 @@
 # keep-it-simple
 
 ## Working on Cluster
-- project tenant name (account): iict-sp1.ebling.cl.uzh
+
+### Account
+Project tenant name (account): **iict-sp1.ebling.cl.uzh**
+
+### conda venv
+Activate virtual environment: `conda activate sft`
+Install additional packages: `conda install package-name`
+Update YAML file with new packages: `conda env update --name sft --file environment.yml --prune`
+
 
 ## Classes
 - Dataset
