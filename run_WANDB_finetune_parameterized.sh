@@ -21,14 +21,14 @@ EPOCHS=1
 BATCH_SIZE=4 # TODO increase to 8 or 16
 LR=1e-5
 WEIGHT_DECAY=0.01
-LOGGING_STEPS=40
-LOG_EVERY=40
+LOGGING_STEPS=10
+LOG_EVERY=10
 
 # --- WANDB settings ---
 WANDB_PROJECT_NAME="thesis-SFT"
 WANDB_ENTITY="shtosti"
 
-python src/WANDB_finetune_parameterized.py \
+CUDA_LAUNCH_BLOCKING=1 python src/WANDB_finetune_parameterized.py \
     --model_name "$MODEL_NAME" \
     --dataset_name "$DATASET_NAME" \
     --slice_train "$SLICE_TRAIN" \
