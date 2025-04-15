@@ -53,15 +53,18 @@ def create_user_prompt(user_prompts, metric_name, metric_value, user_prompt_id, 
         if "examples" in user_prompt_id and examples:
             for i, example in enumerate(examples, start=1):
                 prompt_text = prompt_text.replace(f"{{EXAMPLE_{i}}}", example)
-        
-        # Replace the {VALUE} placeholder with the actual control token value
-        return prompt_id, prompt_text.replace("{VALUE}", str(metric_value)).replace("{TEXT}", text).replace("{EOT_TOKEN}", "<|eot_id|>")
+
+        prompt_text = prompt_text.replace("{VALUE}", str(metric_value))
+        prompt_text = prompt_text.replace("{TEXT}", text)
+        prompt_text = prompt_text.replace("{EOT_TOKEN}", "<|eot_id|>")
+        # print(f"Prompt before return: {prompt_text}") # for debugging
+        return prompt_id, prompt_text
     
     # Fallback: If the metric is not found, return a default prompt
     return user_prompt_id, f"Simplify the following text: \n\n{text}"
 
 def format_prompt_with_special_tokens(system_prompt, user_prompt):
-    formatted_prompt = f"""<|begin_of_text|><|start_header_id|>system<|end_header_id|> {system_prompt}<|eot_id|>\n<|start_header_id|>user<|end_header_id|> {user_prompt}\n<|start_header_id|>assistant<|end_header_id|> SIMPLIFICATION: """
+    formatted_prompt = f"""<|begin_of_text|><|start_header_id|>system<|end_header_id|> {system_prompt}<|eot_id|>\n<|start_header_id|>user<|end_header_id|> {user_prompt}\n<|start_header_id|>assistant<|end_header_id|> """
     return formatted_prompt
 
 def format_completion_with_special_tokens(completion):
