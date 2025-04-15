@@ -1,0 +1,96 @@
+
+CondaError: Run 'conda init' before 'conda activate'
+
+comet_ml is installed but the Comet API Key is not configured. Please set the `COMET_API_KEY` environment variable to enable Comet logging. Check out the documentation for other ways of configuring it: https://www.comet.com/docs/v2/guides/experiment-management/configure-sdk/#set-the-api-key
+wandb: Using wandb-core as the SDK backend.  Please refer to https://wandb.me/wandb-core for more information.
+wandb: Appending key for api.wandb.ai to your netrc file: /home/hhubar/.netrc
+wandb: Currently logged in as: hanna-hubarava (shtosti) to https://api.wandb.ai. Use `wandb login --relogin` to force relogin
+wandb: Tracking run with wandb version 0.19.9
+wandb: Run data is saved locally in /data/hhubar/keep-it-simple/wandb/run-20250408_233326-gzkb0oga
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run rosy-water-24
+wandb: ⭐️ View project at https://wandb.ai/shtosti/thesis-SFT
+wandb: 🚀 View run at https://wandb.ai/shtosti/thesis-SFT/runs/gzkb0oga
+The token has not been saved to the git credentials helper. Pass `add_to_git_credential=True` in this function directly or `--add-to-git-credential` if using via `huggingface-cli` if you want to set the git credential as well.
+Token is valid (permission: write).
+The token `mine` has been saved to /home/hhubar/data/.cache/huggingface/stored_tokens
+Your token has been saved to /home/hhubar/data/.cache/huggingface/token
+Login successful.
+Note: Environment variable`HF_TOKEN` is set and is the current active token independently from the token you've just configured.
+The token has not been saved to the git credentials helper. Pass `add_to_git_credential=True` in this function directly or `--add-to-git-credential` if using via `huggingface-cli` if you want to set the git credential as well.
+Token is valid (permission: write).
+The token `mine` has been saved to /home/hhubar/data/.cache/huggingface/stored_tokens
+Your token has been saved to /home/hhubar/data/.cache/huggingface/token
+Login successful.
+Note: Environment variable`HF_TOKEN` is set and is the current active token independently from the token you've just configured.
+Map:   0%|          | 0/30 [00:00<?, ? examples/s]Map:   3%|▎         | 1/30 [00:00<00:19,  1.52 examples/s]Map: 100%|██████████| 30/30 [00:01<00:00, 20.67 examples/s]
+Map:   0%|          | 0/30 [00:00<?, ? examples/s]Map:   3%|▎         | 1/30 [00:00<00:09,  3.07 examples/s]Map: 100%|██████████| 30/30 [00:00<00:00, 60.69 examples/s]
+Map:   0%|          | 0/30 [00:00<?, ? examples/s]Map:   0%|          | 0/30 [00:00<?, ? examples/s]
+Traceback (most recent call last):
+  File "/data/hhubar/keep-it-simple/./src/WANDB_finetune.py", line 78, in <module>
+    train_dataset = train_dataset.map(tokenize, batched=True)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/datasets/arrow_dataset.py", line 557, in wrapper
+    out: Union["Dataset", "DatasetDict"] = func(self, *args, **kwargs)
+                                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/datasets/arrow_dataset.py", line 3074, in map
+    for rank, done, content in Dataset._map_single(**dataset_kwargs):
+                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/datasets/arrow_dataset.py", line 3516, in _map_single
+    for i, batch in iter_outputs(shard_iterable):
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/datasets/arrow_dataset.py", line 3466, in iter_outputs
+    yield i, apply_function(example, i, offset=offset)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/datasets/arrow_dataset.py", line 3389, in apply_function
+    processed_inputs = function(*fn_args, *additional_args, **fn_kwargs)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/hhubar/keep-it-simple/./src/WANDB_finetune.py", line 70, in tokenize
+    return tokenizer(
+           ^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/transformers/tokenization_utils_base.py", line 2887, in __call__
+    encodings = self._call_one(text=text, text_pair=text_pair, **all_kwargs)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/transformers/tokenization_utils_base.py", line 2975, in _call_one
+    return self.batch_encode_plus(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/transformers/tokenization_utils_base.py", line 3168, in batch_encode_plus
+    padding_strategy, truncation_strategy, max_length, kwargs = self._get_padding_truncation_strategies(
+                                                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/transformers/tokenization_utils_base.py", line 2789, in _get_padding_truncation_strategies
+    raise ValueError(
+ValueError: Asking to pad but the tokenizer does not have a padding token. Please select a token to use as `pad_token` `(tokenizer.pad_token = tokenizer.eos_token e.g.)` or add a new pad token via `tokenizer.add_special_tokens({'pad_token': '[PAD]'})`.
+Traceback (most recent call last):
+  File "/data/hhubar/keep-it-simple/./src/WANDB_finetune.py", line 78, in <module>
+    train_dataset = train_dataset.map(tokenize, batched=True)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/datasets/arrow_dataset.py", line 557, in wrapper
+    out: Union["Dataset", "DatasetDict"] = func(self, *args, **kwargs)
+                                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/datasets/arrow_dataset.py", line 3074, in map
+    for rank, done, content in Dataset._map_single(**dataset_kwargs):
+                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/datasets/arrow_dataset.py", line 3516, in _map_single
+    for i, batch in iter_outputs(shard_iterable):
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/datasets/arrow_dataset.py", line 3466, in iter_outputs
+    yield i, apply_function(example, i, offset=offset)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/datasets/arrow_dataset.py", line 3389, in apply_function
+    processed_inputs = function(*fn_args, *additional_args, **fn_kwargs)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/hhubar/keep-it-simple/./src/WANDB_finetune.py", line 70, in tokenize
+    return tokenizer(
+           ^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/transformers/tokenization_utils_base.py", line 2887, in __call__
+    encodings = self._call_one(text=text, text_pair=text_pair, **all_kwargs)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/transformers/tokenization_utils_base.py", line 2975, in _call_one
+    return self.batch_encode_plus(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/transformers/tokenization_utils_base.py", line 3168, in batch_encode_plus
+    padding_strategy, truncation_strategy, max_length, kwargs = self._get_padding_truncation_strategies(
+                                                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/transformers/tokenization_utils_base.py", line 2789, in _get_padding_truncation_strategies
+    raise ValueError(
+ValueError: Asking to pad but the tokenizer does not have a padding token. Please select a token to use as `pad_token` `(tokenizer.pad_token = tokenizer.eos_token e.g.)` or add a new pad token via `tokenizer.add_special_tokens({'pad_token': '[PAD]'})`.

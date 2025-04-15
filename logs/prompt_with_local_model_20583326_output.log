@@ -1,0 +1,71 @@
+Wed Apr  9 12:57:08 2025       
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 560.35.05              Driver Version: 560.35.05      CUDA Version: 12.6     |
+|-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  Tesla V100-SXM2-16GB           Off |   00000000:B3:00.0 Off |                    0 |
+| N/A   32C    P0             39W /  300W |       1MiB /  16384MiB |      0%      Default |
+|                                         |                        |                  N/A |
++-----------------------------------------+------------------------+----------------------+
+                                                                                         
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI        PID   Type   Process name                              GPU Memory |
+|        ID   ID                                                               Usage      |
+|=========================================================================================|
+|  No running processes found                                                             |
++-----------------------------------------------------------------------------------------+
+current working directory:
+/home/hhubar/scratch/keep-it-simple
+Running on u20-chiivm0-604
+Wed Apr  9 12:57:08 2025       
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 560.35.05              Driver Version: 560.35.05      CUDA Version: 12.6     |
+|-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  Tesla V100-SXM2-16GB           Off |   00000000:B3:00.0 Off |                    0 |
+| N/A   33C    P0             39W /  300W |       1MiB /  16384MiB |      0%      Default |
+|                                         |                        |                  N/A |
++-----------------------------------------+------------------------+----------------------+
+                                                                                         
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI        PID   Type   Process name                              GPU Memory |
+|        ID   ID                                                               Usage      |
+|=========================================================================================|
+|  No running processes found                                                             |
++-----------------------------------------------------------------------------------------+
+Running the script ./src/SFT_prompting.py ...
+CUDA available: True
+Number of GPUs: 1
+GPU name: Tesla V100-SXM2-16GB
+validation:	 Inspect the dataset format:
+ {'global_id': ['medeasi_001210', 'medeasi_000942', 'medeasi_000633'], 'source_text': ['This increased risk is greatest at two to three months of age.', 'No cure for the common cold exists , but the symptoms can be treated .', 'Poor immune function is a risk factor for disease.'], 'metadata': [{'dataset': 'medeasi', 'experiment_split': '', 'domain': 'medical', 'language': 'en', 'annotation': 'human', 'level': 'sentence'}, {'dataset': 'medeasi', 'experiment_split': '', 'domain': 'medical', 'language': 'en', 'annotation': 'human', 'level': 'sentence'}, {'dataset': 'medeasi', 'experiment_split': '', 'domain': 'medical', 'language': 'en', 'annotation': 'human', 'level': 'sentence'}], 'source_metrics': [{'FRE': 93.14, 'ARI': 4.6, 'FKGL': 3.3, 'Dale-Chall': 9.5, 'char_count': 62, 'alphanum_count': 50, 'word_count': 13, 'sentence_count': 1}, {'FRE': 83.66, 'ARI': 5.4, 'FKGL': 4.8, 'Dale-Chall': 9.14, 'char_count': 70, 'alphanum_count': 54, 'word_count': 15, 'sentence_count': 1}, {'FRE': 79.26, 'ARI': 5.1, 'FKGL': 4.4, 'Dale-Chall': 12.86, 'char_count': 50, 'alphanum_count': 41, 'word_count': 10, 'sentence_count': 1}], 'simplifications': [[{'simplification_text': 'This risk is highest in infants who are two to three months old.', 'simplification_version': 1, 'grade_level': -1, 'control_attributes_access': {'NbChars': '<NbChars_0.0>', 'LevSim': '<LevSim_0.0>', 'WordFreq': '<WordFreq_0.0>', 'DepTreeDepth': '<DepTreeDepth_0.0>'}, 'control_attributes_muss': {'NumChars': '<NumChars_0%>', 'LevSim': '<LevSim_0%>', 'WordFreq': '<WordFreq_0%>', 'DepTreeDepth': '<DepTreeDepth_0%>'}, 'simplification_dimensions': {'linguistic': {'lexical': False, 'syntactic': False}}, 'target_metrics': {'FRE': 92.12, 'ARI': 3.9, 'FKGL': 3.6, 'Dale-Chall': 9.14, 'char_count': 64, 'alphanum_count': 51, 'word_count': 14, 'sentence_count': 1, 'char_compression_rate': 1.03, 'word_compression_rate': 1.08, 'sentence_compression_rate': 1.0, 'BLEU': 22.718709780542323, 'BERTScore': 0.9562927484512329}}], [{'simplification_text': 'There is no cure for the common cold , but the symptoms can be treated .\n', 'simplification_version': 1, 'grade_level': -1, 'control_attributes_access': {'NbChars': '<NbChars_0.0>', 'LevSim': '<LevSim_0.0>', 'WordFreq': '<WordFreq_0.0>', 'DepTreeDepth': '<DepTreeDepth_0.0>'}, 'control_attributes_muss': {'NumChars': '<NumChars_0%>', 'LevSim': '<LevSim_0%>', 'WordFreq': '<WordFreq_0%>', 'DepTreeDepth': '<DepTreeDepth_0%>'}, 'simplification_dimensions': {'linguistic': {'lexical': False, 'syntactic': False}}, 'target_metrics': {'FRE': 91.11, 'ARI': 4.7, 'FKGL': 4.0, 'Dale-Chall': 7.71, 'char_count': 73, 'alphanum_count': 55, 'word_count': 16, 'sentence_count': 1, 'char_compression_rate': 1.04, 'word_compression_rate': 1.07, 'sentence_compression_rate': 1.0, 'BLEU': 67.39047062564734, 'BERTScore': 0.976331353187561}}], [{'simplification_text': 'Poor immune function is also a risk factor for disease.', 'simplification_version': 1, 'grade_level': -1, 'control_attributes_access': {'NbChars': '<NbChars_0.0>', 'LevSim': '<LevSim_0.0>', 'WordFreq': '<WordFreq_0.0>', 'DepTreeDepth': '<DepTreeDepth_0.0>'}, 'control_attributes_muss': {'NumChars': '<NumChars_0%>', 'LevSim': '<LevSim_0%>', 'WordFreq': '<WordFreq_0%>', 'DepTreeDepth': '<DepTreeDepth_0%>'}, 'simplification_dimensions': {'linguistic': {'lexical': False, 'syntactic': False}}, 'target_metrics': {'FRE': 69.79, 'ARI': 5.2, 'FKGL': 6.0, 'Dale-Chall': 12.03, 'char_count': 55, 'alphanum_count': 45, 'word_count': 11, 'sentence_count': 1, 'char_compression_rate': 1.1, 'word_compression_rate': 1.1, 'sentence_compression_rate': 1.0, 'BLEU': 70.16879391277372, 'BERTScore': 0.9842488765716553}}]]}
+Saving results to: experiments/prompting/dynamic_prompting_token_ARI/vanilla/Llama-3.2-1B-Instruct/medeasi/20250409_130817/results.jsonl
+Model used: Llama-3.2-1B-Instruct
+Control token used: <ARI=3.9>
+Simplified text: INSTRUCTION: 
+Simplify the following text such that its Automated Readability Index (ARI) score is a...
+Saved output for medeasi_001210
+Output saved to experiments/prompting/dynamic_prompting_token_ARI/vanilla/Llama-3.2-1B-Instruct/medeasi/20250409_130817/results.jsonl
+
+Model used: Llama-3.2-1B-Instruct
+Control token used: <ARI=4.7>
+Simplified text: INSTRUCTION: 
+Simplify the following text such that its Automated Readability Index (ARI) score is a...
+Saved output for medeasi_000942
+Output saved to experiments/prompting/dynamic_prompting_token_ARI/vanilla/Llama-3.2-1B-Instruct/medeasi/20250409_130817/results.jsonl
+
+Model used: Llama-3.2-1B-Instruct
+Control token used: <ARI=5.2>
+Simplified text: INSTRUCTION: 
+Simplify the following text such that its Automated Readability Index (ARI) score is a...
+Saved output for medeasi_000633
+Output saved to experiments/prompting/dynamic_prompting_token_ARI/vanilla/Llama-3.2-1B-Instruct/medeasi/20250409_130817/results.jsonl
+

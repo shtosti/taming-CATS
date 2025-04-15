@@ -1,0 +1,100 @@
+
+CondaError: Run 'conda init' before 'conda activate'
+
+wandb: Using wandb-core as the SDK backend.  Please refer to https://wandb.me/wandb-core for more information.
+wandb: Appending key for api.wandb.ai to your netrc file: /home/hhubar/.netrc
+wandb: Currently logged in as: hanna-hubarava (shtosti) to https://api.wandb.ai. Use `wandb login --relogin` to force relogin
+wandb: Tracking run with wandb version 0.19.9
+wandb: Run data is saved locally in /scratch/hhubar/keep-it-simple/wandb/run-20250409_145541-mlfou63d
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run stellar-glade-36
+wandb: ⭐️ View project at https://wandb.ai/shtosti/thesis-SFT
+wandb: 🚀 View run at https://wandb.ai/shtosti/thesis-SFT/runs/mlfou63d
+You are using a model of type qwen2 to instantiate a model of type llama. This is not supported for all configurations of models and can yield errors.
+The token has not been saved to the git credentials helper. Pass `add_to_git_credential=True` in this function directly or `--add-to-git-credential` if using via `huggingface-cli` if you want to set the git credential as well.
+Token is valid (permission: write).
+The token `mine` has been saved to /home/hhubar/data/.cache/huggingface/stored_tokens
+Your token has been saved to /home/hhubar/data/.cache/huggingface/token
+Login successful.
+Note: Environment variable`HF_TOKEN` is set and is the current active token independently from the token you've just configured.
+The token has not been saved to the git credentials helper. Pass `add_to_git_credential=True` in this function directly or `--add-to-git-credential` if using via `huggingface-cli` if you want to set the git credential as well.
+Token is valid (permission: write).
+The token `mine` has been saved to /home/hhubar/data/.cache/huggingface/stored_tokens
+Your token has been saved to /home/hhubar/data/.cache/huggingface/token
+Login successful.
+Note: Environment variable`HF_TOKEN` is set and is the current active token independently from the token you've just configured.
+Map:   0%|          | 0/1410 [00:00<?, ? examples/s]Map:   0%|          | 1/1410 [00:00<04:35,  5.11 examples/s]Map:  55%|█████▌    | 782/1410 [00:00<00:00, 3297.10 examples/s]Map: 100%|█████████▉| 1406/1410 [00:00<00:00, 4204.14 examples/s]Map: 100%|██████████| 1410/1410 [00:01<00:00, 1053.04 examples/s]
+Map:   0%|          | 0/174 [00:00<?, ? examples/s]Map:   1%|          | 1/174 [00:00<00:23,  7.27 examples/s]Map: 100%|██████████| 174/174 [00:00<00:00, 512.79 examples/s]
+Map:   0%|          | 0/1410 [00:00<?, ? examples/s]Map:  71%|███████   | 1000/1410 [00:00<00:00, 1255.96 examples/s]Map: 100%|██████████| 1410/1410 [00:01<00:00, 1246.88 examples/s]Map: 100%|██████████| 1410/1410 [00:01<00:00, 1138.07 examples/s]
+Map:   0%|          | 0/174 [00:00<?, ? examples/s]Map: 100%|██████████| 174/174 [00:00<00:00, 934.23 examples/s]Map: 100%|██████████| 174/174 [00:00<00:00, 591.32 examples/s]
+/scratch/hhubar/keep-it-simple/src/WANDB_finetune_parameterized.py:144: FutureWarning: `tokenizer` is deprecated and will be removed in version 5.0.0 for `Trainer.__init__`. Use `processing_class` instead.
+  trainer = Trainer(
+wandb: WARNING The `run_name` is currently set to the same value as `TrainingArguments.output_dir`. If this was not intended, please specify a different run name by setting the `TrainingArguments.run_name` parameter.
+  0%|          | 0/705 [00:00<?, ?it/s]Traceback (most recent call last):
+  File "/scratch/hhubar/keep-it-simple/src/WANDB_finetune_parameterized.py", line 216, in <module>
+    main()
+  File "/scratch/hhubar/keep-it-simple/src/WANDB_finetune_parameterized.py", line 210, in main
+    train_model(model, tokenizer, train_dataset, val_dataset, args, output_dir)
+  File "/scratch/hhubar/keep-it-simple/src/WANDB_finetune_parameterized.py", line 152, in train_model
+    trainer.train()
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/transformers/trainer.py", line 2245, in train
+    return inner_training_loop(
+           ^^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/transformers/trainer.py", line 2611, in _inner_training_loop
+    self.optimizer.step()
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/accelerate/optimizer.py", line 178, in step
+    self.optimizer.step(closure)
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/torch/optim/lr_scheduler.py", line 137, in wrapper
+    return func.__get__(opt, opt.__class__)(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/torch/optim/optimizer.py", line 487, in wrapper
+    out = func(*args, **kwargs)
+          ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/torch/optim/optimizer.py", line 91, in _use_grad
+    ret = func(self, *args, **kwargs)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/torch/optim/adamw.py", line 220, in step
+    adamw(
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/torch/optim/optimizer.py", line 154, in maybe_fallback
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/torch/optim/adamw.py", line 782, in adamw
+    func(
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/torch/optim/adamw.py", line 606, in _multi_tensor_adamw
+    exp_avg_sq_sqrt = torch._foreach_sqrt(device_exp_avg_sqs)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 28.00 MiB. GPU 0 has a total capacity of 14.57 GiB of which 20.75 MiB is free. Including non-PyTorch memory, this process has 14.54 GiB memory in use. Of the allocated memory 13.81 GiB is allocated by PyTorch, and 614.61 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+Traceback (most recent call last):
+  File "/scratch/hhubar/keep-it-simple/src/WANDB_finetune_parameterized.py", line 216, in <module>
+    main()
+  File "/scratch/hhubar/keep-it-simple/src/WANDB_finetune_parameterized.py", line 210, in main
+    train_model(model, tokenizer, train_dataset, val_dataset, args, output_dir)
+  File "/scratch/hhubar/keep-it-simple/src/WANDB_finetune_parameterized.py", line 152, in train_model
+    trainer.train()
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/transformers/trainer.py", line 2245, in train
+    return inner_training_loop(
+           ^^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/transformers/trainer.py", line 2611, in _inner_training_loop
+    self.optimizer.step()
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/accelerate/optimizer.py", line 178, in step
+    self.optimizer.step(closure)
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/torch/optim/lr_scheduler.py", line 137, in wrapper
+    return func.__get__(opt, opt.__class__)(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/torch/optim/optimizer.py", line 487, in wrapper
+    out = func(*args, **kwargs)
+          ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/torch/optim/optimizer.py", line 91, in _use_grad
+    ret = func(self, *args, **kwargs)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/torch/optim/adamw.py", line 220, in step
+    adamw(
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/torch/optim/optimizer.py", line 154, in maybe_fallback
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/torch/optim/adamw.py", line 782, in adamw
+    func(
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/torch/optim/adamw.py", line 606, in _multi_tensor_adamw
+    exp_avg_sq_sqrt = torch._foreach_sqrt(device_exp_avg_sqs)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 28.00 MiB. GPU 0 has a total capacity of 14.57 GiB of which 20.75 MiB is free. Including non-PyTorch memory, this process has 14.54 GiB memory in use. Of the allocated memory 13.81 GiB is allocated by PyTorch, and 614.61 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)

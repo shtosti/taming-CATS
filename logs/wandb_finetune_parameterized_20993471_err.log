@@ -1,0 +1,138 @@
+
+CondaError: Run 'conda init' before 'conda activate'
+
+wandb: Using wandb-core as the SDK backend.  Please refer to https://wandb.me/wandb-core for more information.
+wandb: Appending key for api.wandb.ai to your netrc file: /home/hhubar/.netrc
+wandb: Currently logged in as: hanna-hubarava (shtosti) to https://api.wandb.ai. Use `wandb login --relogin` to force relogin
+wandb: Tracking run with wandb version 0.19.9
+wandb: Run data is saved locally in /scratch/hhubar/keep-it-simple/wandb/run-20250414_165434-z67olslc
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run graceful-plasma-45
+wandb: ⭐️ View project at https://wandb.ai/shtosti/thesis-SFT
+wandb: 🚀 View run at https://wandb.ai/shtosti/thesis-SFT/runs/z67olslc
+The new embeddings will be initialized from a multivariate normal distribution that has old embeddings' mean and covariance. As described in this article: https://nlp.stanford.edu/~johnhew/vocab-expansion.html. To disable this, use `mean_resizing=False`
+The token has not been saved to the git credentials helper. Pass `add_to_git_credential=True` in this function directly or `--add-to-git-credential` if using via `huggingface-cli` if you want to set the git credential as well.
+Token is valid (permission: write).
+The token `mine` has been saved to /home/hhubar/data/.cache/huggingface/stored_tokens
+Your token has been saved to /home/hhubar/data/.cache/huggingface/token
+Login successful.
+Note: Environment variable`HF_TOKEN` is set and is the current active token independently from the token you've just configured.
+The token has not been saved to the git credentials helper. Pass `add_to_git_credential=True` in this function directly or `--add-to-git-credential` if using via `huggingface-cli` if you want to set the git credential as well.
+Token is valid (permission: write).
+The token `mine` has been saved to /home/hhubar/data/.cache/huggingface/stored_tokens
+Your token has been saved to /home/hhubar/data/.cache/huggingface/token
+Login successful.
+Note: Environment variable`HF_TOKEN` is set and is the current active token independently from the token you've just configured.
+Map:   0%|          | 0/1410 [00:00<?, ? examples/s]/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/transformers/tokenization_utils_base.py:3980: UserWarning: `as_target_tokenizer` is deprecated and will be removed in v5 of Transformers. You can tokenize your labels by using the argument `text_target` of the regular `__call__` method (either in the same call as your input texts if you use the same keyword arguments, or in a separate call.
+  warnings.warn(
+Map:   6%|▌         | 86/1410 [00:00<00:01, 782.54 examples/s]Map:  17%|█▋        | 235/1410 [00:00<00:00, 1179.57 examples/s]Map:  28%|██▊       | 401/1410 [00:00<00:00, 1103.13 examples/s]Map:  40%|████      | 564/1410 [00:00<00:00, 1022.78 examples/s]Map:  48%|████▊     | 671/1410 [00:00<00:00, 1034.28 examples/s]Map:  59%|█████▊    | 827/1410 [00:00<00:00, 903.30 examples/s] Map:  70%|██████▉   | 983/1410 [00:01<00:00, 883.38 examples/s]Map:  76%|███████▋  | 1076/1410 [00:01<00:00, 758.18 examples/s]Map:  84%|████████▍ | 1182/1410 [00:01<00:00, 820.94 examples/s]Map:  91%|█████████▏| 1290/1410 [00:01<00:00, 880.29 examples/s]Map: 100%|██████████| 1410/1410 [00:01<00:00, 891.80 examples/s]Map: 100%|██████████| 1410/1410 [00:01<00:00, 873.88 examples/s]
+Map:   0%|          | 0/174 [00:00<?, ? examples/s]Map:  74%|███████▎  | 128/174 [00:00<00:00, 1246.37 examples/s]Map: 100%|██████████| 174/174 [00:00<00:00, 769.73 examples/s] 
+/scratch/hhubar/keep-it-simple/src/WANDB_finetune_parameterized.py:198: FutureWarning: `tokenizer` is deprecated and will be removed in version 5.0.0 for `Trainer.__init__`. Use `processing_class` instead.
+  trainer = Trainer(
+wandb: WARNING The `run_name` is currently set to the same value as `TrainingArguments.output_dir`. If this was not intended, please specify a different run name by setting the `TrainingArguments.run_name` parameter.
+  0%|          | 0/706 [00:00<?, ?it/s]Traceback (most recent call last):
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/transformers/tokenization_utils_base.py", line 777, in convert_to_tensors
+    tensor = as_tensor(value)
+             ^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/transformers/tokenization_utils_base.py", line 739, in as_tensor
+    return torch.tensor(value)
+           ^^^^^^^^^^^^^^^^^^^
+ValueError: expected sequence of length 35 at dim 1 (got 22)
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/scratch/hhubar/keep-it-simple/src/WANDB_finetune_parameterized.py", line 282, in <module>
+    main()
+  File "/scratch/hhubar/keep-it-simple/src/WANDB_finetune_parameterized.py", line 276, in main
+    train_model(model, tokenizer, train_dataset, val_dataset, args, output_dir)
+  File "/scratch/hhubar/keep-it-simple/src/WANDB_finetune_parameterized.py", line 207, in train_model
+    trainer.train()
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/transformers/trainer.py", line 2245, in train
+    return inner_training_loop(
+           ^^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/transformers/trainer.py", line 2514, in _inner_training_loop
+    batch_samples, num_items_in_batch = self.get_batch_samples(epoch_iterator, num_batches, args.device)
+                                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/transformers/trainer.py", line 5243, in get_batch_samples
+    batch_samples.append(next(epoch_iterator))
+                         ^^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/accelerate/data_loader.py", line 566, in __iter__
+    current_batch = next(dataloader_iter)
+                    ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/torch/utils/data/dataloader.py", line 701, in __next__
+    data = self._next_data()
+           ^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/torch/utils/data/dataloader.py", line 757, in _next_data
+    data = self._dataset_fetcher.fetch(index)  # may raise StopIteration
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/torch/utils/data/_utils/fetch.py", line 55, in fetch
+    return self.collate_fn(data)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/transformers/data/data_collator.py", line 272, in __call__
+    batch = pad_without_fast_tokenizer_warning(
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/transformers/data/data_collator.py", line 67, in pad_without_fast_tokenizer_warning
+    padded = tokenizer.pad(*pad_args, **pad_kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/transformers/tokenization_utils_base.py", line 3407, in pad
+    return BatchEncoding(batch_outputs, tensor_type=return_tensors)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/transformers/tokenization_utils_base.py", line 241, in __init__
+    self.convert_to_tensors(tensor_type=tensor_type, prepend_batch_axis=prepend_batch_axis)
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/transformers/tokenization_utils_base.py", line 793, in convert_to_tensors
+    raise ValueError(
+ValueError: Unable to create tensor, you should probably activate truncation and/or padding with 'padding=True' 'truncation=True' to have batched tensors with the same length. Perhaps your features (`labels` in this case) have excessive nesting (inputs type `list` where type `int` is expected).
+Traceback (most recent call last):
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/transformers/tokenization_utils_base.py", line 777, in convert_to_tensors
+    tensor = as_tensor(value)
+             ^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/transformers/tokenization_utils_base.py", line 739, in as_tensor
+    return torch.tensor(value)
+           ^^^^^^^^^^^^^^^^^^^
+ValueError: expected sequence of length 35 at dim 1 (got 22)
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/scratch/hhubar/keep-it-simple/src/WANDB_finetune_parameterized.py", line 282, in <module>
+    main()
+  File "/scratch/hhubar/keep-it-simple/src/WANDB_finetune_parameterized.py", line 276, in main
+    train_model(model, tokenizer, train_dataset, val_dataset, args, output_dir)
+  File "/scratch/hhubar/keep-it-simple/src/WANDB_finetune_parameterized.py", line 207, in train_model
+    trainer.train()
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/transformers/trainer.py", line 2245, in train
+    return inner_training_loop(
+           ^^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/transformers/trainer.py", line 2514, in _inner_training_loop
+    batch_samples, num_items_in_batch = self.get_batch_samples(epoch_iterator, num_batches, args.device)
+                                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/transformers/trainer.py", line 5243, in get_batch_samples
+    batch_samples.append(next(epoch_iterator))
+                         ^^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/accelerate/data_loader.py", line 566, in __iter__
+    current_batch = next(dataloader_iter)
+                    ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/torch/utils/data/dataloader.py", line 701, in __next__
+    data = self._next_data()
+           ^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/torch/utils/data/dataloader.py", line 757, in _next_data
+    data = self._dataset_fetcher.fetch(index)  # may raise StopIteration
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/torch/utils/data/_utils/fetch.py", line 55, in fetch
+    return self.collate_fn(data)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/transformers/data/data_collator.py", line 272, in __call__
+    batch = pad_without_fast_tokenizer_warning(
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/transformers/data/data_collator.py", line 67, in pad_without_fast_tokenizer_warning
+    padded = tokenizer.pad(*pad_args, **pad_kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/transformers/tokenization_utils_base.py", line 3407, in pad
+    return BatchEncoding(batch_outputs, tensor_type=return_tensors)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/transformers/tokenization_utils_base.py", line 241, in __init__
+    self.convert_to_tensors(tensor_type=tensor_type, prepend_batch_axis=prepend_batch_axis)
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/transformers/tokenization_utils_base.py", line 793, in convert_to_tensors
+    raise ValueError(
+ValueError: Unable to create tensor, you should probably activate truncation and/or padding with 'padding=True' 'truncation=True' to have batched tensors with the same length. Perhaps your features (`labels` in this case) have excessive nesting (inputs type `list` where type `int` is expected).

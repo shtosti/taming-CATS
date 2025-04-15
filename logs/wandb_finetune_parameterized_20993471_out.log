@@ -1,0 +1,117 @@
+Mon Apr 14 16:54:17 2025       
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 560.35.05              Driver Version: 560.35.05      CUDA Version: 12.6     |
+|-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  NVIDIA A100-SXM4-80GB          Off |   00000000:88:00.0 Off |                    0 |
+| N/A   25C    P0             58W /  400W |       1MiB /  81920MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+                                                                                         
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI        PID   Type   Process name                              GPU Memory |
+|        ID   ID                                                               Usage      |
+|=========================================================================================|
+|  No running processes found                                                             |
++-----------------------------------------------------------------------------------------+
+Transformers version: 4.51.0
+Python path: /home/hhubar/data/conda/envs/sft/bin/python
+
+Run arguments:
+Namespace(model_name='meta-llama/Llama-3.2-1B-Instruct', dataset_name='Med-EASi', slice_train=-1, slice_val=-1, batch_size=4, learning_rate=1e-05, weight_decay=0.01, epochs=2, logging_steps=20, wandb_project_name='thesis-SFT', wandb_entity='shtosti', log_every=20, prompting_type='vanilla', user_prompt_id='token', metric_name='FKGL', control_tokens='data/prompts/control_tokens.json', system_prompts='data/prompts/system_prompts.json', user_prompts='data/prompts/user_prompts.json')
+
+
+*** Finetuning Llama-3.2-1B-Instruct with Med-EASi ***
+
+CUDA available: True
+Number of GPUs: 1
+GPU name: NVIDIA A100-SXM4-80GB
+Current working directory: /scratch/hhubar/keep-it-simple
+Saving to: ./sft/Llama-3.2-1B-Instruct-Med-EASi-20250414-1654-z67olslc
+New tokens added to the tokenizer: ['<|user|>', '<|system|>', '<|assistant|>']
+Trainable params: 1,235,822,592 / 1,235,822,592 (100.00%)
+train:	 Inspect the dataset format:
+ {'global_id': ['medeasi_000457', 'medeasi_001307', 'medeasi_000331'], 'source_text': ['The face is flushed, and the eyes are injected.', 'Ives died of a stroke in 1954 in New York City.', 'Pain in the neck, back, or head may occur.'], 'metadata': [{'dataset': 'medeasi', 'experiment_split': '', 'domain': 'medical', 'language': 'en', 'annotation': 'human', 'level': 'sentence'}, {'dataset': 'medeasi', 'experiment_split': '', 'domain': 'medical', 'language': 'en', 'annotation': 'human', 'level': 'sentence'}, {'dataset': 'medeasi', 'experiment_split': '', 'domain': 'medical', 'language': 'en', 'annotation': 'human', 'level': 'sentence'}], 'source_metrics': [{'FRE': 96.18, 'ARI': 3.5, 'FKGL': 2.1, 'Dale-Chall': 9.35, 'char_count': 47, 'alphanum_count': 37, 'word_count': 11, 'sentence_count': 1}, {'FRE': 102.61, 'ARI': -0.2, 'FKGL': 1.7, 'Dale-Chall': 9.92, 'char_count': 47, 'alphanum_count': 32, 'word_count': 12, 'sentence_count': 1}, {'FRE': 104.64, 'ARI': 0.9, 'FKGL': 0.9, 'Dale-Chall': 5.84, 'char_count': 42, 'alphanum_count': 31, 'word_count': 12, 'sentence_count': 1}], 'simplifications': [[{'simplification_text': 'The face is flushed.', 'simplification_version': 1, 'grade_level': -1, 'control_attributes_access': {'NbChars': '<NbChars_0.0>', 'LevSim': '<LevSim_0.0>', 'WordFreq': '<WordFreq_0.0>', 'DepTreeDepth': '<DepTreeDepth_0.0>'}, 'control_attributes_muss': {'NumChars': '<NumChars_0%>', 'LevSim': '<LevSim_0%>', 'WordFreq': '<WordFreq_0%>', 'DepTreeDepth': '<DepTreeDepth_0%>'}, 'simplification_dimensions': {'linguistic': {'lexical': False, 'syntactic': False}}, 'target_metrics': {'FRE': 118.18, 'ARI': 0.6, 'FKGL': -2.3, 'Dale-Chall': 7.78, 'char_count': 20, 'alphanum_count': 16, 'word_count': 5, 'sentence_count': 1, 'char_compression_rate': 0.43, 'word_compression_rate': 0.45, 'sentence_compression_rate': 1.0, 'BLEU': 21.297646969725616, 'BERTScore': 0.9398951530456543}}], [{'simplification_text': 'Ives died in 1954 in New York City at 12:32 PM', 'simplification_version': 1, 'grade_level': -1, 'control_attributes_access': {'NbChars': '<NbChars_0.0>', 'LevSim': '<LevSim_0.0>', 'WordFreq': '<WordFreq_0.0>', 'DepTreeDepth': '<DepTreeDepth_0.0>'}, 'control_attributes_muss': {'NumChars': '<NumChars_0%>', 'LevSim': '<LevSim_0%>', 'WordFreq': '<WordFreq_0%>', 'DepTreeDepth': '<DepTreeDepth_0%>'}, 'simplification_dimensions': {'linguistic': {'lexical': False, 'syntactic': False}}, 'target_metrics': {'FRE': 94.15, 'ARI': -0.6, 'FKGL': 2.9, 'Dale-Chall': 12.79, 'char_count': 46, 'alphanum_count': 27, 'word_count': 11, 'sentence_count': 1, 'char_compression_rate': 0.98, 'word_compression_rate': 0.92, 'sentence_compression_rate': 1.0, 'BLEU': 42.803206067505954, 'BERTScore': 0.9341109395027161}}], [{'simplification_text': 'Usually, symptoms of acute transverse myelitis begin suddenly with pain in the back and a bandlike tightness around the affected area of the body (such as the chest or abdomen). People with this disorder may also have pain in the head or neck.', 'simplification_version': 1, 'grade_level': -1, 'control_attributes_access': {'NbChars': '<NbChars_0.0>', 'LevSim': '<LevSim_0.0>', 'WordFreq': '<WordFreq_0.0>', 'DepTreeDepth': '<DepTreeDepth_0.0>'}, 'control_attributes_muss': {'NumChars': '<NumChars_0%>', 'LevSim': '<LevSim_0%>', 'WordFreq': '<WordFreq_0%>', 'DepTreeDepth': '<DepTreeDepth_0%>'}, 'simplification_dimensions': {'linguistic': {'lexical': False, 'syntactic': False}}, 'target_metrics': {'FRE': 49.65, 'ARI': 11.3, 'FKGL': 11.7, 'Dale-Chall': 9.11, 'char_count': 243, 'alphanum_count': 196, 'word_count': 48, 'sentence_count': 2, 'char_compression_rate': 5.79, 'word_compression_rate': 4.0, 'sentence_compression_rate': 2.0, 'BLEU': 2.215443967446686, 'BERTScore': 0.8697577714920044}}]]}
+validation:	 Inspect the dataset format:
+ {'global_id': ['medeasi_001210', 'medeasi_000942', 'medeasi_000633'], 'source_text': ['This increased risk is greatest at two to three months of age.', 'No cure for the common cold exists , but the symptoms can be treated .', 'Poor immune function is a risk factor for disease.'], 'metadata': [{'dataset': 'medeasi', 'experiment_split': '', 'domain': 'medical', 'language': 'en', 'annotation': 'human', 'level': 'sentence'}, {'dataset': 'medeasi', 'experiment_split': '', 'domain': 'medical', 'language': 'en', 'annotation': 'human', 'level': 'sentence'}, {'dataset': 'medeasi', 'experiment_split': '', 'domain': 'medical', 'language': 'en', 'annotation': 'human', 'level': 'sentence'}], 'source_metrics': [{'FRE': 93.14, 'ARI': 4.6, 'FKGL': 3.3, 'Dale-Chall': 9.5, 'char_count': 62, 'alphanum_count': 50, 'word_count': 13, 'sentence_count': 1}, {'FRE': 83.66, 'ARI': 5.4, 'FKGL': 4.8, 'Dale-Chall': 9.14, 'char_count': 70, 'alphanum_count': 54, 'word_count': 15, 'sentence_count': 1}, {'FRE': 79.26, 'ARI': 5.1, 'FKGL': 4.4, 'Dale-Chall': 12.86, 'char_count': 50, 'alphanum_count': 41, 'word_count': 10, 'sentence_count': 1}], 'simplifications': [[{'simplification_text': 'This risk is highest in infants who are two to three months old.', 'simplification_version': 1, 'grade_level': -1, 'control_attributes_access': {'NbChars': '<NbChars_0.0>', 'LevSim': '<LevSim_0.0>', 'WordFreq': '<WordFreq_0.0>', 'DepTreeDepth': '<DepTreeDepth_0.0>'}, 'control_attributes_muss': {'NumChars': '<NumChars_0%>', 'LevSim': '<LevSim_0%>', 'WordFreq': '<WordFreq_0%>', 'DepTreeDepth': '<DepTreeDepth_0%>'}, 'simplification_dimensions': {'linguistic': {'lexical': False, 'syntactic': False}}, 'target_metrics': {'FRE': 92.12, 'ARI': 3.9, 'FKGL': 3.6, 'Dale-Chall': 9.14, 'char_count': 64, 'alphanum_count': 51, 'word_count': 14, 'sentence_count': 1, 'char_compression_rate': 1.03, 'word_compression_rate': 1.08, 'sentence_compression_rate': 1.0, 'BLEU': 22.718709780542323, 'BERTScore': 0.9562927484512329}}], [{'simplification_text': 'There is no cure for the common cold , but the symptoms can be treated .\n', 'simplification_version': 1, 'grade_level': -1, 'control_attributes_access': {'NbChars': '<NbChars_0.0>', 'LevSim': '<LevSim_0.0>', 'WordFreq': '<WordFreq_0.0>', 'DepTreeDepth': '<DepTreeDepth_0.0>'}, 'control_attributes_muss': {'NumChars': '<NumChars_0%>', 'LevSim': '<LevSim_0%>', 'WordFreq': '<WordFreq_0%>', 'DepTreeDepth': '<DepTreeDepth_0%>'}, 'simplification_dimensions': {'linguistic': {'lexical': False, 'syntactic': False}}, 'target_metrics': {'FRE': 91.11, 'ARI': 4.7, 'FKGL': 4.0, 'Dale-Chall': 7.71, 'char_count': 73, 'alphanum_count': 55, 'word_count': 16, 'sentence_count': 1, 'char_compression_rate': 1.04, 'word_compression_rate': 1.07, 'sentence_compression_rate': 1.0, 'BLEU': 67.39047062564734, 'BERTScore': 0.976331353187561}}], [{'simplification_text': 'Poor immune function is also a risk factor for disease.', 'simplification_version': 1, 'grade_level': -1, 'control_attributes_access': {'NbChars': '<NbChars_0.0>', 'LevSim': '<LevSim_0.0>', 'WordFreq': '<WordFreq_0.0>', 'DepTreeDepth': '<DepTreeDepth_0.0>'}, 'control_attributes_muss': {'NumChars': '<NumChars_0%>', 'LevSim': '<LevSim_0%>', 'WordFreq': '<WordFreq_0%>', 'DepTreeDepth': '<DepTreeDepth_0%>'}, 'simplification_dimensions': {'linguistic': {'lexical': False, 'syntactic': False}}, 'target_metrics': {'FRE': 69.79, 'ARI': 5.2, 'FKGL': 6.0, 'Dale-Chall': 12.03, 'char_count': 55, 'alphanum_count': 45, 'word_count': 11, 'sentence_count': 1, 'char_compression_rate': 1.1, 'word_compression_rate': 1.1, 'sentence_compression_rate': 1.0, 'BLEU': 70.16879391277372, 'BERTScore': 0.9842488765716553}}]]}
+********** DEBUG ***********
+<class 'list'>
+<class 'list'>
+
+
+Before tokenization:
+
+Showing 2 examples:
+
+Example 1 (index 228)
+--- Prompt:
+ 
+        <|begin_of_text|><|start_header_id|>system<|end_header_id|>        You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|><|start_header_id|>user<|end_header_id|>        INSTRUCTION: 
+Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to the text. The control token has the following format: <metric=value>. 
+
+TEXT: 
+<FKGL=6.0> The increased pressure is caused by trabecular meshwork blockage. 
+
+SIMPLIFICATION: 
+<|eot_id|><|start_header_id|>assistant<|end_header_id|>        
+--- Completion:
+ This disease happens because of increased pressure in the eye.<|eot_id|>
+==================================================
+
+Example 2 (index 51)
+--- Prompt:
+ 
+        <|begin_of_text|><|start_header_id|>system<|end_header_id|>        You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|><|start_header_id|>user<|end_header_id|>        INSTRUCTION: 
+Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to the text. The control token has the following format: <metric=value>. 
+
+TEXT: 
+<FKGL=6.8> Gout was historically known as `` the disease of kings '' or `` rich man 's disease . '' 
+
+SIMPLIFICATION: 
+<|eot_id|><|start_header_id|>assistant<|end_header_id|>        
+--- Completion:
+ Gout was historically known as `` the disease of kings '' or `` the disease of rich men '' .
+<|eot_id|>
+==================================================
+
+
+After tokenization:
+
+Showing 2 examples:
+
+Example 1 (index 563)
+--- Prompt:
+ <|begin_of_text|>
+        <|begin_of_text|><|start_header_id|>system<|end_header_id|>        You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|><|start_header_id|>user<|end_header_id|>        INSTRUCTION: 
+Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to the text. The control token has the following format: <metric=value>. 
+
+TEXT: 
+<FKGL=8.2> It is estimated that 143 million people (2 %) of people globally are living with chronic hepatitis C. About 3???ÃÂ??4 million people are infected per year, and more than 350,000 people die yearly from hepatitis C-related diseases. 
+
+SIMPLIFICATION: 
+<|eot_id|><|start_header_id|>assistant<|end_header_id|>        
+--- Completion:
+ <|begin_of_text|>Between 130 and 170 million people, or about 3 % of all of the people in the world, are living with chronic Hepatitis C. Between 3???ÃÂ??4 million people get infected per year.<|eot_id|>
+==================================================
+
+Example 2 (index 501)
+--- Prompt:
+ <|begin_of_text|>
+        <|begin_of_text|><|start_header_id|>system<|end_header_id|>        You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|><|start_header_id|>user<|end_header_id|>        INSTRUCTION: 
+Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to the text. The control token has the following format: <metric=value>. 
+
+TEXT: 
+<FKGL=9.9> In live sound reinforcement, this is useful for stage monitor mixes where changes in the Front of House channel levels would distract the musicians. 
+
+SIMPLIFICATION: 
+<|eot_id|><|start_header_id|>assistant<|end_header_id|>        
+--- Completion:
+ <|begin_of_text|>This is useful for stage monitor mixes where changes in the Front of House channel levels would distract the musicians.<|eot_id|>
+==================================================
+[1;34mwandb[0m: 
+[1;34mwandb[0m: 🚀 View run [33mgraceful-plasma-45[0m at: [34mhttps://wandb.ai/shtosti/thesis-SFT/runs/z67olslc[0m
+[1;34mwandb[0m: Find logs at: [1;35m../../../../scratch/hhubar/keep-it-simple/wandb/run-20250414_165434-z67olslc/logs[0m

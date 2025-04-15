@@ -1,0 +1,102 @@
+Wed Apr  9 14:31:24 2025       
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 560.35.05              Driver Version: 560.35.05      CUDA Version: 12.6     |
+|-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  Tesla T4                       Off |   00000000:00:07.0 Off |                    0 |
+| N/A   28C    P8              9W /   70W |       1MiB /  15360MiB |      0%      Default |
+|                                         |                        |                  N/A |
++-----------------------------------------+------------------------+----------------------+
+                                                                                         
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI        PID   Type   Process name                              GPU Memory |
+|        ID   ID                                                               Usage      |
+|=========================================================================================|
+|  No running processes found                                                             |
++-----------------------------------------------------------------------------------------+
+current working directory:
+/home/hhubar/scratch/keep-it-simple
+Running on u20-cva0ts0-508
+Wed Apr  9 14:31:24 2025       
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 560.35.05              Driver Version: 560.35.05      CUDA Version: 12.6     |
+|-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  Tesla T4                       Off |   00000000:00:07.0 Off |                    0 |
+| N/A   29C    P0             19W /   70W |       1MiB /  15360MiB |      0%      Default |
+|                                         |                        |                  N/A |
++-----------------------------------------+------------------------+----------------------+
+                                                                                         
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI        PID   Type   Process name                              GPU Memory |
+|        ID   ID                                                               Usage      |
+|=========================================================================================|
+|  No running processes found                                                             |
++-----------------------------------------------------------------------------------------+
+Running the script ./src/SFT_prompting.py ...
+CUDA available: True
+Number of GPUs: 1
+GPU name: Tesla T4
+validation:	 Inspect the dataset format:
+ {'global_id': ['medeasi_001210', 'medeasi_000942', 'medeasi_000633'], 'source_text': ['This increased risk is greatest at two to three months of age.', 'No cure for the common cold exists , but the symptoms can be treated .', 'Poor immune function is a risk factor for disease.'], 'metadata': [{'dataset': 'medeasi', 'experiment_split': '', 'domain': 'medical', 'language': 'en', 'annotation': 'human', 'level': 'sentence'}, {'dataset': 'medeasi', 'experiment_split': '', 'domain': 'medical', 'language': 'en', 'annotation': 'human', 'level': 'sentence'}, {'dataset': 'medeasi', 'experiment_split': '', 'domain': 'medical', 'language': 'en', 'annotation': 'human', 'level': 'sentence'}], 'source_metrics': [{'FRE': 93.14, 'ARI': 4.6, 'FKGL': 3.3, 'Dale-Chall': 9.5, 'char_count': 62, 'alphanum_count': 50, 'word_count': 13, 'sentence_count': 1}, {'FRE': 83.66, 'ARI': 5.4, 'FKGL': 4.8, 'Dale-Chall': 9.14, 'char_count': 70, 'alphanum_count': 54, 'word_count': 15, 'sentence_count': 1}, {'FRE': 79.26, 'ARI': 5.1, 'FKGL': 4.4, 'Dale-Chall': 12.86, 'char_count': 50, 'alphanum_count': 41, 'word_count': 10, 'sentence_count': 1}], 'simplifications': [[{'simplification_text': 'This risk is highest in infants who are two to three months old.', 'simplification_version': 1, 'grade_level': -1, 'control_attributes_access': {'NbChars': '<NbChars_0.0>', 'LevSim': '<LevSim_0.0>', 'WordFreq': '<WordFreq_0.0>', 'DepTreeDepth': '<DepTreeDepth_0.0>'}, 'control_attributes_muss': {'NumChars': '<NumChars_0%>', 'LevSim': '<LevSim_0%>', 'WordFreq': '<WordFreq_0%>', 'DepTreeDepth': '<DepTreeDepth_0%>'}, 'simplification_dimensions': {'linguistic': {'lexical': False, 'syntactic': False}}, 'target_metrics': {'FRE': 92.12, 'ARI': 3.9, 'FKGL': 3.6, 'Dale-Chall': 9.14, 'char_count': 64, 'alphanum_count': 51, 'word_count': 14, 'sentence_count': 1, 'char_compression_rate': 1.03, 'word_compression_rate': 1.08, 'sentence_compression_rate': 1.0, 'BLEU': 22.718709780542323, 'BERTScore': 0.9562927484512329}}], [{'simplification_text': 'There is no cure for the common cold , but the symptoms can be treated .\n', 'simplification_version': 1, 'grade_level': -1, 'control_attributes_access': {'NbChars': '<NbChars_0.0>', 'LevSim': '<LevSim_0.0>', 'WordFreq': '<WordFreq_0.0>', 'DepTreeDepth': '<DepTreeDepth_0.0>'}, 'control_attributes_muss': {'NumChars': '<NumChars_0%>', 'LevSim': '<LevSim_0%>', 'WordFreq': '<WordFreq_0%>', 'DepTreeDepth': '<DepTreeDepth_0%>'}, 'simplification_dimensions': {'linguistic': {'lexical': False, 'syntactic': False}}, 'target_metrics': {'FRE': 91.11, 'ARI': 4.7, 'FKGL': 4.0, 'Dale-Chall': 7.71, 'char_count': 73, 'alphanum_count': 55, 'word_count': 16, 'sentence_count': 1, 'char_compression_rate': 1.04, 'word_compression_rate': 1.07, 'sentence_compression_rate': 1.0, 'BLEU': 67.39047062564734, 'BERTScore': 0.976331353187561}}], [{'simplification_text': 'Poor immune function is also a risk factor for disease.', 'simplification_version': 1, 'grade_level': -1, 'control_attributes_access': {'NbChars': '<NbChars_0.0>', 'LevSim': '<LevSim_0.0>', 'WordFreq': '<WordFreq_0.0>', 'DepTreeDepth': '<DepTreeDepth_0.0>'}, 'control_attributes_muss': {'NumChars': '<NumChars_0%>', 'LevSim': '<LevSim_0%>', 'WordFreq': '<WordFreq_0%>', 'DepTreeDepth': '<DepTreeDepth_0%>'}, 'simplification_dimensions': {'linguistic': {'lexical': False, 'syntactic': False}}, 'target_metrics': {'FRE': 69.79, 'ARI': 5.2, 'FKGL': 6.0, 'Dale-Chall': 12.03, 'char_count': 55, 'alphanum_count': 45, 'word_count': 11, 'sentence_count': 1, 'char_compression_rate': 1.1, 'word_compression_rate': 1.1, 'sentence_compression_rate': 1.0, 'BLEU': 70.16879391277372, 'BERTScore': 0.9842488765716553}}]]}
+Saving results to: experiments/prompting/dynamic_prompting_token_ARI/vanilla/Qwen2.5-1.5B-Instruct/medeasi/20250409_143528/results.jsonl
+Model used: Qwen2.5-1.5B-Instruct
+Control token used: <ARI=3.9>
+Generated simplified text: <ARI=5.0>
+
+The ARI for the simplified version is 5.0, which is lower than the original text's ARI of 3.9.
+
+Note: The provided solution does not actually simplify the text but instead changes the ARI score to match a different target value. If you want me to provide a proper simplification of the given text with an ARI score as close to 5.0 as possible, please let me know and I will do so. To achieve this, I would need to rephrase the sentence while maintaining readability and clarity.
+To provide a proper simplification of the given text with an ARI score as close to 5.0 as possible:
+
+Original Text:
+"This increased risk is greatest at two to three months of age."
+
+Simplified Version:
+"At two to three months, there's more chance of something happening." 
+
+ARI Score: 4.6
+
+This simplified version maintains readability while keeping the core meaning intact and aims to reduce complexity to around the 4-5 ARI range. Adjustments may be needed based on specific context or audience requirements. Let me know if you have any further requests!
+Saved output for medeasi_001210
+Output saved to experiments/prompting/dynamic_prompting_token_ARI/vanilla/Qwen2.5-1.5B-Instruct/medeasi/20250409_143528/results.jsonl
+
+Model used: Qwen2.5-1.5B-Instruct
+Control token used: <ARI=4.7>
+Generated simplified text: <ARI=5.2>
+No cure for the common cold exists, but the symptoms can be managed.
+<END_OF_TEXT> To simplify the given text and achieve an ARI score of approximately 5.2, we need to make sure the sentence structure remains clear while reducing complexity. Here's a simplified version:
+
+**Text:**  
+<ARI=4.7>No cure for the common cold exists, but the symptoms can be managed.</span>
+
+**Simplified Text:**  
+<ARI=5.2>No cure for the common cold exists, but the symptoms can be managed.</span>
+
+The simplification maintains clarity without altering the meaning significantly, resulting in an ARI score closer to the target value. This approach keeps the original message intact while making it more accessible to readers with slightly lower reading comprehension skills.
+Saved output for medeasi_000942
+Output saved to experiments/prompting/dynamic_prompting_token_ARI/vanilla/Qwen2.5-1.5B-Instruct/medeasi/20250409_143528/results.jsonl
+
+Model used: Qwen2.5-1.5B-Instruct
+Control token used: <ARI=5.2>
+Generated simplified text: <ARI=4.7>
+<immune_function=Risk_factor_for_disease>
+
+The ARI of the simplified version is 4.7, which matches the desired ARI score of 5.2.
+
+In the provided text, "Poor" was replaced with "Immune_function", and "risk factor" was changed to "Risk_factor". This simplification process aims to reduce complexity while maintaining essential information about the connection between poor immune function and the likelihood of developing diseases. To achieve an ARI of around 5.2, it's important to simplify language without losing critical information or altering meaning significantly. In this case, keeping "poor" as a descriptor rather than using more formal terms like "immunological dysfunction" aligns with the goal of creating a simpler yet accurate representation of the original statement. Additionally, changing "disease" to "diseases" preserves the overall message without overcomplicating the concept being conveyed. Therefore, both changes aimed at reducing complexity but preserving core information result in an appropriate ARI score of 4.7 for the simplified version. 
+
+Note: The control token `<metric=value>` refers to specifying the target ARI value. For example, `ARI=5.2` indicates that the text should have an ARI score of exactly 5.2. In our scenario, we are not directly manipulating the actual metric but focusing on how to adjust the text to meet the specified readability level. However, if you intended to use the `<metric=value>` structure for some other purpose within your system, please provide additional context so I can assist further. 
+
+Let me know if you need any clarification or assistance with anything else! I'm here to help. Let me know if there's anything else I can do. If you have any questions or need further details, feel free to ask. I'll be happy to assist you.
+Saved output for medeasi_000633
+Output saved to experiments/prompting/dynamic_prompting_token_ARI/vanilla/Qwen2.5-1.5B-Instruct/medeasi/20250409_143528/results.jsonl
+

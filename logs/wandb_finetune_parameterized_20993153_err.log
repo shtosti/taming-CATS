@@ -1,0 +1,138 @@
+
+CondaError: Run 'conda init' before 'conda activate'
+
+wandb: Using wandb-core as the SDK backend.  Please refer to https://wandb.me/wandb-core for more information.
+wandb: Appending key for api.wandb.ai to your netrc file: /home/hhubar/.netrc
+wandb: Currently logged in as: hanna-hubarava (shtosti) to https://api.wandb.ai. Use `wandb login --relogin` to force relogin
+wandb: Tracking run with wandb version 0.19.9
+wandb: Run data is saved locally in /scratch/hhubar/keep-it-simple/wandb/run-20250414_163916-u1nh0afw
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run dashing-resonance-43
+wandb: ⭐️ View project at https://wandb.ai/shtosti/thesis-SFT
+wandb: 🚀 View run at https://wandb.ai/shtosti/thesis-SFT/runs/u1nh0afw
+The new embeddings will be initialized from a multivariate normal distribution that has old embeddings' mean and covariance. As described in this article: https://nlp.stanford.edu/~johnhew/vocab-expansion.html. To disable this, use `mean_resizing=False`
+The token has not been saved to the git credentials helper. Pass `add_to_git_credential=True` in this function directly or `--add-to-git-credential` if using via `huggingface-cli` if you want to set the git credential as well.
+Token is valid (permission: write).
+The token `mine` has been saved to /home/hhubar/data/.cache/huggingface/stored_tokens
+Your token has been saved to /home/hhubar/data/.cache/huggingface/token
+Login successful.
+Note: Environment variable`HF_TOKEN` is set and is the current active token independently from the token you've just configured.
+The token has not been saved to the git credentials helper. Pass `add_to_git_credential=True` in this function directly or `--add-to-git-credential` if using via `huggingface-cli` if you want to set the git credential as well.
+Token is valid (permission: write).
+The token `mine` has been saved to /home/hhubar/data/.cache/huggingface/stored_tokens
+Your token has been saved to /home/hhubar/data/.cache/huggingface/token
+Login successful.
+Note: Environment variable`HF_TOKEN` is set and is the current active token independently from the token you've just configured.
+Map:   0%|          | 0/1410 [00:00<?, ? examples/s]Map:  46%|████▌     | 642/1410 [00:00<00:00, 6314.32 examples/s]Map:  98%|█████████▊| 1388/1410 [00:00<00:00, 5828.42 examples/s]Map: 100%|██████████| 1410/1410 [00:00<00:00, 5219.07 examples/s]
+Map:   0%|          | 0/174 [00:00<?, ? examples/s]Map: 100%|██████████| 174/174 [00:00<00:00, 4301.82 examples/s]
+Map:   0%|          | 0/1410 [00:00<?, ? examples/s]Map:  71%|███████   | 1000/1410 [01:10<00:28, 14.16 examples/s]Map:  71%|███████   | 1000/1410 [01:22<00:28, 14.16 examples/s]Map: 100%|██████████| 1410/1410 [01:40<00:00, 14.03 examples/s]Map: 100%|██████████| 1410/1410 [01:41<00:00, 13.91 examples/s]
+Map:   0%|          | 0/174 [00:00<?, ? examples/s]Map: 100%|██████████| 174/174 [00:11<00:00, 14.79 examples/s]Map: 100%|██████████| 174/174 [00:12<00:00, 14.22 examples/s]
+/scratch/hhubar/keep-it-simple/src/WANDB_finetune_parameterized.py:176: FutureWarning: `tokenizer` is deprecated and will be removed in version 5.0.0 for `Trainer.__init__`. Use `processing_class` instead.
+  trainer = Trainer(
+wandb: WARNING The `run_name` is currently set to the same value as `TrainingArguments.output_dir`. If this was not intended, please specify a different run name by setting the `TrainingArguments.run_name` parameter.
+  0%|          | 0/706 [00:00<?, ?it/s]Traceback (most recent call last):
+  File "/scratch/hhubar/keep-it-simple/src/WANDB_finetune_parameterized.py", line 255, in <module>
+    main()
+  File "/scratch/hhubar/keep-it-simple/src/WANDB_finetune_parameterized.py", line 249, in main
+    train_model(model, tokenizer, train_dataset, val_dataset, args, output_dir)
+  File "/scratch/hhubar/keep-it-simple/src/WANDB_finetune_parameterized.py", line 185, in train_model
+    trainer.train()
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/transformers/trainer.py", line 2245, in train
+    return inner_training_loop(
+           ^^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/transformers/trainer.py", line 2560, in _inner_training_loop
+    tr_loss_step = self.training_step(model, inputs, num_items_in_batch)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/transformers/trainer.py", line 3736, in training_step
+    loss = self.compute_loss(model, inputs, num_items_in_batch=num_items_in_batch)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/transformers/trainer.py", line 3801, in compute_loss
+    outputs = model(**inputs)
+              ^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1736, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1747, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/transformers/utils/generic.py", line 965, in wrapper
+    output = func(self, *args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/transformers/utils/deprecation.py", line 172, in wrapped_func
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/transformers/models/llama/modeling_llama.py", line 821, in forward
+    outputs: BaseModelOutputWithPast = self.model(
+                                       ^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1736, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1747, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/transformers/utils/generic.py", line 965, in wrapper
+    output = func(self, *args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/transformers/models/llama/modeling_llama.py", line 541, in forward
+    causal_mask = self._update_causal_mask(
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/transformers/models/llama/modeling_llama.py", line 647, in _update_causal_mask
+    causal_mask = self._prepare_4d_causal_attention_mask_with_cache_position(
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/transformers/models/llama/modeling_llama.py", line 717, in _prepare_4d_causal_attention_mask_with_cache_position
+    causal_mask = causal_mask.clone()  # copy to contiguous memory for in-place edit
+                  ^^^^^^^^^^^^^^^^^^^
+torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 128.00 GiB. GPU 0 has a total capacity of 79.25 GiB of which 41.44 GiB is free. Including non-PyTorch memory, this process has 37.80 GiB memory in use. Of the allocated memory 36.32 GiB is allocated by PyTorch, and 983.74 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+Traceback (most recent call last):
+  File "/scratch/hhubar/keep-it-simple/src/WANDB_finetune_parameterized.py", line 255, in <module>
+    main()
+  File "/scratch/hhubar/keep-it-simple/src/WANDB_finetune_parameterized.py", line 249, in main
+    train_model(model, tokenizer, train_dataset, val_dataset, args, output_dir)
+  File "/scratch/hhubar/keep-it-simple/src/WANDB_finetune_parameterized.py", line 185, in train_model
+    trainer.train()
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/transformers/trainer.py", line 2245, in train
+    return inner_training_loop(
+           ^^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/transformers/trainer.py", line 2560, in _inner_training_loop
+    tr_loss_step = self.training_step(model, inputs, num_items_in_batch)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/transformers/trainer.py", line 3736, in training_step
+    loss = self.compute_loss(model, inputs, num_items_in_batch=num_items_in_batch)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/transformers/trainer.py", line 3801, in compute_loss
+    outputs = model(**inputs)
+              ^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1736, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1747, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/transformers/utils/generic.py", line 965, in wrapper
+    output = func(self, *args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/transformers/utils/deprecation.py", line 172, in wrapped_func
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/transformers/models/llama/modeling_llama.py", line 821, in forward
+    outputs: BaseModelOutputWithPast = self.model(
+                                       ^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1736, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1747, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/transformers/utils/generic.py", line 965, in wrapper
+    output = func(self, *args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/transformers/models/llama/modeling_llama.py", line 541, in forward
+    causal_mask = self._update_causal_mask(
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/transformers/models/llama/modeling_llama.py", line 647, in _update_causal_mask
+    causal_mask = self._prepare_4d_causal_attention_mask_with_cache_position(
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/transformers/models/llama/modeling_llama.py", line 717, in _prepare_4d_causal_attention_mask_with_cache_position
+    causal_mask = causal_mask.clone()  # copy to contiguous memory for in-place edit
+                  ^^^^^^^^^^^^^^^^^^^
+torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 128.00 GiB. GPU 0 has a total capacity of 79.25 GiB of which 41.44 GiB is free. Including non-PyTorch memory, this process has 37.80 GiB memory in use. Of the allocated memory 36.32 GiB is allocated by PyTorch, and 983.74 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
