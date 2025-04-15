@@ -62,9 +62,7 @@ def create_user_prompt(user_prompts, metric_name, metric_value, user_prompt_id, 
 
 def format_prompt_with_special_tokens(system_prompt, user_prompt):
     formatted_prompt = f"""
-        <|begin_of_text|><|start_header_id|>system<|end_header_id|>\
-        {system_prompt}<|eot_id|><|start_header_id|>user<|end_header_id|>\
-        {user_prompt}<|eot_id|><|start_header_id|>assistant<|end_header_id|>\
+        <|begin_of_text|><|start_header_id|>system<|end_header_id|>\n{system_prompt}<|eot_id|><|start_header_id|>user<|end_header_id|>\n{user_prompt}<|eot_id|><|start_header_id|>assistant<|end_header_id|>
         """
     return formatted_prompt
 
