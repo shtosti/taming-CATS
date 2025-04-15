@@ -17,7 +17,7 @@ def load_dataset_from_hf(DATASET, split="validation", slice=-1) -> list:
     if slice > 0:
         split_dataset = split_dataset.select(range(slice))
 
-    print(f"{split}:\t Inspect the dataset format:\n", split_dataset[:3])
+    print(f"{split}:\t Inspect the dataset format:\n", split_dataset[:1])
     
     return split_dataset
 
