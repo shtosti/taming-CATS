@@ -78,13 +78,15 @@ def load_and_prepare_model(model_name):
 
 def tokenize_dataset(dataset, tokenizer):
     def tokenize(example):
-        return tokenizer(
+        tokenized = tokenizer(
             example["prompt"],
             text_target=example["completion"],
             truncation=True,
             max_length=512,
             padding="max_length"
         )
+        # tokenized["labels"] = tokenized["input_ids"].copy() # if train on prompt+completion
+        return tokenized
     return dataset.map(tokenize, batched=True)
 
 # def tokenize_dataset(dataset, tokenizer):
@@ -150,6 +152,10 @@ def load_and_prepare_dataset(dataset_name, tokenizer, args):
 
     train_dataset = tokenize_dataset(train_dataset, tokenizer)
     val_dataset = tokenize_dataset(val_dataset, tokenizer)
+
+    print(10*"*", "DEBUG", 10*"*")
+    print("Train dataset columns:", train_dataset.column_names)
+    print("Val dataset columns:", val_dataset.column_names)
 
     return train_dataset, val_dataset
 
@@ -248,7 +254,7 @@ def main():
     model, tokenizer = load_and_prepare_model(args.model_name)
     train_dataset, val_dataset = load_and_prepare_dataset(args.dataset_name, tokenizer, args)
 
-    print("********** DEBUG ***********")
+    print(10*"*", "DEBUG", 10*"*")
     example = train_dataset[0]
     print(type(example["input_ids"]))  # should be list of ints
     print(type(example["labels"]))     # should be list of ints
