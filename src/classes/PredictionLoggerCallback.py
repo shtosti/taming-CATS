@@ -33,7 +33,7 @@ class PredictionLoggerCallback(TrainerCallback):
                         attention_mask=inputs["attention_mask"],
                         max_new_tokens=300, 
                         do_sample=True,
-                        temperature=0.0,
+                        temperature=0.1,
                         pad_token_id=self.tokenizer.pad_token_id,
                         eos_token_id=self.tokenizer.eos_token_id
                     )
