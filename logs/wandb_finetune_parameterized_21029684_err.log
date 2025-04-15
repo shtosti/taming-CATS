@@ -1,0 +1,58 @@
+
+CondaError: Run 'conda init' before 'conda activate'
+
+wandb: Using wandb-core as the SDK backend.  Please refer to https://wandb.me/wandb-core for more information.
+wandb: Appending key for api.wandb.ai to your netrc file: /home/hhubar/.netrc
+wandb: Currently logged in as: hanna-hubarava (shtosti) to https://api.wandb.ai. Use `wandb login --relogin` to force relogin
+wandb: Tracking run with wandb version 0.19.9
+wandb: Run data is saved locally in /scratch/hhubar/keep-it-simple/wandb/run-20250415_173826-jr76o4a6
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run elated-glitter-65
+wandb: ⭐️ View project at https://wandb.ai/shtosti/thesis-SFT
+wandb: 🚀 View run at https://wandb.ai/shtosti/thesis-SFT/runs/jr76o4a6
+Traceback (most recent call last):
+  File "/scratch/hhubar/keep-it-simple/src/WANDB_finetune_parameterized.py", line 331, in <module>
+    main()
+  File "/scratch/hhubar/keep-it-simple/src/WANDB_finetune_parameterized.py", line 309, in main
+    model, tokenizer = load_and_prepare_model(args.model_name)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/scratch/hhubar/keep-it-simple/src/WANDB_finetune_parameterized.py", line 40, in load_and_prepare_model
+    tokenizer = AutoTokenizer.from_pretrained(model_name, add_special_tokens=True)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/transformers/models/auto/tokenization_auto.py", line 1008, in from_pretrained
+    return tokenizer_class.from_pretrained(pretrained_model_name_or_path, *inputs, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/transformers/tokenization_utils_base.py", line 2062, in from_pretrained
+    return cls._from_pretrained(
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/transformers/tokenization_utils_base.py", line 2302, in _from_pretrained
+    tokenizer = cls(*init_inputs, **init_kwargs)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/transformers/tokenization_utils_fast.py", line 178, in __init__
+    super().__init__(**kwargs)
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/transformers/tokenization_utils_base.py", line 1407, in __init__
+    raise AttributeError(f"{key} conflicts with the method {key} in {self.__class__.__name__}")
+AttributeError: add_special_tokens conflicts with the method add_special_tokens in PreTrainedTokenizerFast
+Traceback (most recent call last):
+  File "/scratch/hhubar/keep-it-simple/src/WANDB_finetune_parameterized.py", line 331, in <module>
+    main()
+  File "/scratch/hhubar/keep-it-simple/src/WANDB_finetune_parameterized.py", line 309, in main
+    model, tokenizer = load_and_prepare_model(args.model_name)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/scratch/hhubar/keep-it-simple/src/WANDB_finetune_parameterized.py", line 40, in load_and_prepare_model
+    tokenizer = AutoTokenizer.from_pretrained(model_name, add_special_tokens=True)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/transformers/models/auto/tokenization_auto.py", line 1008, in from_pretrained
+    return tokenizer_class.from_pretrained(pretrained_model_name_or_path, *inputs, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/transformers/tokenization_utils_base.py", line 2062, in from_pretrained
+    return cls._from_pretrained(
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/transformers/tokenization_utils_base.py", line 2302, in _from_pretrained
+    tokenizer = cls(*init_inputs, **init_kwargs)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/transformers/tokenization_utils_fast.py", line 178, in __init__
+    super().__init__(**kwargs)
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/transformers/tokenization_utils_base.py", line 1407, in __init__
+    raise AttributeError(f"{key} conflicts with the method {key} in {self.__class__.__name__}")
+AttributeError: add_special_tokens conflicts with the method add_special_tokens in PreTrainedTokenizerFast

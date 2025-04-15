@@ -39,28 +39,44 @@ def print_trainable_params(model):
 def load_and_prepare_model(model_name):
     tokenizer = AutoTokenizer.from_pretrained(model_name)
 
-    # add custom padding token if necessary
-    if tokenizer.pad_token is None:
-        tokenizer.add_special_tokens({'pad_token': '[PAD]'})
+    # # add custom padding token if necessary
+    # if tokenizer.pad_token is None:
+    #     tokenizer.add_special_tokens({'pad_token': '[PAD]'})
+    #     tokenizer.pad_token_id = tokenizer.convert_tokens_to_ids('[PAD]')
 
-    # define and add custom special tokens
-    special_tokens = {
-        'additional_special_tokens': ['<|user|>', 
-                                      '<|system|>', 
-                                      '<|assistant|>', 
-                                      '<|begin_of_text|>', 
-                                      '<|end_of_text|>',
-                                      '<|start_header_id|>',
-                                      '<|end_header_id|>',
-                                      '<|eot_id|>'
-                                      ]
-    }
-    existing_tokens = set(tokenizer.get_vocab().keys())
-    new_tokens = [tok for tok in special_tokens['additional_special_tokens'] if tok not in existing_tokens]
-    if new_tokens:
-        print("New tokens added to the tokenizer:", new_tokens)
-        tokenizer.add_special_tokens({'additional_special_tokens': new_tokens})
-        # tokenizer.add_special_tokens(special_tokens)
+
+    # # define and add custom special tokens
+    # special_tokens = {
+    #     'additional_special_tokens': ['<|user|>', 
+    #                                   '<|system|>', 
+    #                                   '<|assistant|>', 
+    #                                   '<|begin_of_text|>', 
+    #                                   '<|end_of_text|>',
+    #                                   '<|start_header_id|>',
+    #                                   '<|end_header_id|>',
+    #                                   '<|eot_id|>'
+    #                                   ]
+    # }
+    # existing_tokens = set(tokenizer.get_vocab().keys())
+    # new_tokens = [tok for tok in special_tokens['additional_special_tokens'] if tok not in existing_tokens]
+    # if new_tokens:
+    #     print("New tokens added to the tokenizer:", new_tokens)
+    #     tokenizer.add_special_tokens({'additional_special_tokens': new_tokens})
+    #     # tokenizer.add_special_tokens(special_tokens)
+
+    tokenizer.add_special_tokens({
+        'pad_token': '[PAD]',
+        'additional_special_tokens': [
+                                        '<|user|>', 
+                                        '<|system|>', 
+                                        '<|assistant|>', 
+                                        '<|begin_of_text|>', 
+                                        '<|end_of_text|>', 
+                                        '<|start_header_id|>', 
+                                        '<|end_header_id|>', 
+                                        '<|eot_id|>'
+                                        ]
+    })
 
     model = LlamaForCausalLM.from_pretrained(
         model_name,
@@ -74,19 +90,98 @@ def load_and_prepare_model(model_name):
 
     return model, tokenizer
 
+# def tokenize_dataset(dataset, tokenizer):
+#     def tokenize(example):
+#         tokenized = tokenizer(
+#             example["prompt"],
+#             text_target=example["completion"],
+#             truncation=True,
+#             max_length=512,
+#             padding="max_length"
+#         )
+#         return tokenized
+#     return dataset.map(tokenize, batched=True)
+
+# def tokenize_dataset(dataset, tokenizer):
+#     def tokenize(example):
+#         # Tokenize prompt
+#         prompt_ids = tokenizer(
+#                                 example["prompt"], 
+#                                 truncation=True, 
+#                                 max_length=256,
+#                                 add_special_tokens=False
+#                                 ).input_ids
+#         completion_ids = tokenizer(
+#                                 example["completion"], 
+#                                 truncation=True, 
+#                                 max_length=256, 
+#                                 add_special_tokens=False
+#                                 ).input_ids
+
+#         input_ids = prompt_ids + completion_ids
+#         attention_mask = [1] * len(input_ids)
+
+#         # Create labels: mask out the prompt part
+#         labels = [-100] * len(prompt_ids) + completion_ids
+
+#         # Pad if necessary
+#         max_length = 512
+#         padding_length = max_length - len(input_ids)
+#         if padding_length > 0:
+#             input_ids += [tokenizer.pad_token_id] * padding_length
+#             labels += [-100] * padding_length
+#             attention_mask += [0] * padding_length
+#         else:
+#             input_ids = input_ids[:max_length]
+#             labels = labels[:max_length]
+#             attention_mask = attention_mask[:max_length]
+
+#         # Ensure that no token id exceeds the vocab size
+#         max_token_id = tokenizer.vocab_size - 1
+#         input_ids = [min(id, max_token_id) for id in input_ids]
+#         labels = [min(id, max_token_id) for id in labels]
+
+#         return {
+#             "input_ids": input_ids,
+#             "labels": labels,
+#             "attention_mask": attention_mask
+#         }
+
+#     return dataset.map(tokenize, batched=False)
+
 def tokenize_dataset(dataset, tokenizer):
     def tokenize(example):
-        tokenized = tokenizer(
-            example["prompt"],
-            text_target=example["completion"],
-            truncation=True,
-            max_length=512,
-            padding="max_length"
-        )
-        return tokenized
-    return dataset.map(tokenize, batched=True)
+        prompt_ids = tokenizer(example["prompt"], add_special_tokens=False).input_ids
+        completion_ids = tokenizer(example["completion"], add_special_tokens=False).input_ids
 
-def show_examples(dataset, n=3):
+        input_ids = prompt_ids + completion_ids
+        attention_mask = [1] * len(input_ids)
+
+        # Create labels: mask out the prompt part
+        labels = [-100] * len(prompt_ids) + completion_ids
+
+        # Truncate to max_length after combining
+        max_length = 512
+        input_ids = input_ids[:max_length]
+        labels = labels[:max_length]
+        attention_mask = attention_mask[:max_length]
+
+        # Pad if necessary
+        padding_length = max_length - len(input_ids)
+        if padding_length > 0:
+            input_ids += [tokenizer.pad_token_id] * padding_length
+            labels += [-100] * padding_length
+            attention_mask += [0] * padding_length
+
+        return {
+            "input_ids": input_ids,
+            "labels": labels,
+            "attention_mask": attention_mask
+        }
+
+    return dataset.map(tokenize, batched=False)
+
+def show_examples(dataset, n=3, show_tokens=False):
     indices = random.sample(range(len(dataset)), min(n, len(dataset)))
     print(f"\nShowing {n} example(s):")
     for i, idx in enumerate(indices):
@@ -97,6 +192,11 @@ def show_examples(dataset, n=3):
         print(f"\nExample {i + 1} (index {idx})")
         print("--- Prompt:\n", prompt)
         print("--- Completion:\n", completion)
+
+        if show_tokens:
+            print("--- input_ids:\n", example.get("input_ids"))
+            print("--- labels:\n", example.get("labels"))
+
         print("=" * 50)
 
 def load_and_prepare_dataset(dataset_name, tokenizer, args):
@@ -148,7 +248,7 @@ def load_and_prepare_dataset(dataset_name, tokenizer, args):
     val_dataset = tokenize_dataset(val_dataset, tokenizer)
 
     print("\n\n *** After tokenization ***")
-    show_examples(train_dataset, n=1)
+    show_examples(train_dataset, n=1, show_tokens=True)
 
     print(10*"*", "DEBUG", 10*"*")
     print("Train dataset columns:", train_dataset.column_names)
@@ -182,7 +282,6 @@ def train_model(model, tokenizer, train_dataset, val_dataset, args, output_dir):
     trainer.train()
     trainer.save_model(output_dir)
     wandb.save(output_dir)
-
 
 def parse_args():
     parser = argparse.ArgumentParser()
@@ -238,10 +337,18 @@ def main():
     model, tokenizer = load_and_prepare_model(args.model_name)
     train_dataset, val_dataset = load_and_prepare_dataset(args.dataset_name, tokenizer, args)
 
-    print(10*"*", "DEBUG", 10*"*")
     example = train_dataset[0]
-    print(type(example["input_ids"]))  # should be list of ints
-    print(type(example["labels"]))     # should be list of ints
+    print("type of input_ids:", type(example["input_ids"]))
+    print("type of labels:", type(example["labels"]))
+    print("\n--- DEBUG: Tokenized fields ---")
+    print("--- Tokenizer vocab size:", tokenizer.vocab_size)
+    print("--- max token ID in input_ids:", max(example["input_ids"]))
+    print("--- max token ID in labels:", max(example["labels"]))
+    print("--- input_ids:", example["input_ids"])
+    print("--- labels:", example["labels"])
+    print("--- decoded input_ids:\n", tokenizer.decode(example["input_ids"], skip_special_tokens=True))
+    decoded_labels = tokenizer.decode([token_id for token_id in example["labels"] if token_id != -100], skip_special_tokens=True)
+    print("--- decoded labels:\n", decoded_labels)
 
 
     train_model(model, tokenizer, train_dataset, val_dataset, args, output_dir)
