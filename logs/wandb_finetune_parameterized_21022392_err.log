@@ -1,0 +1,82 @@
+
+CondaError: Run 'conda init' before 'conda activate'
+
+wandb: Using wandb-core as the SDK backend.  Please refer to https://wandb.me/wandb-core for more information.
+wandb: Appending key for api.wandb.ai to your netrc file: /home/hhubar/.netrc
+wandb: Currently logged in as: hanna-hubarava (shtosti) to https://api.wandb.ai. Use `wandb login --relogin` to force relogin
+wandb: Tracking run with wandb version 0.19.9
+wandb: Run data is saved locally in /scratch/hhubar/keep-it-simple/wandb/run-20250415_135731-i2kvai2r
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run fiery-butterfly-54
+wandb: ⭐️ View project at https://wandb.ai/shtosti/thesis-SFT
+wandb: 🚀 View run at https://wandb.ai/shtosti/thesis-SFT/runs/i2kvai2r
+The new embeddings will be initialized from a multivariate normal distribution that has old embeddings' mean and covariance. As described in this article: https://nlp.stanford.edu/~johnhew/vocab-expansion.html. To disable this, use `mean_resizing=False`
+The token has not been saved to the git credentials helper. Pass `add_to_git_credential=True` in this function directly or `--add-to-git-credential` if using via `huggingface-cli` if you want to set the git credential as well.
+Token is valid (permission: write).
+The token `mine` has been saved to /home/hhubar/data/.cache/huggingface/stored_tokens
+Your token has been saved to /home/hhubar/data/.cache/huggingface/token
+Login successful.
+Note: Environment variable`HF_TOKEN` is set and is the current active token independently from the token you've just configured.
+The token has not been saved to the git credentials helper. Pass `add_to_git_credential=True` in this function directly or `--add-to-git-credential` if using via `huggingface-cli` if you want to set the git credential as well.
+Token is valid (permission: write).
+The token `mine` has been saved to /home/hhubar/data/.cache/huggingface/stored_tokens
+Your token has been saved to /home/hhubar/data/.cache/huggingface/token
+Login successful.
+Note: Environment variable`HF_TOKEN` is set and is the current active token independently from the token you've just configured.
+Map:   0%|          | 0/1410 [00:00<?, ? examples/s]Map:   0%|          | 0/1410 [00:00<?, ? examples/s]
+Traceback (most recent call last):
+  File "/scratch/hhubar/keep-it-simple/src/WANDB_finetune_parameterized.py", line 315, in <module>
+    main()
+  File "/scratch/hhubar/keep-it-simple/src/WANDB_finetune_parameterized.py", line 301, in main
+    train_dataset, val_dataset = load_and_prepare_dataset(args.dataset_name, tokenizer, args)
+                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/scratch/hhubar/keep-it-simple/src/WANDB_finetune_parameterized.py", line 197, in load_and_prepare_dataset
+    train_dataset = train_dataset.map(flatten_rows, remove_columns=train_dataset.column_names, batched=True)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/datasets/arrow_dataset.py", line 557, in wrapper
+    out: Union["Dataset", "DatasetDict"] = func(self, *args, **kwargs)
+                                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/datasets/arrow_dataset.py", line 3074, in map
+    for rank, done, content in Dataset._map_single(**dataset_kwargs):
+                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/datasets/arrow_dataset.py", line 3516, in _map_single
+    for i, batch in iter_outputs(shard_iterable):
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/datasets/arrow_dataset.py", line 3466, in iter_outputs
+    yield i, apply_function(example, i, offset=offset)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/datasets/arrow_dataset.py", line 3389, in apply_function
+    processed_inputs = function(*fn_args, *additional_args, **fn_kwargs)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/scratch/hhubar/keep-it-simple/src/WANDB_finetune_parameterized.py", line 157, in flatten_rows
+    "simplification_text": simplification["simplification_text"],  # Simplified text
+                           ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: list indices must be integers or slices, not str
+Traceback (most recent call last):
+  File "/scratch/hhubar/keep-it-simple/src/WANDB_finetune_parameterized.py", line 315, in <module>
+    main()
+  File "/scratch/hhubar/keep-it-simple/src/WANDB_finetune_parameterized.py", line 301, in main
+    train_dataset, val_dataset = load_and_prepare_dataset(args.dataset_name, tokenizer, args)
+                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/scratch/hhubar/keep-it-simple/src/WANDB_finetune_parameterized.py", line 197, in load_and_prepare_dataset
+    train_dataset = train_dataset.map(flatten_rows, remove_columns=train_dataset.column_names, batched=True)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/datasets/arrow_dataset.py", line 557, in wrapper
+    out: Union["Dataset", "DatasetDict"] = func(self, *args, **kwargs)
+                                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/datasets/arrow_dataset.py", line 3074, in map
+    for rank, done, content in Dataset._map_single(**dataset_kwargs):
+                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/datasets/arrow_dataset.py", line 3516, in _map_single
+    for i, batch in iter_outputs(shard_iterable):
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/datasets/arrow_dataset.py", line 3466, in iter_outputs
+    yield i, apply_function(example, i, offset=offset)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/datasets/arrow_dataset.py", line 3389, in apply_function
+    processed_inputs = function(*fn_args, *additional_args, **fn_kwargs)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/scratch/hhubar/keep-it-simple/src/WANDB_finetune_parameterized.py", line 157, in flatten_rows
+    "simplification_text": simplification["simplification_text"],  # Simplified text
+                           ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: list indices must be integers or slices, not str
