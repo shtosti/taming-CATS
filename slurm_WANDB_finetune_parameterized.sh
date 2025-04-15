@@ -7,7 +7,7 @@
 #SBATCH --error=logs/%x_%j_err.log 
 #SBATCH --gpus=A100:1
 #SBATCH --mem=80000
-#SBATCH --time=03:00:00              # Max runtime (hh:mm:ss)
+#SBATCH --time=02:00:00              # Max runtime (hh:mm:ss)
 
 conda activate sft
 module load gpu
