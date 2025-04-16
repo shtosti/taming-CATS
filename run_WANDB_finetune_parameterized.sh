@@ -1,8 +1,13 @@
 #!/bin/bash
 
+# --- model family (class)
+# MODEL_FAMILY="llama"
+MODEL_FAMILY="auto"
+
 # --- model settings ---
-MODEL_NAME="meta-llama/Llama-3.2-1B-Instruct"
+# MODEL_NAME="meta-llama/Llama-3.2-1B-Instruct"
 # MODEL_NAME="meta-llama/Meta-Llama-3-8B-Instruct"
+MODEL_NAME="ministral/Ministral-3b-instruct"
 
 # --- dataset settings ---
 DATASET_NAME="Med-EASi"
@@ -19,7 +24,8 @@ METRIC_NAME="FKGL"
 # --- hyperparameters ---
 EPOCHS=2
 BATCH_SIZE=4 # TODO increase to 8 or 16
-LR=2e-6
+GRADIENT_ACCUMULATION_STEPS=4
+LR=1e-5
 WEIGHT_DECAY=0.01
 LOGGING_STEPS=20
 LOG_EVERY=40
@@ -28,12 +34,18 @@ LOG_EVERY=40
 WANDB_PROJECT_NAME="thesis-SFT"
 WANDB_ENTITY="shtosti"
 
-CUDA_LAUNCH_BLOCKING=1 python src/WANDB_finetune_parameterized.py \
+
+CUDA_LAUNCH_BLOCKING=1 \
+PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True \
+TORCH_USE_CUDA_DSA=1 \
+python src/WANDB_finetune_parameterized.py \
+    --model_family "$MODEL_FAMILY" \
     --model_name "$MODEL_NAME" \
     --dataset_name "$DATASET_NAME" \
     --slice_train "$SLICE_TRAIN" \
     --slice_val "$SLICE_VAL" \
     --batch_size "$BATCH_SIZE" \
+    --gradient_accumulation_steps "$GRADIENT_ACCUMULATION_STEPS" \
     --learning_rate "$LR" \
     --weight_decay "$WEIGHT_DECAY" \
     --logging_steps "$LOGGING_STEPS" \
