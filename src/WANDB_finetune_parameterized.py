@@ -6,15 +6,19 @@ import random
 from datetime import datetime
 from dotenv import load_dotenv
 import wandb
+from peft import get_peft_model, LoraConfig
+import bitsandbytes as bnb
 import torch
 torch.cuda.empty_cache()
 print("torch.cuda.is_bf16_supported:", torch.cuda.is_bf16_supported())
 import transformers
 from transformers import LlamaForCausalLM, AutoModelForCausalLM, AutoTokenizer
 from transformers import Trainer, TrainingArguments
+
 from helpers.hugging_face import load_dataset_from_hf, get_model_short_name
 from helpers.prompting import select_random_system_prompt, select_random_user_prompt, select_control_token_explanation, select_random_control_token_examples
 from helpers.prompting import create_user_prompt, format_prompt_with_special_tokens, format_completion_with_special_tokens
+
 from classes.PredictionLoggerCallback import PredictionLoggerCallback
 
 print("Transformers version:", transformers.__version__)
@@ -38,7 +42,7 @@ def print_trainable_params(model):
     trainable = sum(p.numel() for p in model.parameters() if p.requires_grad)
     print(f"Trainable params: {trainable:,} / {total:,} ({100 * trainable / total:.2f}%)")
 
-def load_and_prepare_model(model_name, model_family):
+def load_and_prepare_model(model_name, model_family, peft_enabled):
     # --- tokenizer ---
     tokenizer = AutoTokenizer.from_pretrained(model_name)
     if tokenizer.pad_token is None:
@@ -59,6 +63,16 @@ def load_and_prepare_model(model_name, model_family):
     model.config.use_cache = False # use less memory
     model.resize_token_embeddings(len(tokenizer)) # resize after adding new tokens
     model.config.pad_token_id = tokenizer.pad_token_id
+
+    if peft_enabled:
+        print("Using PEFT for fine-tuning...")
+        peft_config = LoraConfig(
+            r=8,
+            lora_alpha=32,
+            lora_dropout=0.1,
+            bias="none"
+        )
+        model = get_peft_model(model, peft_config)
 
     # --- debug ---
     print("--- DEBUG ---")
@@ -184,7 +198,7 @@ def load_and_prepare_dataset(dataset_name, tokenizer, args):
 
     return train_dataset, val_dataset
 
-def train_model(model, tokenizer, train_dataset, val_dataset, args, output_dir):
+def train_model(model, tokenizer, train_dataset, val_dataset, args, output_dir, peft_enabled):
 
     training_args = TrainingArguments(
         output_dir=output_dir,
@@ -204,6 +218,9 @@ def train_model(model, tokenizer, train_dataset, val_dataset, args, output_dir):
         report_to=["wandb"]
     )
 
+    if peft_enabled:
+        model = model.to(bnb.bfloat16)
+
     trainer = Trainer(
         model=model,
         train_dataset=train_dataset,
@@ -219,6 +236,7 @@ def train_model(model, tokenizer, train_dataset, val_dataset, args, output_dir):
 
 def parse_args():
     parser = argparse.ArgumentParser()
+    # hyperparams
     parser.add_argument("--model_family", type=str, required=True, choices=["llama", "auto"], help="Model class to use.")
     parser.add_argument("--model_name", type=str, required=True)
     parser.add_argument("--dataset_name", type=str, required=True)
@@ -233,22 +251,28 @@ def parse_args():
     parser.add_argument("--wandb_project_name", type=str, default="thesis-SFT")
     parser.add_argument("--wandb_entity", type=str, default="shtosti")
     parser.add_argument("--log_every", type=int, default=20)
-
     # for dynamic prompting
     parser.add_argument("--prompting_type", type=str, default="vanilla", choices=["vanilla", "reasoning", "transformations"])
     parser.add_argument("--user_prompt_id", type=str, default="token", choices=["no_token", "token", "token_explanation", "token_explanation_examples"])
     parser.add_argument("--metric_name", type=str, required=True)
-
     # Paths to external JSON files for control tokens, system prompts, and user prompts
     parser.add_argument("--control_tokens", type=str, required=True)
     parser.add_argument("--system_prompts", type=str, required=True)
     parser.add_argument("--user_prompts", type=str, required=True)
+    # peft flag
+    parser.add_argument("--peft", action="store_true", help="Enable PEFT for large models.")
 
     return parser.parse_args()
 
 
 def main():
     args = parse_args()
+
+    if args.peft:
+        print("Using PEFT...")
+    else:
+        print("Not using PEFT...")
+
     print(f"\nRun arguments:\n{args}\n")
 
     load_dotenv(dotenv_path="./.env", override=True)
@@ -270,7 +294,7 @@ def main():
     print("Current working directory:", os.getcwd())
     print("Saving to:", output_dir)
 
-    model, tokenizer = load_and_prepare_model(args.model_name, args.model_family)
+    model, tokenizer = load_and_prepare_model(args.model_name, args.model_family, args.peft)
     train_dataset, val_dataset = load_and_prepare_dataset(args.dataset_name, tokenizer, args)
 
     print("First 10 input_ids:", train_dataset[0]["input_ids"][:10])
@@ -290,7 +314,15 @@ def main():
     print("--- decoded labels:\n", decoded_labels)
 
 
-    train_model(model, tokenizer, train_dataset, val_dataset, args, output_dir)
+    train_model(
+                model, 
+                tokenizer, 
+                train_dataset, 
+                val_dataset, 
+                args, 
+                output_dir,
+                args.peft
+                )
 
     wandb.finish()
 
