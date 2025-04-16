@@ -204,7 +204,7 @@ def train_model(model, tokenizer, train_dataset, val_dataset, args, output_dir):
     )
 
     trainer.train()
-    # trainer.save_model(output_dir)
+    trainer.save_model(output_dir)
     wandb.save(output_dir)
 
 def parse_args():
