@@ -54,13 +54,7 @@ def load_and_prepare_model(model_name, model_family):
         model = AutoModelForCausalLM.from_pretrained(model_name, device_map="auto")
     else:
         raise ValueError(f"Unsupported model_family: {model_family}")
-    # model = LlamaForCausalLM.from_pretrained(
-    #     model_name,
-    #     # torch_dtype=torch.float16,
-    #     device_map="auto",
-    #     # offload_folder="offload",
-    #     # offload_state_dict=True
-    # )
+
     model.gradient_checkpointing_enable() # batching imitation
     model.config.use_cache = False # use less memory
     model.resize_token_embeddings(len(tokenizer)) # resize after adding new tokens
