@@ -7,7 +7,8 @@ MODEL_FAMILY="auto"
 # --- model settings ---
 # MODEL_NAME="meta-llama/Llama-3.2-1B-Instruct"
 # MODEL_NAME="meta-llama/Meta-Llama-3-8B-Instruct"
-MODEL_NAME="ministral/Ministral-3b-instruct"
+MODEL_NAME="Qwen/Qwen2.5-1.5B-Instruct"
+# MODEL_NAME="ministral/Ministral-3b-instruct"
 
 # --- dataset settings ---
 DATASET_NAME="Med-EASi"
