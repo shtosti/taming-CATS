@@ -1,8 +1,8 @@
 #!/bin/bash
 
 # --- model settings ---
-# MODEL_NAME="meta-llama/Llama-3.2-1B-Instruct"
-MODEL_NAME="meta-llama/Meta-Llama-3-8B-Instruct"
+MODEL_NAME="meta-llama/Llama-3.2-1B-Instruct"
+# MODEL_NAME="meta-llama/Meta-Llama-3-8B-Instruct"
 
 # --- dataset settings ---
 DATASET_NAME="Med-EASi"
