@@ -46,7 +46,7 @@ def load_and_prepare_model(model_name):
         tokenizer.add_special_tokens({
             'pad_token': '[PAD]'
         })
-    # tokenizer.padding_side = "left"
+    tokenizer.padding_side = "left"
 
     # --- model ---
     model = LlamaForCausalLM.from_pretrained(
