@@ -1,6 +1,4 @@
 import os
-os.environ["TORCH_USE_CUDA_DSA"] = "1" # make error log more informative
-os.environ["PYTORCH_CUDA_ALLOC_CONF"] = "expandable_segments:True" # to further save memory
 import argparse
 import sys
 import json
@@ -10,8 +8,9 @@ from dotenv import load_dotenv
 import wandb
 import torch
 torch.cuda.empty_cache()
+print("torch.cuda.is_bf16_supported:", torch.cuda.is_bf16_supported())
 import transformers
-from transformers import LlamaForCausalLM, AutoTokenizer
+from transformers import LlamaForCausalLM, AutoModelForCausalLM, AutoTokenizer
 from transformers import Trainer, TrainingArguments
 from helpers.hugging_face import load_dataset_from_hf, get_model_short_name
 from helpers.prompting import select_random_system_prompt, select_random_user_prompt, select_control_token_explanation, select_random_control_token_examples
@@ -39,7 +38,7 @@ def print_trainable_params(model):
     trainable = sum(p.numel() for p in model.parameters() if p.requires_grad)
     print(f"Trainable params: {trainable:,} / {total:,} ({100 * trainable / total:.2f}%)")
 
-def load_and_prepare_model(model_name):
+def load_and_prepare_model(model_name, model_family):
     # --- tokenizer ---
     tokenizer = AutoTokenizer.from_pretrained(model_name)
     if tokenizer.pad_token is None:
@@ -49,11 +48,19 @@ def load_and_prepare_model(model_name):
     tokenizer.padding_side = "left"
 
     # --- model ---
-    model = LlamaForCausalLM.from_pretrained(
-        model_name,
-        # torch_dtype=torch.float16,
-        device_map="auto"
-    )
+    if model_family == "llama":
+        model = LlamaForCausalLM.from_pretrained(model_name, device_map="auto")
+    elif model_family == "auto":
+        model = AutoModelForCausalLM.from_pretrained(model_name, device_map="auto")
+    else:
+        raise ValueError(f"Unsupported model_family: {model_family}")
+    # model = LlamaForCausalLM.from_pretrained(
+    #     model_name,
+    #     # torch_dtype=torch.float16,
+    #     device_map="auto",
+    #     # offload_folder="offload",
+    #     # offload_state_dict=True
+    # )
     model.gradient_checkpointing_enable() # batching imitation
     model.config.use_cache = False # use less memory
     model.resize_token_embeddings(len(tokenizer)) # resize after adding new tokens
@@ -190,12 +197,14 @@ def train_model(model, tokenizer, train_dataset, val_dataset, args, output_dir):
         learning_rate=args.learning_rate,
         per_device_train_batch_size=args.batch_size,
         per_device_eval_batch_size=args.batch_size,
+        gradient_accumulation_steps=args.gradient_accumulation_steps,
         num_train_epochs=args.epochs,
         weight_decay=args.weight_decay,
         max_grad_norm=0.5, # clipping to stabilize
         warmup_steps=50,
-        gradient_accumulation_steps=4,
-        fp16=True,
+        # fp16=True,
+        bf16=True,
+        fp16=False,
         logging_steps=args.logging_steps,
         push_to_hub=False,
         report_to=["wandb"]
@@ -216,12 +225,14 @@ def train_model(model, tokenizer, train_dataset, val_dataset, args, output_dir):
 
 def parse_args():
     parser = argparse.ArgumentParser()
+    parser.add_argument("--model_family", type=str, required=True, choices=["llama", "auto"], help="Model class to use.")
     parser.add_argument("--model_name", type=str, required=True)
     parser.add_argument("--dataset_name", type=str, required=True)
     parser.add_argument("--slice_train", type=int, default=-1)
     parser.add_argument("--slice_val", type=int, default=-1)
     parser.add_argument("--batch_size", type=int, default=4)
-    parser.add_argument("--learning_rate", type=float, default=5e-5)
+    parser.add_argument("--gradient_accumulation_steps", type=int, default=4)
+    parser.add_argument("--learning_rate", type=float, default=1e-5)
     parser.add_argument("--weight_decay", type=float, default=0.01)
     parser.add_argument("--epochs", type=int, default=1)
     parser.add_argument("--logging_steps", type=int, default=20)
@@ -265,9 +276,7 @@ def main():
     print("Current working directory:", os.getcwd())
     print("Saving to:", output_dir)
 
-    model, tokenizer = load_and_prepare_model(args.model_name)
-
-
+    model, tokenizer = load_and_prepare_model(args.model_name, args.model_family)
     train_dataset, val_dataset = load_and_prepare_dataset(args.dataset_name, tokenizer, args)
 
     print("First 10 input_ids:", train_dataset[0]["input_ids"][:10])
