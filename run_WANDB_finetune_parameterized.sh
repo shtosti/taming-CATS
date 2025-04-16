@@ -1,13 +1,12 @@
 #!/bin/bash
 
-# --- model family (class)
-# MODEL_FAMILY="llama"
-MODEL_FAMILY="auto"
-
-# --- model settings ---
-# MODEL_NAME="meta-llama/Llama-3.2-1B-Instruct"
+# --- model family
+MODEL_FAMILY="llama"
+MODEL_NAME="meta-llama/Llama-3.2-1B-Instruct"
 # MODEL_NAME="meta-llama/Meta-Llama-3-8B-Instruct"
-MODEL_NAME="Qwen/Qwen2.5-1.5B-Instruct"
+
+# MODEL_FAMILY="auto"
+# MODEL_NAME="Qwen/Qwen2.5-1.5B-Instruct"
 # MODEL_NAME="ministral/Ministral-3b-instruct"
 
 # --- dataset settings ---
@@ -16,8 +15,8 @@ SLICE_TRAIN="-1" # -1 means no slicing
 SLICE_VAL="-1" # -1 means no slicing
 
 # --- prompting settings ---
-PROMPTING_TYPE="vanilla"
-USER_PROMPT_ID="token"
+PROMPTING_TYPE="vanilla" # "vanilla", "reasoning", "transformations"
+USER_PROMPT_ID="token_explanation_examples" # "token", "token_explanation", "token_explanation_examples"
 
 # --- metric settings ---
 METRIC_NAME="FKGL"
