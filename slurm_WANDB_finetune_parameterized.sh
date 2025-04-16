@@ -6,6 +6,7 @@
 #SBATCH --output=logs/%x_%j_out.log
 #SBATCH --error=logs/%x_%j_err.log 
 #SBATCH --gpus=A100:1
+#SBATCH --cpus-per-task=2
 #SBATCH --mem=80000
 #SBATCH --time=03:00:00              # Max runtime (hh:mm:ss)
 
