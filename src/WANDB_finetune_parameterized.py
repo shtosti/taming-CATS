@@ -1,5 +1,6 @@
 import os
 os.environ["TORCH_USE_CUDA_DSA"] = "1" # make error log more informative
+os.environ["PYTORCH_CUDA_ALLOC_CONF"] = "expandable_segments:True" # to further save memory
 import argparse
 import sys
 import json
@@ -8,6 +9,7 @@ from datetime import datetime
 from dotenv import load_dotenv
 import wandb
 import torch
+torch.cuda.empty_cache()
 import transformers
 from transformers import LlamaForCausalLM, AutoTokenizer
 from transformers import Trainer, TrainingArguments
@@ -38,23 +40,27 @@ def print_trainable_params(model):
     print(f"Trainable params: {trainable:,} / {total:,} ({100 * trainable / total:.2f}%)")
 
 def load_and_prepare_model(model_name):
+    # --- tokenizer ---
     tokenizer = AutoTokenizer.from_pretrained(model_name)
-
     if tokenizer.pad_token is None:
         tokenizer.add_special_tokens({
             'pad_token': '[PAD]'
         })
+    tokenizer.padding_side = "left"
 
+    # --- model ---
     model = LlamaForCausalLM.from_pretrained(
         model_name,
-        # torch_dtype=torch.float16,
-        torch_dtype=torch.float32,
+        torch_dtype=torch.float16,
         device_map="auto"
     )
-    # resize after adding new tokens
-    model.resize_token_embeddings(len(tokenizer))
+    model.gradient_checkpointing_enable() # batching imitation
+    model.config.use_cache = False # use less memory
+    model.config.return_dict = False # use less memory
+    model.resize_token_embeddings(len(tokenizer)) # resize after adding new tokens
     model.config.pad_token_id = tokenizer.pad_token_id
 
+    # --- debug ---
     print("--- DEBUG ---")
     print("trainable params:")
     print_trainable_params(model)
@@ -189,6 +195,7 @@ def train_model(model, tokenizer, train_dataset, val_dataset, args, output_dir):
         weight_decay=args.weight_decay,
         max_grad_norm=0.5, # clipping to stabilize
         warmup_steps=50,
+        gradient_accumulation_steps=16,
         logging_steps=args.logging_steps,
         push_to_hub=False,
         report_to=["wandb"]
@@ -259,6 +266,8 @@ def main():
     print("Saving to:", output_dir)
 
     model, tokenizer = load_and_prepare_model(args.model_name)
+
+
     train_dataset, val_dataset = load_and_prepare_dataset(args.dataset_name, tokenizer, args)
 
     example = train_dataset[0]
