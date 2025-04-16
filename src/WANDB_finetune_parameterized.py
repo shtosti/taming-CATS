@@ -46,17 +46,16 @@ def load_and_prepare_model(model_name):
         tokenizer.add_special_tokens({
             'pad_token': '[PAD]'
         })
-    tokenizer.padding_side = "left"
+    # tokenizer.padding_side = "left"
 
     # --- model ---
     model = LlamaForCausalLM.from_pretrained(
         model_name,
-        torch_dtype=torch.float16,
+        # torch_dtype=torch.float16,
         device_map="auto"
     )
     model.gradient_checkpointing_enable() # batching imitation
     model.config.use_cache = False # use less memory
-    model.config.return_dict = False # use less memory
     model.resize_token_embeddings(len(tokenizer)) # resize after adding new tokens
     model.config.pad_token_id = tokenizer.pad_token_id
 
@@ -195,7 +194,8 @@ def train_model(model, tokenizer, train_dataset, val_dataset, args, output_dir):
         weight_decay=args.weight_decay,
         max_grad_norm=0.5, # clipping to stabilize
         warmup_steps=50,
-        gradient_accumulation_steps=16,
+        gradient_accumulation_steps=4,
+        fp16=True,
         logging_steps=args.logging_steps,
         push_to_hub=False,
         report_to=["wandb"]
@@ -207,7 +207,7 @@ def train_model(model, tokenizer, train_dataset, val_dataset, args, output_dir):
         eval_dataset=val_dataset,
         args=training_args,
         tokenizer=tokenizer,
-        callbacks=[PredictionLoggerCallback(tokenizer, val_dataset, log_every=20)]
+        callbacks=[PredictionLoggerCallback(tokenizer, val_dataset, args.log_every)]
     )
 
     trainer.train()
@@ -269,6 +269,10 @@ def main():
 
 
     train_dataset, val_dataset = load_and_prepare_dataset(args.dataset_name, tokenizer, args)
+
+    print("First 10 input_ids:", train_dataset[0]["input_ids"][:10])
+    print("First 10 labels:", train_dataset[0]["labels"][:10])
+
 
     example = train_dataset[0]
     print("type of input_ids:", type(example["input_ids"]))
