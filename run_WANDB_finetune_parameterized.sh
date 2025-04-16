@@ -6,8 +6,8 @@ MODEL_NAME="meta-llama/Llama-3.2-1B-Instruct"
 
 # --- dataset settings ---
 DATASET_NAME="Med-EASi"
-SLICE_TRAIN="-1" # -1 means no slicing
-SLICE_VAL="-1" # -1 means no slicing
+SLICE_TRAIN="100" # -1 means no slicing
+SLICE_VAL="100" # -1 means no slicing
 
 # --- prompting settings ---
 PROMPTING_TYPE="vanilla"
@@ -18,11 +18,11 @@ METRIC_NAME="FKGL"
 
 # --- hyperparameters ---
 EPOCHS=2
-BATCH_SIZE=2 # TODO increase to 8 or 16
+BATCH_SIZE=4 # TODO increase to 8 or 16
 LR=2e-6
 WEIGHT_DECAY=0.01
-LOGGING_STEPS=50
-LOG_EVERY=50
+LOGGING_STEPS=4
+LOG_EVERY=4
 
 # --- WANDB settings ---
 WANDB_PROJECT_NAME="thesis-SFT"
