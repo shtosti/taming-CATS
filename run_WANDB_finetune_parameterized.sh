@@ -24,7 +24,7 @@ METRIC_NAME="FKGL"
 
 # --- hyperparameters ---
 EPOCHS=2
-BATCH_SIZE=4 # TODO increase to 8 or 16
+BATCH_SIZE=8 # TODO increase to 8 or 16
 GRADIENT_ACCUMULATION_STEPS=4
 LR=1e-5
 WEIGHT_DECAY=0.01
