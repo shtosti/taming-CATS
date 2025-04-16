@@ -40,32 +40,15 @@ def print_trainable_params(model):
 def load_and_prepare_model(model_name):
     tokenizer = AutoTokenizer.from_pretrained(model_name)
 
-    # tokenizer.add_special_tokens({
-    #     'pad_token': '[PAD]',
-    #     'additional_special_tokens': [
-    #                                     '<|user|>', 
-    #                                     '<|system|>', 
-    #                                     '<|assistant|>', 
-    #                                     '<|begin_of_text|>', 
-    #                                     '<|end_of_text|>', 
-    #                                     '<|start_header_id|>', 
-    #                                     '<|end_header_id|>', 
-    #                                     '<|eot_id|>'
-    #                                     ]
-    # })
-
     if tokenizer.pad_token is None:
         tokenizer.add_special_tokens({
             'pad_token': '[PAD]'
         })
 
-
-    # tokenizer.pad_token = '[PAD]'
-    # tokenizer.eos_token = '<|eot_id|>'
-
     model = LlamaForCausalLM.from_pretrained(
         model_name,
-        torch_dtype=torch.float16,
+        # torch_dtype=torch.float16,
+        torch_dtype=torch.float32,
         device_map="auto"
     )
     # resize after adding new tokens
@@ -83,46 +66,6 @@ def load_and_prepare_model(model_name):
 
     return model, tokenizer
 
-# def tokenize_dataset(dataset, tokenizer):
-#     def tokenize(example):
-#         prompt_ids = tokenizer(example["prompt"], add_special_tokens=False).input_ids
-#         completion_ids = tokenizer(example["completion"], add_special_tokens=False).input_ids
-
-#         input_ids = prompt_ids + completion_ids
-#         attention_mask = [1] * len(input_ids)
-
-#         # print("--- DEBUG ---")
-#         # print(f"--- special tokens IDs:")
-#         # for token in tokenizer.additional_special_tokens:
-#         #     token_id = tokenizer.convert_tokens_to_ids(token)
-#         #     print(f"--- token: {token}, Token ID: {token_id}")
-#         #     if token_id >= tokenizer.vocab_size:
-#         #         print(f"--- WARNING: Token ID for {token} exceeds vocab size!")
-
-#         # Create labels: mask out the prompt part
-#         labels = [-100] * len(prompt_ids) + completion_ids
-
-#         # Truncate to max_length after combining
-#         max_length = 512
-#         input_ids = input_ids[:max_length]
-#         labels = labels[:max_length]
-#         attention_mask = attention_mask[:max_length]
-
-#         # Pad if necessary
-#         padding_length = max_length - len(input_ids)
-#         if padding_length > 0:
-#             input_ids += [tokenizer.pad_token_id] * padding_length
-#             labels += [-100] * padding_length
-#             attention_mask += [0] * padding_length
-
-#         return {
-#             "input_ids": input_ids,
-#             "labels": labels,
-#             "attention_mask": attention_mask
-#         }
-
-#     return dataset.map(tokenize, batched=False)
-
 def tokenize_dataset(dataset, tokenizer):
     def tokenize(example):
         prompt_ids = tokenizer(example["prompt"], add_special_tokens=False).input_ids
@@ -133,6 +76,7 @@ def tokenize_dataset(dataset, tokenizer):
 
         # Create labels: mask out the prompt part
         labels = [-100] * len(prompt_ids) + completion_ids
+        assert any(label != -100 for label in labels), "All labels are -100!"
 
         # Truncate to max_length after combining
         max_length = 512
@@ -236,13 +180,6 @@ def load_and_prepare_dataset(dataset_name, tokenizer, args):
 
 def train_model(model, tokenizer, train_dataset, val_dataset, args, output_dir):
 
-    # # # Instantiate the PredictionLoggerCallback
-    # prediction_logger_callback = PredictionLoggerCallback(
-    #     tokenizer=tokenizer,
-    #     val_dataset=val_dataset,
-    #     log_every=args.log_every
-    # )
-
     training_args = TrainingArguments(
         output_dir=output_dir,
         learning_rate=args.learning_rate,
@@ -250,6 +187,8 @@ def train_model(model, tokenizer, train_dataset, val_dataset, args, output_dir):
         per_device_eval_batch_size=args.batch_size,
         num_train_epochs=args.epochs,
         weight_decay=args.weight_decay,
+        max_grad_norm=0.5, # clipping to stabilize
+        warmup_steps=50,
         logging_steps=args.logging_steps,
         push_to_hub=False,
         report_to=["wandb"]
@@ -261,7 +200,6 @@ def train_model(model, tokenizer, train_dataset, val_dataset, args, output_dir):
         eval_dataset=val_dataset,
         args=training_args,
         tokenizer=tokenizer,
-        # callbacks=[prediction_logger_callback],
         callbacks=[PredictionLoggerCallback(tokenizer, val_dataset, log_every=20)]
     )
 
