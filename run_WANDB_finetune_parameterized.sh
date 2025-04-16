@@ -1,8 +1,8 @@
 #!/bin/bash
 
 # --- model settings ---
-MODEL_NAME="meta-llama/Llama-3.2-1B-Instruct"
-# MODEL_NAME="meta-llama/Meta-Llama-3-8B-Instruct"
+# MODEL_NAME="meta-llama/Llama-3.2-1B-Instruct"
+MODEL_NAME="meta-llama/Meta-Llama-3-8B-Instruct"
 
 # --- dataset settings ---
 DATASET_NAME="Med-EASi"
@@ -17,9 +17,9 @@ USER_PROMPT_ID="token"
 METRIC_NAME="FKGL"
 
 # --- hyperparameters ---
-EPOCHS=1
-BATCH_SIZE=4 # TODO increase to 8 or 16
-LR=1e-5
+EPOCHS=2
+BATCH_SIZE=2 # TODO increase to 8 or 16
+LR=2e-6
 WEIGHT_DECAY=0.01
 LOGGING_STEPS=50
 LOG_EVERY=50
