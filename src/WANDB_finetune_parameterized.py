@@ -20,6 +20,7 @@ from helpers.prompting import select_random_system_prompt, select_random_user_pr
 from helpers.prompting import create_user_prompt, create_inference_prompt, format_prompt_with_special_tokens, format_completion_with_special_tokens
 
 from classes.PredictionLoggerCallback import PredictionLoggerCallback
+from classes.Metrics import Metrics
 
 print("Transformers version:", transformers.__version__)
 print("Python path:", sys.executable)
@@ -88,8 +89,8 @@ def load_and_prepare_model(model_name, model_family, peft_enabled):
 
 def tokenize_dataset(dataset, tokenizer):
     def tokenize(example):
-        prompt_ids = tokenizer(example["prompt"], add_special_tokens=False).input_ids
-        completion_ids = tokenizer(example["completion"], add_special_tokens=False).input_ids
+        prompt_ids = tokenizer(example["prompt"], add_special_tokens=True).input_ids
+        completion_ids = tokenizer(example["completion"], add_special_tokens=True).input_ids
 
         input_ids = prompt_ids + completion_ids
         attention_mask = [1] * len(input_ids)
@@ -257,6 +258,10 @@ def train_model(model, tokenizer, train_dataset, val_dataset, args, output_dir, 
     trainer.save_model(output_dir)
     wandb.save(output_dir)
 
+def evaluate_model():
+    pass
+
+
 def parse_args():
     parser = argparse.ArgumentParser()
     # hyperparams
@@ -332,7 +337,7 @@ def main():
     print("--- Tokenizer vocab size:", tokenizer.vocab_size)
     print("--- input_ids:", example["input_ids"])
     print("--- labels:", example["labels"])
-    print("--- decoded input_ids:\n", tokenizer.decode(example["input_ids"], skip_special_tokens=True))
+    print("--- decoded input_ids:\n", tokenizer.decode(example["input_ids"], skip_special_tokens=False))
     decoded_labels = tokenizer.decode([token_id for token_id in example["labels"] if token_id != -100], skip_special_tokens=True)
     print("--- decoded labels:\n", decoded_labels)
 
