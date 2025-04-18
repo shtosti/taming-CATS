@@ -70,9 +70,9 @@ def format_prompt_with_special_tokens(system_prompt, user_prompt):
 def format_completion_with_special_tokens(completion):
     return f"{completion} <|eot_id|>"
 
-def create_inference_prompt(text, metric_value, metric_name):
+def create_inference_prompt(text, metric_name, metric_value):
     return (
         f"<|begin_of_text|><|start_header_id|>user<|end_header_id|> "
-        f"<{metric_name}={metric_value}> {text} <|eot_id|>\n"
+        f"Simplify this text:\n<{metric_name}={metric_value}> {text} <|eot_id|>\n"
         f"<|start_header_id|>assistant<|end_header_id|> "
     )
