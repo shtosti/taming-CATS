@@ -17,7 +17,7 @@ from transformers import Trainer, TrainingArguments
 
 from helpers.hugging_face import load_dataset_from_hf, get_model_short_name
 from helpers.prompting import select_random_system_prompt, select_random_user_prompt, select_control_token_explanation, select_random_control_token_examples
-from helpers.prompting import create_user_prompt, format_prompt_with_special_tokens, format_completion_with_special_tokens
+from helpers.prompting import create_user_prompt, create_inference_prompt, format_prompt_with_special_tokens, format_completion_with_special_tokens
 
 from classes.PredictionLoggerCallback import PredictionLoggerCallback
 
@@ -219,7 +219,8 @@ def train_model(model, tokenizer, train_dataset, val_dataset, args, output_dir, 
     )
 
     if peft_enabled:
-        model = model.to(bnb.bfloat16)
+        # model = model.to(bnb.bfloat16)
+        pass
 
     trainer = Trainer(
         model=model,
