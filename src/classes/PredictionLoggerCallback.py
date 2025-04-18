@@ -65,8 +65,8 @@ class PredictionLoggerCallback(TrainerCallback):
 
             with torch.no_grad():
                 output_ids = model.generate(
-                    input_ids=inputs["input_ids"],
-                    attention_mask=inputs.get("attention_mask"),
+                    input_ids=inputs["input_ids"], # TODO contains the prediction???
+                    attention_mask=inputs.get("attention_mask"), # TODO masking used for generation??
                     **self.gen_kwargs
                 )
 
