@@ -149,7 +149,7 @@ def load_and_prepare_dataset(dataset_name, tokenizer, args):
 
     system_id, system_prompt = select_random_system_prompt(system_prompts)
     
-    def process_example(row):
+    def process_instance_train(row):
         metric_value = row["target_metrics"][args.metric_name]
         reference_simplification = row["simplification_text"]
 
@@ -174,23 +174,49 @@ def load_and_prepare_dataset(dataset_name, tokenizer, args):
             "completion": format_completion_with_special_tokens(reference_simplification),
             "system_prompt_id": system_id,
             "user_prompt_id": args.user_prompt_id,
+            "metric_name": args.metric_name,
             "metric_value": metric_value
         }
+    
+    def process_instance_val(row):
+        metric_value = row["target_metrics"][args.metric_name]
+        reference_simplification = row["simplification_text"]
+
+        inference_prompt = create_inference_prompt(
+            text=row["source_text"],
+            metric_name=args.metric_name,
+            metric_value=metric_value
+        )
+
+        return {
+            "prompt": inference_prompt,
+            "completion": format_completion_with_special_tokens(reference_simplification),
+            "system_prompt_id": system_id,
+            "metric_name": args.metric_name,
+            "metric_value": metric_value
+        }
+
 
     train_dataset = load_dataset_from_hf(dataset_name, split="train", slice=args.slice_train)
     val_dataset = load_dataset_from_hf(dataset_name, split="validation", slice=args.slice_val)
 
-    train_dataset = train_dataset.map(process_example)
-    val_dataset = val_dataset.map(process_example)
+    train_dataset = train_dataset.map(process_instance_train)
+    val_dataset = val_dataset.map(process_instance_val)
 
     print("\n\n *** Before tokenization ***")
+    print(">>> train:")
     show_examples(train_dataset, n=1)
+    print(">>> val:")
+    show_examples(val_dataset, n=1)
 
     train_dataset = tokenize_dataset(train_dataset, tokenizer)
     val_dataset = tokenize_dataset(val_dataset, tokenizer)
 
     print("\n\n *** After tokenization ***")
+    print(">>> train:")
     show_examples(train_dataset, n=1, show_tokens=True)
+    print(">>> val:")
+    show_examples(val_dataset, n=1, show_tokens=True)
 
     print(10*"*", "DEBUG", 10*"*")
     print("Train dataset columns:", train_dataset.column_names)
@@ -217,10 +243,6 @@ def train_model(model, tokenizer, train_dataset, val_dataset, args, output_dir, 
         push_to_hub=False,
         report_to=["wandb"]
     )
-
-    if peft_enabled:
-        # model = model.to(bnb.bfloat16)
-        pass
 
     trainer = Trainer(
         model=model,
