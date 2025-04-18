@@ -32,10 +32,11 @@ METRIC_NAME="FKGL"
 # --- hyperparameters ---
 EPOCHS=1
 BATCH_SIZE=8
+EVAL_BATCH_SIZE=1
 GRADIENT_ACCUMULATION_STEPS=2
 LR=1e-5
 WEIGHT_DECAY=0.01
-LOGGING_STEPS=10
+LOGGING_STEPS=20
 LOG_EVERY=20
 
 # --- WANDB settings ---
@@ -59,6 +60,7 @@ python src/WANDB_finetune_parameterized.py \
     --slice_train "$SLICE_TRAIN" \
     --slice_val "$SLICE_VAL" \
     --batch_size "$BATCH_SIZE" \
+    --eval_batch_size "$EVAL_BATCH_SIZE" \
     --gradient_accumulation_steps "$GRADIENT_ACCUMULATION_STEPS" \
     --learning_rate "$LR" \
     --weight_decay "$WEIGHT_DECAY" \
