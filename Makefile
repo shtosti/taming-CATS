@@ -2,7 +2,7 @@ ENV_NAME = sft
 PYTHON = /home/hhubar/data/conda/envs/$(ENV_NAME)/bin/python
 WANDB_PROJECT = thesis-SFT
 
-queue: # check server queue
+q: # check server queue
 	squeue --user=$(USER)
 
 activate:
