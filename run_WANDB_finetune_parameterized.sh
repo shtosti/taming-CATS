@@ -1,18 +1,19 @@
 #!/bin/bash
 
 # --- model family # TODO
-# MODEL_FAMILY="llama"
-# MODEL_NAME="meta-llama/Llama-3.2-1B-Instruct"
+MODEL_FAMILY="llama"
+MODEL_NAME="meta-llama/Llama-3.2-1B-Instruct"
 # MODEL_NAME="meta-llama/Meta-Llama-3-8B-Instruct"
 
-MODEL_FAMILY="auto"
+# MODEL_FAMILY="auto"
 # MODEL_NAME="Qwen/Qwen2.5-1.5B-Instruct"
 # MODEL_NAME="Qwen/Qwen2.5-14B-Instruct"
 # MODEL_NAME="ministral/Ministral-3b-instruct"
-MODEL_NAME="mistralai/Mistral-7B-Instruct-v0.1"
+# MODEL_NAME="mistralai/Mistral-7B-Instruct-v0.1"
 
 # --- PEFT flag --- # TODO
-USE_PEFT=true 
+USE_PEFT=false 
+# USE_PEFT=true
 
 # --- dataset settings ---
 DATASET_NAME="Med-EASi"
@@ -23,7 +24,7 @@ SLICE_VAL="-1" # -1 means no slicing
 # "vanilla", "reasoning", "transformations"
 PROMPTING_TYPE="vanilla" 
 # "token", "token_explanation", "token_explanation_examples"
-USER_PROMPT_ID="token_explanation_examples"
+USER_PROMPT_ID="token"
 
 # --- metric settings ---
 METRIC_NAME="FKGL"
