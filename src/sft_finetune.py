@@ -237,6 +237,7 @@ def train_model(model, tokenizer, train_dataset, val_dataset, args, output_dir, 
         num_train_epochs=args.epochs,
         weight_decay=args.weight_decay,
         max_grad_norm=0.5, # clipping to stabilize
+        lr_scheduler_type="cosine",
         warmup_steps=50,
         # fp16=True,
         bf16=True,
