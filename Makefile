@@ -12,9 +12,11 @@ activate:
 clean: # Clean cache
 	rm -rf __pycache__ *.pyc */__pycache__ */*.pyc
 
-# Run with specific config (can be templated further)
 finetune:
-	sbatch ./slurm_WANDB_finetune_parameterized.sh
+	sbatch ./slurm_sft_finetune.sh
+
+eval:
+	sbatch ./slurm_sft_eval.sh
 
 # Just a nice summary
 help:
