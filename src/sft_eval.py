@@ -79,7 +79,7 @@ for example in tqdm(dataset):
         "source_text": source,
         "reference": reference,
         "prediction": prediction,
-        "fkgl": fkgl_score,
+        "fkgl": target_fkgl,
         "predicted_fkgl": predicted_fkgl,
         "target_fkgl": target_fkgl,
         "mse_loss": loss
@@ -87,9 +87,7 @@ for example in tqdm(dataset):
 
 
 # === Print summary ===
-avg_fkgl = sum(fkgl_scores) / len(fkgl_scores)
 avg_mse = sum(mse_losses) / len(mse_losses)
-print(f"\nAverage FKGL of predictions: {avg_fkgl:.2f}")
 print(f"Average MSE Loss on FKGL: {avg_mse:.4f}")
 
 # === Save results ===
