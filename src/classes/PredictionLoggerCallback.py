@@ -5,11 +5,12 @@ import random
 import warnings
 
 class PredictionLoggerCallback(TrainerCallback):
-    def __init__(self, tokenizer, val_dataset, log_every=20, num_samples=4, gen_kwargs=None):
+    def __init__(self, tokenizer, val_dataset, log_every=20, num_samples=4, max_length=512, gen_kwargs=None):
         self.tokenizer = tokenizer
         self.val_dataset = val_dataset
         self.log_every = log_every
         self.num_samples = num_samples
+        self.max_length = max_length
 
         # Set pad_token_id if not already set (important for decoder-only models)
         if self.tokenizer.pad_token_id is None:
@@ -60,7 +61,8 @@ class PredictionLoggerCallback(TrainerCallback):
                 prompts,
                 return_tensors="pt",
                 padding=True,
-                truncation=True
+                truncation=True,
+                max_length=self.max_length
             ).to(model.device)
 
             with torch.no_grad():
