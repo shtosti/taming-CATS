@@ -1,19 +1,27 @@
 #!/bin/bash
 
-# --- model family # TODO
-MODEL_FAMILY="llama"
-MODEL_NAME="meta-llama/Llama-3.2-1B-Instruct"
-# MODEL_NAME="meta-llama/Meta-Llama-3-8B-Instruct"
+# *** TODO ***
+# *** **** ***
+# --- model class: "llama" for llama and mistral, "auto" for qwen
+MODEL_CLASS="llama"
 
-# MODEL_FAMILY="auto"
+# --- model family: "llama", "mistral", "qwen"
+MODEL_FAMILY="llama"
+
+# --- model name
+# MODEL_NAME="meta-llama/Llama-3.2-1B-Instruct"
+MODEL_NAME="meta-llama/Meta-Llama-3-8B-Instruct"
 # MODEL_NAME="Qwen/Qwen2.5-1.5B-Instruct"
 # MODEL_NAME="Qwen/Qwen2.5-14B-Instruct"
 # MODEL_NAME="ministral/Ministral-3b-instruct"
 # MODEL_NAME="mistralai/Mistral-7B-Instruct-v0.1"
 
-# --- PEFT flag --- # TODO
-USE_PEFT=false 
-# USE_PEFT=true
+# --- PEFT flag: set true for models above e.g. 2B
+USE_PEFT=true 
+
+# *** **** ***
+# *** **** ***
+
 
 # --- dataset settings ---
 DATASET_NAME="Med-EASi"
@@ -24,7 +32,7 @@ SLICE_VAL="-1" # -1 means no slicing
 # "vanilla", "reasoning", "transformations"
 PROMPTING_TYPE="vanilla" 
 # "token", "token_explanation", "token_explanation_examples"
-USER_PROMPT_ID="token"
+USER_PROMPT_ID="token_explanation"
 
 # --- metric settings ---
 METRIC_NAME="FKGL"
@@ -54,6 +62,7 @@ CUDA_LAUNCH_BLOCKING=1 \
 PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True \
 TORCH_USE_CUDA_DSA=1 \
 python src/sft_finetune.py \
+    --model_class "$MODEL_CLASS" \
     --model_family "$MODEL_FAMILY" \
     --model_name "$MODEL_NAME" \
     --dataset_name "$DATASET_NAME" \
