@@ -63,16 +63,77 @@ def create_user_prompt(user_prompts, metric_name, metric_value, user_prompt_id, 
     # Fallback: If the metric is not found, return a default prompt
     return user_prompt_id, f"Simplify the following text: \n\n{text}"
 
-def format_prompt_with_special_tokens(system_prompt, user_prompt):
-    formatted_prompt = f"""<|begin_of_text|><|start_header_id|>system<|end_header_id|> {system_prompt}<|eot_id|>\n<|start_header_id|>user<|end_header_id|> {user_prompt}\n<|start_header_id|>assistant<|end_header_id|> """
+def format_prompt_with_special_tokens(system_prompt, user_prompt, model_family="base"):
+    if model_family in ["llama", "mistral"]:
+        formatted_prompt = (
+            f"[INST] <<SYS>>\n{system_prompt}\n<</SYS>>\n\n"
+            f"{user_prompt.strip()}\n"
+            f"[/INST]\n"
+        )
+    elif model_family == "qwen":
+        formatted_prompt = (
+            f"<|im_start|>system\n{system_prompt.strip()}\n<|im_end|>\n"
+            f"<|im_start|>user\n{user_prompt.strip()}\n<|im_end|>\n"
+            f"<|im_start|>assistant\n"
+        )
+    elif model_family == "base":
+        formatted_prompt = (
+            f"<|begin_of_text|>"
+            f"<|start_header_id|>system<|end_header_id|> {system_prompt}<|eot_id|>\n"
+            f"<|start_header_id|>user<|end_header_id|> {user_prompt}\n"
+            f"<|start_header_id|>assistant<|end_header_id|>\n"
+        )
+        
+    else:
+        raise ValueError(f"Unknown model family: {model_family}")
+
     return formatted_prompt
 
-def format_completion_with_special_tokens(completion):
-    return f"{completion} <|eot_id|>"
+def format_completion_with_special_tokens(completion, model_family="base"):
+    if model_family in ["llama", "mistral"]:
+        return completion.strip()
+    if model_family == "qwen":
+        return f"{completion.strip()}\n<|im_end|>"
+    elif model_family == "base":
+        return f"{completion.strip()} <|eot_id|>"
 
-def create_inference_prompt(text, metric_name, metric_value, sys_prompt):
-    return (
-        f"<|begin_of_text|><|start_header_id|>system<|end_header_id|> {sys_prompt}<|eot_id|>\n"
-        f"<|start_header_id|>user<|end_header_id|> Simplify this text:\n<{metric_name}={metric_value}> {text} <|eot_id|>\n"
-        f"<|start_header_id|>assistant<|end_header_id|> "
+def create_inference_prompt(text, metric_name, metric_value, system_prompt, model_family="base"):
+    formatted_instruction = f"<{metric_name}={metric_value}> {text.strip()}"
+
+    return format_prompt_with_special_tokens(
+        system_prompt=system_prompt,
+        user_prompt=formatted_instruction,
+        model_family=model_family
     )
+
+
+
+# *** DEBUG ***
+
+# system_prompt = "You are a helpful assistant that simplifies text to a specific FKGL level."
+# user_prompt = "Simplify. <FKGL=3.5> The patient presented with acute bronchitis."
+
+
+# print("--- Llama ----")
+# print(format_prompt_with_special_tokens(system_prompt, user_prompt, model_family="llama"))
+
+# print("--- Qwen ----")
+# print(format_prompt_with_special_tokens(system_prompt, user_prompt, model_family="qwen"))
+
+# print("--- Base ----")
+# print(format_prompt_with_special_tokens(system_prompt, user_prompt, model_family="base"))
+
+
+# inference_prompt = create_inference_prompt(
+#     text="The patient presented with acute bronchitis.",
+#     metric_name="FKGL",
+#     metric_value=3.5,
+#     system_prompt="You are a helpful assistant that simplifies text to a specific FKGL level.",
+#     model_family="llama"
+# )
+
+# completion = "The patient had a bad cough."
+
+# formatted_completion = format_completion_with_special_tokens(completion, model_family="llama")
+
+# print(inference_prompt + formatted_completion)
