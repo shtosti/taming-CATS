@@ -187,7 +187,8 @@ def load_and_prepare_dataset(dataset_name, tokenizer, args):
         inference_prompt = create_inference_prompt(
             text=row["source_text"],
             metric_name=args.metric_name,
-            metric_value=metric_value
+            metric_value=metric_value,
+            sys_prompt=system_prompts
         )
 
         return {
@@ -236,7 +237,7 @@ def train_model(model, tokenizer, train_dataset, val_dataset, args, output_dir, 
         gradient_accumulation_steps=args.gradient_accumulation_steps,
         num_train_epochs=args.epochs,
         weight_decay=args.weight_decay,
-        max_grad_norm=0.5, # clipping to stabilize
+        max_grad_norm=1.0, # clipping to stabilize
         lr_scheduler_type="cosine",
         warmup_steps=50,
         # fp16=True,
@@ -245,8 +246,9 @@ def train_model(model, tokenizer, train_dataset, val_dataset, args, output_dir, 
         logging_steps=args.logging_steps,
         push_to_hub=False,
         report_to=["wandb"],
-        # eval_strategy="steps",
-        # eval_steps=20
+        eval_strategy="steps",
+        eval_steps=50,
+        save_strategy="epoch"
     )
 
     trainer = Trainer(
