@@ -44,10 +44,12 @@ def print_trainable_params(model):
     trainable = sum(p.numel() for p in model.parameters() if p.requires_grad)
     print(f"Trainable params: {trainable:,} / {total:,} ({100 * trainable / total:.2f}%)")
 
-def load_and_prepare_model(model_name, model_class, peft_enabled):
+def load_and_prepare_model(model_name, model_class, peft_enabled, max_length):
     # --- tokenizer ---
     tokenizer = AutoTokenizer.from_pretrained(model_name)
-    if tokenizer.pad_token is None:
+    tokenizer.model_max_length = max_length
+    tokenizer.truncation_side = "right"
+    if tokenizer.pad_token is None or tokenizer.pad_token_id is None:
         tokenizer.add_special_tokens({
             'pad_token': '[PAD]'
         })
@@ -88,7 +90,7 @@ def load_and_prepare_model(model_name, model_class, peft_enabled):
 
     return model, tokenizer
 
-def tokenize_dataset(dataset, tokenizer):
+def tokenize_dataset(dataset, tokenizer, max_length):
     def tokenize(example):
         prompt_ids = tokenizer(example["prompt"], add_special_tokens=True).input_ids
         completion_ids = tokenizer(example["completion"], add_special_tokens=True).input_ids
@@ -101,7 +103,6 @@ def tokenize_dataset(dataset, tokenizer):
         assert any(label != -100 for label in labels), "All labels are -100!"
 
         # Truncate to max_length after combining
-        max_length = 512
         input_ids = input_ids[:max_length]
         labels = labels[:max_length]
         attention_mask = attention_mask[:max_length]
@@ -184,18 +185,42 @@ def load_and_prepare_dataset(dataset_name, tokenizer, args):
         metric_value = row["target_metrics"][args.metric_name]
         reference_simplification = row["simplification_text"]
 
-        inference_prompt = create_inference_prompt(
-            text=row["source_text"],
+        explanation = select_control_token_explanation(control_tokens, args.metric_name, metric_value) \
+            if "explanation" in args.user_prompt_id else None
+        
+        examples = select_random_control_token_examples(control_tokens, args.metric_name) \
+            if "examples" in args.user_prompt_id else None
+
+        # inference_prompt = create_inference_prompt(
+        #     text=row["source_text"],
+        #     metric_name=args.metric_name,
+        #     metric_value=metric_value,
+        #     system_prompt=system_prompt,
+        #     model_family=args.model_family
+        # )
+
+        # return {
+        #     "prompt": inference_prompt,
+        #     "completion": format_completion_with_special_tokens(reference_simplification, model_family=args.model_family),
+        #     "system_prompt_id": system_id,
+        #     "metric_name": args.metric_name,
+        #     "metric_value": metric_value
+        # }
+        _, user_prompt = create_user_prompt(
+            user_prompts,
             metric_name=args.metric_name,
             metric_value=metric_value,
-            system_prompt=system_prompt,
-            model_family=args.model_family
+            user_prompt_id=args.user_prompt_id,
+            text=row["source_text"],
+            explanation=explanation,
+            examples=examples
         )
 
         return {
-            "prompt": inference_prompt,
+            "prompt": format_prompt_with_special_tokens(system_prompt, user_prompt, model_family=args.model_family),
             "completion": format_completion_with_special_tokens(reference_simplification, model_family=args.model_family),
             "system_prompt_id": system_id,
+            "user_prompt_id": args.user_prompt_id,
             "metric_name": args.metric_name,
             "metric_value": metric_value
         }
@@ -213,8 +238,8 @@ def load_and_prepare_dataset(dataset_name, tokenizer, args):
     print(">>> val:")
     show_examples(val_dataset, n=1)
 
-    train_dataset = tokenize_dataset(train_dataset, tokenizer)
-    val_dataset = tokenize_dataset(val_dataset, tokenizer)
+    train_dataset = tokenize_dataset(train_dataset, tokenizer, args.max_length)
+    val_dataset = tokenize_dataset(val_dataset, tokenizer, args.max_length)
 
     print("\n\n *** After tokenization ***")
     print(">>> train:")
@@ -238,9 +263,9 @@ def train_model(model, tokenizer, train_dataset, val_dataset, args, output_dir, 
         gradient_accumulation_steps=args.gradient_accumulation_steps,
         num_train_epochs=args.epochs,
         weight_decay=args.weight_decay,
-        max_grad_norm=1.0, # clipping to stabilize
+        max_grad_norm=0.5, # clipping to stabilize
         lr_scheduler_type="cosine",
-        warmup_steps=50,
+        warmup_steps=30,
         # fp16=True,
         bf16=True,
         fp16=False,
@@ -248,7 +273,7 @@ def train_model(model, tokenizer, train_dataset, val_dataset, args, output_dir, 
         push_to_hub=False,
         report_to=["wandb"],
         eval_strategy="steps",
-        eval_steps=50,
+        eval_steps=40,
         save_strategy="epoch"
     )
 
@@ -258,7 +283,14 @@ def train_model(model, tokenizer, train_dataset, val_dataset, args, output_dir, 
         eval_dataset=val_dataset,
         args=training_args,
         tokenizer=tokenizer,
-        callbacks=[PredictionLoggerCallback(tokenizer, val_dataset, args.log_every)],
+        callbacks=[PredictionLoggerCallback(
+                                            tokenizer=tokenizer, 
+                                            val_dataset=val_dataset, 
+                                            log_every=args.log_every,
+                                            num_samples=4,
+                                            max_length=args.max_length,
+                                            gen_kwargs=None
+                                            )],
         # compute_metrics=partial(compute_metrics, tokenizer=tokenizer, val_dataset=val_dataset)
     )
 
@@ -283,6 +315,7 @@ def parse_args():
     parser.add_argument("--learning_rate", type=float, default=1e-5)
     parser.add_argument("--weight_decay", type=float, default=0.01)
     parser.add_argument("--epochs", type=int, default=1)
+    parser.add_argument("--max_length", type=int, default=512, help="Max length of output")
     parser.add_argument("--logging_steps", type=int, default=20)
     parser.add_argument("--wandb_project_name", type=str, default="thesis-SFT")
     parser.add_argument("--wandb_entity", type=str, default="shtosti")
@@ -333,7 +366,7 @@ def main():
     print("Current working directory:", os.getcwd())
     print("Saving to:", output_dir)
 
-    model, tokenizer = load_and_prepare_model(args.model_name, args.model_class, args.peft)
+    model, tokenizer = load_and_prepare_model(args.model_name, args.model_class, args.peft, args.max_length)
     train_dataset, val_dataset = load_and_prepare_dataset(args.dataset_name, tokenizer, args)
 
     print("First 10 input_ids:", train_dataset[0]["input_ids"][:10])
