@@ -5,19 +5,19 @@
 # --- model class: "llama" for llama and mistral, "auto" for qwen
 MODEL_CLASS="llama"
 
-# --- model family: "llama", "mistral", "qwen"
-MODEL_FAMILY="llama"
+# --- model family: "llama", "mistral", "qwen", "base" (for prompt template)
+MODEL_FAMILY="base"
 
 # --- model name
-# MODEL_NAME="meta-llama/Llama-3.2-1B-Instruct"
-MODEL_NAME="meta-llama/Meta-Llama-3-8B-Instruct"
+MODEL_NAME="meta-llama/Llama-3.2-1B-Instruct"
+# MODEL_NAME="meta-llama/Meta-Llama-3-8B-Instruct"
 # MODEL_NAME="Qwen/Qwen2.5-1.5B-Instruct"
 # MODEL_NAME="Qwen/Qwen2.5-14B-Instruct"
 # MODEL_NAME="ministral/Ministral-3b-instruct"
 # MODEL_NAME="mistralai/Mistral-7B-Instruct-v0.1"
 
 # --- PEFT flag: set true for models above e.g. 2B
-USE_PEFT=true 
+USE_PEFT=false 
 
 # *** **** ***
 # *** **** ***
@@ -39,13 +39,14 @@ METRIC_NAME="FKGL"
 
 # --- hyperparameters ---
 EPOCHS=2
+MAX_LENGTH=512
 BATCH_SIZE=8
 EVAL_BATCH_SIZE=1
 GRADIENT_ACCUMULATION_STEPS=2
 LR=1e-5
 WEIGHT_DECAY=0.01
 LOGGING_STEPS=20
-LOG_EVERY=40
+LOG_EVERY=20
 
 # --- WANDB settings ---
 WANDB_PROJECT_NAME="thesis-SFT"
@@ -75,6 +76,7 @@ python src/sft_finetune.py \
     --weight_decay "$WEIGHT_DECAY" \
     --logging_steps "$LOGGING_STEPS" \
     --epochs "$EPOCHS"\
+    --max_length "$MAX_LENGTH"\
     --wandb_project_name "$WANDB_PROJECT_NAME" \
     --wandb_entity "$WANDB_ENTITY"\
     --prompting_type "$PROMPTING_TYPE" \

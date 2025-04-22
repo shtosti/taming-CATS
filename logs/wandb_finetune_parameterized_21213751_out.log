@@ -1,0 +1,419 @@
+Tue Apr 22 17:27:13 2025       
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 560.35.05              Driver Version: 560.35.05      CUDA Version: 12.6     |
+|-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  NVIDIA A100-SXM4-80GB          Off |   00000000:48:00.0 Off |                    0 |
+| N/A   26C    P0             59W /  400W |       1MiB /  81920MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+                                                                                         
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI        PID   Type   Process name                              GPU Memory |
+|        ID   ID                                                               Usage      |
+|=========================================================================================|
+|  No running processes found                                                             |
++-----------------------------------------------------------------------------------------+
+torch.cuda.is_bf16_supported: True
+Transformers version: 4.51.0
+Python path: /home/hhubar/data/conda/envs/sft/bin/python
+Not using PEFT...
+
+Run arguments:
+Namespace(model_class='llama', model_family='base', model_name='ministral/Ministral-3b-instruct', dataset_name='Med-EASi', slice_train=-1, slice_val=-1, batch_size=8, eval_batch_size=1, gradient_accumulation_steps=2, learning_rate=1e-05, weight_decay=0.01, epochs=2, logging_steps=20, wandb_project_name='thesis-SFT', wandb_entity='shtosti', log_every=40, prompting_type='vanilla', user_prompt_id='token_explanation', metric_name='FKGL', control_tokens='data/prompts/control_tokens.json', system_prompts='data/prompts/system_prompts.json', user_prompts='data/prompts/user_prompts.json', peft=False)
+
+
+*** Finetuning Ministral-3b-instruct with Med-EASi ***
+
+CUDA available: True
+Number of GPUs: 1
+GPU name: NVIDIA A100-SXM4-80GB
+Current working directory: /scratch/hhubar/keep-it-simple
+Saving to: ./sft/Ministral-3b-instruct-Med-EASi-20250422-1728-2og1vzc8
+--- DEBUG ---
+trainable params:
+Trainable params: 3,315,716,096 / 3,315,716,096 (100.00%)
+--- tokenizer pad_token_id: 2
+--- tokenizer eos_token_id: 2
+--- special tokens:
+<unk>: 0
+<s>: 1
+</s>: 2
+train:	 Inspect the dataset format:
+ {'global_id': ['medeasi_000457'], 'source_text': ['The face is flushed, and the eyes are injected.'], 'source_metrics': [{'FRE': 96.18, 'ARI': 3.5, 'FKGL': 2.1, 'Dale-Chall': 9.35, 'char_count': 47, 'alphanum_count': 37, 'word_count': 11, 'sentence_count': 1}], 'metadata': [{'dataset': 'medeasi', 'experiment_split': '', 'domain': 'medical', 'language': 'en', 'annotation': 'human', 'level': 'sentence'}], 'simplification_text': ['The face is flushed.'], 'target_metrics': [{'FRE': 118.18, 'ARI': 0.6, 'FKGL': -2.3, 'Dale-Chall': 7.78, 'char_count': 20, 'alphanum_count': 16, 'word_count': 5, 'sentence_count': 1, 'char_compression_rate': 0.43, 'word_compression_rate': 0.45, 'sentence_compression_rate': 1.0, 'BLEU': 21.297646969725616, 'BERTScore': 0.9398951530456543}], 'simplification_version': [1], 'grade_level': [-1], 'simplification_dimensions': [{'linguistic': {'lexical': False, 'syntactic': False}}]}
+validation:	 Inspect the dataset format:
+ {'global_id': ['medeasi_001210'], 'source_text': ['This increased risk is greatest at two to three months of age.'], 'source_metrics': [{'FRE': 93.14, 'ARI': 4.6, 'FKGL': 3.3, 'Dale-Chall': 9.5, 'char_count': 62, 'alphanum_count': 50, 'word_count': 13, 'sentence_count': 1}], 'metadata': [{'dataset': 'medeasi', 'experiment_split': '', 'domain': 'medical', 'language': 'en', 'annotation': 'human', 'level': 'sentence'}], 'simplification_text': ['This risk is highest in infants who are two to three months old.'], 'target_metrics': [{'FRE': 92.12, 'ARI': 3.9, 'FKGL': 3.6, 'Dale-Chall': 9.14, 'char_count': 64, 'alphanum_count': 51, 'word_count': 14, 'sentence_count': 1, 'char_compression_rate': 1.03, 'word_compression_rate': 1.08, 'sentence_compression_rate': 1.0, 'BLEU': 22.718709780542323, 'BERTScore': 0.9562927484512329}], 'simplification_version': [1], 'grade_level': [-1], 'simplification_dimensions': [{'linguistic': {'lexical': False, 'syntactic': False}}]}
+
+
+ *** Before tokenization ***
+>>> train:
+
+Showing 1 example(s):
+
+Example 1 (index 228)
+--- Prompt:
+ <|begin_of_text|><|start_header_id|>system<|end_header_id|> You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|>
+<|start_header_id|>user<|end_header_id|> INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to the text. The control token has the following format: <METRIC=VALUE>. 
+TEXT: <FKGL=6.0> The increased pressure is caused by trabecular meshwork blockage. <|eot_id|>
+EXPLANATION: The <FKGL=6.0> token specifies that the target Flesch-Kincaid Grade Level should be approximately 6.0. Lower values indicate simpler text.
+<|start_header_id|>assistant<|end_header_id|>
+
+--- Completion:
+ This disease happens because of increased pressure in the eye. <|eot_id|>
+==================================================
+>>> val:
+
+Showing 1 example(s):
+
+Example 1 (index 6)
+--- Prompt:
+ <|begin_of_text|><|start_header_id|>system<|end_header_id|> You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|>
+<|start_header_id|>user<|end_header_id|> <FKGL=9.6> Flaccid penis length is a poor estimate of erect length.
+<|start_header_id|>assistant<|end_header_id|>
+
+--- Completion:
+ Flaccid length is not a reliable indication of erect length. <|eot_id|>
+==================================================
+
+
+ *** After tokenization ***
+>>> train:
+
+Showing 1 example(s):
+
+Example 1 (index 563)
+--- Prompt:
+ <|begin_of_text|><|start_header_id|>system<|end_header_id|> You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|>
+<|start_header_id|>user<|end_header_id|> INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to the text. The control token has the following format: <METRIC=VALUE>. 
+TEXT: <FKGL=8.8> Symptoms include coughing, sore throat, runny nose, sneezing, and fever which usually resolve in seven to ten days, with some symptoms lasting up to three weeks. <|eot_id|>
+EXPLANATION: The <FKGL=8.8> token specifies that the target Flesch-Kincaid Grade Level should be approximately 8.8. Lower values indicate simpler text.
+<|start_header_id|>assistant<|end_header_id|>
+
+--- Completion:
+ The symptoms include cough, painful throat, runny nose (rhinorrhea), and fever. <|eot_id|>
+--- input_ids:
+ [1, 523, 28766, 1357, 28730, 1009, 28730, 772, 28766, 3409, 28766, 2521, 28730, 4983, 28730, 313, 28766, 28767, 6574, 28789, 28766, 416, 28730, 4983, 28730, 313, 28766, 28767, 995, 460, 264, 10865, 7583, 297, 2245, 9878, 2500, 28723, 995, 8270, 264, 9878, 1799, 2751, 302, 272, 2245, 2787, 486, 272, 2188, 28723, 995, 9878, 1575, 272, 2245, 4771, 298, 272, 11382, 2078, 486, 272, 2188, 28723, 1684, 2261, 298, 9878, 1575, 264, 2245, 28725, 8270, 865, 272, 11939, 9878, 2500, 28725, 1671, 707, 4870, 7616, 28725, 8321, 442, 10928, 697, 26364, 28766, 28706, 322, 28730, 313, 28766, 28767, 13, 28789, 28766, 2521, 28730, 4983, 28730, 313, 28766, 28767, 1838, 28789, 28766, 416, 28730, 4983, 28730, 313, 28766, 28767, 2693, 19199, 5324, 28747, 3563, 452, 1575, 272, 2296, 2245, 1259, 369, 871, 401, 867, 338, 28733, 28796, 1814, 3439, 27073, 16543, 325, 28765, 28796, 4727, 28731, 7420, 349, 10870, 6530, 298, 369, 6140, 297, 272, 2602, 6029, 710, 1693, 286, 298, 272, 2245, 28723, 415, 2602, 6029, 659, 272, 2296, 5032, 28747, 523, 1574, 2050, 1604, 28746, 10015, 13902, 28705, 13, 9219, 28747, 523, 28765, 28796, 4727, 28746, 28783, 28723, 28783, 28767, 12356, 447, 5185, 3024, 26245, 288, 28725, 23176, 10807, 28725, 1482, 1780, 9948, 28725, 14297, 5620, 288, 28725, 304, 22041, 690, 4312, 11024, 297, 6671, 298, 3095, 2202, 28725, 395, 741, 12380, 24266, 582, 298, 1712, 4587, 28723, 523, 28766, 28706, 322, 28730, 313, 28766, 28767, 13, 2335, 3898, 1251, 4866, 28747, 415, 523, 28765, 28796, 4727, 28746, 28783, 28723, 28783, 28767, 6029, 1229, 8961, 369, 272, 2718, 401, 867, 338, 28733, 28796, 1814, 3439, 27073, 16543, 1023, 347, 10870, 28705, 28783, 28723, 28783, 28723, 21457, 3069, 11634, 27013, 2245, 28723, 13, 28789, 28766, 2521, 28730, 4983, 28730, 313, 28766, 28767, 489, 11143, 28789, 28766, 416, 28730, 4983, 28730, 313, 28766, 28767, 13, 1, 415, 12380, 3024, 26245, 28725, 17340, 10807, 28725, 1482, 1780, 9948, 325, 28712, 15176, 15536, 265, 28708, 557, 304, 22041, 28723, 523, 28766, 28706, 322, 28730, 313, 28766, 28767, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2]
+--- labels:
+ [-100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, 1, 415, 12380, 3024, 26245, 28725, 17340, 10807, 28725, 1482, 1780, 9948, 325, 28712, 15176, 15536, 265, 28708, 557, 304, 22041, 28723, 523, 28766, 28706, 322, 28730, 313, 28766, 28767, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100]
+==================================================
+>>> val:
+
+Showing 1 example(s):
+
+Example 1 (index 62)
+--- Prompt:
+ <|begin_of_text|><|start_header_id|>system<|end_header_id|> You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|>
+<|start_header_id|>user<|end_header_id|> <FKGL=9.1> Symptoms include fever, headache, muscle and joint pains, and a characteristic skin rash that is similar to measles.
+<|start_header_id|>assistant<|end_header_id|>
+
+--- Completion:
+ Some of the symptoms of dengue fever are fever; headache; a skin rash that looks like measles; and pain in the muscles and joints. <|eot_id|>
+--- input_ids:
+ [1, 523, 28766, 1357, 28730, 1009, 28730, 772, 28766, 3409, 28766, 2521, 28730, 4983, 28730, 313, 28766, 28767, 6574, 28789, 28766, 416, 28730, 4983, 28730, 313, 28766, 28767, 995, 460, 264, 10865, 7583, 297, 2245, 9878, 2500, 28723, 995, 8270, 264, 9878, 1799, 2751, 302, 272, 2245, 2787, 486, 272, 2188, 28723, 995, 9878, 1575, 272, 2245, 4771, 298, 272, 11382, 2078, 486, 272, 2188, 28723, 1684, 2261, 298, 9878, 1575, 264, 2245, 28725, 8270, 865, 272, 11939, 9878, 2500, 28725, 1671, 707, 4870, 7616, 28725, 8321, 442, 10928, 697, 26364, 28766, 28706, 322, 28730, 313, 28766, 28767, 13, 28789, 28766, 2521, 28730, 4983, 28730, 313, 28766, 28767, 1838, 28789, 28766, 416, 28730, 4983, 28730, 313, 28766, 28767, 523, 28765, 28796, 4727, 28746, 28774, 28723, 28740, 28767, 12356, 447, 5185, 3024, 22041, 28725, 1335, 1344, 28725, 14540, 304, 9353, 284, 1606, 28725, 304, 264, 17845, 4759, 408, 1029, 369, 349, 3684, 298, 5849, 867, 28723, 13, 28789, 28766, 2521, 28730, 4983, 28730, 313, 28766, 28767, 489, 11143, 28789, 28766, 416, 28730, 4983, 28730, 313, 28766, 28767, 13, 1, 2909, 302, 272, 12380, 302, 281, 980, 441, 22041, 460, 22041, 28745, 1335, 1344, 28745, 264, 4759, 408, 1029, 369, 4674, 737, 5849, 867, 28745, 304, 3358, 297, 272, 15922, 304, 9353, 28713, 28723, 523, 28766, 28706, 322, 28730, 313, 28766, 28767, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2]
+--- labels:
+ [-100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, 1, 2909, 302, 272, 12380, 302, 281, 980, 441, 22041, 460, 22041, 28745, 1335, 1344, 28745, 264, 4759, 408, 1029, 369, 4674, 737, 5849, 867, 28745, 304, 3358, 297, 272, 15922, 304, 9353, 28713, 28723, 523, 28766, 28706, 322, 28730, 313, 28766, 28767, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100]
+==================================================
+********** DEBUG **********
+Train dataset columns: ['global_id', 'source_text', 'source_metrics', 'metadata', 'simplification_text', 'target_metrics', 'simplification_version', 'grade_level', 'simplification_dimensions', 'prompt', 'completion', 'system_prompt_id', 'user_prompt_id', 'metric_name', 'metric_value', 'input_ids', 'labels', 'attention_mask']
+Val dataset columns: ['global_id', 'source_text', 'source_metrics', 'metadata', 'simplification_text', 'target_metrics', 'simplification_version', 'grade_level', 'simplification_dimensions', 'prompt', 'completion', 'system_prompt_id', 'metric_name', 'metric_value', 'input_ids', 'labels', 'attention_mask']
+First 10 input_ids: [1, 523, 28766, 1357, 28730, 1009, 28730, 772, 28766, 3409]
+First 10 labels: [-100, -100, -100, -100, -100, -100, -100, -100, -100, -100]
+type of input_ids: <class 'list'>
+type of labels: <class 'list'>
+
+--- DEBUG: Tokenized fields ---
+--- Tokenizer vocab size: 32000
+--- input_ids: [1, 523, 28766, 1357, 28730, 1009, 28730, 772, 28766, 3409, 28766, 2521, 28730, 4983, 28730, 313, 28766, 28767, 6574, 28789, 28766, 416, 28730, 4983, 28730, 313, 28766, 28767, 995, 460, 264, 10865, 7583, 297, 2245, 9878, 2500, 28723, 995, 8270, 264, 9878, 1799, 2751, 302, 272, 2245, 2787, 486, 272, 2188, 28723, 995, 9878, 1575, 272, 2245, 4771, 298, 272, 11382, 2078, 486, 272, 2188, 28723, 1684, 2261, 298, 9878, 1575, 264, 2245, 28725, 8270, 865, 272, 11939, 9878, 2500, 28725, 1671, 707, 4870, 7616, 28725, 8321, 442, 10928, 697, 26364, 28766, 28706, 322, 28730, 313, 28766, 28767, 13, 28789, 28766, 2521, 28730, 4983, 28730, 313, 28766, 28767, 1838, 28789, 28766, 416, 28730, 4983, 28730, 313, 28766, 28767, 2693, 19199, 5324, 28747, 3563, 452, 1575, 272, 2296, 2245, 1259, 369, 871, 401, 867, 338, 28733, 28796, 1814, 3439, 27073, 16543, 325, 28765, 28796, 4727, 28731, 7420, 349, 10870, 6530, 298, 369, 6140, 297, 272, 2602, 6029, 710, 1693, 286, 298, 272, 2245, 28723, 415, 2602, 6029, 659, 272, 2296, 5032, 28747, 523, 1574, 2050, 1604, 28746, 10015, 13902, 28705, 13, 9219, 28747, 523, 28765, 28796, 4727, 12650, 28750, 28723, 28770, 28767, 415, 2105, 349, 972, 5204, 28725, 304, 272, 2282, 460, 16453, 286, 28723, 523, 28766, 28706, 322, 28730, 313, 28766, 28767, 13, 2335, 3898, 1251, 4866, 28747, 415, 523, 28765, 28796, 4727, 12650, 28750, 28723, 28770, 28767, 6029, 1229, 8961, 369, 272, 2718, 401, 867, 338, 28733, 28796, 1814, 3439, 27073, 16543, 1023, 347, 10870, 387, 28750, 28723, 28770, 28723, 21457, 3069, 11634, 27013, 2245, 28723, 13, 28789, 28766, 2521, 28730, 4983, 28730, 313, 28766, 28767, 489, 11143, 28789, 28766, 416, 28730, 4983, 28730, 313, 28766, 28767, 13, 1, 415, 2105, 349, 972, 5204, 28723, 523, 28766, 28706, 322, 28730, 313, 28766, 28767, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2]
+--- labels: [-100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, 1, 415, 2105, 349, 972, 5204, 28723, 523, 28766, 28706, 322, 28730, 313, 28766, 28767, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100]
+--- decoded input_ids:
+ <s> <|begin_of_text|><|start_header_id|>system<|end_header_id|> You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|>
+<|start_header_id|>user<|end_header_id|> INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to the text. The control token has the following format: <METRIC=VALUE>. 
+TEXT: <FKGL=-2.3> The face is flushed, and the eyes are injected. <|eot_id|>
+EXPLANATION: The <FKGL=-2.3> token specifies that the target Flesch-Kincaid Grade Level should be approximately -2.3. Lower values indicate simpler text.
+<|start_header_id|>assistant<|end_header_id|>
+<s> The face is flushed. <|eot_id|></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s>
+--- decoded labels:
+ The face is flushed. <|eot_id|>
+{'loss': 2.0749, 'grad_norm': 30.525493621826172, 'learning_rate': 3.8000000000000005e-06, 'epoch': 0.23}
+
+>>> [Step 40] Prompt:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|> You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|>
+<|start_header_id|>user<|end_header_id|> <FKGL=14.7> Pericyclic reactions are usually rearrangement or addition reactions.
+<|start_header_id|>assistant<|end_header_id|>
+
+>>> Reference:
+Chemists disagree whether some reactions are pericyclic reactions. <|eot_id|>
+>>> Prediction:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|> You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|>
+<|start_header_id|>user<|end_header_id|> <FKGL=14.7> Pericyclic reactions are usually rearrangement or addition reactions.
+<|start_header_id|>assistant<|end_header_id|>
+ "Pericyclic reactions is a reaction involving an reaction that has two or more reactions with other reactions in reverse cycle.  This reaction is commonly the reaction with any reaction when it involves an reaction with another function. <|eot_id|> >|eot_id|>
+You can use a cyclic cyclocyclochylonerytides to get to a reaction with the opposite reaction. <|eot_id|>|e^eot_id|> ^>|eot_id|>|e^eot_id|>> * <|eot_id|>|e % in total and pericylics + <|eot_id|>|e0e p.    <|eot_id|>|e <|e^eot_id|e -> 3 - c T is +, 1 - c p p.     - and c 2 - c^e p.  B is: P is: 7/4, M is: 9/4, and h and c 2 - be c0e t is: 5 of. 5 has 2 - p P is : and a, but has no a [ and a of, ( A. <|eot_id|>|e P, 7/4, M 8 / ( 2 - p : P p
+================================================================================
+
+>>> [Step 40] Prompt:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|> You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|>
+<|start_header_id|>user<|end_header_id|> <FKGL=5.6> Adult patients who require parenteral support may benefit from teduglutide (a glucagon-like peptide-2 [ GLP-2 ] analog). The recommended dosage is 0.05 mg/kg body weight sc once/ day.
+<|start_header_id|>assistant<|end_header_id|>
+
+>>> Reference:
+People who need TPN may be given injections of a drug called teduglutide. This drug may help reduce the amount of TPN people need. <|eot_id|>
+>>> Prediction:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|> You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|>
+<|start_header_id|>user<|end_header_id|> <FKGL=5.6> Adult patients who require parenteral support may benefit from teduglutide (a glucagon-like peptide-2 [ GLP-2 ] analog). The recommended dosage is 0.05 mg/kg body weight sc once/ day.
+<|start_header_id|>assistant<|end_header_id|>
+ <|eot_id|> <|eot_id|> <|eot_id|> <|eot_id|> <|eot_id|> <|eot_id|>Another type of supplement (also called parenteral support, POR, or karyoshlodon, or humpbacked and iodine supplement) is called tedukitinuin 0.05 mmmels on a kg body weight sc instead, a person with parenteral support may use karyowlodon to go to bed, and a person with parenteral support may only need a certain amount of vitamins/kg body number should be applied at a time interval of another hour; karyowlodon is a protein (an essential nutrient) that can be absorbed slowly from food and the organs of the body, by the mouth, and in small amounts and gradually, when needed. <|eot_id|>eot_id|eot_id|eotee: <|eot_id|eot_id|eotee: <|eot_id|eot_id|eotee: <|eot_id|eot_id|eotee: <|eot_id|eot_id|eotee
+================================================================================
+
+>>> [Step 40] Prompt:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|> You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|>
+<|start_header_id|>user<|end_header_id|> <FKGL=9.6> Flaccid penis length is a poor estimate of erect length.
+<|start_header_id|>assistant<|end_header_id|>
+
+>>> Reference:
+Flaccid length is not a reliable indication of erect length. <|eot_id|>
+>>> Prediction:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|> You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|>
+<|start_header_id|>user<|end_header_id|> <FKGL=9.6> Flaccid penis length is a poor estimate of erect length.
+<|start_header_id|>assistant<|end_header_id|>
+ <|eot_id|> <|eot_id|> <|eot_id|> <|eot_id|> <|eot_id|> <|eot_id|> <|eot_id|> <|eot_id|>You got a self-drawn parrot for all of 15 years. After two hundred years, a sexually active sexual, I started a long time longing, and I had my longing to be able to play with my newfound love. <|eot_id|> <|eot_id|>You have 15 years of addiction (nurtured by her own her own psychological and husband, Tinny Brillian Fills the following. <|eot_id|>eot_id|eot_id|eet, Tinny Brilliant Fuffell is a hard-luck and tened-Lumilunical father with a long-time longing, and he had her own, and son of a famous person. <|eot_id|eot_id|eot_id|eot_id|e: She had her own, and son, a bad girl from the school and left her in the bad bad bad bad bad bad bad bad bad bad bad bad bad
+================================================================================
+
+>>> [Step 40] Prompt:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|> You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|>
+<|start_header_id|>user<|end_header_id|> <FKGL=7.6> Obstetric manifestations include early and late fetal loss.
+<|start_header_id|>assistant<|end_header_id|>
+
+>>> Reference:
+Pregnant women have a higher-than- normal risk of miscarriage and stillbirth. <|eot_id|>
+>>> Prediction:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|> You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|>
+<|start_header_id|>user<|end_header_id|> <FKGL=7.6> Obstetric manifestations include early and late fetal loss.
+<|start_header_id|>assistant<|end_header_id|>
+You are not in much danger. <|eot_id|>
+================================================================================
+{'loss': 1.5977, 'grad_norm': 36.804134368896484, 'learning_rate': 7.800000000000002e-06, 'epoch': 0.45}
+{'eval_loss': 1.6087888479232788, 'eval_runtime': 11.7966, 'eval_samples_per_second': 14.75, 'eval_steps_per_second': 14.75, 'epoch': 0.56}
+{'loss': 1.562, 'grad_norm': 23.812007904052734, 'learning_rate': 9.874639560909118e-06, 'epoch': 0.68}
+
+>>> [Step 80] Prompt:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|> You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|>
+<|start_header_id|>user<|end_header_id|> <FKGL=9.1> Symptoms include fever, headache, muscle and joint pains, and a characteristic skin rash that is similar to measles.
+<|start_header_id|>assistant<|end_header_id|>
+
+>>> Reference:
+Some of the symptoms of dengue fever are fever; headache; a skin rash that looks like measles; and pain in the muscles and joints. <|eot_id|>
+>>> Prediction:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|> You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|>
+<|start_header_id|>user<|end_header_id|> <FKGL=9.1> Symptoms include fever, headache, muscle and joint pains, and a characteristic skin rash that is similar to measles.
+<|start_header_id|>assistant<|end_header_id|>
+ A fever, headache, or tongue tremble is the most common symptom. Headache may occur. In addition, fever; tongue cough; and a fever in front- throat can be common. <|echo_id|> A fever may be the most common symptom of serious illness. <|echo_id|> A fever can be the most common symptom of an illness. Wash your hands - if you can do so. <|eck_id|> A fever and a washable fever is the most common symptom of certain organisms. <|eck_id|> If fever is the most common symptom, it must be the most common symptom for certain organisms. <|eck_id|> In addition to fever, symptoms include an fever; throat fever, fever, or an ability to stop coughing. <|eck_id|> In addition to throat fever, fever, fever, fever, abdominal pain, fever, and a fever. <|eck_id|> This is the most common symptom of an illness. <|eck_id|> A fever can be the most common symptom to be diagnosed. <|eck_id|> A fever and a fever can be the most common symptoms of diseases. <|eck_id|> A fever and a cough could be the most common symptom. <|e
+================================================================================
+
+>>> [Step 80] Prompt:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|> You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|>
+<|start_header_id|>user<|end_header_id|> <FKGL=7.2> At the time of her death in 1964 from a heart attack, she was still employed at the aforementioned university in Washington, D.C.
+<|start_header_id|>assistant<|end_header_id|>
+
+>>> Reference:
+When she died in 1964 from a heart attack, she was still working at the university. <|eot_id|>
+>>> Prediction:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|> You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|>
+<|start_header_id|>user<|end_header_id|> <FKGL=7.2> At the time of her death in 1964 from a heart attack, she was still employed at the aforementioned university in Washington, D.C.
+<|start_header_id|>assistant<|end_header_id|>
+ Often people say that the loss of the doctor's work will not take time to recover because that is part of the doctor's work - part of the University of Pennsylvania, and so to continue continuing at the university as a doctor for many years until the doctor is killed, the doctor is dead, the doctor is dead -- but now the doctor's work can only take the rest the person is tired and can take. The doctor's work can take the rest, but the doctor has to eat and to have work as a doctor. <|ept_id_id> People not to say that the doctor's work will take time to recover because there are many children of the doctor who may get a disease. <|ept_id_id>
+ People not to say that the doctor's work will take time to recover until the doctor has got an disease. <|ept_id_id>
+ People not to say "It got him the illness with the first doctor, then another person died. <|ept_id_id>
+ A doctor had to have a doctor who had a disease. <|ept_id_id>
+ In the early 1964: The doctors said that the doctor that had got a doctor with a disease's work had to go to doctors to help to give him that doctor from the doctor to have help with the doctor who wrote''''''
+================================================================================
+
+>>> [Step 80] Prompt:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|> You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|>
+<|start_header_id|>user<|end_header_id|> <FKGL=8.3> A sounding of the sea bottom revealed more than 5,000 feet ( 1,500 m ) of water, indicating no land in near proximity.
+<|start_header_id|>assistant<|end_header_id|>
+
+>>> Reference:
+A sounding of the sea bottom revealed more than 5,000 feet ( 1,500 m ) of water, indicating no land nearby. <|eot_id|>
+>>> Prediction:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|> You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|>
+<|start_header_id|>user<|end_header_id|> <FKGL=8.3> A sounding of the sea bottom revealed more than 5,000 feet ( 1,500 m ) of water, indicating no land in near proximity.
+<|start_header_id|>assistant<|end_header_id|>
+ A sounding of the sea deep and 1994 of water indicates a sea below 50.9°C ( 25,829°C). <|eot_id|>  However, a sounding was used to measure the temperature, and the depth was left untouched. <|eot_id|>
+ <|eot_id|> There were no clear signs of sea - lime. <|eot_id|> Also the location of the water is not indicated. <|eot_id|>
+ <|eot_id|> After a light and low temperature ( 189- degrees Cels, 188°C), the temperature had been measured and the depth was left untouhed. <|eot_id|> A sounding was used to measure the temperature and the depth is not left untouched. <|eot_id|> About 45,000 feet ( 1,500 m ) of water was discovered in the sea, but one place was never identified. <|eot_id|> Which is the location of the water is not provided's description of the ground. <|eot_id|> Other animals in the water: The ship is of the type it has and he is in. <|eot_id|> These images of the
+================================================================================
+
+>>> [Step 80] Prompt:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|> You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|>
+<|start_header_id|>user<|end_header_id|> <FKGL=9.4> `` Malaria was the most significant health hazard encountered by U.S. troops in the South Pacific during World War II, where about 500,000 men were infected.
+<|start_header_id|>assistant<|end_header_id|>
+
+>>> Reference:
+Although some patients died from malaria, this was preferable to the almost-certain death from syphilis. Malaria was the largest hazard encountered by U.S. troops in the South Pacific during World War II, where about 500,000 men were infected. <|eot_id|>
+>>> Prediction:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|> You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|>
+<|start_header_id|>user<|end_header_id|> <FKGL=9.4> `` Malaria was the most significant health hazard encountered by U.S. troops in the South Pacific during World War II, where about 500,000 men were infected.
+<|start_header_id|>assistant<|end_header_id|>
+ Much better conditions were common at home on the islands of Vietnam. <|e1_id|> More safety, women, and men were working in laboraries rather than military offices. <|e1_id|> Over 16 million people were killed both lives, both people and people were killed to protect the American people and by the law to stop the violence. <|e2_id|> <|e1_id|> Abdominal pain was common and was worse against certain diseases, but most people were the pain or fatigue of the soldiers while at sea where the planes crashed; the soldiers made their lives. <|e1_id|> Children were killed to help prevent this in the whole world when the soldiers ran out of oxygen. <|e1_id|> <|e1_id|> The United States were also the number of deaths. <|e1_id|> If the soldiers died without being killed and their soldiers died not killed and the ships they shiped destroyed to destroy the war, they were dead but the soldiers killed and surviving to kill the people who caused the war. <|e1_id|> The soldiers said that it was the doctors who killed those who killed the soldiers and the war if the soldiers killed them and the war until the soldiers knew that it was the doctors who killed the soldiers and the war. <|e1_id|> Children died without being
+================================================================================
+{'loss': 1.4144, 'grad_norm': 25.229318618774414, 'learning_rate': 8.748906014838672e-06, 'epoch': 0.9}
+{'loss': 0.8641, 'grad_norm': 20.186290740966797, 'learning_rate': 6.710100716628345e-06, 'epoch': 1.12}
+{'eval_loss': 1.5520774126052856, 'eval_runtime': 10.7506, 'eval_samples_per_second': 16.185, 'eval_steps_per_second': 16.185, 'epoch': 1.12}
+
+>>> [Step 120] Prompt:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|> You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|>
+<|start_header_id|>user<|end_header_id|> <FKGL=9.5> As the disease progresses, focal neurologic deficits often develop: Exaggeration of deep tendon reflexes; Extensor plantar response; Gait abnormalities; Weakness of an extremity; Hemiplegias; Pseudobulbar palsy with pathologic laughing and crying; Other signs of extrapyramidal dysfunction; Aphasias.
+<|start_header_id|>assistant<|end_header_id|>
+
+>>> Reference:
+Usually, some aspects of mental function are not impaired because the strokes destroy tissue in only part of the brain. An arm or a leg may become weak or paralyzed. People may have difficulty speaking. Coordination may be lost, making walking unsteady. People may laugh or cry inappropriately. People may have difficulty controlling bladder function, resulting in urinary incontinence. <|eot_id|>
+>>> Prediction:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|> You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|>
+<|start_header_id|>user<|end_header_id|> <FKGL=9.5> As the disease progresses, focal neurologic deficits often develop: Exaggeration of deep tendon reflexes; Extensor plantar response; Gait abnormalities; Weakness of an extremity; Hemiplegias; Pseudobulbar palsy with pathologic laughing and crying; Other signs of extrapyramidal dysfunction; Aphasias.
+<|start_header_id|>assistant<|end_header_id|>
+ In severe cases, the main symptoms start to develop: Occupational problems; Progressive dementation; Progressive, muscle movement problems; Loss of limb function; Loss of facial muscles; Sizzling sound in the lungs; Paralysis of the brain. <|eot_id|> Evolution of symptoms: The sickness begins with a feeling of weakness; In a short while, shortness of breath; Seizures, a rare occurrence. People may become confused, sometimes confused until they realize a common cause of breathing disorders: Astonice that the lungs feel like a rubber tissue called tendon foresigns; Corneal ulcers; Sezages; Grins, a common symptom; Fear of dying; Sizzling sounds in the lungs; Numbness of the stomachs; Flare-ups and a general feeling of illness (feels like a tingling finger). People may become a weakness of weakness, a muscle that starts to muscle that start to weakness. <|eot_id|> Evolution of symptoms: The sickness begins with a feeling of weight loss; As shortness of breath comes, more people start getting short-muscle syndrome; Prions that cause fatigue during breathing; Seizures, a rare occurrence. People may become a breathing problems. <|eot_id|> Evolution of symptoms: A sickness characterized by lumpiness in
+================================================================================
+
+>>> [Step 120] Prompt:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|> You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|>
+<|start_header_id|>user<|end_header_id|> <FKGL=13.0> It is a symptom usually associated with the common cold, pharyngitis, and chesty coughs, but it can also be found in patients with adenoiditis, otitis media, sinusitis or tonsillitis.
+<|start_header_id|>assistant<|end_header_id|>
+
+>>> Reference:
+It is a symptom usually from the common cold and coughs, but can also be found in people with infections of the adenoids, middle ear, sinus or tonsils. <|eot_id|>
+>>> Prediction:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|> You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|>
+<|start_header_id|>user<|end_header_id|> <FKGL=13.0> It is a symptom usually associated with the common cold, pharyngitis, and chesty coughs, but it can also be found in patients with adenoiditis, otitis media, sinusitis or tonsillitis.
+<|start_header_id|>assistant<|end_header_id|>
+ The pharynx is also called the "middle part of the throat, the middle part of the throat, or the middle part of the throat." Doctors often use the pharynx as a location for a sore throat sorely sore in the throat. <|eotitis media affects people ages 16 and under, especially children and young men. <|eotitis malignant cells grow rapidly as a small colony near the throat. <|eotitis virus causing skin swelling or a general feeling of illness (not especially people infected with the virus.) People with pulmonary illness often feel like they are in a dark, dimly lit room. <|eotitis virus affecting the airways that travel out of the lungs, causing breathing problems and chest pain, is the common chronic condition. <|eotitis virus causing skin swelling or a feeling like a foreign object is in the lungs, usually in the lungs and in the stomach, in most children, to much cancer cells grow quickly, especially children and young men. <|eotitis virus causing chest pain, often a feeling like a foreign object is in the lungs, especially young men. <|eotitis virus causing skin swelling or a typical symptoms of bronchitis, and more obvious signs of lung infection, such as signs that can be used to identify lung infections, often come from the mouth, symptoms which can be described as a yellow- yellowish dis
+================================================================================
+
+>>> [Step 120] Prompt:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|> You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|>
+<|start_header_id|>user<|end_header_id|> <FKGL=12.3> Birley et al. report that excessive washing with soap may dry the mucous membrane that covers the glans penis and cause non-specific dermatitis.
+<|start_header_id|>assistant<|end_header_id|>
+
+>>> Reference:
+The epithelium of the glans penis is moist and washing it too much can dry the mucous membrane that covers the glans penis and cause dermatitis. <|eot_id|>
+>>> Prediction:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|> You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|>
+<|start_header_id|>user<|end_header_id|> <FKGL=12.3> Birley et al. report that excessive washing with soap may dry the mucous membrane that covers the glans penis and cause non-specific dermatitis.
+<|start_header_id|>assistant<|end_header_id|>
+ It can cause bacterial infections, such as papiller infection of the glans penis and to inflamed gastrointestinal tract. <|eot_id|> A bacteria called `` Brionidae does not work with microwave technology. This makes me think that myelin sheaths in the glans vs muscles do matter and makes me think that the glans vs muscles can not be changed by changes in how people have to do laundry. <|eot_id|>
+ The biology of the glans vs tissue can be affected by changes in how people have to do laundry. <|eot_id|>
+ The biology of the glans vs tissue can be affected by changes in how people have to do laundry. <|eot_id|>
+ People with allergies to antinsides may also have small bumps (pus nodes) in the skin that may cause the glans to wrinkle and make the surface of the glans surface more likely to burn out (chemicals that try will kill bacteria). <|eot_id|>
+ Sometimes the glans skin may develop serious problems, such as pus nodes. <|eot_id|>
+
+In some children, on the other hand, the glans on the lower parts of the penis can be very pale or dark (pharios). <|eot_id|>
+================================================================================
+
+>>> [Step 120] Prompt:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|> You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|>
+<|start_header_id|>user<|end_header_id|> <FKGL=18.9> Vibrio is a genus of Gram-negative bacteria possessing a curved rod shape ( comma shape ), several species of which can cause foodborne infection, usually associated with eating undercooked seafood.
+<|start_header_id|>assistant<|end_header_id|>
+
+>>> Reference:
+Vibrio is a genus of Gram-negative bacteria possessing a curved rod, shapeseveral species of which can cause foodborne infection, usually associated with eating undercooked seafood. <|eot_id|>
+>>> Prediction:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|> You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|>
+<|start_header_id|>user<|end_header_id|> <FKGL=18.9> Vibrio is a genus of Gram-negative bacteria possessing a curved rod shape ( comma shape ), several species of which can cause foodborne infection, usually associated with eating undercooked seafood.
+<|start_header_id|>assistant<|end_header_id|>
+ Vibrio is a genus of Gram-negative bacteria whose crumbly red and green veins provide nutrient absorption benefits - much more oxygen and iron than is necessary when cooking. <|eot_id|>
+ Vibrio is a genus of Gram-negative bacteria having a curved rod shape ( comma shape ), several species of which can cause foodborne infection, most notably an infection with an infective organism called a certain bacteria. <|eot_id|>
+ Vibrio is a genus of AgCl_modeled RNA molecules that have a crumpled discoloration called a crease. <|eot_id|>
+ Vibrio is a genus of Gram-negative bacteria whose crumbly red and green veins provide nutrient absorption benefits, especially when eating undercooked seashore food. <|eot_id|>
+ Vibrio is a genus of Schizophrenia crystallacy lymphic networks that contains enzymes that can break down food, particularly liver blood tests and iron absorption rates of the newlyborns. <|eot_id|>
+ The verbal model also supports the physical system. <|eot_id|>
+ The verbal model also supports the physical system. <|eot_id|>
+ Vibrio is a genus of Grignard reagent which has
+================================================================================
+{'loss': 0.465, 'grad_norm': 16.781848907470703, 'learning_rate': 4.254788669119127e-06, 'epoch': 1.35}
+{'loss': 0.3832, 'grad_norm': 20.42047119140625, 'learning_rate': 1.980977948372612e-06, 'epoch': 1.58}
+{'eval_loss': 1.4348912239074707, 'eval_runtime': 10.7484, 'eval_samples_per_second': 16.188, 'eval_steps_per_second': 16.188, 'epoch': 1.69}
+
+>>> [Step 160] Prompt:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|> You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|>
+<|start_header_id|>user<|end_header_id|> <FKGL=14.3> Adult patients with encephalitis present with acute onset of fever, headache, confusion, and sometimes seizures.
+<|start_header_id|>assistant<|end_header_id|>
+
+>>> Reference:
+Usually, adults with encephalitis have a fever that starts suddenly, a headache, confusion, and sometimes seizures. <|eot_id|>
+>>> Prediction:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|> You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|>
+<|start_header_id|>user<|end_header_id|> <FKGL=14.3> Adult patients with encephalitis present with acute onset of fever, headache, confusion, and sometimes seizures.
+<|start_header_id|>assistant<|end_header_id|>
+ adults with encephalitis start feeling sick and have a fever, headache, confusion, and sometimes seizures. <|eot_id|> A child gets encephalitis and may die if it not handled adequately. <|eot_id|>
+ adults with encephalitis start experiencing symptoms from low blood pressure to a tumor in the brain. <|eot_id|>
+ Small children with enceharyngitis usually experience mild to severe nozzle syndrome. <|eot_id|>
+<|eot_id|> adults with encephalitis start receiving treatment promptly and by a well-known treat. <|eot_id|>
+ Children with encephalitis have usually gotten it through a patch. <|eot_id|>
+ adults with encephalitis start having symptoms during a fever, headache, confusion, and sometimes seizures. <|eot_id|>
+ Children with enceharyngitis often have mild to severe nozzle syndrome. <|eot_id|>
+ adults with encephalitis start developing fever, headaches, confusion, and sometimes seizures. <|eot_id|>
+ Children with encephalitis have caused the infected spleen from the cancer. <|
+================================================================================
+
+>>> [Step 160] Prompt:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|> You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|>
+<|start_header_id|>user<|end_header_id|> <FKGL=7.2> Some pain above the pubic bone or in the lower back may be present.
+<|start_header_id|>assistant<|end_header_id|>
+
+>>> Reference:
+Some people will have pain above the pubic bone (lower abdomen) or in the lower back. <|eot_id|>
+>>> Prediction:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|> You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|>
+<|start_header_id|>user<|end_header_id|> <FKGL=7.2> Some pain above the pubic bone or in the lower back may be present.
+<|start_header_id|>assistant<|end_header_id|>
+ People with bumps or bruises or in the back of the throat experience pain at different times. <|eot_id|>baunt (pioneer) - Necessary to the existence of bumps or bruises by means of blood vessels, the doctor gives the bumps by placing them on the wall. <|eot_id|> In bumps, the abnormal cells have been removed and the normal cells remain in the bone marrow. <|eot_id|>
+ Imaging tests for bumps vary, depending on which area of the breast is the bump is identified. If the bumps are in the breast, they can be detected by a mirror or in a mirror. <|eot_id|>
+The bumps usually go away after a while, but people with bumps must arouse need to doctors for an acid test to indicate the bumps to be removed. <|eot_id|>
+ A doctor determines which areas of the breast are the bumps by identifying the bumps from a copy of the breast lab results. <|eot_id|>
+Dizziness or sore throat may also occur. A doctor may make a history, ask questions about the bumps, and evaluate the history with an instrument called an A scan. <|eot_id|>
+ Imaging tests for bumps vary, depending on which
+================================================================================
+
+>>> [Step 160] Prompt:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|> You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|>
+<|start_header_id|>user<|end_header_id|> <FKGL=4.1> Dexamethasone at doses of 0.15, 0.3 and 0.6 mg/kg appear to be all equally effective.
+<|start_header_id|>assistant<|end_header_id|>
+
+>>> Reference:
+Dexamethasone at doses of 0.15, 0.3 and 0.6 mg/kg appear to be all equally good. <|eot_id|>
+>>> Prediction:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|> You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|>
+<|start_header_id|>user<|end_header_id|> <FKGL=4.1> Dexamethasone at doses of 0.15, 0.3 and 0.6 mg/kg appear to be all equally effective.
+<|start_header_id|>assistant<|end_header_id|>
+ Dexamethasone ( a hormone produced by the brain itself ) is a chronic painkiller that also is a less likely drug used by the mice than a substance that has its own effects on the MIA: VIDIL, a neuroface treatment of Dexamethasone-reassure TEDI, is also a better than the NSAIDs for the MIA: Vidil is the new drug for the MIA: Vidil is the new drug for the MIA: Vidil is the new drug for the MIA: Vidipaparthasone; Remodulin, the MIA: Vidipaparthasome, is also a better than the NSAIDs's New Drug For MICE: Vidipaparthasome, is even more commonly used than ATI, the NDA released by the University of Pennsylvania to keep the MIA Moving: Vidipaparthasome
+================================================================================
+
+>>> [Step 160] Prompt:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|> You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|>
+<|start_header_id|>user<|end_header_id|> <FKGL=10.0> Ankles, knees, elbows, and wrists are usually involved.
+<|start_header_id|>assistant<|end_header_id|>
+
+>>> Reference:
+Ankles, knees, elbows, and wrists are usually affected. <|eot_id|>
+>>> Prediction:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|> You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|>
+<|start_header_id|>user<|end_header_id|> <FKGL=10.0> Ankles, knees, elbows, and wrists are usually involved.
+<|start_header_id|>assistant<|end_header_id|>
+ The joints near the knees become enlarged. <|eot_id|> It can also cause joint pain, although this was not a part of the original set of symptoms. <|eot_id|>
+ Symptoms begin suddenly, progress rapidly, and may last for months or years. They may last for months or years. <|eot_id|>
+<|eot_id|> Symptoms worsen when a joint is affected. Doctors recommend using a variety of techniques to treat joint pain, such as: <|eot_id|>
+ They may last for months or years. <|eot_id|>
+ People may have joint pain. <|eot_id|>
+ <|eot_id|> Symptoms begin suddenly, grow severe, and last for months or years. They may last for months or years. <|eot_id|>
+ Symptoms last for months or years. <|eot_id|>
+ People may have joint pain. <|eot_id|>
+ <|eot_id|> Symptoms usually last ten to ten 10. <|eot_id|>
+ Symptoms may last for months or years. <|eot_id|>
+ <|eot_id|>
+================================================================================
+{'loss': 0.4258, 'grad_norm': 18.25519371032715, 'learning_rate': 4.4247073844163434e-07, 'epoch': 1.8}
+{'train_runtime': 472.8679, 'train_samples_per_second': 5.968, 'train_steps_per_second': 0.372, 'train_loss': 1.0376648740334944, 'epoch': 1.98}

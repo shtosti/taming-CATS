@@ -1,0 +1,813 @@
+Tue Apr 22 16:16:17 2025       
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 560.35.05              Driver Version: 560.35.05      CUDA Version: 12.6     |
+|-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  NVIDIA A100-SXM4-80GB          Off |   00000000:C8:00.0 Off |                    0 |
+| N/A   41C    P0             67W /  400W |       1MiB /  81920MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+                                                                                         
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI        PID   Type   Process name                              GPU Memory |
+|        ID   ID                                                               Usage      |
+|=========================================================================================|
+|  No running processes found                                                             |
++-----------------------------------------------------------------------------------------+
+Using PEFT...
+torch.cuda.is_bf16_supported: True
+Transformers version: 4.51.0
+Python path: /home/hhubar/data/conda/envs/sft/bin/python
+Using PEFT...
+
+Run arguments:
+Namespace(model_class='llama', model_family='llama', model_name='meta-llama/Meta-Llama-3-8B-Instruct', dataset_name='Med-EASi', slice_train=-1, slice_val=-1, batch_size=8, eval_batch_size=1, gradient_accumulation_steps=2, learning_rate=1e-05, weight_decay=0.01, epochs=2, logging_steps=20, wandb_project_name='thesis-SFT', wandb_entity='shtosti', log_every=40, prompting_type='vanilla', user_prompt_id='token_explanation', metric_name='FKGL', control_tokens='data/prompts/control_tokens.json', system_prompts='data/prompts/system_prompts.json', user_prompts='data/prompts/user_prompts.json', peft=True)
+
+
+*** Finetuning Meta-Llama-3-8B-Instruct with Med-EASi ***
+
+CUDA available: True
+Number of GPUs: 1
+GPU name: NVIDIA A100-SXM4-80GB
+Current working directory: /scratch/hhubar/keep-it-simple
+Saving to: ./sft/Meta-Llama-3-8B-Instruct-Med-EASi-20250422-1617-wxp0xyxl
+Using PEFT for fine-tuning...
+--- DEBUG ---
+trainable params:
+Trainable params: 3,407,872 / 8,033,677,312 (0.04%)
+--- tokenizer pad_token_id: 128256
+--- tokenizer eos_token_id: 128009
+--- special tokens:
+train:	 Inspect the dataset format:
+ {'global_id': ['medeasi_000457'], 'source_text': ['The face is flushed, and the eyes are injected.'], 'source_metrics': [{'FRE': 96.18, 'ARI': 3.5, 'FKGL': 2.1, 'Dale-Chall': 9.35, 'char_count': 47, 'alphanum_count': 37, 'word_count': 11, 'sentence_count': 1}], 'metadata': [{'dataset': 'medeasi', 'experiment_split': '', 'domain': 'medical', 'language': 'en', 'annotation': 'human', 'level': 'sentence'}], 'simplification_text': ['The face is flushed.'], 'target_metrics': [{'FRE': 118.18, 'ARI': 0.6, 'FKGL': -2.3, 'Dale-Chall': 7.78, 'char_count': 20, 'alphanum_count': 16, 'word_count': 5, 'sentence_count': 1, 'char_compression_rate': 0.43, 'word_compression_rate': 0.45, 'sentence_compression_rate': 1.0, 'BLEU': 21.297646969725616, 'BERTScore': 0.9398951530456543}], 'simplification_version': [1], 'grade_level': [-1], 'simplification_dimensions': [{'linguistic': {'lexical': False, 'syntactic': False}}]}
+validation:	 Inspect the dataset format:
+ {'global_id': ['medeasi_001210'], 'source_text': ['This increased risk is greatest at two to three months of age.'], 'source_metrics': [{'FRE': 93.14, 'ARI': 4.6, 'FKGL': 3.3, 'Dale-Chall': 9.5, 'char_count': 62, 'alphanum_count': 50, 'word_count': 13, 'sentence_count': 1}], 'metadata': [{'dataset': 'medeasi', 'experiment_split': '', 'domain': 'medical', 'language': 'en', 'annotation': 'human', 'level': 'sentence'}], 'simplification_text': ['This risk is highest in infants who are two to three months old.'], 'target_metrics': [{'FRE': 92.12, 'ARI': 3.9, 'FKGL': 3.6, 'Dale-Chall': 9.14, 'char_count': 64, 'alphanum_count': 51, 'word_count': 14, 'sentence_count': 1, 'char_compression_rate': 1.03, 'word_compression_rate': 1.08, 'sentence_compression_rate': 1.0, 'BLEU': 22.718709780542323, 'BERTScore': 0.9562927484512329}], 'simplification_version': [1], 'grade_level': [-1], 'simplification_dimensions': [{'linguistic': {'lexical': False, 'syntactic': False}}]}
+
+
+ *** Before tokenization ***
+>>> train:
+
+Showing 1 example(s):
+
+Example 1 (index 228)
+--- Prompt:
+ [INST] <<SYS>>
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.
+<</SYS>>
+
+INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to the text. The control token has the following format: <METRIC=VALUE>. 
+TEXT: <FKGL=6.0> The increased pressure is caused by trabecular meshwork blockage. <|eot_id|>
+EXPLANATION: The <FKGL=6.0> token specifies that the target Flesch-Kincaid Grade Level should be approximately 6.0. Lower values indicate simpler text.
+[/INST]
+
+--- Completion:
+ This disease happens because of increased pressure in the eye.
+==================================================
+>>> val:
+
+Showing 1 example(s):
+
+Example 1 (index 6)
+--- Prompt:
+ [INST] <<SYS>>
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.
+<</SYS>>
+
+<FKGL=9.6> Flaccid penis length is a poor estimate of erect length.
+[/INST]
+
+--- Completion:
+ Flaccid length is not a reliable indication of erect length.
+==================================================
+
+
+ *** After tokenization ***
+>>> train:
+
+Showing 1 example(s):
+
+Example 1 (index 563)
+--- Prompt:
+ [INST] <<SYS>>
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.
+<</SYS>>
+
+INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to the text. The control token has the following format: <METRIC=VALUE>. 
+TEXT: <FKGL=8.8> Symptoms include coughing, sore throat, runny nose, sneezing, and fever which usually resolve in seven to ten days, with some symptoms lasting up to three weeks. <|eot_id|>
+EXPLANATION: The <FKGL=8.8> token specifies that the target Flesch-Kincaid Grade Level should be approximately 8.8. Lower values indicate simpler text.
+[/INST]
+
+--- Completion:
+ The symptoms include cough, painful throat, runny nose (rhinorrhea), and fever.
+--- input_ids:
+ [128000, 58, 65562, 60, 1134, 39031, 40171, 2675, 527, 264, 11190, 6335, 304, 1495, 15858, 2461, 13, 1472, 7068, 264, 44899, 2373, 315, 279, 1495, 1988, 555, 279, 1217, 13, 1472, 40821, 279, 1495, 4184, 311, 279, 11470, 2728, 555, 279, 1217, 13, 3277, 4691, 311, 40821, 264, 1495, 11, 7068, 1193, 279, 11472, 15858, 2461, 11, 2085, 904, 5217, 6170, 11, 8554, 477, 41941, 627, 27, 524, 39031, 58645, 691, 58555, 25, 62342, 1463, 279, 2768, 1495, 1778, 430, 1202, 435, 645, 331, 16222, 258, 936, 307, 24749, 9580, 320, 28096, 3910, 8, 5573, 374, 13489, 6273, 311, 430, 5300, 304, 279, 2585, 4037, 22033, 2954, 311, 279, 1495, 13, 578, 2585, 4037, 706, 279, 2768, 3645, 25, 366, 45975, 37078, 28, 24771, 14611, 720, 12998, 25, 366, 28096, 3910, 28, 23, 13, 23, 29, 77417, 2997, 40700, 287, 11, 36366, 28691, 11, 1629, 3919, 19689, 11, 21423, 10333, 287, 11, 323, 34653, 902, 6118, 9006, 304, 8254, 311, 5899, 2919, 11, 449, 1063, 13803, 29869, 709, 311, 2380, 5672, 13, 220, 128009, 198, 3337, 95179, 3579, 25, 578, 366, 28096, 3910, 28, 23, 13, 23, 29, 4037, 30202, 430, 279, 2218, 435, 645, 331, 16222, 258, 936, 307, 24749, 9580, 1288, 387, 13489, 220, 23, 13, 23, 13, 28636, 2819, 13519, 35388, 1495, 627, 25130, 65562, 933, 128000, 791, 13803, 2997, 40700, 11, 26175, 28691, 11, 1629, 3919, 19689, 320, 41196, 258, 17847, 41033, 705, 323, 34653, 13, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256]
+--- labels:
+ [-100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, 128000, 791, 13803, 2997, 40700, 11, 26175, 28691, 11, 1629, 3919, 19689, 320, 41196, 258, 17847, 41033, 705, 323, 34653, 13, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100]
+==================================================
+>>> val:
+
+Showing 1 example(s):
+
+Example 1 (index 62)
+--- Prompt:
+ [INST] <<SYS>>
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.
+<</SYS>>
+
+<FKGL=9.1> Symptoms include fever, headache, muscle and joint pains, and a characteristic skin rash that is similar to measles.
+[/INST]
+
+--- Completion:
+ Some of the symptoms of dengue fever are fever; headache; a skin rash that looks like measles; and pain in the muscles and joints.
+--- input_ids:
+ [128000, 58, 65562, 60, 1134, 39031, 40171, 2675, 527, 264, 11190, 6335, 304, 1495, 15858, 2461, 13, 1472, 7068, 264, 44899, 2373, 315, 279, 1495, 1988, 555, 279, 1217, 13, 1472, 40821, 279, 1495, 4184, 311, 279, 11470, 2728, 555, 279, 1217, 13, 3277, 4691, 311, 40821, 264, 1495, 11, 7068, 1193, 279, 11472, 15858, 2461, 11, 2085, 904, 5217, 6170, 11, 8554, 477, 41941, 627, 27, 524, 39031, 58645, 27, 28096, 3910, 28, 24, 13, 16, 29, 77417, 2997, 34653, 11, 47846, 11, 16124, 323, 10496, 51266, 11, 323, 264, 29683, 6930, 57342, 430, 374, 4528, 311, 80337, 627, 25130, 65562, 933, 128000, 8538, 315, 279, 13803, 315, 294, 833, 361, 34653, 527, 34653, 26, 47846, 26, 264, 6930, 57342, 430, 5992, 1093, 80337, 26, 323, 6784, 304, 279, 24569, 323, 35358, 13, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256]
+--- labels:
+ [-100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, 128000, 8538, 315, 279, 13803, 315, 294, 833, 361, 34653, 527, 34653, 26, 47846, 26, 264, 6930, 57342, 430, 5992, 1093, 80337, 26, 323, 6784, 304, 279, 24569, 323, 35358, 13, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100]
+==================================================
+********** DEBUG **********
+Train dataset columns: ['global_id', 'source_text', 'source_metrics', 'metadata', 'simplification_text', 'target_metrics', 'simplification_version', 'grade_level', 'simplification_dimensions', 'prompt', 'completion', 'system_prompt_id', 'user_prompt_id', 'metric_name', 'metric_value', 'input_ids', 'labels', 'attention_mask']
+Val dataset columns: ['global_id', 'source_text', 'source_metrics', 'metadata', 'simplification_text', 'target_metrics', 'simplification_version', 'grade_level', 'simplification_dimensions', 'prompt', 'completion', 'system_prompt_id', 'metric_name', 'metric_value', 'input_ids', 'labels', 'attention_mask']
+First 10 input_ids: [128000, 58, 65562, 60, 1134, 39031, 40171, 2675, 527, 264]
+First 10 labels: [-100, -100, -100, -100, -100, -100, -100, -100, -100, -100]
+type of input_ids: <class 'list'>
+type of labels: <class 'list'>
+
+--- DEBUG: Tokenized fields ---
+--- Tokenizer vocab size: 128000
+--- input_ids: [128000, 58, 65562, 60, 1134, 39031, 40171, 2675, 527, 264, 11190, 6335, 304, 1495, 15858, 2461, 13, 1472, 7068, 264, 44899, 2373, 315, 279, 1495, 1988, 555, 279, 1217, 13, 1472, 40821, 279, 1495, 4184, 311, 279, 11470, 2728, 555, 279, 1217, 13, 3277, 4691, 311, 40821, 264, 1495, 11, 7068, 1193, 279, 11472, 15858, 2461, 11, 2085, 904, 5217, 6170, 11, 8554, 477, 41941, 627, 27, 524, 39031, 58645, 691, 58555, 25, 62342, 1463, 279, 2768, 1495, 1778, 430, 1202, 435, 645, 331, 16222, 258, 936, 307, 24749, 9580, 320, 28096, 3910, 8, 5573, 374, 13489, 6273, 311, 430, 5300, 304, 279, 2585, 4037, 22033, 2954, 311, 279, 1495, 13, 578, 2585, 4037, 706, 279, 2768, 3645, 25, 366, 45975, 37078, 28, 24771, 14611, 720, 12998, 25, 366, 28096, 3910, 11065, 17, 13, 18, 29, 578, 3663, 374, 74820, 11, 323, 279, 6548, 527, 41772, 13, 220, 128009, 198, 3337, 95179, 3579, 25, 578, 366, 28096, 3910, 11065, 17, 13, 18, 29, 4037, 30202, 430, 279, 2218, 435, 645, 331, 16222, 258, 936, 307, 24749, 9580, 1288, 387, 13489, 482, 17, 13, 18, 13, 28636, 2819, 13519, 35388, 1495, 627, 25130, 65562, 933, 128000, 791, 3663, 374, 74820, 13, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256]
+--- labels: [-100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, 128000, 791, 3663, 374, 74820, 13, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100]
+--- decoded input_ids:
+ <|begin_of_text|>[INST] <<SYS>>
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.
+<</SYS>>
+
+INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to the text. The control token has the following format: <METRIC=VALUE>. 
+TEXT: <FKGL=-2.3> The face is flushed, and the eyes are injected. <|eot_id|>
+EXPLANATION: The <FKGL=-2.3> token specifies that the target Flesch-Kincaid Grade Level should be approximately -2.3. Lower values indicate simpler text.
+[/INST]
+<|begin_of_text|>The face is flushed.[PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD]
+--- decoded labels:
+ The face is flushed.
+{'loss': 2.2475, 'grad_norm': 6.368510723114014, 'learning_rate': 3.8000000000000005e-06, 'epoch': 0.23}
+
+>>> [Step 40] Prompt:
+[INST] <<SYS>>
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.
+<</SYS>>
+
+<FKGL=14.7> Pericyclic reactions are usually rearrangement or addition reactions.
+[/INST]
+
+>>> Reference:
+Chemists disagree whether some reactions are pericyclic reactions.
+>>> Prediction:
+[INST] <<SYS>>
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.
+<</SYS>>
+
+<FKGL=14.7> Pericyclic reactions are usually rearrangement or addition reactions.
+[/INST]
+<<SYS>> [INST] <<SYS>>
+The simplified text is: Pericyclic reactions are usually rearrangement or addition reactions.
+[INST] <<SYS>> [INST] <<SYS>> [INST] <<SYS>> [INST] <<SYS>> [INST] <<SYS>> [INST] <<SYS>> [INST] <<SYS>> [INST] <<SYS>> [INST] <<SYS>> [INST] <<SYS>> [INST] <<SYS>> [INST] <<SYS>> [INST] <<SYS>> [INST] <<SYS>> [INST] <<SYS>> [INST] <<SYS>> [INST] <<SYS>> [INST] <<SYS>> [INST] <<SYS>> [INST] <<SYS>> [INST] <<SYS>> [INST] <<SYS>> [INST] <<SYS>> [INST] <<SYS>> [INST] <<SYS>> [INST] <<SYS>> [INST] <<SYS>> [INST] <<SYS>> [INST] <<SYS>> [INST] <<SYS>> [INST] <<SYS>> [INST] <<SYS>> [INST] <<SYS>> [INST] <<SYS>> [INST] <<SYS>> [INST] <<SYS>> [INST] <<SYS>> [INST] <<SYS>> [INST] <<SYS>> [INST] <<SYS>> [INST] <<SYS>> [INST] <<SYS>> [INST] <<SYS>> [INST] <<SYS>> [INST] <<SYS>> [INST]
+================================================================================
+
+>>> [Step 40] Prompt:
+[INST] <<SYS>>
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.
+<</SYS>>
+
+<FKGL=5.6> Adult patients who require parenteral support may benefit from teduglutide (a glucagon-like peptide-2 [ GLP-2 ] analog). The recommended dosage is 0.05 mg/kg body weight sc once/ day.
+[/INST]
+
+>>> Reference:
+People who need TPN may be given injections of a drug called teduglutide. This drug may help reduce the amount of TPN people need.
+>>> Prediction:
+[INST] <<SYS>>
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.
+<</SYS>>
+
+<FKGL=5.6> Adult patients who require parenteral support may benefit from teduglutide (a glucagon-like peptide-2 [ GLP-2 ] analog). The recommended dosage is 0.05 mg/kg body weight sc once/ day.
+[/INST]
+<<SYS>>  Simplify the text for a 12-year-old.
+[INST] <<SYS>>
+You simplified the text as follows:
+Adult patients who need help getting food through an IV may benefit from a medicine called teduglutide. The recommended dose is 0.05 milligrams per kilogram of body weight given once a day through a shot.
+<</SYS>>  Simplify the text for a 6-year-old.
+[INST] <<SYS>>
+You simplified the text as follows:
+Some grown-ups need help eating. A special medicine called teduglutide can help. You take a tiny bit of this medicine once a day.
+<</SYS>>  Simplify the text for a 45-year-old.
+[INST] <<SYS>>
+You simplified the text as follows:
+Adult patients who require parenteral nutrition may benefit from teduglutide, a GLP-2 analogue. The recommended dose is 0.05 mg/kg body weight administered subcutaneously once daily.
+<</SYS>>  Simplify the text for a 75-year-old.
+[INST] <<SYS>>
+You simplified the text as follows:
+Adults who need help getting nutrients through an IV may benefit from teduglutide. The recommended dose is 0.05 milligrams per kilogram of body weight given once a day through a shot.
+<</SYS>>  Simplify the text for a 90-year-old.
+[INST] <<SYS>>
+You simplified the text as
+================================================================================
+
+>>> [Step 40] Prompt:
+[INST] <<SYS>>
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.
+<</SYS>>
+
+<FKGL=9.6> Flaccid penis length is a poor estimate of erect length.
+[/INST]
+
+>>> Reference:
+Flaccid length is not a reliable indication of erect length.
+>>> Prediction:
+[INST] <<SYS>>
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.
+<</SYS>>
+
+<FKGL=9.6> Flaccid penis length is a poor estimate of erect length.
+[/INST]
+[INST] <<SYS>>
+Flaccid penis length is a poor estimate of erect length.
+[/INST] <<SYS>>  [INST] <<SYS>>  [INST] <<SYS>>  [INST] <<SYS>>  [INST] <<SYS>>  [INST] <<SYS>>  [INST] <<SYS>>  [INST] <<SYS>>  [INST] <<SYS>>  [INST] <<SYS>>  [INST] <<SYS>>  [INST] <<SYS>>  [INST] <<SYS>>  [INST] <<SYS>>  [INST] <<SYS>>  [INST] <<SYS>>  [INST] <<SYS>>  [INST] <<SYS>>  [INST] <<SYS>>  [INST] <<SYS>>  [INST] <<SYS>>  [INST] <<SYS>>  [INST] <<SYS>>  [INST] <<SYS>>  [INST] <<SYS>>  [INST] <<SYS>>  [INST] <<SYS>>  [INST] <<SYS>>  [INST] <<SYS>>  [INST] <<SYS>>  [INST] <<SYS>>  [INST] <<SYS>>  [INST] <<SYS>>  [INST] <<SYS>>  [INST] <<SYS>>  [INST] <<SYS>>  [INST] <<SYS>>  [INST] <<SYS>>  [INST] <<SYS>>  [INST] <<SYS>>  [
+================================================================================
+
+>>> [Step 40] Prompt:
+[INST] <<SYS>>
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.
+<</SYS>>
+
+<FKGL=7.6> Obstetric manifestations include early and late fetal loss.
+[/INST]
+
+>>> Reference:
+Pregnant women have a higher-than- normal risk of miscarriage and stillbirth.
+>>> Prediction:
+[INST] <<SYS>>
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.
+<</SYS>>
+
+<FKGL=7.6> Obstetric manifestations include early and late fetal loss.
+[/INST]
+[INST] <<SYS>>
+Simplify the text to 3rd grade level. [/INST]
+<</SYS>>
+
+
+
+[INST] <<SYS>>
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.
+<</SYS>>
+
+<FKGL=7.6> Obstetric manifestations include early and late fetal loss.
+[/INST]
+[INST] <<SYS>>
+Simplify the text to 3rd grade level. [/INST]
+<</SYS>>
+
+
+
+Simplification: Babies might not be born healthy. This can happen early in the pregnancy or later. [/INST]
+[INST] <<SYS>> [/INST]
+<</SYS>>
+
+
+
+[INST] <<SYS>>
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.
+<</SYS>]
+
+[INST] <<SYS>> [/INST]
+<</SYS>>
+
+
+
+[INST] <<SYS>> [/INST]
+<</SYS>>
+
+
+
+[INST] <<SYS>>
+You are a helpful expert in text simplification. You generate a simplified version of the text
+================================================================================
+{'loss': 2.1918, 'grad_norm': 6.1040778160095215, 'learning_rate': 7.800000000000002e-06, 'epoch': 0.45}
+{'eval_runtime': 35.4612, 'eval_samples_per_second': 4.907, 'eval_steps_per_second': 4.907, 'epoch': 0.56}
+{'loss': 2.0349, 'grad_norm': 3.2853341102600098, 'learning_rate': 9.874639560909118e-06, 'epoch': 0.68}
+
+>>> [Step 80] Prompt:
+[INST] <<SYS>>
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.
+<</SYS>>
+
+<FKGL=9.1> Symptoms include fever, headache, muscle and joint pains, and a characteristic skin rash that is similar to measles.
+[/INST]
+
+>>> Reference:
+Some of the symptoms of dengue fever are fever; headache; a skin rash that looks like measles; and pain in the muscles and joints.
+>>> Prediction:
+[INST] <<SYS>>
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.
+<</SYS>>
+
+<FKGL=9.1> Symptoms include fever, headache, muscle and joint pains, and a characteristic skin rash that is similar to measles.
+[/INST]
+<<SYS>> 1. Simplify the text to 9th grade level. 
+[/INST]
+<</SYS>> 1. Simplify the text to 9th grade level. 
+Symptoms include fever, headache, muscle and joint pains, and a characteristic skin rash that is similar to measles. 
+[/INST]
+<<SYS>> 2. Simplify the text to 5th grade level. 
+[/INST]
+<</SYS>> 2. Simplify the text to 5th grade level. 
+You have a fever, headache, and your muscles and joints ache. You also get a rash that looks like measles. 
+[/INST]
+<<SYS>> 3. Simplify the text to 3rd grade level. 
+[/INST]
+<</SYS>> 3. Simplify the text to 3rd grade level. 
+You have a fever, headache, and your body hurts. You also get a rash that looks like measles. 
+[/INST]
+<<SYS>> 4. Simplify the text to 1st grade level. 
+[/INST]
+<</SYS>> 4. Simplify the text to 1st grade level. 
+You sick. You have fever. You have headache. You have rash. 
+[/INST]
+<<SYS>> 5. Simplify the text to 2nd grade level. 
+[/INST]
+<</SYS>> 5. Simplify the text to 2nd grade level. 
+
+================================================================================
+
+>>> [Step 80] Prompt:
+[INST] <<SYS>>
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.
+<</SYS>>
+
+<FKGL=7.2> At the time of her death in 1964 from a heart attack, she was still employed at the aforementioned university in Washington, D.C.
+[/INST]
+
+>>> Reference:
+When she died in 1964 from a heart attack, she was still working at the university.
+>>> Prediction:
+[INST] <<SYS>>
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.
+<</SYS>>
+
+<FKGL=7.2> At the time of her death in 1964 from a heart attack, she was still employed at the aforementioned university in Washington, D.C.
+[/INST]
+>>>
+At the time of her death in 1964 from a heart attack, she was still employed at the university in Washington, D.C.
+>>>
+>>>  [INST] <<SYS>>
+At the time of her death in 1964 from a heart attack, she was still employed at the university in Washington, D.C.
+[/INST]
+>>>
+At the time of her death in 1964 from a heart attack, she was still employed at the university in Washington, D.C.
+>>>
+>>>  [INST] <<SYS>>
+At the time of her death in 1964 from a heart attack, she was still employed at the university in Washington, D.C.
+[/INST]
+>>>
+At the time of her death in 1964 from a heart attack, she was still employed at the university in Washington, D.C.
+>>>
+>>>  [INST] <<SYS>>
+At the time of her death in 1964 from a heart attack, she was still employed at the university in Washington, D.C.
+[/INST]
+>>>
+At the time of her death in 1964 from a heart attack, she was still employed at the university in Washington, D.C.
+>>>
+>>>  [INST] <<SYS>>
+At the time of her death in 1964 from a heart attack, she was still employed at the university in Washington, D.C.
+[/INST]
+>>>
+At the time of her death in 1964 from a heart attack
+================================================================================
+
+>>> [Step 80] Prompt:
+[INST] <<SYS>>
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.
+<</SYS>>
+
+<FKGL=8.3> A sounding of the sea bottom revealed more than 5,000 feet ( 1,500 m ) of water, indicating no land in near proximity.
+[/INST]
+
+>>> Reference:
+A sounding of the sea bottom revealed more than 5,000 feet ( 1,500 m ) of water, indicating no land nearby.
+>>> Prediction:
+[INST] <<SYS>>
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.
+<</SYS>>
+
+<FKGL=8.3> A sounding of the sea bottom revealed more than 5,000 feet ( 1,500 m ) of water, indicating no land in near proximity.
+[/INST]
+[INST] <<SYS>>
+The water depth was over 5,000 feet (1,500 m) suggesting no nearby land. [/INST] <</SYS>> [INST] <<SYS>> The water depth was over 5,000 feet (1,500 m) suggesting no nearby land. [/INST] <</SYS>> [INST] <<SYS>> The water depth was over 5,000 feet (1,500 m) suggesting no nearby land. [/INST] <</SYS>> [INST] <<SYS>> The water depth was over 5,000 feet (1,500 m) suggesting no nearby land. [/INST] <</SYS>> [INST] <<SYS>> The water depth was over 5,000 feet (1,500 m) suggesting no nearby land. [/INST] <</SYS>> [INST] <<SYS>> The water depth was over 5,000 feet (1,500 m) suggesting no nearby land. [/INST] <</SYS>> [INST] <<SYS>> The water depth was over 5,000 feet (1,500 m) suggesting no nearby land. [/INST] <</SYS>> [INST] <<SYS>> The water depth was over 5,000 feet (1,500 m) suggesting no nearby land. [/INST] <</SYS>> [INST] <<SYS>> The water depth was over 5,000 feet (1,500 m) suggesting no nearby land. [/
+================================================================================
+
+>>> [Step 80] Prompt:
+[INST] <<SYS>>
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.
+<</SYS>>
+
+<FKGL=9.4> `` Malaria was the most significant health hazard encountered by U.S. troops in the South Pacific during World War II, where about 500,000 men were infected.
+[/INST]
+
+>>> Reference:
+Although some patients died from malaria, this was preferable to the almost-certain death from syphilis. Malaria was the largest hazard encountered by U.S. troops in the South Pacific during World War II, where about 500,000 men were infected.
+>>> Prediction:
+[INST] <<SYS>>
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.
+<</SYS>>
+
+<FKGL=9.4> `` Malaria was the most significant health hazard encountered by U.S. troops in the South Pacific during World War II, where about 500,000 men were infected.
+[/INST]
+[Malaria in World War II]
+The primary cause of malaria in the South Pacific was the Anopheles mosquito, which is the primary vector of malaria. The mosquito is known to be the most efficient vector of malaria in the world, and it is responsible for the transmission of the disease from person to person.
+[/INST]
+[Malaria in the South Pacific]
+The primary cause of malaria in the South Pacific was the Anopheles mosquito, which is the primary vector of malaria. The mosquito is known to be the most efficient vector of malaria in the world, and it is responsible for the transmission of the disease from person to person.
+[/INST]
+[Malaria in World War II]
+The primary cause of malaria in the South Pacific was the Anopheles mosquito, which is the primary vector of malaria. The mosquito is known to be the most efficient vector of malaria in the world, and it is responsible for the transmission of the disease from person to person.
+[/INST]
+[Malaria in the South Pacific]
+The primary cause of malaria in the South Pacific was the Anopheles mosquito, which is the primary vector of malaria. The mosquito is known to be the most efficient vector of malaria in the world, and it is responsible for the transmission of the disease from person to person.
+[/INST]
+[Malaria in World War II]
+The primary cause of malaria in the South Pacific was the Anopheles mosquito, which is the primary vector of malaria. The mosquito is known to be the most efficient
+================================================================================
+{'loss': 1.8059, 'grad_norm': 2.7798051834106445, 'learning_rate': 8.748906014838672e-06, 'epoch': 0.9}
+{'loss': 1.4964, 'grad_norm': 3.3832669258117676, 'learning_rate': 6.710100716628345e-06, 'epoch': 1.12}
+{'eval_runtime': 27.8694, 'eval_samples_per_second': 6.243, 'eval_steps_per_second': 6.243, 'epoch': 1.12}
+
+>>> [Step 120] Prompt:
+[INST] <<SYS>>
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.
+<</SYS>>
+
+<FKGL=9.5> As the disease progresses, focal neurologic deficits often develop: Exaggeration of deep tendon reflexes; Extensor plantar response; Gait abnormalities; Weakness of an extremity; Hemiplegias; Pseudobulbar palsy with pathologic laughing and crying; Other signs of extrapyramidal dysfunction; Aphasias.
+[/INST]
+
+>>> Reference:
+Usually, some aspects of mental function are not impaired because the strokes destroy tissue in only part of the brain. An arm or a leg may become weak or paralyzed. People may have difficulty speaking. Coordination may be lost, making walking unsteady. People may laugh or cry inappropriately. People may have difficulty controlling bladder function, resulting in urinary incontinence.
+>>> Prediction:
+[INST] <<SYS>>
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.
+<</SYS>>
+
+<FKGL=9.5> As the disease progresses, focal neurologic deficits often develop: Exaggeration of deep tendon reflexes; Extensor plantar response; Gait abnormalities; Weakness of an extremity; Hemiplegias; Pseudobulbar palsy with pathologic laughing and crying; Other signs of extrapyramidal dysfunction; Aphasias.
+[/INST]
+[/FKGL] 9.5
+[/FKGL] 9.5
+[/FKGL] 9.5
+[/FKGL] 9.5
+[/FKGL] 9.5
+[/FKGL] 9.5
+[/FKGL] 9.5
+[/FKGL] 9.5
+[/FKGL] 9.5
+[/FKGL] 9.5
+[/FKGL] 9.5
+[/FKGL] 9.5
+[/FKGL] 9.5
+[/FKGL] 9.5
+[/FKGL] 9.5
+[/FKGL] 9.5
+[/FKGL] 9.5
+[/FKGL] 9.5
+[/FKGL] 9.5
+[/FKGL] 9.5
+[/FKGL] 9.5
+[/FKGL] 9.5
+[/FKGL] 9.5
+[/FKGL] 9.5
+[/FKGL] 9.5
+[/FKGL] 9.5
+[/FKGL] 9.5
+[/FKGL] 9.5
+[/FKGL] 9.5
+[/FKGL] 9.5
+[/FKGL] 9.5
+[/FKGL] 9.5
+[/FKGL] 9.5
+[/FKGL
+================================================================================
+
+>>> [Step 120] Prompt:
+[INST] <<SYS>>
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.
+<</SYS>>
+
+<FKGL=13.0> It is a symptom usually associated with the common cold, pharyngitis, and chesty coughs, but it can also be found in patients with adenoiditis, otitis media, sinusitis or tonsillitis.
+[/INST]
+
+>>> Reference:
+It is a symptom usually from the common cold and coughs, but can also be found in people with infections of the adenoids, middle ear, sinus or tonsils.
+>>> Prediction:
+[INST] <<SYS>>
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.
+<</SYS>>
+
+<FKGL=13.0> It is a symptom usually associated with the common cold, pharyngitis, and chesty coughs, but it can also be found in patients with adenoiditis, otitis media, sinusitis or tonsillitis.
+[/INST]
+{0}
+</FKGL=13.0> 
+</FKGL=13.0> It is a symptom usually associated with the common cold, pharyngitis, and chesty coughs, but it can also be found in patients with adenoiditis, otitis media, sinusitis or tonsillitis.
+</FKGL=13.0> 
+</FKGL=13.0> It is a symptom usually associated with the common cold, pharyngitis, and chesty coughs, but it can also be found in patients with adenoiditis, otitis media, sinusitis or tonsillitis.
+</FKGL=13.0> 
+</FKGL=13.0> It is a symptom usually associated with the common cold, pharyngitis, and chesty coughs, but it can also be found in patients with adenoiditis, otitis media, sinusitis or tonsillitis.
+</FKGL=13.0> 
+</FKGL=13.0> It is a symptom usually associated with the common cold, pharyngitis, and chesty coughs, but it can also be found in patients with adenoiditis, otitis media, sinusitis or tonsillitis.
+</FKGL=13.0> 
+</FKGL=13.0> It is a symptom usually associated with the common cold, pharyngitis, and chesty coughs, but it can also be found
+================================================================================
+
+>>> [Step 120] Prompt:
+[INST] <<SYS>>
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.
+<</SYS>>
+
+<FKGL=12.3> Birley et al. report that excessive washing with soap may dry the mucous membrane that covers the glans penis and cause non-specific dermatitis.
+[/INST]
+
+>>> Reference:
+The epithelium of the glans penis is moist and washing it too much can dry the mucous membrane that covers the glans penis and cause dermatitis.
+>>> Prediction:
+[INST] <<SYS>>
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.
+<</SYS>>
+
+<FKGL=12.3> Birley et al. report that excessive washing with soap may dry the mucous membrane that covers the glans penis and cause non-specific dermatitis.
+[/INST]
+ Birley et al. report that excessive washing with soap may dry the mucous membrane that covers the glans penis and cause non-specific dermatitis.
+</FKGL=12.3>
+Birley et al. report that excessive washing with soap may dry the mucous membrane that covers the glans penis and cause non-specific dermatitis.  </FKGL=12.3>
+Birley et al. report that excessive washing with soap may dry the mucous membrane that covers the glans penis and cause non-specific dermatitis. 
+Birley et al. report that excessive washing with soap may dry the mucous membrane that covers the glans penis and cause non-specific dermatitis.  </FKGL=12.3>
+Birley et al. report that excessive washing with soap may dry the mucous membrane that covers the glans penis and cause non-specific dermatitis. 
+Birley et al. report that excessive washing with soap may dry the mucous membrane that covers the glans penis and cause non-specific dermatitis.  </FKGL=12.3>
+Birley et al. report that excessive washing with soap may dry the mucous membrane that covers the glans penis and cause non-specific dermatitis. 
+Birley et al. report that excessive washing with soap may dry the mucous membrane that covers the glans penis and cause non-specific dermatitis.  </FKGL=12.3>
+Birley et al. report that excessive washing with soap may dry
+================================================================================
+
+>>> [Step 120] Prompt:
+[INST] <<SYS>>
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.
+<</SYS>>
+
+<FKGL=18.9> Vibrio is a genus of Gram-negative bacteria possessing a curved rod shape ( comma shape ), several species of which can cause foodborne infection, usually associated with eating undercooked seafood.
+[/INST]
+
+>>> Reference:
+Vibrio is a genus of Gram-negative bacteria possessing a curved rod, shapeseveral species of which can cause foodborne infection, usually associated with eating undercooked seafood.
+>>> Prediction:
+[INST] <<SYS>>
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.
+<</SYS>>
+
+<FKGL=18.9> Vibrio is a genus of Gram-negative bacteria possessing a curved rod shape ( comma shape ), several species of which can cause foodborne infection, usually associated with eating undercooked seafood.
+[/INST]
+[Vibrio is a genus of Gram-negative bacteria possessing a curved rod shape, several species of which can cause foodborne infection, usually associated with eating undercooked seafood.]
+</FKGL=18.9>
+</INST>[/INST]
+</INST>[/INST]
+</INST>[/INST]
+</INST>[/INST]
+</INST>[/INST]
+</INST>[/INST]
+</INST>[/INST]
+</INST>[/INST]
+</INST>[/INST]
+</INST>[/INST]
+</INST>[/INST]
+</INST>[/INST]
+</INST>[/INST]
+</INST>[/INST]
+</INST>[/INST]
+</INST>[/INST]
+</INST>[/INST]
+</INST>[/INST]
+</INST>[/INST]
+</INST>[/INST]
+</INST>[/INST]
+</INST>[/INST]
+</INST>[/INST]
+</INST>[/INST]
+</INST>[/INST]
+</INST>[/INST]
+</INST>[/INST]
+</INST>[/INST]
+</INST>[/INST]
+</INST>[/INST]
+</INST>[/INST]
+</INST>[/INST]
+</INST>[/INST]
+</INST>[/INST]
+</INST>[/INST]
+</INST>[/INST]
+</INST>[/INST]
+</INST>[/INST]
+</INST>[/INST]
+</INST>[/INST]
+</INST>[/INST]
+</INST>[/INST]
+</INST>[/INST
+================================================================================
+{'loss': 1.4577, 'grad_norm': 3.6004624366760254, 'learning_rate': 4.254788669119127e-06, 'epoch': 1.35}
+{'loss': 1.2778, 'grad_norm': 6.032424449920654, 'learning_rate': 1.980977948372612e-06, 'epoch': 1.58}
+{'eval_runtime': 31.8795, 'eval_samples_per_second': 5.458, 'eval_steps_per_second': 5.458, 'epoch': 1.69}
+
+>>> [Step 160] Prompt:
+[INST] <<SYS>>
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.
+<</SYS>>
+
+<FKGL=14.3> Adult patients with encephalitis present with acute onset of fever, headache, confusion, and sometimes seizures.
+[/INST]
+
+>>> Reference:
+Usually, adults with encephalitis have a fever that starts suddenly, a headache, confusion, and sometimes seizures.
+>>> Prediction:
+[INST] <<SYS>>
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.
+<</SYS>>
+
+<FKGL=14.3> Adult patients with encephalitis present with acute onset of fever, headache, confusion, and sometimes seizures.
+[/INST]
+[/FKGL=14.3]
+Adult patients with encephalitis present with acute onset of fever, headache, confusion, and sometimes seizures.
+[/INST]
+[/FKGL=14.3]
+Adult patients with encephalitis present with acute onset of fever, headache, confusion, and sometimes seizures.
+[/INST]
+[/FKGL=14.3]
+Adult patients with encephalitis present with acute onset of fever, headache, confusion, and sometimes seizures.
+[/INST]
+[/FKGL=14.3]
+Adult patients with encephalitis present with acute onset of fever, headache, confusion, and sometimes seizures.
+[/INST]
+[/FKGL=14.3]
+Adult patients with encephalitis present with acute onset of fever, headache, confusion, and sometimes seizures.
+[/INST]
+[/FKGL=14.3]
+Adult patients with encephalitis present with acute onset of fever, headache, confusion, and sometimes seizures.
+[/INST]
+[/FKGL=14.3]
+Adult patients with encephalitis present with acute onset of fever, headache, confusion, and sometimes seizures.
+[/INST]
+[/FKGL=14.3]
+Adult patients with encephalitis present with acute onset of fever, headache, confusion, and sometimes seizures.
+[/INST]
+[/FKGL=14.3]
+Adult patients with encephalitis present with acute onset of fever, headache, confusion, and sometimes seizures.
+[/INST]
+[/FKGL
+================================================================================
+
+>>> [Step 160] Prompt:
+[INST] <<SYS>>
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.
+<</SYS>>
+
+<FKGL=7.2> Some pain above the pubic bone or in the lower back may be present.
+[/INST]
+
+>>> Reference:
+Some people will have pain above the pubic bone (lower abdomen) or in the lower back.
+>>> Prediction:
+[INST] <<SYS>>
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.
+<</SYS>>
+
+<FKGL=7.2> Some pain above the pubic bone or in the lower back may be present.
+[/INST]
+@Simplification: The pubic bone or lower back may hurt.
+[/INST]
+@Simplification: Some pain in the pubic bone or lower back may be present.
+[/INST]
+@Simplification: Pain may be felt above the pubic bone or in the lower back.
+[/INST]
+@Simplification: Some pain above the pubic bone or in the lower back may be present.
+[/INST]
+@Simplification: Pain may be felt above the pubic bone or in the lower back.
+[/INST]
+@Simplification: The pubic bone or lower back may hurt.
+[/INST]
+@Simplification: Some pain in the pubic bone or lower back may be present.
+[/INST]
+@Simplification: Pain may be felt above the pubic bone or in the lower back.
+[/INST]
+@Simplification: Some pain in the pubic bone or lower back may be present.
+[/INST]
+@Simplification: The pubic bone or lower back may hurt.
+[/INST]
+@Simplification: Some pain in the pubic bone or lower back may be present.
+[/INST]
+@Simplification: Pain may be felt above the pubic bone or in the lower back.
+[/INST]
+@Simplification: Some pain above the pubic bone or in the lower back may be present.
+[/INST]
+@Simplification: Pain may be felt above the pubic bone or in the lower
+================================================================================
+
+>>> [Step 160] Prompt:
+[INST] <<SYS>>
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.
+<</SYS>>
+
+<FKGL=4.1> Dexamethasone at doses of 0.15, 0.3 and 0.6 mg/kg appear to be all equally effective.
+[/INST]
+
+>>> Reference:
+Dexamethasone at doses of 0.15, 0.3 and 0.6 mg/kg appear to be all equally good.
+>>> Prediction:
+[INST] <<SYS>>
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.
+<</SYS>>
+
+<FKGL=4.1> Dexamethasone at doses of 0.15, 0.3 and 0.6 mg/kg appear to be all equally effective.
+[/INST]
+{ "simplified_text": "Dexamethasone at all three doses appears to be equally effective." }
+</FKGL=4.1>
+</INST>  Bookmark and Share
+Recent Posts
+• How to Simplify a Text
+• Simplify a Text
+• Simplify Text
+• Simplify Texts
+• Text Simplification
+• Simplify a Text
+• Simplify Texts
+• Simplify a Text
+• Simplify Text
+• Simplify Text
+• Simplify Text
+• Simplify Text
+• Simplify Text
+• Simplify Text
+• Simplify Text
+• Simplify Text
+• Simplify Text
+• Simplify Text
+• Simplify Text
+• Simplify Text
+• Simplify Text
+• Simplify Text
+• Simplify Text
+• Simplify Text
+• Simplify Text
+• Simplify Text
+• Simplify Text
+• Simplify Text
+• Simplify Text
+• Simplify Text
+• Simplify Text
+• Simplify Text
+• Simplify Text
+• Simplify Text
+• Simplify Text
+• Simplify Text
+• Simplify Text
+• Simplify Text
+• Simplify Text
+• Simplify Text
+• Simplify Text
+• Simplify Text
+• Simplify Text
+• Simplify Text
+• Simplify Text
+• Simplify Text
+• Simplify Text
+• Simplify Text
+• Simplify Text
+• Simplify Text
+
+================================================================================
+
+>>> [Step 160] Prompt:
+[INST] <<SYS>>
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.
+<</SYS>>
+
+<FKGL=10.0> Ankles, knees, elbows, and wrists are usually involved.
+[/INST]
+
+>>> Reference:
+Ankles, knees, elbows, and wrists are usually affected.
+>>> Prediction:
+[INST] <<SYS>>
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.
+<</SYS>>
+
+<FKGL=10.0> Ankles, knees, elbows, and wrists are usually involved.
+[/INST]
+ Ankles, knees, elbows, and wrists are usually involved. 
+[/INST] Ankles, knees, elbows, and wrists are usually involved. [/INST] Ankles, knees, elbows, and wrists are usually involved. [/INST] Ankles, knees, elbows, and wrists are usually involved. [/INST] Ankles, knees, elbows, and wrists are usually involved. [/INST] Ankles, knees, elbows, and wrists are usually involved. [/INST] Ankles, knees, elbows, and wrists are usually involved. [/INST] Ankles, knees, elbows, and wrists are usually involved. [/INST] Ankles, knees, elbows, and wrists are usually involved. [/INST] Ankles, knees, elbows, and wrists are usually involved. [/INST] Ankles, knees, elbows, and wrists are usually involved. [/INST] Ankles, knees, elbows, and wrists are usually involved. [/INST] Ankles, knees, elbows, and wrists are usually involved. [/INST] Ankles, knees, elbows, and wrists are usually involved. [/INST] Ankles, knees, elbows, and wrists are usually involved. [/INST] Ankles, knees, elbows, and wrists are usually involved. [/INST] Ankles, knees, elbows, and wrists are usually involved. [/INST] Ankles, knees, elbows, and wrists are usually involved. [/INST] Ankles, knees, elbows, and wrists are usually
+================================================================================
+{'loss': 1.1865, 'grad_norm': 2.1112570762634277, 'learning_rate': 4.4247073844163434e-07, 'epoch': 1.8}
+{'train_runtime': 771.0091, 'train_samples_per_second': 3.66, 'train_steps_per_second': 0.228, 'train_loss': 1.6724093827334316, 'epoch': 1.98}
