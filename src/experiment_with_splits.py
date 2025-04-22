@@ -1,7 +1,7 @@
-"""
-This script experiments with different methods of generating splits for the datasets.
+# """
+# This script experiments with different methods of generating splits for the datasets.
 
-"""
+# """
 
 
 
@@ -188,7 +188,7 @@ def main():
         "medeasi",
         "newsela",
         "simpa",
-        "wikilarge_ori"
+        # "wikilarge_ori"
         ]
     DATA_DIR = "./../data"
     BINS = [
@@ -274,10 +274,8 @@ def main():
                         val_metric_values = extract_metrics(val_data, METRICS)
                         test_metric_values = extract_metrics(test_data, METRICS)
 
-                        plot_distributions(METRICS, full_metric_values, train_metric_values, val_metric_values, test_metric_values, SAVE_DIR)
-                        plot_distributions_on_one_image(METRICS, full_metric_values, train_metric_values, val_metric_values, test_metric_values, SAVE_DIR)
-
-                        print(f"Splits for {dataset_name} generated and saved.")
+                        # plot_distributions(METRICS, full_metric_values, train_metric_values, val_metric_values, test_metric_values, SAVE_DIR)
+                        # plot_distributions_on_one_image(METRICS, full_metric_values, train_metric_values, val_metric_values, test_metric_values, SAVE_DIR)
 
                         # Calculate KL Divergence between distributions
                         ks_train,_ = ks_2samp(full_metric_values[STRAT_METRIC], train_metric_values[STRAT_METRIC])
@@ -286,6 +284,7 @@ def main():
 
                         # Store results for each experiment
                         EXPERIMENT_RESULTS.append({
+                            "seed": int(seed),
                             "dataset": dataset_name,
                             "strat_metric": STRAT_METRIC,
                             "num_bins": NUM_BINS,
@@ -304,6 +303,5 @@ def main():
         
 if __name__ == "__main__":
     main()
-
 
 
