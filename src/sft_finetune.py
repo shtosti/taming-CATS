@@ -44,7 +44,7 @@ def print_trainable_params(model):
     trainable = sum(p.numel() for p in model.parameters() if p.requires_grad)
     print(f"Trainable params: {trainable:,} / {total:,} ({100 * trainable / total:.2f}%)")
 
-def load_and_prepare_model(model_name, model_family, peft_enabled):
+def load_and_prepare_model(model_name, model_class, peft_enabled):
     # --- tokenizer ---
     tokenizer = AutoTokenizer.from_pretrained(model_name)
     if tokenizer.pad_token is None:
@@ -54,12 +54,12 @@ def load_and_prepare_model(model_name, model_family, peft_enabled):
     tokenizer.padding_side = "left"
 
     # --- model ---
-    if model_family == "llama":
+    if model_class == "llama":
         model = LlamaForCausalLM.from_pretrained(model_name, device_map="auto")
-    elif model_family == "auto":
+    elif model_class == "auto":
         model = AutoModelForCausalLM.from_pretrained(model_name, device_map="auto")
     else:
-        raise ValueError(f"Unsupported model_family: {model_family}")
+        raise ValueError(f"Unsupported model_class: {model_class}")
 
     model.gradient_checkpointing_enable() # batching imitation
     model.config.use_cache = False # use less memory
@@ -172,8 +172,8 @@ def load_and_prepare_dataset(dataset_name, tokenizer, args):
         )
 
         return {
-            "prompt": format_prompt_with_special_tokens(system_prompt, user_prompt),
-            "completion": format_completion_with_special_tokens(reference_simplification),
+            "prompt": format_prompt_with_special_tokens(system_prompt, user_prompt, model_family=args.model_family),
+            "completion": format_completion_with_special_tokens(reference_simplification, model_family=args.model_family),
             "system_prompt_id": system_id,
             "user_prompt_id": args.user_prompt_id,
             "metric_name": args.metric_name,
@@ -188,12 +188,13 @@ def load_and_prepare_dataset(dataset_name, tokenizer, args):
             text=row["source_text"],
             metric_name=args.metric_name,
             metric_value=metric_value,
-            sys_prompt=system_prompt
+            system_prompt=system_prompt,
+            model_family=args.model_family
         )
 
         return {
             "prompt": inference_prompt,
-            "completion": format_completion_with_special_tokens(reference_simplification),
+            "completion": format_completion_with_special_tokens(reference_simplification, model_family=args.model_family),
             "system_prompt_id": system_id,
             "metric_name": args.metric_name,
             "metric_value": metric_value
@@ -270,7 +271,8 @@ def train_model(model, tokenizer, train_dataset, val_dataset, args, output_dir, 
 def parse_args():
     parser = argparse.ArgumentParser()
     # hyperparams
-    parser.add_argument("--model_family", type=str, required=True, choices=["llama", "auto"], help="Model class to use.")
+    parser.add_argument("--model_class", type=str, required=True, choices=["llama", "auto"], help="Model class to use.")
+    parser.add_argument("--model_family", type=str, required=True, default="llama", choices=["llama", "mistral", "qwen", "base"], help="Model type to choose from.")
     parser.add_argument("--model_name", type=str, required=True)
     parser.add_argument("--dataset_name", type=str, required=True)
     parser.add_argument("--slice_train", type=int, default=-1)
@@ -331,7 +333,7 @@ def main():
     print("Current working directory:", os.getcwd())
     print("Saving to:", output_dir)
 
-    model, tokenizer = load_and_prepare_model(args.model_name, args.model_family, args.peft)
+    model, tokenizer = load_and_prepare_model(args.model_name, args.model_class, args.peft)
     train_dataset, val_dataset = load_and_prepare_dataset(args.dataset_name, tokenizer, args)
 
     print("First 10 input_ids:", train_dataset[0]["input_ids"][:10])
