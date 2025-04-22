@@ -188,7 +188,7 @@ def load_and_prepare_dataset(dataset_name, tokenizer, args):
             text=row["source_text"],
             metric_name=args.metric_name,
             metric_value=metric_value,
-            sys_prompt=system_prompts
+            sys_prompt=system_prompt
         )
 
         return {
