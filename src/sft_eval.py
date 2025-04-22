@@ -4,31 +4,28 @@ from tqdm import tqdm
 import argparse
 from transformers import AutoTokenizer, AutoModelForCausalLM
 from helpers.hugging_face import load_dataset_from_hf
-from helpers.prompting import create_inference_prompt
+from helpers.prompting import create_inference_prompt, select_random_system_prompt
 from classes.Metrics import Metrics
 import torch.nn as nn
 mse_loss_fn = nn.MSELoss()
 
+
+
+def load_json(file_path: str):
+    """Load JSON from a file."""
+    with open(file_path, "r", encoding="utf-8") as file:
+        return json.load(file)
+    
+
+
 # === CONFIG ===
 model_name = "your-model-name"
+model_family = "str"
+model_class = "str"
 dataset_name = "your-dataset-name"
 split = "test"
 metric_name = "FKGL"
 output_file = "predictions_fkgl.jsonl"
-
-# === Load model and tokenizer ===
-tokenizer = AutoTokenizer.from_pretrained(model_name)
-model = AutoModelForCausalLM.from_pretrained(model_name, device_map="auto")
-model.eval().to("cuda" if torch.cuda.is_available() else "cpu")
-device = model.device
-
-# === Load dataset ===
-dataset = load_dataset_from_hf(dataset_name, split=split)
-
-# === Evaluation ===
-results = []
-fkgl_scores = []
-mse_losses = []
 
 def parse_args():
     parser = argparse.ArgumentParser()
@@ -40,11 +37,47 @@ def parse_args():
 
     return parser.parse_args()
 
+
+def main():
+    args = parse_args()
+
+    # === Load model and tokenizer ===
+    tokenizer = AutoTokenizer.from_pretrained(args.model_name)
+    model = AutoModelForCausalLM.from_pretrained(model_name, device_map="auto")
+    model.eval().to("cuda" if torch.cuda.is_available() else "cpu")
+    device = model.device
+    pass
+
+# === Load dataset ===
+dataset = load_dataset_from_hf(dataset_name, split=split)
+
+
+system_prompts = load_json(args.system_prompts)
+system_id, system_prompt = select_random_system_prompt(system_prompts)
+
+# === Evaluation ===
+results = []
+fkgl_scores = []
+mse_losses = []
+
+
 for example in tqdm(dataset):
     reference = example["simplification_text"].strip()
     source = example["source_text"].strip()
     target_fkgl = float(example["target_metrics"]["FKGL"])
-    prompt = create_inference_prompt(source, metric_name, target_fkgl)
+    prompt = create_inference_prompt(
+        text=source, 
+        metric_name=metric_name, 
+        metric_value=target_fkgl, 
+        system_prompt, 
+        model_family="base"
+    )
+    
+    (
+        
+        
+        
+ )
 
     # prompt = create_inference_prompt(source, metric_name, example["target_metrics"][metric_name])
     inputs = tokenizer(prompt, return_tensors="pt").to(device)
@@ -60,7 +93,6 @@ for example in tqdm(dataset):
 
     decoded = tokenizer.decode(output[0], skip_special_tokens=True)
     prediction = decoded.strip()
-    # prediction = decoded.split("<|start_header_id|>assistant<|end_header_id|>")[-1].strip() # TODO remove or change
 
     # Compute FKGL using your Metrics class
     metric_obj = Metrics(input_text=prediction)
