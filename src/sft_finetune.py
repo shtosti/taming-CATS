@@ -54,6 +54,10 @@ def load_and_prepare_model(model_name, model_class, peft_enabled, max_length):
             'pad_token': '[PAD]'
         })
     tokenizer.padding_side = "left"
+    if tokenizer.eos_token is None or tokenizer.eos_token != "<|eot_id|>":
+        tokenizer.add_special_tokens({
+            'eos_token': '<|eot_id|>'
+        })
 
     # --- model ---
     if model_class == "llama":
@@ -149,11 +153,13 @@ def load_and_prepare_dataset(dataset_name, tokenizer, args):
     control_tokens = load_json(args.control_tokens)
     system_prompts = load_json(args.system_prompts)
     user_prompts = load_json(args.user_prompts)
+    metric_mapping = load_json(args.metric_mapping)
 
     system_id, system_prompt = select_random_system_prompt(system_prompts)
     
     def process_instance_train(row):
-        metric_value = row["target_metrics"][args.metric_name]
+        metric_key_in_dataset = metric_mapping[args.metric_name]
+        metric_value = row["target_metrics"][metric_key_in_dataset]
         reference_simplification = row["simplification_text"]
 
         explanation = select_control_token_explanation(control_tokens, args.metric_name, metric_value) \
@@ -182,7 +188,8 @@ def load_and_prepare_dataset(dataset_name, tokenizer, args):
         }
     
     def process_instance_val(row):
-        metric_value = row["target_metrics"][args.metric_name]
+        metric_key_in_dataset = metric_mapping[args.metric_name]
+        metric_value = row["target_metrics"][metric_key_in_dataset]
         reference_simplification = row["simplification_text"]
 
         explanation = select_control_token_explanation(control_tokens, args.metric_name, metric_value) \
@@ -273,7 +280,7 @@ def train_model(model, tokenizer, train_dataset, val_dataset, args, output_dir, 
         push_to_hub=False,
         report_to=["wandb"],
         eval_strategy="steps",
-        eval_steps=40,
+        eval_steps=args.logging_steps,
         save_strategy="epoch"
     )
 
@@ -328,6 +335,8 @@ def parse_args():
     parser.add_argument("--control_tokens", type=str, required=True)
     parser.add_argument("--system_prompts", type=str, required=True)
     parser.add_argument("--user_prompts", type=str, required=True)
+    parser.add_argument("--metric_mapping", type=str, required=True)
+    
     # peft flag
     parser.add_argument("--peft", action="store_true", help="Enable PEFT for large models.")
 
