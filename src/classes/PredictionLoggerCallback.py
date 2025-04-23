@@ -72,8 +72,13 @@ class PredictionLoggerCallback(TrainerCallback):
                     **self.gen_kwargs
                 )
 
+            # Slice generated tokens to remove the prompt portion
+            prompt_length = inputs["input_ids"].shape[1]
+            generated_only_ids = output_ids[:, prompt_length:] # TODO try removing up to the end of the prompt
+
             decoded_preds = self.tokenizer.batch_decode(
-                output_ids,
+                # output_ids,
+                generated_only_ids,
                 skip_special_tokens=True,
                 clean_up_tokenization_spaces=True
             )
