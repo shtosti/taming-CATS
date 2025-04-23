@@ -18,7 +18,7 @@ from transformers import Trainer, TrainingArguments
 
 from helpers.hugging_face import load_dataset_from_hf, get_model_short_name
 from helpers.prompting import select_random_system_prompt, select_random_user_prompt, select_control_token_explanation, select_random_control_token_examples
-from helpers.prompting import create_user_prompt, create_inference_prompt, format_prompt_with_special_tokens, format_completion_with_special_tokens
+from helpers.prompting import create_user_prompt, format_prompt_with_special_tokens, format_completion_with_special_tokens
 
 from classes.PredictionLoggerCallback import PredictionLoggerCallback
 from classes.Metrics import Metrics
@@ -159,19 +159,21 @@ def load_and_prepare_dataset(dataset_name, tokenizer, args):
     
     def process_instance_train(row):
         metric_key_in_dataset = metric_mapping[args.metric_name]
-        metric_value = row["target_metrics"][metric_key_in_dataset]
+        source_metric_value = row["source_metrics"][metric_key_in_dataset]
+        target_metric_value = row["target_metrics"][metric_key_in_dataset]
         reference_simplification = row["simplification_text"]
 
-        explanation = select_control_token_explanation(control_tokens, args.metric_name, metric_value) \
+        explanation = select_control_token_explanation(control_tokens, args.metric_name, target_metric_value) \
             if "explanation" in args.user_prompt_id else None
         
         examples = select_random_control_token_examples(control_tokens, args.metric_name) \
             if "examples" in args.user_prompt_id else None
 
         _, user_prompt = create_user_prompt(
-            user_prompts,
+            user_prompts=user_prompts,
             metric_name=args.metric_name,
-            metric_value=metric_value,
+            source_metric_value=source_metric_value,
+            target_metric_value=target_metric_value,
             user_prompt_id=args.user_prompt_id,
             text=row["source_text"],
             explanation=explanation,
@@ -179,57 +181,22 @@ def load_and_prepare_dataset(dataset_name, tokenizer, args):
         )
 
         return {
-            "prompt": format_prompt_with_special_tokens(system_prompt, user_prompt, model_family=args.model_family),
-            "completion": format_completion_with_special_tokens(reference_simplification, model_family=args.model_family),
+            "prompt": format_prompt_with_special_tokens(
+                                                        system_prompt=system_prompt, 
+                                                        user_prompt=user_prompt, 
+                                                        metric_name=args.metric_name, 
+                                                        target_metric_value=target_metric_value,
+                                                        model_family=args.model_family
+                                                        ),
+            "completion": format_completion_with_special_tokens(
+                                                        completion=reference_simplification, 
+                                                        model_family=args.model_family
+                                                        ),
             "system_prompt_id": system_id,
             "user_prompt_id": args.user_prompt_id,
             "metric_name": args.metric_name,
-            "metric_value": metric_value
-        }
-    
-    def process_instance_val(row):
-        metric_key_in_dataset = metric_mapping[args.metric_name]
-        metric_value = row["target_metrics"][metric_key_in_dataset]
-        reference_simplification = row["simplification_text"]
-
-        explanation = select_control_token_explanation(control_tokens, args.metric_name, metric_value) \
-            if "explanation" in args.user_prompt_id else None
-        
-        examples = select_random_control_token_examples(control_tokens, args.metric_name) \
-            if "examples" in args.user_prompt_id else None
-
-        # inference_prompt = create_inference_prompt(
-        #     text=row["source_text"],
-        #     metric_name=args.metric_name,
-        #     metric_value=metric_value,
-        #     system_prompt=system_prompt,
-        #     model_family=args.model_family
-        # )
-
-        # return {
-        #     "prompt": inference_prompt,
-        #     "completion": format_completion_with_special_tokens(reference_simplification, model_family=args.model_family),
-        #     "system_prompt_id": system_id,
-        #     "metric_name": args.metric_name,
-        #     "metric_value": metric_value
-        # }
-        _, user_prompt = create_user_prompt(
-            user_prompts,
-            metric_name=args.metric_name,
-            metric_value=metric_value,
-            user_prompt_id=args.user_prompt_id,
-            text=row["source_text"],
-            explanation=explanation,
-            examples=examples
-        )
-
-        return {
-            "prompt": format_prompt_with_special_tokens(system_prompt, user_prompt, model_family=args.model_family),
-            "completion": format_completion_with_special_tokens(reference_simplification, model_family=args.model_family),
-            "system_prompt_id": system_id,
-            "user_prompt_id": args.user_prompt_id,
-            "metric_name": args.metric_name,
-            "metric_value": metric_value
+            "source_metric_value": source_metric_value,
+            "target_metric_value": target_metric_value
         }
 
 
@@ -237,7 +204,7 @@ def load_and_prepare_dataset(dataset_name, tokenizer, args):
     val_dataset = load_dataset_from_hf(dataset_name, split="validation", slice=args.slice_val)
 
     train_dataset = train_dataset.map(process_instance_train)
-    val_dataset = val_dataset.map(process_instance_val)
+    val_dataset = val_dataset.map(process_instance_train)
 
     print("\n\n *** Before tokenization ***")
     print(">>> train:")
