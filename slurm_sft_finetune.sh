@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#SBATCH --job-name=wandb_finetune_parameterized
+#SBATCH --job-name=sft_finetune
 
 #SBATCH --account=iict-sp1.ebling.cl.uzh
 #SBATCH --output=logs/%x_%j_out.log

@@ -35,7 +35,7 @@ PROMPTING_TYPE="vanilla"
 USER_PROMPT_ID="token_explanation"
 
 # --- metric settings ---
-METRIC_NAME="FKGL"
+METRIC_NAME="DALE-CHALL"
 
 # --- hyperparameters ---
 EPOCHS=2
@@ -85,5 +85,6 @@ python src/sft_finetune.py \
     --control_tokens "data/prompts/control_tokens.json" \
     --system_prompts "data/prompts/system_prompts.json" \
     --user_prompts "data/prompts/user_prompts.json"\
+    --metric_mapping "data/metric_mapping.json"\
     --log_every "$LOG_EVERY"\
     $PEFT_FLAG
