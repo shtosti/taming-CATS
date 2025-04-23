@@ -7,19 +7,21 @@ def select_random_system_prompt(system_prompts):
     selected_prompt = random.choice(system_prompts["system_prompts"])  # Seed set for reproducibility
     return selected_prompt["id"], selected_prompt["prompt"]
 
-def select_random_user_prompt(user_prompts, metric_name, metric_value, user_prompt_id):
+def select_random_user_prompt(user_prompts, metric_name, source_metric_value, target_metric_value, user_prompt_id):
     """Randomly selects a user prompt from the list and returns its ID and text."""
     selected_prompts = user_prompts.get(metric_name)
     if selected_prompts:
         selected_prompt = random.choice(selected_prompts[user_prompt_id])
-        return selected_prompt["id"], selected_prompt["prompt"].replace("{VALUE}", str(metric_value))
+        selected_prompt = selected_prompt["prompt"].replace("{TARGET_VALUE}", str(target_metric_value))
+        selected_prompt = selected_prompt["prompt"].replace("{SOURCE_VALUE}", str(source_metric_value))
+        return selected_prompt["id"], selected_prompt
     return None, None
 
-def select_control_token_explanation(control_tokens, metric_name, metric_value):
+def select_control_token_explanation(control_tokens, metric_name, target_metric_value):
     """Selects a control token explanation based on the metric name and value."""
     control_token = control_tokens.get(metric_name)
     if control_token:
-        return control_token["explanation"].replace("{VALUE}", str(metric_value))
+        return control_token["explanation"].replace("{TARGET_VALUE}", str(target_metric_value))
     return None
 
 def select_random_control_token_examples(control_tokens, metric_name, num_examples=3):
@@ -31,7 +33,7 @@ def select_random_control_token_examples(control_tokens, metric_name, num_exampl
         return examples
     return []
 
-def create_user_prompt(user_prompts, metric_name, metric_value, user_prompt_id, text, explanation=None, examples=None):
+def create_user_prompt(user_prompts, metric_name, source_metric_value, target_metric_value, user_prompt_id, text, explanation=None, examples=None):
     """Constructs a user prompt based on the user prompt type."""
     # Access the list of prompts for the selected metric (ARI, FKGL, etc.)
     metric_prompts = user_prompts.get(metric_name)
@@ -54,7 +56,8 @@ def create_user_prompt(user_prompts, metric_name, metric_value, user_prompt_id, 
             for i, example in enumerate(examples, start=1):
                 prompt_text = prompt_text.replace(f"{{EXAMPLE_{i}}}", example)
 
-        prompt_text = prompt_text.replace("{VALUE}", str(metric_value))
+        prompt_text = prompt_text.replace("{SOURCE_VALUE}", str(source_metric_value))
+        prompt_text = prompt_text.replace("{TARGET_VALUE}", str(target_metric_value))
         prompt_text = prompt_text.replace("{TEXT}", text)
         prompt_text = prompt_text.replace("{EOT_TOKEN}", "<|eot_id|>")
         # print(f"Prompt before return: {prompt_text}") # for debugging
@@ -63,18 +66,20 @@ def create_user_prompt(user_prompts, metric_name, metric_value, user_prompt_id, 
     # Fallback: If the metric is not found, return a default prompt
     return user_prompt_id, f"Simplify the following text: \n\n{text}"
 
-def format_prompt_with_special_tokens(system_prompt, user_prompt, model_family="base"):
+def format_prompt_with_special_tokens(system_prompt, user_prompt, metric_name, target_metric_value, model_family="base"):
     if model_family in ["llama", "mistral"]:
         formatted_prompt = (
             f"[INST] <<SYS>>\n{system_prompt}\n<</SYS>>\n\n"
             f"{user_prompt.strip()}\n"
             f"[/INST]\n"
+            f"<{metric_name}={target_metric_value}> "
         )
     elif model_family == "qwen":
         formatted_prompt = (
             f"<|im_start|>system\n{system_prompt.strip()}\n<|im_end|>\n"
             f"<|im_start|>user\n{user_prompt.strip()}\n<|im_end|>\n"
             f"<|im_start|>assistant\n"
+            f"<{metric_name}={target_metric_value}> "
         )
     elif model_family == "base":
         formatted_prompt = (
@@ -82,6 +87,7 @@ def format_prompt_with_special_tokens(system_prompt, user_prompt, model_family="
             f"<|start_header_id|>system<|end_header_id|> {system_prompt}<|eot_id|>\n"
             f"<|start_header_id|>user<|end_header_id|> {user_prompt}\n"
             f"<|start_header_id|>assistant<|end_header_id|>\n"
+            f"<{metric_name}={target_metric_value}> "
         )
         
     else:
@@ -96,44 +102,3 @@ def format_completion_with_special_tokens(completion, model_family="base"):
         return f"{completion.strip()}\n<|im_end|>"
     elif model_family == "base":
         return f"{completion.strip()} <|eot_id|>"
-
-def create_inference_prompt(text, metric_name, metric_value, system_prompt, model_family="base"):
-    formatted_instruction = f"<{metric_name}={metric_value}> {text.strip()}"
-
-    return format_prompt_with_special_tokens(
-        system_prompt=system_prompt,
-        user_prompt=formatted_instruction,
-        model_family=model_family
-    )
-
-
-
-# *** DEBUG ***
-
-# system_prompt = "You are a helpful assistant that simplifies text to a specific FKGL level."
-# user_prompt = "Simplify. <FKGL=3.5> The patient presented with acute bronchitis."
-
-
-# print("--- Llama ----")
-# print(format_prompt_with_special_tokens(system_prompt, user_prompt, model_family="llama"))
-
-# print("--- Qwen ----")
-# print(format_prompt_with_special_tokens(system_prompt, user_prompt, model_family="qwen"))
-
-# print("--- Base ----")
-# print(format_prompt_with_special_tokens(system_prompt, user_prompt, model_family="base"))
-
-
-# inference_prompt = create_inference_prompt(
-#     text="The patient presented with acute bronchitis.",
-#     metric_name="FKGL",
-#     metric_value=3.5,
-#     system_prompt="You are a helpful assistant that simplifies text to a specific FKGL level.",
-#     model_family="llama"
-# )
-
-# completion = "The patient had a bad cough."
-
-# formatted_completion = format_completion_with_special_tokens(completion, model_family="llama")
-
-# print(inference_prompt + formatted_completion)
