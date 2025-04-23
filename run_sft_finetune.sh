@@ -35,7 +35,7 @@ PROMPTING_TYPE="vanilla"
 USER_PROMPT_ID="token_explanation"
 
 # --- metric settings ---
-METRIC_NAME="DALE-CHALL"
+METRIC_NAME="ARI"
 
 # --- hyperparameters ---
 EPOCHS=2
