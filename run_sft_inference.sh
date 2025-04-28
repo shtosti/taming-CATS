@@ -1,9 +1,12 @@
 #!/bin/bash
 
+MODEL_PATH="sft/Llama-3.2-1B-Instruct-Med-EASi-20250423-1516-l9qlzepa"
 USER_PROMPT_ID="token_explanation"
 METRIC_NAME="ARI"
 DATASET_NAME="Med-EASi"
-MODEL_PATH="sft/Llama-3.2-1B-Instruct-Med-EASi-20250423-1516-l9qlzepa"
+
+# "llama", "mistral", "qwen", "base" (for prompt template)
+MODEL_FAMILY="base"
 
 
 
@@ -11,8 +14,10 @@ python src/sft_inference.py \
   --model_path "$MODEL_PATH"\
   --dataset_name "$DATASET_NAME" \
   --model_class llama \
+  --model_family "$MODEL_FAMILY" \
   --max_length 512 \
   --batch_size 4 \
+  --slice_test -1 \
   --output_file predictions.txt \
   --control_tokens "data/prompts/control_tokens.json" \
   --system_prompts "data/prompts/system_prompts.json" \
