@@ -15,12 +15,13 @@ clean: # Clean cache
 finetune:
 	sbatch ./slurm_sft_finetune.sh
 
-eval:
-	sbatch ./slurm_sft_eval.sh
+infer:
+	sbatch ./slurm_sft_inference.sh
 
 # Just a nice summary
 help:
 	@echo "Makefile commands:"
 	@echo "  activate     - Activate the conda environment"
-	@echo "  make finetune        - Run the training script"
+	@echo "  finetune        - Run the training script"
+	@echo "  infer        - Run the inference script"
 	@echo "  clean        - Clean python caches"
