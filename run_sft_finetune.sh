@@ -27,6 +27,7 @@ USE_PEFT=false
 DATASET_NAME="Med-EASi"
 SLICE_TRAIN="-1" # -1 means no slicing
 SLICE_VAL="-1" # -1 means no slicing
+SLICE_TEST="-1" # -1 means no slicing
 
 # --- prompting settings ---
 # "vanilla", "reasoning", "transformations"
@@ -69,6 +70,7 @@ python src/sft_finetune.py \
     --dataset_name "$DATASET_NAME" \
     --slice_train "$SLICE_TRAIN" \
     --slice_val "$SLICE_VAL" \
+    --slice_test "$SLICE_TEST" \
     --batch_size "$BATCH_SIZE" \
     --eval_batch_size "$EVAL_BATCH_SIZE" \
     --gradient_accumulation_steps "$GRADIENT_ACCUMULATION_STEPS" \

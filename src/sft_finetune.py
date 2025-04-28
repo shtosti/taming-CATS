@@ -21,6 +21,7 @@ from helpers.prompting import select_random_system_prompt, select_random_user_pr
 from helpers.prompting import create_user_prompt, format_prompt_with_special_tokens, format_completion_with_special_tokens
 
 from classes.PredictionLoggerCallback import PredictionLoggerCallback
+from classes.ModelEvaluator import ModelEvaluator
 from classes.Metrics import Metrics
 
 print("Transformers version:", transformers.__version__)
@@ -157,7 +158,7 @@ def load_and_prepare_dataset(dataset_name, tokenizer, args):
 
     system_id, system_prompt = select_random_system_prompt(system_prompts)
     
-    def process_instance_train(row):
+    def process_instance(row):
         metric_key_in_dataset = metric_mapping[args.metric_name]
         source_metric_value = row["source_metrics"][metric_key_in_dataset]
         target_metric_value = row["target_metrics"][metric_key_in_dataset]
@@ -202,30 +203,30 @@ def load_and_prepare_dataset(dataset_name, tokenizer, args):
 
     train_dataset = load_dataset_from_hf(dataset_name, split="train", slice=args.slice_train)
     val_dataset = load_dataset_from_hf(dataset_name, split="validation", slice=args.slice_val)
+    test_dataset = load_dataset_from_hf(dataset_name, split="test", slice=args.slice_test)
 
-    train_dataset = train_dataset.map(process_instance_train)
-    val_dataset = val_dataset.map(process_instance_train)
+    train_dataset = train_dataset.map(process_instance)
+    val_dataset = val_dataset.map(process_instance)
+    test_dataset = test_dataset.map(process_instance)
 
     print("\n\n *** Before tokenization ***")
     print(">>> train:")
     show_examples(train_dataset, n=1)
-    print(">>> val:")
-    show_examples(val_dataset, n=1)
 
     train_dataset = tokenize_dataset(train_dataset, tokenizer, args.max_length)
     val_dataset = tokenize_dataset(val_dataset, tokenizer, args.max_length)
+    test_dataset = tokenize_dataset(test_dataset, tokenizer, args.max_length)
 
     print("\n\n *** After tokenization ***")
     print(">>> train:")
     show_examples(train_dataset, n=1, show_tokens=True)
-    print(">>> val:")
-    show_examples(val_dataset, n=1, show_tokens=True)
 
     print(10*"*", "DEBUG", 10*"*")
     print("Train dataset columns:", train_dataset.column_names)
-    print("Val dataset columns:", val_dataset.column_names)
+    print("Validation dataset columns:", val_dataset.column_names)
+    print("Test dataset columns:", test_dataset.column_names)
 
-    return train_dataset, val_dataset
+    return train_dataset, val_dataset, test_dataset
 
 def train_model(model, tokenizer, train_dataset, val_dataset, args, output_dir, peft_enabled):
 
@@ -283,6 +284,7 @@ def parse_args():
     parser.add_argument("--dataset_name", type=str, required=True)
     parser.add_argument("--slice_train", type=int, default=-1)
     parser.add_argument("--slice_val", type=int, default=-1)
+    parser.add_argument("--slice_test", type=int, default=-1)
     parser.add_argument("--batch_size", type=int, default=4)
     parser.add_argument("--eval_batch_size", type=int, default=1)
     parser.add_argument("--gradient_accumulation_steps", type=int, default=4)
@@ -343,7 +345,7 @@ def main():
     print("Saving to:", output_dir)
 
     model, tokenizer = load_and_prepare_model(args.model_name, args.model_class, args.peft, args.max_length)
-    train_dataset, val_dataset = load_and_prepare_dataset(args.dataset_name, tokenizer, args)
+    train_dataset, val_dataset, test_dataset = load_and_prepare_dataset(args.dataset_name, tokenizer, args)
 
     print("First 10 input_ids:", train_dataset[0]["input_ids"][:10])
     print("First 10 labels:", train_dataset[0]["labels"][:10])
@@ -371,6 +373,16 @@ def main():
                 output_dir,
                 args.peft
                 )
+
+    evaluator = ModelEvaluator(
+                model, 
+                tokenizer, 
+                test_dataset, 
+                max_length=args.max_length, 
+                batch_size=4
+                )
+    # prompts, references, predictions = evaluator.evaluate()
+    evaluator.evaluate()
 
     wandb.finish()
 
