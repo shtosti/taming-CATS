@@ -1,5 +1,7 @@
 #!/bin/bash
 
+
+# ========== inference =========
 MODEL_PATH="sft/Llama-3.2-1B-Instruct-Med-EASi-20250423-1516-l9qlzepa"
 USER_PROMPT_ID="token_explanation"
 METRIC_NAME="ARI"
@@ -28,3 +30,16 @@ python src/sft_inference.py \
   --metric_mapping "data/metric_mapping.json" \
   --metric_name "$METRIC_NAME" \
   --user_prompt_id "$USER_PROMPT_ID"
+# ================================
+
+
+
+# ========== evaluation ==========
+INPUT_FILE="$OUTPUT_FILE"
+
+python src/sft_eval.py \
+  --input_file "$INPUT_FILE" \
+  --metric_key "$METRIC_NAME" \
+  --output_dir "$OUTPUT_DIR" \
+# ================================
+

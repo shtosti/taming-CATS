@@ -124,8 +124,12 @@ def run_inference(args, metric_mapping, model, tokenizer, test_dataset, batch_si
             outputs = model.generate(
                 input_ids,
                 attention_mask=attention_mask,
-                max_length=max_length + max_new_tokens,  # Adjust total length including the new tokens generated
-                max_new_tokens=max_new_tokens,  # Limit the number of new tokens generated
+                max_length=max_length + max_new_tokens,
+                max_new_tokens=max_new_tokens,
+                do_sample=False,
+                # temperature=0.7,
+                # top_k=50,
+                # top_p=0.95,
                 pad_token_id=tokenizer.pad_token_id,
                 eos_token_id=tokenizer.eos_token_id
             )
@@ -138,7 +142,7 @@ def run_inference(args, metric_mapping, model, tokenizer, test_dataset, batch_si
                 skip_special_tokens=True,
                 clean_up_tokenization_spaces=True
             )
-            print("--- Generating predictions and metrics in batches:")
+            print("\n--- Processing batch:")
             for item, pred in zip(batch, decoded_preds):
                 prediction_metrics = Metrics(input_text=pred.strip(), reference_text=item["simplification_text"], source_text=item["source_text"])
                 computed_prediction_metrics = prediction_metrics.compute_metrics()
@@ -147,6 +151,7 @@ def run_inference(args, metric_mapping, model, tokenizer, test_dataset, batch_si
                 reference_metrics = Metrics(input_text=item["simplification_text"], source_text=item["source_text"])
                 computed_reference_metrics = reference_metrics.compute_metrics()
                 predictions.append({
+                    "global_id": item["global_id"],
                     "control_token": f"{args.metric_name}={item['target_metrics'][metric_mapping[args.metric_name]]}",
                     "metric_name": args.metric_name,
                     "source_metric_value": item["source_metrics"][metric_mapping[args.metric_name]],
@@ -157,7 +162,7 @@ def run_inference(args, metric_mapping, model, tokenizer, test_dataset, batch_si
                     "prompt": item["prompt"],
                     "source_metrics": computed_source_metrics,
                     "prediction_metrics": computed_prediction_metrics,
-                    "reference_metrcis": computed_reference_metrics,
+                    "reference_metrics": computed_reference_metrics,
                     })
                 print(f"{pred.strip()[:50]}...")
 
@@ -165,7 +170,8 @@ def run_inference(args, metric_mapping, model, tokenizer, test_dataset, batch_si
 
 def save_predictions_as_json(predictions, output_file):
     with open(output_file, "w", encoding="utf-8") as f:
-        json.dump([{"prediction": p} for p in predictions], f, indent=2, ensure_ascii=False)
+        # json.dump([{"prediction": p} for p in predictions], f, indent=2, ensure_ascii=False)
+        json.dump([p for p in predictions], f, indent=2, ensure_ascii=False)
 
 def parse_args():
     parser = argparse.ArgumentParser()

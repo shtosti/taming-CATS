@@ -1,0 +1,8 @@
+#!/bin/bash
+
+INPUT_FILE="output/sft/Llama-3.2-1B-Instruct-Med-EASi-20250423-1516-l9qlzepa/output.json"
+METRIC_NAME="ARI"
+
+python src/sft_eval.py \
+  --input_file "$INPUT_FILE" \
+  --metric_key "$METRIC_NAME" \
