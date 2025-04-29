@@ -8,6 +8,7 @@ from datasets import load_dataset
 from helpers.prompting import select_random_system_prompt, select_random_user_prompt, select_control_token_explanation, select_random_control_token_examples
 from helpers.prompting import create_user_prompt, format_prompt_with_special_tokens, format_completion_with_special_tokens
 from helpers.hugging_face import load_dataset_from_hf, get_model_short_name
+from classes.Metrics import Metrics
 
 
 def load_json(file_path: str):
@@ -44,7 +45,6 @@ def load_and_prepare_model(model_path, model_class, max_length):
     model.config.pad_token_id = tokenizer.pad_token_id
 
     return model, tokenizer
-
 
 def load_and_prepare_test_set(dataset_name, tokenizer, max_length, control_tokens, system_prompts, user_prompts, metric_mapping, metric_name, user_prompt_id, model_family, slice_test=None):
     test_dataset = load_dataset_from_hf(dataset_name, split="test", slice=slice_test)
@@ -96,20 +96,15 @@ def load_and_prepare_test_set(dataset_name, tokenizer, max_length, control_token
         return {
             "prompt": formatted_prompt,
             "completion": formatted_completion,
-            "input_ids": input_ids.squeeze(0),  # Remove batch dimension if present
-            "completion_ids": completion_ids.squeeze(0),  # Remove batch dimension if present
+            "input_ids": input_ids.squeeze(0),  # Remove batch dimension
+            "completion_ids": completion_ids.squeeze(0),  # Remove batch dimension
         }
 
-    # Apply processing to the test dataset (now with batching enabled)
-    test_dataset = test_dataset.map(process_instance, batched=False)
-    # print("--- DEBUG:")
-    # print(test_dataset[0])
+    test_dataset = test_dataset.map(process_instance, batched=False) # batching enabled
     
     return test_dataset
 
-
-
-def run_inference(args, metric_mapping, model, tokenizer, test_dataset, batch_size=4, device="cuda", max_length=512, max_new_tokens=300):
+def run_inference(args, metric_mapping, model, tokenizer, test_dataset, batch_size=4, device="cuda", max_length=512, max_new_tokens=511):
     model.eval()
     predictions = []
     
@@ -143,32 +138,34 @@ def run_inference(args, metric_mapping, model, tokenizer, test_dataset, batch_si
                 skip_special_tokens=True,
                 clean_up_tokenization_spaces=True
             )
-
+            print("--- Generating predictions and metrics in batches:")
             for item, pred in zip(batch, decoded_preds):
-
+                prediction_metrics = Metrics(input_text=pred.strip(), reference_text=item["simplification_text"], source_text=item["source_text"])
+                computed_prediction_metrics = prediction_metrics.compute_metrics()
+                source_metrics = Metrics(input_text=item["source_text"])
+                computed_source_metrics = source_metrics.compute_metrics()
+                reference_metrics = Metrics(input_text=item["simplification_text"], source_text=item["source_text"])
+                computed_reference_metrics = reference_metrics.compute_metrics()
                 predictions.append({
+                    "control_token": f"{args.metric_name}={item['target_metrics'][metric_mapping[args.metric_name]]}",
                     "metric_name": args.metric_name,
+                    "source_metric_value": item["source_metrics"][metric_mapping[args.metric_name]],
+                    "reference_metric_value": item["target_metrics"][metric_mapping[args.metric_name]],
                     "source_text": item["source_text"],
                     "reference_simplification": item["simplification_text"],
                     "prediction": pred.strip(),
                     "prompt": item["prompt"],
-                    "source_metric_value": item["source_metrics"][metric_mapping[args.metric_name]],
-                    "reference_metric_value": item["target_metrics"][metric_mapping[args.metric_name]],
+                    "source_metrics": computed_source_metrics,
+                    "prediction_metrics": computed_prediction_metrics,
+                    "reference_metrcis": computed_reference_metrics,
                     })
-            
-            # predictions.extend(decoded_preds)
+                print(f"{pred.strip()[:50]}...")
 
     return predictions
-
-# def save_predictions_as_txt(predictions, output_file):
-#     with open(output_file, "w") as f:
-#         for prediction in predictions:
-#             f.write(prediction + "\n")
 
 def save_predictions_as_json(predictions, output_file):
     with open(output_file, "w", encoding="utf-8") as f:
         json.dump([{"prediction": p} for p in predictions], f, indent=2, ensure_ascii=False)
-
 
 def parse_args():
     parser = argparse.ArgumentParser()
@@ -191,7 +188,6 @@ def parse_args():
     parser.add_argument("--user_prompt_id", type=str, required=True, choices=["no_token", "token", "token_explanation", "token_explanation_examples"], help="The user prompt ID to use.")
     
     return parser.parse_args()
-
 
 def main():
     args = parse_args()
@@ -227,7 +223,10 @@ def main():
         model, 
         tokenizer, 
         test_dataset, 
-        device=args.device
+        batch_size=args.batch_size,
+        device=args.device,
+        max_length=args.max_length, 
+        max_new_tokens=args.max_length - 1
         )
 
     # Save the predictions to a file
