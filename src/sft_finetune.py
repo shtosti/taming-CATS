@@ -21,8 +21,6 @@ from helpers.prompting import select_random_system_prompt, select_random_user_pr
 from helpers.prompting import create_user_prompt, format_prompt_with_special_tokens, format_completion_with_special_tokens
 
 from classes.PredictionLoggerCallback import PredictionLoggerCallback
-from classes.ModelEvaluator import ModelEvaluator
-from classes.Metrics import Metrics
 
 print("Transformers version:", transformers.__version__)
 print("Python path:", sys.executable)
