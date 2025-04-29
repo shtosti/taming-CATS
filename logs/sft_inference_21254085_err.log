@@ -1,0 +1,20 @@
+
+CondaError: Run 'conda init' before 'conda activate'
+
+The token has not been saved to the git credentials helper. Pass `add_to_git_credential=True` in this function directly or `--add-to-git-credential` if using via `huggingface-cli` if you want to set the git credential as well.
+Token is valid (permission: write).
+The token `mine` has been saved to /home/hhubar/data/.cache/huggingface/stored_tokens
+Your token has been saved to /home/hhubar/data/.cache/huggingface/token
+Login successful.
+Note: Environment variable`HF_TOKEN` is set and is the current active token independently from the token you've just configured.
+Running inference on test set:   0%|          | 0/49 [00:00<?, ?it/s]Running inference on test set:   0%|          | 0/49 [00:00<?, ?it/s]
+Traceback (most recent call last):
+  File "/scratch/hhubar/keep-it-simple/src/sft_inference.py", line 216, in <module>
+    main()
+  File "/scratch/hhubar/keep-it-simple/src/sft_inference.py", line 208, in main
+    predictions = run_inference(model, tokenizer, test_dataset, device=args.device)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/scratch/hhubar/keep-it-simple/src/sft_inference.py", line 118, in run_inference
+    input_ids = torch.stack([torch.tensor(item["input_ids"]) for item in batch]).to(device)
+                                          ~~~~^^^^^^^^^^^^^
+TypeError: string indices must be integers, not 'str'

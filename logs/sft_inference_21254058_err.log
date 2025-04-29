@@ -1,0 +1,33 @@
+
+CondaError: Run 'conda init' before 'conda activate'
+
+The token has not been saved to the git credentials helper. Pass `add_to_git_credential=True` in this function directly or `--add-to-git-credential` if using via `huggingface-cli` if you want to set the git credential as well.
+Token is valid (permission: write).
+The token `mine` has been saved to /home/hhubar/data/.cache/huggingface/stored_tokens
+Your token has been saved to /home/hhubar/data/.cache/huggingface/token
+Login successful.
+Note: Environment variable`HF_TOKEN` is set and is the current active token independently from the token you've just configured.
+Running inference on test set:   0%|          | 0/194 [00:00<?, ?it/s]Running inference on test set:   0%|          | 0/194 [00:00<?, ?it/s]
+Traceback (most recent call last):
+  File "/scratch/hhubar/keep-it-simple/src/sft_inference.py", line 201, in <module>
+    main()
+  File "/scratch/hhubar/keep-it-simple/src/sft_inference.py", line 193, in main
+    predictions = run_inference(model, tokenizer, test_dataset, device=args.device)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/scratch/hhubar/keep-it-simple/src/sft_inference.py", line 126, in run_inference
+    outputs = model.generate(input_ids, max_new_tokens=max_new_tokens)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/torch/utils/_contextlib.py", line 116, in decorate_context
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/transformers/generation/utils.py", line 2217, in generate
+    generation_config, model_kwargs = self._prepare_generation_config(
+                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/transformers/generation/utils.py", line 1716, in _prepare_generation_config
+    model_kwargs = generation_config.update(**kwargs)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/transformers/generation/configuration_utils.py", line 1327, in update
+    self.validate()
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/transformers/generation/configuration_utils.py", line 607, in validate
+    raise ValueError(f"`max_new_tokens` must be greater than 0, but is {self.max_new_tokens}.")
+ValueError: `max_new_tokens` must be greater than 0, but is 0.
