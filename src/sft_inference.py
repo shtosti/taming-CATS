@@ -54,8 +54,6 @@ def load_and_prepare_test_set(dataset_name, tokenizer, max_length, control_token
     
     def process_instance(row):
 
-        print("--- DEBUG ROW ---")
-        print(row)
         # Extract relevant values from the row
         metric_key_in_dataset = metric_mapping[metric_name]
         source_metric_value = row["source_metrics"][metric_key_in_dataset]
@@ -111,7 +109,7 @@ def load_and_prepare_test_set(dataset_name, tokenizer, max_length, control_token
 
 
 
-def run_inference(model, tokenizer, test_dataset, batch_size=4, device="cuda", max_length=512, max_new_tokens=300):
+def run_inference(args, metric_mapping, model, tokenizer, test_dataset, batch_size=4, device="cuda", max_length=512, max_new_tokens=300):
     model.eval()
     predictions = []
     
@@ -145,19 +143,31 @@ def run_inference(model, tokenizer, test_dataset, batch_size=4, device="cuda", m
                 skip_special_tokens=True,
                 clean_up_tokenization_spaces=True
             )
+
+            for item, pred in zip(batch, decoded_preds):
+
+                predictions.append({
+                    "metric_name": args.metric_name,
+                    "source_text": item["source_text"],
+                    "reference_simplification": item["simplification_text"],
+                    "prediction": pred.strip(),
+                    "prompt": item["prompt"],
+                    "source_metric_value": item["source_metrics"][metric_mapping[args.metric_name]],
+                    "reference_metric_value": item["target_metrics"][metric_mapping[args.metric_name]],
+                    })
             
-            predictions.extend(decoded_preds)
+            # predictions.extend(decoded_preds)
 
     return predictions
 
+# def save_predictions_as_txt(predictions, output_file):
+#     with open(output_file, "w") as f:
+#         for prediction in predictions:
+#             f.write(prediction + "\n")
 
-
-
-
-def save_predictions(predictions, output_file):
-    with open(output_file, "w") as f:
-        for prediction in predictions:
-            f.write(prediction + "\n")
+def save_predictions_as_json(predictions, output_file):
+    with open(output_file, "w", encoding="utf-8") as f:
+        json.dump([{"prediction": p} for p in predictions], f, indent=2, ensure_ascii=False)
 
 
 def parse_args():
@@ -211,10 +221,17 @@ def main():
         args.slice_test
     )
 
-    predictions = run_inference(model, tokenizer, test_dataset, device=args.device)
+    predictions = run_inference(
+        args, 
+        metric_mapping, 
+        model, 
+        tokenizer, 
+        test_dataset, 
+        device=args.device
+        )
 
     # Save the predictions to a file
-    save_predictions(predictions, args.output_file)
+    save_predictions_as_json(predictions, args.output_file)
     print(f"Predictions saved to {args.output_file}")
 
  
