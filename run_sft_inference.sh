@@ -20,7 +20,7 @@ python src/sft_inference.py \
   --model_family "$MODEL_FAMILY" \
   --max_length 512 \
   --batch_size 4 \
-  --slice_test 20 \
+  --slice_test -1 \
   --output_file "$OUTPUT_FILE" \
   --control_tokens "data/prompts/control_tokens.json" \
   --system_prompts "data/prompts/system_prompts.json" \
