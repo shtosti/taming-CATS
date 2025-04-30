@@ -14,6 +14,7 @@ print("torch.cuda.is_bf16_supported:", torch.cuda.is_bf16_supported())
 import transformers
 from transformers import LlamaForCausalLM, AutoModelForCausalLM, AutoTokenizer
 from transformers import Trainer, TrainingArguments
+from transformers import EarlyStoppingCallback
 
 from helpers.hugging_face import load_dataset_from_hf, get_model_short_name
 from helpers.prompting import select_random_system_prompt, select_random_user_prompt, select_control_token_explanation, select_random_control_token_examples
@@ -45,7 +46,7 @@ def print_trainable_params(model):
     trainable = sum(p.numel() for p in model.parameters() if p.requires_grad)
     print(f"Trainable params: {trainable:,} / {total:,} ({100 * trainable / total:.2f}%)")
 
-def load_and_prepare_model(model_name, model_class, peft_enabled, max_length):
+def load_and_prepare_model(model_family, model_name, model_class, peft_enabled, max_length):
     # --- tokenizer ---
     tokenizer = AutoTokenizer.from_pretrained(model_name)
     tokenizer.model_max_length = max_length
@@ -55,10 +56,17 @@ def load_and_prepare_model(model_name, model_class, peft_enabled, max_length):
             'pad_token': '[PAD]'
         })
     tokenizer.padding_side = "left"
-    if tokenizer.eos_token is None or tokenizer.eos_token != "<|eot_id|>":
-        tokenizer.add_special_tokens({
-            'eos_token': '<|eot_id|>'
-        })
+
+    if model_family == "qwen":
+        if tokenizer.eos_token is None or tokenizer.eos_token != "<|im_end|>":
+            tokenizer.add_special_tokens({
+                'eos_token': '<|im_end|>'
+            })
+    elif model_family == "base":
+        if tokenizer.eos_token is None or tokenizer.eos_token != "<|eot_id|>":
+            tokenizer.add_special_tokens({
+                'eos_token': '<|eot_id|>'
+            })
 
     # --- model ---
     if model_class == "llama":
@@ -264,14 +272,18 @@ def train_model(model, tokenizer, train_dataset, val_dataset, args, output_dir, 
         args=training_args,
         tokenizer=tokenizer,
         callbacks=[PredictionLoggerCallback(
-                                            tokenizer=tokenizer, 
-                                            val_dataset=val_dataset, 
-                                            log_every=args.log_every,
-                                            num_samples=4,
-                                            max_length=args.max_length,
-                                            gen_kwargs=None
-                                            )],
-    )
+                        tokenizer=tokenizer, 
+                        val_dataset=val_dataset, 
+                        log_every=args.log_every,
+                        num_samples=4,
+                        max_length=args.max_length,
+                        gen_kwargs=None
+                        ),
+                    EarlyStoppingCallback(
+                        early_stopping_patience=args.patience
+                        )
+                        ]
+                        )
 
     trainer.train()
     trainer.save_model(output_dir)
@@ -283,7 +295,7 @@ def parse_args():
     parser = argparse.ArgumentParser()
     # hyperparams
     parser.add_argument("--model_class", type=str, required=True, choices=["llama", "auto"], help="Model class to use.")
-    parser.add_argument("--model_family", type=str, required=True, default="llama", choices=["llama", "mistral", "qwen", "base"], help="Model type to choose from.")
+    parser.add_argument("--model_family", type=str, required=True, default="base", choices=["llama", "mistral", "qwen", "base"], help="Model type to choose from.")
     parser.add_argument("--model_name", type=str, required=True)
     parser.add_argument("--dataset_name", type=str, required=True)
     parser.add_argument("--slice_train", type=int, default=-1)
@@ -301,6 +313,7 @@ def parse_args():
     parser.add_argument("--wandb_entity", type=str, default="shtosti")
     parser.add_argument("--log_every", type=int, default=20)
     parser.add_argument("--seed", type=int, default=42, help="Seed for determenism")
+    parser.add_argument("--patience", type=int, default=3, help="patience period for early stopping")
     # for dynamic prompting
     parser.add_argument("--prompting_type", type=str, default="vanilla", choices=["vanilla", "reasoning", "transformations"])
     parser.add_argument("--user_prompt_id", type=str, default="token", choices=["no_token", "token", "token_explanation", "token_explanation_examples"])
@@ -340,7 +353,7 @@ def main():
 
     timestamp = datetime.now().strftime("%Y%m%d-%H%M")
     short_model = get_model_short_name(args.model_name)
-    output_dir = f"./models/{short_model}-{args.dataset_name}-{args.metric_name}-{args.user_prompt_id}-{timestamp}-{wandb_run_id}"
+    output_dir = f"./models/{short_model}-{args.dataset_name}-{args.metric_name}-{args.family_name}-{args.user_prompt_id}-{timestamp}-{wandb_run_id}"
     os.makedirs(output_dir, exist_ok=True)
     print("Saving to:", output_dir)
 
@@ -354,7 +367,7 @@ def main():
 
     print_gpu_info()
 
-    model, tokenizer = load_and_prepare_model(args.model_name, args.model_class, args.peft, args.max_length)
+    model, tokenizer = load_and_prepare_model(args.model_family, args.model_name, args.model_class, args.peft, args.max_length)
     train_dataset, val_dataset, test_dataset = load_and_prepare_dataset(args.dataset_name, tokenizer, args)
 
     print("First 10 input_ids:", train_dataset[0]["input_ids"][:10])
