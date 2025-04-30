@@ -33,13 +33,13 @@ SLICE_TEST="-1" # -1 means no slicing
 # "vanilla", "reasoning", "transformations"
 PROMPTING_TYPE="vanilla" 
 # "token", "token_explanation", "token_explanation_examples"
-USER_PROMPT_ID="token_explanation"
+USER_PROMPT_ID="token_explanation_examples"
 
 # --- metric settings ---
-METRIC_NAME="ARI"
+METRIC_NAME="FKGL"
 
 # --- hyperparameters ---
-EPOCHS=2
+EPOCHS=3
 MAX_LENGTH=512
 BATCH_SIZE=8
 EVAL_BATCH_SIZE=1
@@ -50,7 +50,7 @@ LOGGING_STEPS=20
 LOG_EVERY=20
 
 # --- WANDB settings ---
-WANDB_PROJECT_NAME="thesis-SFT"
+WANDB_PROJECT_NAME="ATS_with_control_tokens"
 WANDB_ENTITY="shtosti"
 
 if [ "$USE_PEFT" = true ]; then
