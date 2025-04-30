@@ -1,6 +1,7 @@
 import json
 import argparse
 import matplotlib.pyplot as plt
+import numpy as np
 
 def load_predictions(file_path):
     with open(file_path, "r", encoding="utf-8") as f:
@@ -31,6 +32,15 @@ def plot_metric_scatter(source_vals, reference_vals, prediction_vals, metric_key
     plt.scatter(x, source_vals, color="orchid", label="Source", alpha=0.7)
     plt.scatter(x, reference_vals, color="darkorange", label="Reference", alpha=0.7)
     plt.scatter(x, prediction_vals, color="seagreen", label="Prediction", alpha=0.7)
+
+    # Fit and plot trend lines
+    source_trend = np.poly1d(np.polyfit(x, source_vals, 1))
+    reference_trend = np.poly1d(np.polyfit(x, reference_vals, 1))
+    prediction_trend = np.poly1d(np.polyfit(x, prediction_vals, 1))
+
+    plt.plot(x, source_trend(x), color="orchid", linestyle="-", linewidth=2)
+    plt.plot(x, reference_trend(x), color="darkorange", linestyle="-", linewidth=2)
+    plt.plot(x, prediction_trend(x), color="seagreen", linestyle="-", linewidth=2)
 
     plt.title(f"{metric_key}")
     plt.xlabel("idx")
@@ -69,8 +79,8 @@ def main():
 
     predictions = load_predictions(args.input_file)
     source_vals, reference_vals, prediction_vals = extract_metric_values(predictions, args.metric_key)
-    plot_metric_scatter(source_vals, reference_vals, prediction_vals, args.metric_key)
-    plot_metric_lines(source_vals, reference_vals, prediction_vals, args.metric_key)
+    plot_metric_scatter(source_vals, reference_vals, prediction_vals, args.metric_key, args.output_dir)
+    plot_metric_lines(source_vals, reference_vals, prediction_vals, args.metric_key, args.output_dir)
     print(f"Scatter plot saved as {args.metric_key}_scatter.png")
     print(f"Line plot saved as {args.metric_key}_line.png")
     print("--- Evaluation complete.")
