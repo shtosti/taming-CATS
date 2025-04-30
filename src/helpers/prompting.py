@@ -69,9 +69,8 @@ def create_user_prompt(user_prompts, metric_name, source_metric_value, target_me
 def format_prompt_with_special_tokens(system_prompt, user_prompt, metric_name, target_metric_value, model_family="base"):
     if model_family in ["llama", "mistral"]:
         formatted_prompt = (
-            f"[INST] <<SYS>>\n{system_prompt}\n<</SYS>>\n\n"
-            f"{user_prompt.strip()}\n"
-            f"[/INST]\n"
+            f"[INST] <<SYS>>\n{system_prompt}\n<</SYS>>\n"
+            f"{user_prompt.strip()} [/INST] "
             f"<{metric_name}={target_metric_value}> "
         )
     elif model_family == "qwen":
