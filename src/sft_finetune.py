@@ -3,7 +3,6 @@ import argparse
 import sys
 import json
 import random
-from functools import partial
 from datetime import datetime
 from dotenv import load_dotenv
 import wandb
@@ -249,8 +248,13 @@ def train_model(model, tokenizer, train_dataset, val_dataset, args, output_dir, 
         push_to_hub=False,
         report_to=["wandb"],
         eval_strategy="steps",
+        save_strategy="steps",
+        save_steps=args.logging_steps,
         eval_steps=args.logging_steps,
-        save_strategy="epoch"
+        load_best_model_at_end=True,
+        metric_for_best_model="eval_loss",
+        greater_is_better=False,
+        save_total_limit=1,
     )
 
     trainer = Trainer(
@@ -267,13 +271,12 @@ def train_model(model, tokenizer, train_dataset, val_dataset, args, output_dir, 
                                             max_length=args.max_length,
                                             gen_kwargs=None
                                             )],
-        # compute_metrics=partial(compute_metrics, tokenizer=tokenizer, val_dataset=val_dataset)
     )
 
     trainer.train()
     trainer.save_model(output_dir)
     tokenizer.save_pretrained(output_dir)
-    val_dataset.save_to_disk(f"{output_dir}/val_dataset")
+    # val_dataset.save_to_disk(f"{output_dir}/val_dataset")
     wandb.save(output_dir)
 
 def parse_args():
