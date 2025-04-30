@@ -1,0 +1,439 @@
+Wed Apr 30 20:41:17 2025       
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 560.35.05              Driver Version: 560.35.05      CUDA Version: 12.6     |
+|-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  NVIDIA A100-SXM4-80GB          Off |   00000000:CB:00.0 Off |                    0 |
+| N/A   38C    P0             74W /  400W |       1MiB /  81920MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+                                                                                         
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI        PID   Type   Process name                              GPU Memory |
+|        ID   ID                                                               Usage      |
+|=========================================================================================|
+|  No running processes found                                                             |
++-----------------------------------------------------------------------------------------+
+torch.cuda.is_bf16_supported: True
+Transformers version: 4.51.0
+Python path: /home/hhubar/data/conda/envs/sft/bin/python
+Not using PEFT...
+
+Run arguments:
+Namespace(model_class='llama', model_family='base', model_name='ministral/Ministral-3b-instruct', dataset_name='Med-EASi', slice_train=-1, slice_val=-1, slice_test=-1, batch_size=8, eval_batch_size=1, gradient_accumulation_steps=2, learning_rate=1e-05, weight_decay=0.01, epochs=3, max_length=512, logging_steps=20, wandb_project_name='ATS_with_control_tokens', wandb_entity='shtosti', log_every=20, seed=42, patience=3, prompting_type='vanilla', user_prompt_id='token_explanation_examples', metric_name='FKGL', control_tokens='data/prompts/control_tokens.json', system_prompts='data/prompts/system_prompts.json', user_prompts='data/prompts/user_prompts.json', metric_mapping='data/metric_mapping.json', peft=False)
+
+Saving to: ./models/Ministral-3b-instruct-Med-EASi-FKGL-token_explanation_examples-20250430-2041-6ensuaci
+
+*** Finetuning Ministral-3b-instruct with Med-EASi ***
+
+CUDA available: True
+Number of GPUs: 1
+GPU name: NVIDIA A100-SXM4-80GB
+--- DEBUG ---
+trainable params:
+Trainable params: 3,315,724,288 / 3,315,724,288 (100.00%)
+--- tokenizer pad_token_id: 2
+--- tokenizer eos_token_id: 32000
+--- special tokens:
+<unk>: 0
+<s>: 1
+</s>: 2
+train:	 Inspect the dataset format:
+ {'global_id': ['medeasi_000457'], 'source_text': ['The face is flushed, and the eyes are injected.'], 'source_metrics': [{'FRE': 96.18, 'ARI': 3.5, 'FKGL': 2.1, 'Dale-Chall': 9.35, 'char_count': 47, 'alphanum_count': 37, 'word_count': 11, 'sentence_count': 1}], 'metadata': [{'dataset': 'medeasi', 'experiment_split': '', 'domain': 'medical', 'language': 'en', 'annotation': 'human', 'level': 'sentence'}], 'simplification_text': ['The face is flushed.'], 'target_metrics': [{'FRE': 118.18, 'ARI': 0.6, 'FKGL': -2.3, 'Dale-Chall': 7.78, 'char_count': 20, 'alphanum_count': 16, 'word_count': 5, 'sentence_count': 1, 'char_compression_rate': 0.43, 'word_compression_rate': 0.45, 'sentence_compression_rate': 1.0, 'BLEU': 21.297646969725616, 'BERTScore': 0.9398951530456543}], 'simplification_version': [1], 'grade_level': [-1], 'simplification_dimensions': [{'linguistic': {'lexical': False, 'syntactic': False}}]}
+validation:	 Inspect the dataset format:
+ {'global_id': ['medeasi_001210'], 'source_text': ['This increased risk is greatest at two to three months of age.'], 'source_metrics': [{'FRE': 93.14, 'ARI': 4.6, 'FKGL': 3.3, 'Dale-Chall': 9.5, 'char_count': 62, 'alphanum_count': 50, 'word_count': 13, 'sentence_count': 1}], 'metadata': [{'dataset': 'medeasi', 'experiment_split': '', 'domain': 'medical', 'language': 'en', 'annotation': 'human', 'level': 'sentence'}], 'simplification_text': ['This risk is highest in infants who are two to three months old.'], 'target_metrics': [{'FRE': 92.12, 'ARI': 3.9, 'FKGL': 3.6, 'Dale-Chall': 9.14, 'char_count': 64, 'alphanum_count': 51, 'word_count': 14, 'sentence_count': 1, 'char_compression_rate': 1.03, 'word_compression_rate': 1.08, 'sentence_compression_rate': 1.0, 'BLEU': 22.718709780542323, 'BERTScore': 0.9562927484512329}], 'simplification_version': [1], 'grade_level': [-1], 'simplification_dimensions': [{'linguistic': {'lexical': False, 'syntactic': False}}]}
+test:	 Inspect the dataset format:
+ {'global_id': ['medeasi_000696'], 'source_text': ['Children may have six to twelve colds a year.'], 'source_metrics': [{'FRE': 104.64, 'ARI': 2.4, 'FKGL': 0.9, 'Dale-Chall': 5.84, 'char_count': 45, 'alphanum_count': 36, 'word_count': 10, 'sentence_count': 1}], 'metadata': [{'dataset': 'medeasi', 'experiment_split': '', 'domain': 'medical', 'language': 'en', 'annotation': 'human', 'level': 'sentence'}], 'simplification_text': ['Children may get six to twelve colds a year.'], 'target_metrics': [{'FRE': 104.64, 'ARI': 1.9, 'FKGL': 0.9, 'Dale-Chall': 5.84, 'char_count': 44, 'alphanum_count': 35, 'word_count': 10, 'sentence_count': 1, 'char_compression_rate': 0.98, 'word_compression_rate': 1.0, 'sentence_compression_rate': 1.0, 'BLEU': 70.71067811865478, 'BERTScore': 0.9896392822265625}], 'simplification_version': [1], 'grade_level': [-1], 'simplification_dimensions': [{'linguistic': {'lexical': False, 'syntactic': False}}]}
+
+
+ *** Before tokenization ***
+>>> train:
+
+Showing 1 example(s):
+
+Example 1 (index 1296)
+--- Prompt:
+ <|begin_of_text|><|start_header_id|>system<|end_header_id|> You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|>
+<|start_header_id|>user<|end_header_id|> INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=20.9> Since then, several other high-resolution structures have been determined by electron crystallography, including the light-harvesting complex, the nicotinic acetylcholine receptor, and the bacterial flagellum. <|eot_id|>
+EXPLANATION: The <FKGL=18.2> token specifies that the target Flesch-Kincaid Grade Level should be approximately 18.2. Lower values indicate simpler text. 
+EXAMPLES: 
+- The <FKGL=7> token specifies that the target Flesch-Kincaid Grade Level should be approximately 7, which corresponds to a 7th-grade reading level in the US education system (12-13 years old). 
+-The <FKGL=5> token specifies that the target Flesch-Kincaid Grade Level should be approximately 5, which corresponds to a 5th-grade reading level in the US education system (10-11 years old). 
+- The <FKGL=3> token specifies that the target Flesch-Kincaid Grade Level should be approximately 3, which corresponds to a 3rd-grade reading level in the US education system (8-9 years old).
+<|start_header_id|>assistant<|end_header_id|>
+<FKGL=18.2> 
+--- Completion:
+ Since then, several other high-resolution structures have been done by electron crystallography, including the light-harvesting complex, and the bacterial flagellum. <|eot_id|>
+==================================================
+
+
+ *** After tokenization ***
+>>> train:
+
+Showing 1 example(s):
+
+Example 1 (index 1376)
+--- Prompt:
+ <|begin_of_text|><|start_header_id|>system<|end_header_id|> You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|>
+<|start_header_id|>user<|end_header_id|> INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=23.3> Most patients with primary coccidioidomycosis are asymptomatic, but nonspecific respiratory symptoms resembling those of influenza, acute bronchitis, or, less often, acute pneumonia or pleural effusion sometimes occur. <|eot_id|>
+EXPLANATION: The <FKGL=9.0> token specifies that the target Flesch-Kincaid Grade Level should be approximately 9.0. Lower values indicate simpler text. 
+EXAMPLES: 
+- The <FKGL=12> token specifies that the target Flesch-Kincaid Grade Level should be approximately 12, which corresponds to a 12th-grade reading level in the US education system (18 years old or older). 
+-The <FKGL=3> token specifies that the target Flesch-Kincaid Grade Level should be approximately 3, which corresponds to a 3rd-grade reading level in the US education system (8-9 years old). 
+- The <FKGL=2> token specifies that the target Flesch-Kincaid Grade Level should be approximately 2, which corresponds to a 2nd-grade reading level in the US education system (7-8 years old).
+<|start_header_id|>assistant<|end_header_id|>
+<FKGL=9.0> 
+--- Completion:
+ Most people with acute primary coccidioidomycosis have no symptoms. Symptoms are usually mild and often flu - like. Occasionally, when lung infection is severe, spaces may form in the lungs and people may cough up blood. <|eot_id|>
+--- input_ids:
+ [1, 523, 28766, 1357, 28730, 1009, 28730, 772, 28766, 3409, 28766, 2521, 28730, 4983, 28730, 313, 28766, 28767, 6574, 28789, 28766, 416, 28730, 4983, 28730, 313, 28766, 28767, 995, 460, 264, 10865, 7583, 297, 2245, 9878, 2500, 28723, 995, 8270, 264, 9878, 1799, 2751, 302, 272, 2245, 2787, 486, 272, 2188, 28723, 995, 9878, 1575, 272, 2245, 4771, 298, 272, 11382, 2078, 486, 272, 2188, 28723, 1684, 2261, 298, 9878, 1575, 264, 2245, 28725, 8270, 865, 272, 11939, 9878, 2500, 28725, 1671, 707, 4870, 7616, 28725, 8321, 442, 10928, 697, 28723, 32000, 28705, 13, 28789, 28766, 2521, 28730, 4983, 28730, 313, 28766, 28767, 1838, 28789, 28766, 416, 28730, 4983, 28730, 313, 28766, 28767, 2693, 19199, 5324, 28747, 3563, 452, 1575, 272, 2296, 2245, 1259, 369, 871, 401, 867, 338, 28733, 28796, 1814, 3439, 27073, 16543, 325, 28765, 28796, 4727, 28731, 7420, 349, 10870, 6530, 298, 369, 6140, 297, 272, 2602, 6029, 710, 1693, 286, 298, 574, 7138, 9878, 2500, 28723, 415, 2602, 6029, 659, 272, 2296, 5032, 28747, 523, 1574, 2050, 1604, 28746, 10015, 13902, 415, 2602, 6029, 710, 1693, 286, 298, 272, 2832, 2245, 12825, 272, 401, 28796, 4727, 1192, 302, 272, 2832, 2245, 28723, 28705, 13, 17426, 25775, 28747, 523, 28765, 28796, 4727, 28746, 28750, 28770, 28723, 28770, 28767, 4822, 6883, 395, 6258, 14609, 20020, 691, 313, 12956, 5832, 278, 460, 22621, 300, 1711, 28725, 562, 21797, 841, 921, 10840, 361, 5377, 12380, 312, 5367, 6357, 1395, 302, 4765, 11409, 28725, 1183, 1723, 14153, 338, 17428, 28725, 442, 28725, 2108, 2608, 28725, 1183, 1723, 284, 28051, 9578, 442, 4031, 1890, 1397, 3623, 4662, 5264, 28723, 28705, 32000, 28705, 13, 2335, 3898, 1251, 4866, 28747, 415, 523, 28765, 28796, 4727, 28746, 28774, 28723, 28734, 28767, 6029, 1229, 8961, 369, 272, 2718, 401, 867, 338, 28733, 28796, 1814, 3439, 27073, 16543, 1023, 347, 10870, 28705, 28774, 28723, 28734, 28723, 21457, 3069, 11634, 27013, 2245, 28723, 28705, 13, 2335, 17558, 20335, 28747, 28705, 13, 28733, 415, 523, 28765, 28796, 4727, 28746, 28740, 28750, 28767, 6029, 1229, 8961, 369, 272, 2718, 401, 867, 338, 28733, 28796, 1814, 3439, 27073, 16543, 1023, 347, 10870, 28705, 28740, 28750, 28725, 690, 16535, 298, 264, 28705, 28740, 28750, 362, 28733, 7844, 4865, 2184, 297, 272, 2223, 5362, 1587, 325, 28740, 28783, 1267, 1571, 442, 6402, 609, 28705, 13, 28733, 1014, 523, 28765, 28796, 4727, 28746, 28770, 28767, 6029, 1229, 8961, 369, 272, 2718, 401, 867, 338, 28733, 28796, 1814, 3439, 27073, 16543, 1023, 347, 10870, 28705, 28770, 28725, 690, 16535, 298, 264, 28705, 28770, 5240, 28733, 7844, 4865, 2184, 297, 272, 2223, 5362, 1587, 325, 28783, 28733, 28774, 1267, 1571, 609, 28705, 13, 28733, 415, 523, 28765, 28796, 4727, 28746, 28750, 28767, 6029, 1229, 8961, 369, 272, 2718, 401, 867, 338, 28733, 28796, 1814, 3439, 27073, 16543, 1023, 347, 10870, 28705, 28750, 28725, 690, 16535, 298, 264, 28705, 28750, 292, 28733, 7844, 4865, 2184, 297, 272, 2223, 5362, 1587, 325, 28787, 28733, 28783, 1267, 1571, 609, 13, 28789, 28766, 2521, 28730, 4983, 28730, 313, 28766, 28767, 489, 11143, 28789, 28766, 416, 28730, 4983, 28730, 313, 28766, 28767, 13]
+--- labels:
+ [-100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100]
+==================================================
+********** DEBUG **********
+Train dataset columns: ['global_id', 'source_text', 'source_metrics', 'metadata', 'simplification_text', 'target_metrics', 'simplification_version', 'grade_level', 'simplification_dimensions', 'prompt', 'completion', 'system_prompt_id', 'user_prompt_id', 'metric_name', 'source_metric_value', 'target_metric_value', 'input_ids', 'labels', 'attention_mask']
+Validation dataset columns: ['global_id', 'source_text', 'source_metrics', 'metadata', 'simplification_text', 'target_metrics', 'simplification_version', 'grade_level', 'simplification_dimensions', 'prompt', 'completion', 'system_prompt_id', 'user_prompt_id', 'metric_name', 'source_metric_value', 'target_metric_value', 'input_ids', 'labels', 'attention_mask']
+Test dataset columns: ['global_id', 'source_text', 'source_metrics', 'metadata', 'simplification_text', 'target_metrics', 'simplification_version', 'grade_level', 'simplification_dimensions', 'prompt', 'completion', 'system_prompt_id', 'user_prompt_id', 'metric_name', 'source_metric_value', 'target_metric_value', 'input_ids', 'labels', 'attention_mask']
+First 10 input_ids: [1, 523, 28766, 1357, 28730, 1009, 28730, 772, 28766, 3409]
+First 10 labels: [-100, -100, -100, -100, -100, -100, -100, -100, -100, -100]
+type of input_ids: <class 'list'>
+type of labels: <class 'list'>
+
+--- DEBUG: Tokenized fields ---
+--- Tokenizer vocab size: 32000
+--- input_ids: [1, 523, 28766, 1357, 28730, 1009, 28730, 772, 28766, 3409, 28766, 2521, 28730, 4983, 28730, 313, 28766, 28767, 6574, 28789, 28766, 416, 28730, 4983, 28730, 313, 28766, 28767, 995, 460, 264, 10865, 7583, 297, 2245, 9878, 2500, 28723, 995, 8270, 264, 9878, 1799, 2751, 302, 272, 2245, 2787, 486, 272, 2188, 28723, 995, 9878, 1575, 272, 2245, 4771, 298, 272, 11382, 2078, 486, 272, 2188, 28723, 1684, 2261, 298, 9878, 1575, 264, 2245, 28725, 8270, 865, 272, 11939, 9878, 2500, 28725, 1671, 707, 4870, 7616, 28725, 8321, 442, 10928, 697, 28723, 32000, 28705, 13, 28789, 28766, 2521, 28730, 4983, 28730, 313, 28766, 28767, 1838, 28789, 28766, 416, 28730, 4983, 28730, 313, 28766, 28767, 2693, 19199, 5324, 28747, 3563, 452, 1575, 272, 2296, 2245, 1259, 369, 871, 401, 867, 338, 28733, 28796, 1814, 3439, 27073, 16543, 325, 28765, 28796, 4727, 28731, 7420, 349, 10870, 6530, 298, 369, 6140, 297, 272, 2602, 6029, 710, 1693, 286, 298, 574, 7138, 9878, 2500, 28723, 415, 2602, 6029, 659, 272, 2296, 5032, 28747, 523, 1574, 2050, 1604, 28746, 10015, 13902, 415, 2602, 6029, 710, 1693, 286, 298, 272, 2832, 2245, 12825, 272, 401, 28796, 4727, 1192, 302, 272, 2832, 2245, 28723, 28705, 13, 17426, 25775, 28747, 523, 28765, 28796, 4727, 28746, 28750, 28723, 28740, 28767, 415, 2105, 349, 972, 5204, 28725, 304, 272, 2282, 460, 16453, 286, 28723, 28705, 32000, 28705, 13, 2335, 3898, 1251, 4866, 28747, 415, 523, 28765, 28796, 4727, 12650, 28750, 28723, 28770, 28767, 6029, 1229, 8961, 369, 272, 2718, 401, 867, 338, 28733, 28796, 1814, 3439, 27073, 16543, 1023, 347, 10870, 387, 28750, 28723, 28770, 28723, 21457, 3069, 11634, 27013, 2245, 28723, 28705, 13, 2335, 17558, 20335, 28747, 28705, 13, 28733, 415, 523, 28765, 28796, 4727, 28746, 28740, 28767, 6029, 1229, 8961, 369, 272, 2718, 401, 867, 338, 28733, 28796, 1814, 3439, 27073, 16543, 1023, 347, 10870, 28705, 28740, 28725, 690, 16535, 298, 264, 28705, 28740, 303, 28733, 7844, 4865, 2184, 297, 272, 2223, 5362, 1587, 325, 28784, 28733, 28787, 1267, 1571, 609, 28705, 13, 28733, 1014, 523, 28765, 28796, 4727, 28746, 28734, 28767, 6029, 1229, 8961, 369, 272, 2718, 401, 867, 338, 28733, 28796, 1814, 3439, 27073, 16543, 1023, 347, 10870, 28705, 28734, 28725, 690, 16535, 298, 272, 4865, 2184, 302, 264, 710, 28733, 19185, 263, 297, 272, 2223, 5362, 1587, 325, 28782, 28733, 28784, 1267, 1571, 609, 28705, 13, 28733, 415, 523, 28765, 28796, 4727, 28746, 28781, 28767, 6029, 1229, 8961, 369, 272, 2718, 401, 867, 338, 28733, 28796, 1814, 3439, 27073, 16543, 1023, 347, 10870, 28705, 28781, 28725, 690, 16535, 298, 264, 28705, 28781, 362, 28733, 7844, 4865, 2184, 297, 272, 2223, 5362, 1587, 325, 28774, 28733, 28740, 28734, 1267, 1571, 609, 13, 28789, 28766, 2521, 28730, 4983, 28730, 313, 28766, 28767, 489, 11143, 28789, 28766, 416, 28730, 4983, 28730, 313, 28766, 28767, 13, 28789, 28765, 28796, 4727, 12650, 28750, 28723, 28770, 28767, 28705, 1, 415, 2105, 349, 972, 5204, 28723, 28705, 32000, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2]
+--- labels: [-100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, 1, 415, 2105, 349, 972, 5204, 28723, 28705, 32000, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100]
+--- decoded input_ids:
+ <s> <|begin_of_text|><|start_header_id|>system<|end_header_id|> You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|> 
+<|start_header_id|>user<|end_header_id|> INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=2.1> The face is flushed, and the eyes are injected. <|eot_id|> 
+EXPLANATION: The <FKGL=-2.3> token specifies that the target Flesch-Kincaid Grade Level should be approximately -2.3. Lower values indicate simpler text. 
+EXAMPLES: 
+- The <FKGL=1> token specifies that the target Flesch-Kincaid Grade Level should be approximately 1, which corresponds to a 1st-grade reading level in the US education system (6-7 years old). 
+-The <FKGL=0> token specifies that the target Flesch-Kincaid Grade Level should be approximately 0, which corresponds to the reading level of a pre-schooler in the US education system (5-6 years old). 
+- The <FKGL=4> token specifies that the target Flesch-Kincaid Grade Level should be approximately 4, which corresponds to a 4th-grade reading level in the US education system (9-10 years old).
+<|start_header_id|>assistant<|end_header_id|>
+<FKGL=-2.3> <s> The face is flushed. <|eot_id|></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s>
+--- decoded labels:
+ The face is flushed. 
+
+>>> [Step 20] Prompt:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|> You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|>
+<|start_header_id|>user<|end_header_id|> INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=20.6> Pericyclic reactions are usually rearrangement or addition reactions. <|eot_id|>
+EXPLANATION: The <FKGL=14.7> token specifies that the target Flesch-Kincaid Grade Level should be approximately 14.7. Lower values indicate simpler text. 
+EXAMPLES: 
+- The <FKGL=11> token specifies that the target Flesch-Kincaid Grade Level should be approximately 11, which corresponds to an 11th-grade reading level in the US education system (16-17 years old). 
+-The <FKGL=6> token specifies that the target Flesch-Kincaid Grade Level should be approximately 6, which corresponds to a 6th-grade reading level in the US education system (11-12 years old). 
+- The <FKGL=9> token specifies that the target Flesch-Kincaid Grade Level should be approximately 9, which corresponds to a 9th-grade reading level in the US education system (14-15 years old).
+<|start_header_id|>assistant<|end_header_id|>
+<FKGL=14.7> 
+>>> Reference:
+Chemists disagree whether some reactions are pericyclic reactions. <|eot_id|>
+>>> Prediction:
+<|im_start|>user
+Trace the process of photosynthesis from the following paragraph.  pynthetic Puffenzoil is produced by a pigment called pigment pigmentum. Pumpenzoil is a stilepythyl tubular cell.
+276 cytokinesis is at last cytokinesis, a duct of liquid called pumpderytokis
+366 cytokis is inflammation of tubules and tissues around the bulb of the pulmonary tube tubule.
+459 cytokis is tasted of juice, pulmonary tubule is tasty of juice.  dynthed pigment pigment pigmentum is crushed by force during pumpperytokis.  frummed cytokis is filled in shell cytokis is empty, publin is laced by liquid and pulmonary tubule is yellowish- pale and tasty water and tubule.  txtytokis is usually very tasty and the bulb of the pulmonary tube cysts is crushed.  <|im_start|>user
+This is a new discovery since one has no known cause of pumpenzoil in blood in the pulmonary tube, which are blood bridges in a thick layer and pulmonary tube trucdytokis is torn
+================================================================================
+
+>>> [Step 20] Prompt:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|> You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|>
+<|start_header_id|>user<|end_header_id|> INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=9.0> Adult patients who require parenteral support may benefit from teduglutide (a glucagon-like peptide-2 [ GLP-2 ] analog). The recommended dosage is 0.05 mg/kg body weight sc once/ day. <|eot_id|>
+EXPLANATION: The <FKGL=5.6> token specifies that the target Flesch-Kincaid Grade Level should be approximately 5.6. Lower values indicate simpler text. 
+EXAMPLES: 
+- The <FKGL=7> token specifies that the target Flesch-Kincaid Grade Level should be approximately 7, which corresponds to a 7th-grade reading level in the US education system (12-13 years old). 
+-The <FKGL=8> token specifies that the target Flesch-Kincaid Grade Level should be approximately 8, which corresponds to an 8th-grade reading level in the US education system (13-14 years old). 
+- The <FKGL=12> token specifies that the target Flesch-Kincaid Grade Level should be approximately 12, which corresponds to a 12th-grade reading level in the US education system (18 years old or older).
+<|start_header_id|>assistant<|end_header_id|>
+<FKGL=5.6> 
+>>> Reference:
+People who need TPN may be given injections of a drug called teduglutide. This drug may help reduce the amount of TPN people need. <|eot_id|>
+>>> Prediction:
+_id|>In the long-term cases, people with polymusitis require peremental therapy.  <|im_start|>user
+Outline the stages, progression of the disease, and treatment methods in this formulation.<|im_end|>
+<|im_start|>assistant
+The process is slowly progression of plague. TEDiguluture is an inflammation of the petemental pipes for blood flow.  **Tenasoma**: TEDigulutree pain and discomfort.  "The pulmonary pulmonary tediguloture may also become swollen-like the stomach or a com (usually inflammated cyst). "" Then the pulmonary pulmonary tube (phylum T) is thickened-which made it difficult for blood to flow.  "", so people became sick.  '''
+Easy to get, so many people got sick.  ''' It wasn\'t really good to get sick. Most people died.  "These people had plague. That was about 80% of the people went to death." ----; ''Pystroler was really hard for blood to flow.  } ~ Maya Rigonus:  "[The people who had plague killed] crashed at that point."  ''' Similarly folks also died of plaque or killed
+================================================================================
+
+>>> [Step 20] Prompt:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|> You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|>
+<|start_header_id|>user<|end_header_id|> INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=6.0> Flaccid penis length is a poor estimate of erect length. <|eot_id|>
+EXPLANATION: The <FKGL=9.6> token specifies that the target Flesch-Kincaid Grade Level should be approximately 9.6. Lower values indicate simpler text. 
+EXAMPLES: 
+- The <FKGL=5> token specifies that the target Flesch-Kincaid Grade Level should be approximately 5, which corresponds to a 5th-grade reading level in the US education system (10-11 years old). 
+-The <FKGL=10> token specifies that the target Flesch-Kincaid Grade Level should be approximately 10, which corresponds to a 10th-grade reading level in the US education system (15-16 years old). 
+- The <FKGL=11> token specifies that the target Flesch-Kincaid Grade Level should be approximately 11, which corresponds to an 11th-grade reading level in the US education system (16-17 years old).
+<|start_header_id|>assistant<|end_header_id|>
+<FKGL=9.6> 
+>>> Reference:
+Flaccid length is not a reliable indication of erect length. <|eot_id|>
+>>> Prediction:
+<|im_start|>user
+The shortest erect length of the penis is 33 feet long.  <|im_end|>
+<|im_start|>assistant
+ <|im_start|>assistant
+Why not should this be a best approximation instead of the actual calculation needed for making calculations in the area of breast disease is often mistaken for thicker, darken creased skin due to thick thicker skin found on top of top 5041 perplexical organs and are lupus and swollen kidneys or swollen blood vessels, they have long and strong tubes. Cypper, inflamed underway in heart and artery and are weak and slippery in the men have also broken oysters can be painful and have a nasty smell of cyst syndrome.  ou  <|im_start|>assistant
+Cumulating cystitis, which is one of the two infections, can cause more than just the cyst, which is the blue sheet of tissue between parts of stomach and colon. ⋅. (because he may attack over and also slows down a charter that is trench and cut on top of top 5151. /) and are the blood vessels that lead to blood
+They are filled with blood of tripes on middle, big, fat trench and thick and tight (as
+================================================================================
+
+>>> [Step 20] Prompt:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|> You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|>
+<|start_header_id|>user<|end_header_id|> INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=12.3> Obstetric manifestations include early and late fetal loss. <|eot_id|>
+EXPLANATION: The <FKGL=7.6> token specifies that the target Flesch-Kincaid Grade Level should be approximately 7.6. Lower values indicate simpler text. 
+EXAMPLES: 
+- The <FKGL=2> token specifies that the target Flesch-Kincaid Grade Level should be approximately 2, which corresponds to a 2nd-grade reading level in the US education system (7-8 years old). 
+-The <FKGL=9> token specifies that the target Flesch-Kincaid Grade Level should be approximately 9, which corresponds to a 9th-grade reading level in the US education system (14-15 years old). 
+- The <FKGL=5> token specifies that the target Flesch-Kincaid Grade Level should be approximately 5, which corresponds to a 5th-grade reading level in the US education system (10-11 years old).
+<|start_header_id|>assistant<|end_header_id|>
+<FKGL=7.6> 
+>>> Reference:
+Pregnant women have a higher-than- normal risk of miscarriage and stillbirth. <|eot_id|>
+>>> Prediction:
+<sep><sep><br><p><p><p</p>The development of babies usually start in two years or longer. ");Please don't forget this when you are babyborn.  PEMATHEMATICS, the baby babies are killed by an early disease, or after the babies fly.  Hundred times a dozen died and they killed all killed.  PCH, where dreams really happened, died many times.  Phystitis had been fatal for four years.  Plainsidan illness that happened when babies died, deaths were death 1501 to nine years ago.  Prochneitis may have killed babies, it would not have been fatal unless they killed.  PCPdontinary medicine, they killed.  PCEP in kidney was killed by the worm.  PQ.S., killed babies, died all killed killed.
+    END OF FEDDED COUTER.  <|im_start|>user<|im_end|>
+<|im_start|>assistant
+END OF FEDDED COCTER  <|im_start|>user
+What is the only death of babies, death from plainsidan infection was killed at birth...
+Reversible fungus disease is killed by the jared malouilithia, death from pcp is killed by blood-blood-sea in blood.
+================================================================================
+{'loss': 3.1419, 'grad_norm': 93.3888168334961, 'learning_rate': 6.333333333333333e-06, 'epoch': 0.23}
+{'eval_loss': nan, 'eval_runtime': 10.6412, 'eval_samples_per_second': 16.352, 'eval_steps_per_second': 16.352, 'epoch': 0.23}
+
+>>> [Step 40] Prompt:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|> You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|>
+<|start_header_id|>user<|end_header_id|> INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=11.5> Symptoms include fever, headache, muscle and joint pains, and a characteristic skin rash that is similar to measles. <|eot_id|>
+EXPLANATION: The <FKGL=9.1> token specifies that the target Flesch-Kincaid Grade Level should be approximately 9.1. Lower values indicate simpler text. 
+EXAMPLES: 
+- The <FKGL=10> token specifies that the target Flesch-Kincaid Grade Level should be approximately 10, which corresponds to a 10th-grade reading level in the US education system (15-16 years old). 
+-The <FKGL=5> token specifies that the target Flesch-Kincaid Grade Level should be approximately 5, which corresponds to a 5th-grade reading level in the US education system (10-11 years old). 
+- The <FKGL=2> token specifies that the target Flesch-Kincaid Grade Level should be approximately 2, which corresponds to a 2nd-grade reading level in the US education system (7-8 years old).
+<|start_header_id|>assistant<|end_header_id|>
+<FKGL=9.1> 
+>>> Reference:
+Some of the symptoms of dengue fever are fever; headache; a skin rash that looks like measles; and pain in the muscles and joints. <|eot_id|>
+>>> Prediction:
+How people start developing gatslera ( severe fatigue) can lead to the stomach swollen and pains. ----Difference: It is a serious inflammation of the stomach ( Dirinova.  user: We know that the blood is slow to blood-brained. ť = 3001. An inflammation of the lungs ( The Widied Blood - Horsic-luck has the muscle and lupus is gatslera. CY BEGIN|>
+|                   Other symptoms include fatigue, fever, headache, and fatigue ( the blood  <|im_start|>user
+12.  The symptoms include abdominal pain, gatslera ( fatigue), and fatigue and fatigue.  <|im_end|>
+Yet, the inflammation of the kidneys, the kidneys are left with a fatigue or fatigue, and fatigue is the fatigue caused by a long long fatigue.  The weight of lupus gatslera is inflammation of the kidneys, gatslera is dengue.  <|im_end|>
+End of the mouth, with a fatigue/ fatigue, fatigue can cause gatslera, and fatigue.  user: So we got the liver infl
+================================================================================
+
+>>> [Step 40] Prompt:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|> You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|>
+<|start_header_id|>user<|end_header_id|> INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=11.1> At the time of her death in 1964 from a heart attack, she was still employed at the aforementioned university in Washington, D.C. <|eot_id|>
+EXPLANATION: The <FKGL=7.2> token specifies that the target Flesch-Kincaid Grade Level should be approximately 7.2. Lower values indicate simpler text. 
+EXAMPLES: 
+- The <FKGL=5> token specifies that the target Flesch-Kincaid Grade Level should be approximately 5, which corresponds to a 5th-grade reading level in the US education system (10-11 years old). 
+-The <FKGL=11> token specifies that the target Flesch-Kincaid Grade Level should be approximately 11, which corresponds to an 11th-grade reading level in the US education system (16-17 years old). 
+- The <FKGL=10> token specifies that the target Flesch-Kincaid Grade Level should be approximately 10, which corresponds to a 10th-grade reading level in the US education system (15-16 years old).
+<|start_header_id|>assistant<|end_header_id|>
+<FKGL=7.2> 
+>>> Reference:
+When she died in 1964 from a heart attack, she was still working at the university. <|eot_id|>
+>>> Prediction:
+or as the aforementioned inferred, and most likely due to a heart attack. '); <|im_start|>
+End of the paragraph;
+
+The children of the women who died in 1964 had 6 children, but those of the mother, which was she was 34 years old in late 1970 as she died just about the same time.  user in need of new facts. 3750:  <|im_start|>assistant, with the mother of her children. You know that the mother of the children the children of the woman with that 34 years later was to the mother of six children is the mother of four sons. 50/12 to the third child is 22, or 11 more a century later and the mother of three daughters have 9 children. 3750: 30/12 a year later and the mother of three daughters has more children than her children. 1154: 65 years by age 51, and the 24 months before a Child of her daughters 60 years later. 24 / 9 = 22 years before she had 7 children. 39 or 15 in a month per parent. 24/9 30 years for their children 36 years
+================================================================================
+
+>>> [Step 40] Prompt:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|> You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|>
+<|start_header_id|>user<|end_header_id|> INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=10.3> A sounding of the sea bottom revealed more than 5,000 feet ( 1,500 m ) of water, indicating no land in near proximity. <|eot_id|>
+EXPLANATION: The <FKGL=8.3> token specifies that the target Flesch-Kincaid Grade Level should be approximately 8.3. Lower values indicate simpler text. 
+EXAMPLES: 
+- The <FKGL=5> token specifies that the target Flesch-Kincaid Grade Level should be approximately 5, which corresponds to a 5th-grade reading level in the US education system (10-11 years old). 
+-The <FKGL=9> token specifies that the target Flesch-Kincaid Grade Level should be approximately 9, which corresponds to a 9th-grade reading level in the US education system (14-15 years old). 
+- The <FKGL=3> token specifies that the target Flesch-Kincaid Grade Level should be approximately 3, which corresponds to a 3rd-grade reading level in the US education system (8-9 years old).
+<|start_header_id|>assistant<|end_header_id|>
+<FKGL=8.3> 
+>>> Reference:
+A sounding of the sea bottom revealed more than 5,000 feet ( 1,500 m ) of water, indicating no land nearby. <|eot_id|>
+>>> Prediction:
+<|im_start|>system_start|>user
+Share on this page a haunting sound that showed the sea surface was not located. Dolphin vocalizations are caused by various animals, from seahorses to phigosome dome bacteria. Some of the loud, thick-headed lures also have a long, thick tideshoot.  The awake sound is primarily caused by the deep tideshoots. 20 years or older, or older than it, and older ( 250,000 feet / 600 Δ m²), or older than it. 🌍
+[END|im_start|>
+Trolley can be caused by the ocean depths, the sea waves are different, and the waves on the ocean surface are less frequent, and different sounding of these deep waters is caused by various types of ebb and flow and the dermatic crust.  assistant
+Dolphin loud and loud, and older, or older, or older, and older ( 250,000 feet / 600 Δ m², or older, or older, or longer.  Lords ( M3 harsome or more), and early-frequently calls the ocean-lister ( 5 - of, and about), and older more frequent oceans and are tidesh
+================================================================================
+
+>>> [Step 40] Prompt:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|> You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|>
+<|start_header_id|>user<|end_header_id|> INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=8.2> `` Malaria was the most significant health hazard encountered by U.S. troops in the South Pacific during World War II, where about 500,000 men were infected. <|eot_id|>
+EXPLANATION: The <FKGL=9.4> token specifies that the target Flesch-Kincaid Grade Level should be approximately 9.4. Lower values indicate simpler text. 
+EXAMPLES: 
+- The <FKGL=10> token specifies that the target Flesch-Kincaid Grade Level should be approximately 10, which corresponds to a 10th-grade reading level in the US education system (15-16 years old). 
+-The <FKGL=8> token specifies that the target Flesch-Kincaid Grade Level should be approximately 8, which corresponds to an 8th-grade reading level in the US education system (13-14 years old). 
+- The <FKGL=0> token specifies that the target Flesch-Kincaid Grade Level should be approximately 0, which corresponds to the reading level of a pre-schooler in the US education system (5-6 years old).
+<|start_header_id|>assistant<|end_header_id|>
+<FKGL=9.4> 
+>>> Reference:
+Although some patients died from malaria, this was preferable to the almost-certain death from syphilis. Malaria was the largest hazard encountered by U.S. troops in the South Pacific during World War II, where about 500,000 men were infected. <|eot_id|>
+>>> Prediction:
+<a tiger slowny has been with us many times, and in the WW9000, this is also a poor form, some people believe it is an extra-traveling bacterial infection, only affected during World War II and in the Southeast of America.  The pig may have caused to the following long-term health problems; I was killed in Vietnam and I may have been killed in the Southeast.  assistant, Exactly what causes the Pulmonary cancer, is the most frequent bacterial infection in WW9000.  Familations of patients in the American air can cause inflammation of the lungs.  drug 2061000, The medical cause of the Pulmonary cancer is caused by dehydrated lungs due to fatigue and not the usual form of the lung due to jet lag.  <|im_start|>user|
+<|im_end|>
+This is a most frequent bacterial infection in the lungs by an Oxygen-huckel ( hydrogen ion nitrogen), but it causes fatigue, fatigue and more fatigue, and the causes of pulmonary pain are caused by inflammation of the lungs (100.55:  <|im_start|>user
+The people who are also affected with the lung cancer to the very same to the high
+================================================================================
+{'loss': 2.5, 'grad_norm': 52.700687408447266, 'learning_rate': 9.96354437049027e-06, 'epoch': 0.45}
+{'eval_loss': nan, 'eval_runtime': 10.5482, 'eval_samples_per_second': 16.496, 'eval_steps_per_second': 16.496, 'epoch': 0.45}
+
+>>> [Step 60] Prompt:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|> You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|>
+<|start_header_id|>user<|end_header_id|> INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=26.0> As the disease progresses, focal neurologic deficits often develop: Exaggeration of deep tendon reflexes; Extensor plantar response; Gait abnormalities; Weakness of an extremity; Hemiplegias; Pseudobulbar palsy with pathologic laughing and crying; Other signs of extrapyramidal dysfunction; Aphasias. <|eot_id|>
+EXPLANATION: The <FKGL=9.5> token specifies that the target Flesch-Kincaid Grade Level should be approximately 9.5. Lower values indicate simpler text. 
+EXAMPLES: 
+- The <FKGL=3> token specifies that the target Flesch-Kincaid Grade Level should be approximately 3, which corresponds to a 3rd-grade reading level in the US education system (8-9 years old). 
+-The <FKGL=0> token specifies that the target Flesch-Kincaid Grade Level should be approximately 0, which corresponds to the reading level of a pre-schooler in the US education system (5-6 years old). 
+- The <FKGL=7> token specifies that the target Flesch-Kincaid Grade Level should be approximately 7, which corresponds to a 7th-grade reading level in the US education system (12-13 years old).
+<|start_header_id|>assistant<|end_header_id|>
+<FKGL=9.5> 
+>>> Reference:
+Usually, some aspects of mental function are not impaired because the strokes destroy tissue in only part of the brain. An arm or a leg may become weak or paralyzed. People may have difficulty speaking. Coordination may be lost, making walking unsteady. People may laugh or cry inappropriately. People may have difficulty controlling bladder function, resulting in urinary incontinence. <|eot_id|>
+>>> Prediction:
+In In In In The In The J Un Seekable M, There Un The Askable M'There In H, The In Buban In H  There In H: Exaggeration of deep joints, arms and butt (mould), and the inhospitable act of malabsorption of a person's height, and a feeling of a person's impersonal property, the death of the person or that can a person's ability to form a person's body (hope a person becomes a person. This is the cancer disease progress, a disease that has been called cancer cancer. Many diseases cause changes in the body to the body, some doctors say the person's body to the disease, but as the disease has shown there is the cause of a person's illness. Many people who are in the world and are affected get to have arms. In many kinds of cancer disease you have a body a person from a person, but the cancer disease also that they can a person, a person and the body, the whole body which usually is the whole body: This is a disease that has been called cancer cancer. What symptoms start when a person has an seizure that cause the brain and body to state that the person will not have breath, and the person to get to have arms (sarcodides). This is, in a way, a disease that makes the person suffer, but cancer disease also
+================================================================================
+
+>>> [Step 60] Prompt:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|> You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|>
+<|start_header_id|>user<|end_header_id|> INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=17.0> It is a symptom usually associated with the common cold, pharyngitis, and chesty coughs, but it can also be found in patients with adenoiditis, otitis media, sinusitis or tonsillitis. <|eot_id|>
+EXPLANATION: The <FKGL=13.0> token specifies that the target Flesch-Kincaid Grade Level should be approximately 13.0. Lower values indicate simpler text. 
+EXAMPLES: 
+- The <FKGL=6> token specifies that the target Flesch-Kincaid Grade Level should be approximately 6, which corresponds to a 6th-grade reading level in the US education system (11-12 years old). 
+-The <FKGL=8> token specifies that the target Flesch-Kincaid Grade Level should be approximately 8, which corresponds to an 8th-grade reading level in the US education system (13-14 years old). 
+- The <FKGL=12> token specifies that the target Flesch-Kincaid Grade Level should be approximately 12, which corresponds to a 12th-grade reading level in the US education system (18 years old or older).
+<|start_header_id|>assistant<|end_header_id|>
+<FKGL=13.0> 
+>>> Reference:
+It is a symptom usually from the common cold and coughs, but can also be found in people with infections of the adenoids, middle ear, sinus or tonsils. <|eot_id|>
+>>> Prediction:
+V T L ( L C +  The symptom often associated with the common cold, hye ulcers (yepa), and pain cries (hepa).  People may also have head pain and a painful throat. 
+================================================================================
+
+>>> [Step 60] Prompt:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|> You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|>
+<|start_header_id|>user<|end_header_id|> INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=9.0> Birley et al. report that excessive washing with soap may dry the mucous membrane that covers the glans penis and cause non-specific dermatitis. <|eot_id|>
+EXPLANATION: The <FKGL=12.3> token specifies that the target Flesch-Kincaid Grade Level should be approximately 12.3. Lower values indicate simpler text. 
+EXAMPLES: 
+- The <FKGL=8> token specifies that the target Flesch-Kincaid Grade Level should be approximately 8, which corresponds to an 8th-grade reading level in the US education system (13-14 years old). 
+-The <FKGL=7> token specifies that the target Flesch-Kincaid Grade Level should be approximately 7, which corresponds to a 7th-grade reading level in the US education system (12-13 years old). 
+- The <FKGL=0> token specifies that the target Flesch-Kincaid Grade Level should be approximately 0, which corresponds to the reading level of a pre-schooler in the US education system (5-6 years old).
+<|start_header_id|>assistant<|end_header_id|>
+<FKGL=12.3> 
+>>> Reference:
+The epithelium of the glans penis is moist and washing it too much can dry the mucous membrane that covers the glans penis and cause dermatitis. <|eot_id|>
+>>> Prediction:
+Suspoions of sul sulions (lupus pumps) to their stool (i.m)  More than to other hyntilon (todo) which is a kind of sweatrady to the stool of it, and it is the only disease that is associated to a chon a stool that is a cooler (m pumps) of a stool which is a cooler (m pumps ) to the stool, and it is the least common disease or poison to the stool or stool that is a hot to the touch. 
+================================================================================
+
+>>> [Step 60] Prompt:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|> You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|>
+<|start_header_id|>user<|end_header_id|> INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=18.9> Vibrio is a genus of Gram-negative bacteria possessing a curved rod shape ( comma shape ), several species of which can cause foodborne infection, usually associated with eating undercooked seafood. <|eot_id|>
+EXPLANATION: The <FKGL=18.9> token specifies that the target Flesch-Kincaid Grade Level should be approximately 18.9. Lower values indicate simpler text. 
+EXAMPLES: 
+- The <FKGL=7> token specifies that the target Flesch-Kincaid Grade Level should be approximately 7, which corresponds to a 7th-grade reading level in the US education system (12-13 years old). 
+-The <FKGL=0> token specifies that the target Flesch-Kincaid Grade Level should be approximately 0, which corresponds to the reading level of a pre-schooler in the US education system (5-6 years old). 
+- The <FKGL=2> token specifies that the target Flesch-Kincaid Grade Level should be approximately 2, which corresponds to a 2nd-grade reading level in the US education system (7-8 years old).
+<|start_header_id|>assistant<|end_header_id|>
+<FKGL=18.9> 
+>>> Reference:
+Vibrio is a genus of Gram-negative bacteria possessing a curved rod, shapeseveral species of which can cause foodborne infection, usually associated with eating undercooked seafood. <|eot_id|>
+>>> Prediction:
+Vibpto is a genus of gram-negative bacteria, which can cause foodborne transmission between food sources from a mouth, especially they eat a fish, also, they take poisonous poisoning from cows, from cows to the mouth, from cows back to the mouth, but most commonly, with a stool, from cousries of the stool, for instance, to a mouth because a stool which is not done to ceded to cousrists to a stool and a stool has a stool ( comma shape ), then the stomach and the stool, then, are a cancerish, in cousrists-like, to a stool, and the stool becomes a stool stool, the stool on a stool ( pixy stool), and the stool ( stool paxon), which can cause oysters from outside Cousrists.  Vibpto ( enlarged stem) is a species of gram-negative bacteria: a species of sythne-negative ( urine-related) to a stool ( stool sides = ( constellation: The stool has a stool ( stool) x stool and the top with the stool ( stool), and the stool: Stock a stool, from cousrices, then, to cousrists, for
+================================================================================
+{'loss': 2.2807, 'grad_norm': 91.6468276977539, 'learning_rate': 9.62579382872462e-06, 'epoch': 0.68}
+{'eval_loss': nan, 'eval_runtime': 10.5467, 'eval_samples_per_second': 16.498, 'eval_steps_per_second': 16.498, 'epoch': 0.68}
+
+>>> [Step 80] Prompt:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|> You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|>
+<|start_header_id|>user<|end_header_id|> INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=13.9> Adult patients with encephalitis present with acute onset of fever, headache, confusion, and sometimes seizures. <|eot_id|>
+EXPLANATION: The <FKGL=14.3> token specifies that the target Flesch-Kincaid Grade Level should be approximately 14.3. Lower values indicate simpler text. 
+EXAMPLES: 
+- The <FKGL=7> token specifies that the target Flesch-Kincaid Grade Level should be approximately 7, which corresponds to a 7th-grade reading level in the US education system (12-13 years old). 
+-The <FKGL=3> token specifies that the target Flesch-Kincaid Grade Level should be approximately 3, which corresponds to a 3rd-grade reading level in the US education system (8-9 years old). 
+- The <FKGL=1> token specifies that the target Flesch-Kincaid Grade Level should be approximately 1, which corresponds to a 1st-grade reading level in the US education system (6-7 years old).
+<|start_header_id|>assistant<|end_header_id|>
+<FKGL=14.3> 
+>>> Reference:
+Usually, adults with encephalitis have a fever that starts suddenly, a headache, confusion, and sometimes seizures. <|eot_id|>
+>>> Prediction:
+Children who have araquanema are sick and have a fever, headache, and an insignificant shortness of breath (NARA). 
+================================================================================
+
+>>> [Step 80] Prompt:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|> You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|>
+<|start_header_id|>user<|end_header_id|> INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=5.2> Some pain above the pubic bone or in the lower back may be present. <|eot_id|>
+EXPLANATION: The <FKGL=7.2> token specifies that the target Flesch-Kincaid Grade Level should be approximately 7.2. Lower values indicate simpler text. 
+EXAMPLES: 
+- The <FKGL=9> token specifies that the target Flesch-Kincaid Grade Level should be approximately 9, which corresponds to a 9th-grade reading level in the US education system (14-15 years old). 
+-The <FKGL=4> token specifies that the target Flesch-Kincaid Grade Level should be approximately 4, which corresponds to a 4th-grade reading level in the US education system (9-10 years old). 
+- The <FKGL=1> token specifies that the target Flesch-Kincaid Grade Level should be approximately 1, which corresponds to a 1st-grade reading level in the US education system (6-7 years old).
+<|start_header_id|>assistant<|end_header_id|>
+<FKGL=7.2> 
+>>> Reference:
+Some people will have pain above the pubic bone (lower abdomen) or in the lower back. <|eot_id|>
+>>> Prediction:
+If there are lumps or other non-sellar mythic lymphosoniums during any of the testing results, doctors suspect what may be left (in the surrounding Bleeding Vus). 
+================================================================================
+
+>>> [Step 80] Prompt:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|> You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|>
+<|start_header_id|>user<|end_header_id|> INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=5.2> Dexamethasone at doses of 0.15, 0.3 and 0.6 mg/kg appear to be all equally effective. <|eot_id|>
+EXPLANATION: The <FKGL=4.1> token specifies that the target Flesch-Kincaid Grade Level should be approximately 4.1. Lower values indicate simpler text. 
+EXAMPLES: 
+- The <FKGL=10> token specifies that the target Flesch-Kincaid Grade Level should be approximately 10, which corresponds to a 10th-grade reading level in the US education system (15-16 years old). 
+-The <FKGL=1> token specifies that the target Flesch-Kincaid Grade Level should be approximately 1, which corresponds to a 1st-grade reading level in the US education system (6-7 years old). 
+- The <FKGL=9> token specifies that the target Flesch-Kincaid Grade Level should be approximately 9, which corresponds to a 9th-grade reading level in the US education system (14-15 years old).
+<|start_header_id|>assistant<|end_header_id|>
+<FKGL=4.1> 
+>>> Reference:
+Dexamethasone at doses of 0.15, 0.3 and 0.6 mg/kg appear to be all equally good. <|eot_id|>
+>>> Prediction:
+Hepatitis can increase the risk of flu that comes back at the same time. 
+================================================================================
+
+>>> [Step 80] Prompt:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|> You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|>
+<|start_header_id|>user<|end_header_id|> INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=8.8> Ankles, knees, elbows, and wrists are usually involved. <|eot_id|>
+EXPLANATION: The <FKGL=10.0> token specifies that the target Flesch-Kincaid Grade Level should be approximately 10.0. Lower values indicate simpler text. 
+EXAMPLES: 
+- The <FKGL=1> token specifies that the target Flesch-Kincaid Grade Level should be approximately 1, which corresponds to a 1st-grade reading level in the US education system (6-7 years old). 
+-The <FKGL=4> token specifies that the target Flesch-Kincaid Grade Level should be approximately 4, which corresponds to a 4th-grade reading level in the US education system (9-10 years old). 
+- The <FKGL=6> token specifies that the target Flesch-Kincaid Grade Level should be approximately 6, which corresponds to a 6th-grade reading level in the US education system (11-12 years old).
+<|start_header_id|>assistant<|end_header_id|>
+<FKGL=10.0> 
+>>> Reference:
+Ankles, knees, elbows, and wrists are usually affected. <|eot_id|>
+>>> Prediction:
+A tousel, knee, and elb: Thousenkles from the left (infective arlizhou), but heel below the rest. 
+================================================================================
+{'loss': 1.9203, 'grad_norm': 60.515602111816406, 'learning_rate': 8.95652813534831e-06, 'epoch': 0.9}
+{'eval_loss': nan, 'eval_runtime': 10.6007, 'eval_samples_per_second': 16.414, 'eval_steps_per_second': 16.414, 'epoch': 0.9}
+{'train_runtime': 400.4525, 'train_samples_per_second': 10.571, 'train_steps_per_second': 0.659, 'train_loss': 2.4607206344604493, 'epoch': 0.9}

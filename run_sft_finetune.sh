@@ -6,7 +6,7 @@
 MODEL_CLASS="llama"
 
 # --- model family: "llama", "mistral", "qwen", "base" (for prompt template)
-MODEL_FAMILY="base"
+MODEL_FAMILY="llama"
 
 # --- model name
 MODEL_NAME="meta-llama/Llama-3.2-1B-Instruct"
@@ -39,7 +39,8 @@ USER_PROMPT_ID="token_explanation_examples"
 METRIC_NAME="FKGL"
 
 # --- hyperparameters ---
-EPOCHS=2
+EPOCHS=3
+PATIENCE=3
 MAX_LENGTH=512
 BATCH_SIZE=8
 EVAL_BATCH_SIZE=1
@@ -77,7 +78,8 @@ python src/sft_finetune.py \
     --learning_rate "$LR" \
     --weight_decay "$WEIGHT_DECAY" \
     --logging_steps "$LOGGING_STEPS" \
-    --epochs "$EPOCHS"\
+    --epochs "$EPOCHS" \
+    --patience "$PATIENCE" \
     --max_length "$MAX_LENGTH"\
     --wandb_project_name "$WANDB_PROJECT_NAME" \
     --wandb_entity "$WANDB_ENTITY"\

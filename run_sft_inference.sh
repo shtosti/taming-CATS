@@ -2,9 +2,9 @@
 
 
 # ========== inference =========
-MODEL_PATH="sft/Llama-3.2-1B-Instruct-Med-EASi-20250423-1516-l9qlzepa"
-USER_PROMPT_ID="token_explanation"
-METRIC_NAME="ARI"
+MODEL_PATH="models/Qwen2.5-1.5B-Instruct-Med-EASi-FKGL-token_explanation_examples-20250430-2013-0s2ly6g9"
+USER_PROMPT_ID="token_explanation_examples"
+METRIC_NAME="FKGL"
 DATASET_NAME="Med-EASi"
 # "llama", "mistral", "qwen", "base" (for prompt template)
 MODEL_FAMILY="base"
