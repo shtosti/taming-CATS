@@ -24,8 +24,11 @@ from classes.PredictionLoggerCallback import PredictionLoggerCallback
 
 print("Transformers version:", transformers.__version__)
 print("Python path:", sys.executable)
-random.seed(42)
 
+def set_seed(seed):
+    random.seed(seed)
+    torch.manual_seed(seed)
+    torch.cuda.manual_seed_all(seed)
 
 def load_json(file_path: str):
     """Load JSON from a file."""
@@ -294,6 +297,7 @@ def parse_args():
     parser.add_argument("--wandb_project_name", type=str, default="thesis-SFT")
     parser.add_argument("--wandb_entity", type=str, default="shtosti")
     parser.add_argument("--log_every", type=int, default=20)
+    parser.add_argument("--seed", type=int, default=42, help="Seed for determenism")
     # for dynamic prompting
     parser.add_argument("--prompting_type", type=str, default="vanilla", choices=["vanilla", "reasoning", "transformations"])
     parser.add_argument("--user_prompt_id", type=str, default="token", choices=["no_token", "token", "token_explanation", "token_explanation_examples"])
@@ -313,6 +317,8 @@ def parse_args():
 def main():
     args = parse_args()
 
+    set_seed(args.seed)
+
     if args.peft:
         print("Using PEFT...")
     else:
@@ -331,16 +337,19 @@ def main():
 
     timestamp = datetime.now().strftime("%Y%m%d-%H%M")
     short_model = get_model_short_name(args.model_name)
-    output_dir = f"./sft/{short_model}-{args.dataset_name}-{timestamp}-{wandb_run_id}"
+    output_dir = f"./models/{short_model}-{args.dataset_name}-{args.metric_name}-{args.user_prompt_id}-{timestamp}-{wandb_run_id}"
+    os.makedirs(output_dir, exist_ok=True)
+    print("Saving to:", output_dir)
+
     with open("last_run_path.txt", "w") as f:
         f.write(output_dir)
+
+    with open(os.path.join(output_dir, "args.json"), "w") as f:
+        json.dump(vars(args), f, indent=2)
     
     print(f"\n*** Finetuning {short_model} with {args.dataset_name} ***\n")
 
     print_gpu_info()
-
-    print("Current working directory:", os.getcwd())
-    print("Saving to:", output_dir)
 
     model, tokenizer = load_and_prepare_model(args.model_name, args.model_class, args.peft, args.max_length)
     train_dataset, val_dataset, test_dataset = load_and_prepare_dataset(args.dataset_name, tokenizer, args)
@@ -371,16 +380,6 @@ def main():
                 output_dir,
                 args.peft
                 )
-
-    evaluator = ModelEvaluator(
-                model, 
-                tokenizer, 
-                test_dataset, 
-                max_length=args.max_length, 
-                batch_size=4
-                )
-    # prompts, references, predictions = evaluator.evaluate()
-    evaluator.evaluate()
 
     wandb.finish()
 
