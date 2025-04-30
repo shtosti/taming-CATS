@@ -39,7 +39,7 @@ USER_PROMPT_ID="token_explanation_examples"
 METRIC_NAME="FKGL"
 
 # --- hyperparameters ---
-EPOCHS=3
+EPOCHS=2
 MAX_LENGTH=512
 BATCH_SIZE=8
 EVAL_BATCH_SIZE=1
