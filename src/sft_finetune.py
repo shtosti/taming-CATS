@@ -157,7 +157,14 @@ def show_examples(dataset, n=3, show_tokens=False):
 
         print("=" * 50)
 
-def load_and_prepare_dataset(dataset_name, tokenizer, args):
+def load_and_prepare_dataset(dataset_name, tokenizer, args, reference_based_metric=False):
+
+    if args.metric_name in ["FRE", "FKGL", "ARI", "DALE-CHALL"]:
+        reference_based_metric = True
+    elif args.metric_name in ["CHAR_COMPRESSION", "WORD_COMPRESSION", "SENTENCE_COMPRESSION"]:
+        reference_based_metric = False
+    else:
+        raise KeyError(f"Invalid metric name!")
 
     control_tokens = load_json(args.control_tokens)
     system_prompts = load_json(args.system_prompts)
@@ -168,7 +175,7 @@ def load_and_prepare_dataset(dataset_name, tokenizer, args):
     
     def process_instance(row):
         metric_key_in_dataset = metric_mapping[args.metric_name]
-        source_metric_value = row["source_metrics"][metric_key_in_dataset]
+        source_metric_value = row["source_metrics"][metric_key_in_dataset] if reference_based_metric else None
         target_metric_value = row["target_metrics"][metric_key_in_dataset]
         reference_simplification = row["simplification_text"]
 

@@ -33,10 +33,10 @@ SLICE_TEST="-1" # -1 means no slicing
 # "vanilla", "reasoning", "transformations"
 PROMPTING_TYPE="vanilla" 
 # "token", "token_explanation", "token_explanation_examples"
-USER_PROMPT_ID="token_explanation"
+USER_PROMPT_ID="token_explanation_examples"
 
 # --- metric settings ---
-METRIC_NAME="ARI"
+METRIC_NAME="WORD_COMPRESSION"
 
 # --- hyperparameters ---
 EPOCHS=3
