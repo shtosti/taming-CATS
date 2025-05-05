@@ -2,9 +2,9 @@
 
 
 # ========== inference =========
-MODEL_PATH="models/Qwen2.5-1.5B-Instruct-Med-EASi-FKGL-token_explanation_examples-20250430-2013-0s2ly6g9"
-USER_PROMPT_ID="token_explanation_examples"
-METRIC_NAME="FKGL"
+MODEL_PATH="models/Llama-3.2-1B-Instruct-Med-EASi-DALE-CHALL-base-token_explanation-20250505-1317-oqxznih4"
+USER_PROMPT_ID="token_explanation"
+METRIC_NAME="DALE-CHALL"
 DATASET_NAME="Med-EASi"
 # "llama", "mistral", "qwen", "base" (for prompt template)
 MODEL_FAMILY="base"
@@ -41,5 +41,6 @@ python src/sft_eval.py \
   --input_file "$INPUT_FILE" \
   --metric_key "$METRIC_NAME" \
   --output_dir "$OUTPUT_DIR" \
+  --metric_mapping "data/metric_mapping.json"
 # ================================
 
