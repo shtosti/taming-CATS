@@ -1,0 +1,27 @@
+Mon May  5 17:53:57 2025       
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 560.35.05              Driver Version: 560.35.05      CUDA Version: 12.6     |
+|-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  NVIDIA H100 80GB HBM3          Off |   00000000:18:00.0 Off |                    0 |
+| N/A   29C    P0             70W /  700W |       1MiB /  81559MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+                                                                                         
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI        PID   Type   Process name                              GPU Memory |
+|        ID   ID                                                               Usage      |
+|=========================================================================================|
+|  No running processes found                                                             |
++-----------------------------------------------------------------------------------------+
+Loading from models/Llama-3.2-1B-Instruct-Med-EASi-WORD_COMPRESSION-base-token_explanation_examples-20250505-1439-ls0sezbu...
+Inference args:
+Namespace(model_path='models/Llama-3.2-1B-Instruct-Med-EASi-WORD_COMPRESSION-base-token_explanation_examples-20250505-1439-ls0sezbu', dataset_name='Med-EASi', model_class='llama', model_family='base', max_length=512, batch_size=4, slice_test=10, output_file='output/models/Llama-3.2-1B-Instruct-Med-EASi-WORD_COMPRESSION-base-token_explanation_examples-20250505-1439-ls0sezbu/output.json', device='cuda', control_tokens='data/prompts/control_tokens.json', system_prompts='data/prompts/system_prompts.json', user_prompts='data/prompts/user_prompts.json', metric_mapping='data/metric_mapping.json', metric_name='WORD_COMPRESSION', user_prompt_id='token_explanation_examples')
+
+test:	 Inspect the dataset format:
+ {'global_id': ['medeasi_000696'], 'source_text': ['Children may have six to twelve colds a year.'], 'source_metrics': [{'FRE': 104.64, 'ARI': 2.4, 'FKGL': 0.9, 'Dale-Chall': 5.84, 'char_count': 45, 'alphanum_count': 36, 'word_count': 10, 'sentence_count': 1}], 'metadata': [{'dataset': 'medeasi', 'experiment_split': '', 'domain': 'medical', 'language': 'en', 'annotation': 'human', 'level': 'sentence'}], 'simplification_text': ['Children may get six to twelve colds a year.'], 'target_metrics': [{'FRE': 104.64, 'ARI': 1.9, 'FKGL': 0.9, 'Dale-Chall': 5.84, 'char_count': 44, 'alphanum_count': 35, 'word_count': 10, 'sentence_count': 1, 'char_compression_rate': 0.98, 'word_compression_rate': 1.0, 'sentence_compression_rate': 1.0, 'BLEU': 70.71067811865478, 'BERTScore': 0.9896392822265625}], 'simplification_version': [1], 'grade_level': [-1], 'simplification_dimensions': [{'linguistic': {'lexical': False, 'syntactic': False}}]}
+--- Running evaluation...

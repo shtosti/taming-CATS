@@ -1,0 +1,14 @@
+
+CondaError: Run 'conda init' before 'conda activate'
+
+Traceback (most recent call last):
+  File "/scratch/hhubar/keep-it-simple/src/sft_eval.py", line 137, in <module>
+    main()
+  File "/scratch/hhubar/keep-it-simple/src/sft_eval.py", line 129, in main
+    plot_metric_scatter(source_vals, reference_vals, prediction_vals, metric_key_mapped, args.output_dir, use_source=use_source)
+  File "/scratch/hhubar/keep-it-simple/src/sft_eval.py", line 74, in plot_metric_scatter
+    reference_trend = np.poly1d(np.polyfit(x, reference_vals, 1))
+                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/numpy/lib/polynomial.py", line 639, in polyfit
+    raise TypeError("expected non-empty vector for x")
+TypeError: expected non-empty vector for x
