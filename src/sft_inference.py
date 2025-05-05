@@ -46,7 +46,15 @@ def load_and_prepare_model(model_path, model_class, max_length):
 
     return model, tokenizer
 
-def load_and_prepare_test_set(dataset_name, tokenizer, max_length, control_tokens, system_prompts, user_prompts, metric_mapping, metric_name, user_prompt_id, model_family, slice_test=None):
+def is_source_metric(args):
+    if args.metric_name in ["FRE", "FKGL", "ARI", "DALE-CHALL"]:
+        return True
+    elif args.metric_name in ["CHAR_COMPRESSION", "WORD_COMPRESSION", "SENTENCE_COMPRESSION"]:
+        return False
+    else:
+        raise KeyError(f"Invalid metric name!")
+
+def load_and_prepare_test_set(dataset_name, tokenizer, max_length, control_tokens, system_prompts, user_prompts, metric_mapping, args, user_prompt_id, model_family, slice_test=None, source_based_metric=False):
     test_dataset = load_dataset_from_hf(dataset_name, split="test", slice=slice_test)
 
     # Select random system and user prompts
@@ -55,22 +63,22 @@ def load_and_prepare_test_set(dataset_name, tokenizer, max_length, control_token
     def process_instance(row):
 
         # Extract relevant values from the row
-        metric_key_in_dataset = metric_mapping[metric_name]
-        source_metric_value = row["source_metrics"][metric_key_in_dataset]
-        target_metric_value = row["target_metrics"][metric_key_in_dataset]
+        metric_key_mapped = metric_mapping[args.metric_name]
+        source_metric_value = row["source_metrics"][metric_key_mapped] if source_based_metric else None
+        target_metric_value = row["target_metrics"][metric_key_mapped]
         reference_simplification = row["simplification_text"]
         
         # Dynamic explanation and examples if needed
-        explanation = select_control_token_explanation(control_tokens, metric_name, target_metric_value) \
+        explanation = select_control_token_explanation(control_tokens, args.metric_name, target_metric_value) \
             if "explanation" in user_prompt_id else None
         
-        examples = select_random_control_token_examples(control_tokens, metric_name) \
+        examples = select_random_control_token_examples(control_tokens, args.metric_name) \
             if "examples" in user_prompt_id else None
         
         # Create the user prompt dynamically
         _, user_prompt = create_user_prompt(
             user_prompts=user_prompts,
-            metric_name=metric_name,
+            metric_name=metric_key_mapped,
             source_metric_value=source_metric_value,
             target_metric_value=target_metric_value,
             user_prompt_id=user_prompt_id,
@@ -83,7 +91,7 @@ def load_and_prepare_test_set(dataset_name, tokenizer, max_length, control_token
         formatted_prompt = format_prompt_with_special_tokens(
             system_prompt=system_prompt,
             user_prompt=user_prompt,
-            metric_name=metric_name,
+            metric_name=metric_key_mapped,
             target_metric_value=target_metric_value,
             model_family=model_family
         )
@@ -104,7 +112,7 @@ def load_and_prepare_test_set(dataset_name, tokenizer, max_length, control_token
     
     return test_dataset
 
-def run_inference(args, metric_mapping, model, tokenizer, test_dataset, batch_size=4, device="cuda", max_length=512, max_new_tokens=511):
+def run_inference(args, metric_mapping, model, tokenizer, test_dataset, batch_size=4, device="cuda", max_length=512, max_new_tokens=511, source_based_metric=False):
     model.eval()
     predictions = []
     
@@ -146,23 +154,27 @@ def run_inference(args, metric_mapping, model, tokenizer, test_dataset, batch_si
             for item, pred in zip(batch, decoded_preds):
                 prediction_metrics = Metrics(input_text=pred.strip(), reference_text=item["simplification_text"], source_text=item["source_text"])
                 computed_prediction_metrics = prediction_metrics.compute_metrics()
-                source_metrics = Metrics(input_text=item["source_text"])
-                computed_source_metrics = source_metrics.compute_metrics()
+                if source_based_metric:
+                    source_metrics = Metrics(input_text=item["source_text"])
+                    computed_source_metrics = source_metrics.compute_metrics()
                 reference_metrics = Metrics(input_text=item["simplification_text"], source_text=item["source_text"])
                 computed_reference_metrics = reference_metrics.compute_metrics()
                 predictions.append({
                     "global_id": item["global_id"],
                     "control_token": f"{args.metric_name}={item['target_metrics'][metric_mapping[args.metric_name]]}",
                     "metric_name": args.metric_name,
-                    "source_metric_value": item["source_metrics"][metric_mapping[args.metric_name]],
                     "reference_metric_value": item["target_metrics"][metric_mapping[args.metric_name]],
                     "source_text": item["source_text"],
                     "reference_simplification": item["simplification_text"],
                     "prediction": pred.strip(),
                     "prompt": item["prompt"],
-                    "source_metrics": computed_source_metrics,
                     "prediction_metrics": computed_prediction_metrics,
                     "reference_metrics": computed_reference_metrics,
+                    })
+                if source_based_metric:
+                    predictions.append({
+                        "source_metric_value": item["source_metrics"][metric_mapping[args.metric_name]],
+                        "source_metrics": computed_source_metrics
                     })
                 print(f"{pred.strip()[:50]}...")
 
@@ -170,7 +182,6 @@ def run_inference(args, metric_mapping, model, tokenizer, test_dataset, batch_si
 
 def save_predictions_as_json(predictions, output_file):
     with open(output_file, "w", encoding="utf-8") as f:
-        # json.dump([{"prediction": p} for p in predictions], f, indent=2, ensure_ascii=False)
         json.dump([p for p in predictions], f, indent=2, ensure_ascii=False)
 
 def parse_args():
@@ -210,6 +221,9 @@ def main():
     user_prompts = load_json(args.user_prompts)
     metric_mapping = load_json(args.metric_mapping)
 
+    # check whether source value exists
+    source_based_metric = is_source_metric(args)
+
     # Load and prepare the test dataset with dynamic prompts
     test_dataset = load_and_prepare_test_set(
         args.dataset_name,
@@ -219,10 +233,11 @@ def main():
         system_prompts,
         user_prompts,
         metric_mapping,
-        args.metric_name,
+        args,
         args.user_prompt_id,
         args.model_family,
-        args.slice_test
+        args.slice_test,
+        source_based_metric=source_based_metric
     )
 
     predictions = run_inference(
@@ -234,7 +249,8 @@ def main():
         batch_size=args.batch_size,
         device=args.device,
         max_length=args.max_length, 
-        max_new_tokens=args.max_length - 1
+        max_new_tokens=args.max_length - 1,
+        source_based_metric=source_based_metric
         )
 
     # Save the predictions to a file
