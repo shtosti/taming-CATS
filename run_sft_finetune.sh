@@ -6,7 +6,7 @@
 MODEL_CLASS="llama"
 
 # --- model family: "llama", "mistral", "qwen", "base" (for prompt template)
-MODEL_FAMILY="llama"
+MODEL_FAMILY="base"
 
 # --- model name
 MODEL_NAME="meta-llama/Llama-3.2-1B-Instruct"
@@ -33,10 +33,10 @@ SLICE_TEST="-1" # -1 means no slicing
 # "vanilla", "reasoning", "transformations"
 PROMPTING_TYPE="vanilla" 
 # "token", "token_explanation", "token_explanation_examples"
-USER_PROMPT_ID="token_explanation_examples"
+USER_PROMPT_ID="token_explanation"
 
 # --- metric settings ---
-METRIC_NAME="FKGL"
+METRIC_NAME="WORD_COMPRESSION"
 
 # --- hyperparameters ---
 EPOCHS=3

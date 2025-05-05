@@ -197,6 +197,8 @@ def parse_args():
 
 def main():
     args = parse_args()
+    print(f"Loading from {args.model_path}...")
+    print(f"Inference args:\n{args}\n")
 
     # Load the model and tokenizer
     model, tokenizer = load_and_prepare_model(args.model_path, args.model_class, args.max_length)

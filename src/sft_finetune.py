@@ -353,7 +353,7 @@ def main():
 
     timestamp = datetime.now().strftime("%Y%m%d-%H%M")
     short_model = get_model_short_name(args.model_name)
-    output_dir = f"./models/{short_model}-{args.dataset_name}-{args.metric_name}-{args.family_name}-{args.user_prompt_id}-{timestamp}-{wandb_run_id}"
+    output_dir = f"./models/{short_model}-{args.dataset_name}-{args.metric_name}-{args.model_family}-{args.user_prompt_id}-{timestamp}-{wandb_run_id}"
     os.makedirs(output_dir, exist_ok=True)
     print("Saving to:", output_dir)
 
