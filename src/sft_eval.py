@@ -3,6 +3,11 @@ import argparse
 import matplotlib.pyplot as plt
 import numpy as np
 
+def load_json(file_path: str):
+    """Load JSON from a file."""
+    with open(file_path, "r", encoding="utf-8") as file:
+        return json.load(file)
+
 def load_predictions(file_path):
     with open(file_path, "r", encoding="utf-8") as f:
         return json.load(f)
@@ -66,7 +71,6 @@ def plot_metric_lines(source_vals, reference_vals, prediction_vals, metric_key, 
     plt.grid(True)
     plt.tight_layout()
     plt.savefig(f"{output_dir}/{metric_key}_line.png", bbox_inches='tight', dpi=400)
-    print(f"Line plot saved as {metric_key}_line.png")
 
 def main():
     print("--- Running evaluation...")
@@ -74,15 +78,19 @@ def main():
     parser.add_argument("--input_file", type=str, required=True, help="Path to JSON file with predictions")
     parser.add_argument("--metric_key", type=str, required=True, help="Metric to visualize")
     parser.add_argument("--output_dir", type=str, default=".", help="Directory to save plots")
+    parser.add_argument("--metric_mapping", type=str, required=True)
 
     args = parser.parse_args()
 
+    metric_mapping = load_json(args.metric_mapping)
+    metric_key_mapped = metric_mapping[args.metric_key]
+
     predictions = load_predictions(args.input_file)
-    source_vals, reference_vals, prediction_vals = extract_metric_values(predictions, args.metric_key)
-    plot_metric_scatter(source_vals, reference_vals, prediction_vals, args.metric_key, args.output_dir)
-    plot_metric_lines(source_vals, reference_vals, prediction_vals, args.metric_key, args.output_dir)
-    print(f"Scatter plot saved as {args.metric_key}_scatter.png")
-    print(f"Line plot saved as {args.metric_key}_line.png")
+    source_vals, reference_vals, prediction_vals = extract_metric_values(predictions, metric_key_mapped)
+    plot_metric_scatter(source_vals, reference_vals, prediction_vals, metric_key_mapped, args.output_dir)
+    plot_metric_lines(source_vals, reference_vals, prediction_vals, metric_key_mapped, args.output_dir)
+    print(f"Scatter plot saved as {metric_key_mapped}_scatter.png")
+    print(f"Line plot saved as {metric_key_mapped}_line.png")
     print("--- Evaluation complete.")
 
 
