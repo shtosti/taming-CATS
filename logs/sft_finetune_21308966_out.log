@@ -1,0 +1,488 @@
+Mon May  5 13:24:14 2025       
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 560.35.05              Driver Version: 560.35.05      CUDA Version: 12.6     |
+|-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  NVIDIA A100-SXM4-80GB          Off |   00000000:8B:00.0 Off |                    0 |
+| N/A   34C    P0             84W /  400W |       1MiB /  81920MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+                                                                                         
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI        PID   Type   Process name                              GPU Memory |
+|        ID   ID                                                               Usage      |
+|=========================================================================================|
+|  No running processes found                                                             |
++-----------------------------------------------------------------------------------------+
+torch.cuda.is_bf16_supported: True
+Transformers version: 4.51.0
+Python path: /home/hhubar/data/conda/envs/sft/bin/python
+Not using PEFT...
+
+Run arguments:
+Namespace(model_class='llama', model_family='base', model_name='meta-llama/Llama-3.2-1B-Instruct', dataset_name='Med-EASi', slice_train=-1, slice_val=-1, slice_test=-1, batch_size=8, eval_batch_size=1, gradient_accumulation_steps=2, learning_rate=1e-05, weight_decay=0.01, epochs=3, max_length=512, logging_steps=20, wandb_project_name='ATS_with_control_tokens', wandb_entity='shtosti', log_every=20, seed=42, patience=3, prompting_type='vanilla', user_prompt_id='token_explanation', metric_name='DALE-CHALL', control_tokens='data/prompts/control_tokens.json', system_prompts='data/prompts/system_prompts.json', user_prompts='data/prompts/user_prompts.json', metric_mapping='data/metric_mapping.json', peft=False)
+
+Saving to: ./models/Llama-3.2-1B-Instruct-Med-EASi-DALE-CHALL-base-token_explanation-20250505-1324-g88krkaa
+
+*** Finetuning Llama-3.2-1B-Instruct with Med-EASi ***
+
+CUDA available: True
+Number of GPUs: 1
+GPU name: NVIDIA A100-SXM4-80GB
+--- DEBUG ---
+trainable params:
+Trainable params: 1,235,816,448 / 1,235,816,448 (100.00%)
+--- tokenizer pad_token_id: 128256
+--- tokenizer eos_token_id: 128009
+--- special tokens:
+train:	 Inspect the dataset format:
+ {'global_id': ['medeasi_000457'], 'source_text': ['The face is flushed, and the eyes are injected.'], 'source_metrics': [{'FRE': 96.18, 'ARI': 3.5, 'FKGL': 2.1, 'Dale-Chall': 9.35, 'char_count': 47, 'alphanum_count': 37, 'word_count': 11, 'sentence_count': 1}], 'metadata': [{'dataset': 'medeasi', 'experiment_split': '', 'domain': 'medical', 'language': 'en', 'annotation': 'human', 'level': 'sentence'}], 'simplification_text': ['The face is flushed.'], 'target_metrics': [{'FRE': 118.18, 'ARI': 0.6, 'FKGL': -2.3, 'Dale-Chall': 7.78, 'char_count': 20, 'alphanum_count': 16, 'word_count': 5, 'sentence_count': 1, 'char_compression_rate': 0.43, 'word_compression_rate': 0.45, 'sentence_compression_rate': 1.0, 'BLEU': 21.297646969725616, 'BERTScore': 0.9398951530456543}], 'simplification_version': [1], 'grade_level': [-1], 'simplification_dimensions': [{'linguistic': {'lexical': False, 'syntactic': False}}]}
+validation:	 Inspect the dataset format:
+ {'global_id': ['medeasi_001210'], 'source_text': ['This increased risk is greatest at two to three months of age.'], 'source_metrics': [{'FRE': 93.14, 'ARI': 4.6, 'FKGL': 3.3, 'Dale-Chall': 9.5, 'char_count': 62, 'alphanum_count': 50, 'word_count': 13, 'sentence_count': 1}], 'metadata': [{'dataset': 'medeasi', 'experiment_split': '', 'domain': 'medical', 'language': 'en', 'annotation': 'human', 'level': 'sentence'}], 'simplification_text': ['This risk is highest in infants who are two to three months old.'], 'target_metrics': [{'FRE': 92.12, 'ARI': 3.9, 'FKGL': 3.6, 'Dale-Chall': 9.14, 'char_count': 64, 'alphanum_count': 51, 'word_count': 14, 'sentence_count': 1, 'char_compression_rate': 1.03, 'word_compression_rate': 1.08, 'sentence_compression_rate': 1.0, 'BLEU': 22.718709780542323, 'BERTScore': 0.9562927484512329}], 'simplification_version': [1], 'grade_level': [-1], 'simplification_dimensions': [{'linguistic': {'lexical': False, 'syntactic': False}}]}
+test:	 Inspect the dataset format:
+ {'global_id': ['medeasi_000696'], 'source_text': ['Children may have six to twelve colds a year.'], 'source_metrics': [{'FRE': 104.64, 'ARI': 2.4, 'FKGL': 0.9, 'Dale-Chall': 5.84, 'char_count': 45, 'alphanum_count': 36, 'word_count': 10, 'sentence_count': 1}], 'metadata': [{'dataset': 'medeasi', 'experiment_split': '', 'domain': 'medical', 'language': 'en', 'annotation': 'human', 'level': 'sentence'}], 'simplification_text': ['Children may get six to twelve colds a year.'], 'target_metrics': [{'FRE': 104.64, 'ARI': 1.9, 'FKGL': 0.9, 'Dale-Chall': 5.84, 'char_count': 44, 'alphanum_count': 35, 'word_count': 10, 'sentence_count': 1, 'char_compression_rate': 0.98, 'word_compression_rate': 1.0, 'sentence_compression_rate': 1.0, 'BLEU': 70.71067811865478, 'BERTScore': 0.9896392822265625}], 'simplification_version': [1], 'grade_level': [-1], 'simplification_dimensions': [{'linguistic': {'lexical': False, 'syntactic': False}}]}
+
+
+ *** Before tokenization ***
+>>> train:
+
+Showing 1 example(s):
+
+Example 1 (index 228)
+--- Prompt:
+ <|begin_of_text|><|start_header_id|>system<|end_header_id|> You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|>
+<|start_header_id|>user<|end_header_id|> INSTRUCTION: Simplify the following text such that its Dale-Chall Readability Score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the Dale-Chall value of the source text. 
+SOURCE TEXT: <DALE-CHALL=14.61> The increased pressure is caused by trabecular meshwork blockage. <|eot_id|>
+EXPLANATION: The <DALE-CHALL=10.45> token specifies that the target Dale-Chall readability score should be approximately 10.45. Lower values indicate simpler text.
+<|start_header_id|>assistant<|end_header_id|>
+<DALE-CHALL=10.45> 
+--- Completion:
+ This disease happens because of increased pressure in the eye. <|eot_id|>
+==================================================
+
+
+ *** After tokenization ***
+>>> train:
+
+Showing 1 example(s):
+
+Example 1 (index 51)
+--- Prompt:
+ <|begin_of_text|><|start_header_id|>system<|end_header_id|> You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|>
+<|start_header_id|>user<|end_header_id|> INSTRUCTION: Simplify the following text such that its Dale-Chall Readability Score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the Dale-Chall value of the source text. 
+SOURCE TEXT: <DALE-CHALL=11.1> Gout was historically known as `` the disease of kings '' or `` rich man 's disease . '' <|eot_id|>
+EXPLANATION: The <DALE-CHALL=9.64> token specifies that the target Dale-Chall readability score should be approximately 9.64. Lower values indicate simpler text.
+<|start_header_id|>assistant<|end_header_id|>
+<DALE-CHALL=9.64> 
+--- Completion:
+ Gout was historically known as `` the disease of kings '' or `` the disease of rich men '' . <|eot_id|>
+--- input_ids:
+ [128000, 128000, 128006, 9125, 128007, 1472, 527, 264, 11190, 6335, 304, 1495, 15858, 2461, 13, 1472, 7068, 264, 44899, 2373, 315, 279, 1495, 1988, 555, 279, 1217, 13, 1472, 40821, 279, 1495, 4184, 311, 279, 11470, 2728, 555, 279, 1217, 13, 3277, 4691, 311, 40821, 264, 1495, 11, 7068, 1193, 279, 11472, 15858, 2461, 11, 2085, 904, 5217, 6170, 11, 8554, 477, 41941, 13, 128009, 198, 128006, 882, 128007, 2006, 58555, 25, 62342, 1463, 279, 2768, 1495, 1778, 430, 1202, 37828, 30653, 543, 4557, 2968, 18607, 374, 13489, 6273, 311, 430, 5300, 304, 279, 2585, 4037, 22033, 2954, 311, 701, 8066, 15858, 2461, 13, 578, 2585, 4037, 706, 279, 2768, 3645, 25, 366, 45975, 37078, 28, 24771, 14611, 578, 2585, 4037, 22033, 2954, 311, 279, 2592, 1495, 15151, 279, 37828, 30653, 543, 907, 315, 279, 2592, 1495, 13, 720, 44098, 16139, 25, 366, 6486, 877, 12, 2198, 4006, 28, 806, 13, 16, 29, 480, 412, 574, 35901, 3967, 439, 10103, 279, 8624, 315, 45619, 3436, 477, 10103, 9257, 893, 364, 82, 8624, 662, 3436, 220, 128009, 198, 3337, 95179, 3579, 25, 578, 366, 6486, 877, 12, 2198, 4006, 28, 24, 13, 1227, 29, 4037, 30202, 430, 279, 2218, 37828, 30653, 543, 92594, 5573, 1288, 387, 13489, 220, 24, 13, 1227, 13, 28636, 2819, 13519, 35388, 1495, 627, 128006, 78191, 128007, 198, 27, 6486, 877, 12, 2198, 4006, 28, 24, 13, 1227, 29, 220, 128000, 38, 412, 574, 35901, 3967, 439, 10103, 279, 8624, 315, 45619, 3436, 477, 10103, 279, 8624, 315, 9257, 3026, 3436, 662, 220, 128009, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256]
+--- labels:
+ [-100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, 128000, 38, 412, 574, 35901, 3967, 439, 10103, 279, 8624, 315, 45619, 3436, 477, 10103, 279, 8624, 315, 9257, 3026, 3436, 662, 220, 128009, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100]
+==================================================
+********** DEBUG **********
+Train dataset columns: ['global_id', 'source_text', 'source_metrics', 'metadata', 'simplification_text', 'target_metrics', 'simplification_version', 'grade_level', 'simplification_dimensions', 'prompt', 'completion', 'system_prompt_id', 'user_prompt_id', 'metric_name', 'source_metric_value', 'target_metric_value', 'input_ids', 'labels', 'attention_mask']
+Validation dataset columns: ['global_id', 'source_text', 'source_metrics', 'metadata', 'simplification_text', 'target_metrics', 'simplification_version', 'grade_level', 'simplification_dimensions', 'prompt', 'completion', 'system_prompt_id', 'user_prompt_id', 'metric_name', 'source_metric_value', 'target_metric_value', 'input_ids', 'labels', 'attention_mask']
+Test dataset columns: ['global_id', 'source_text', 'source_metrics', 'metadata', 'simplification_text', 'target_metrics', 'simplification_version', 'grade_level', 'simplification_dimensions', 'prompt', 'completion', 'system_prompt_id', 'user_prompt_id', 'metric_name', 'source_metric_value', 'target_metric_value', 'input_ids', 'labels', 'attention_mask']
+First 10 input_ids: [128000, 128000, 128006, 9125, 128007, 1472, 527, 264, 11190, 6335]
+First 10 labels: [-100, -100, -100, -100, -100, -100, -100, -100, -100, -100]
+type of input_ids: <class 'list'>
+type of labels: <class 'list'>
+
+--- DEBUG: Tokenized fields ---
+--- Tokenizer vocab size: 128000
+--- input_ids: [128000, 128000, 128006, 9125, 128007, 1472, 527, 264, 11190, 6335, 304, 1495, 15858, 2461, 13, 1472, 7068, 264, 44899, 2373, 315, 279, 1495, 1988, 555, 279, 1217, 13, 1472, 40821, 279, 1495, 4184, 311, 279, 11470, 2728, 555, 279, 1217, 13, 3277, 4691, 311, 40821, 264, 1495, 11, 7068, 1193, 279, 11472, 15858, 2461, 11, 2085, 904, 5217, 6170, 11, 8554, 477, 41941, 13, 128009, 198, 128006, 882, 128007, 2006, 58555, 25, 62342, 1463, 279, 2768, 1495, 1778, 430, 1202, 37828, 30653, 543, 4557, 2968, 18607, 374, 13489, 6273, 311, 430, 5300, 304, 279, 2585, 4037, 22033, 2954, 311, 701, 8066, 15858, 2461, 13, 578, 2585, 4037, 706, 279, 2768, 3645, 25, 366, 45975, 37078, 28, 24771, 14611, 578, 2585, 4037, 22033, 2954, 311, 279, 2592, 1495, 15151, 279, 37828, 30653, 543, 907, 315, 279, 2592, 1495, 13, 720, 44098, 16139, 25, 366, 6486, 877, 12, 2198, 4006, 28, 24, 13, 1758, 29, 578, 3663, 374, 74820, 11, 323, 279, 6548, 527, 41772, 13, 220, 128009, 198, 3337, 95179, 3579, 25, 578, 366, 6486, 877, 12, 2198, 4006, 28, 22, 13, 2495, 29, 4037, 30202, 430, 279, 2218, 37828, 30653, 543, 92594, 5573, 1288, 387, 13489, 220, 22, 13, 2495, 13, 28636, 2819, 13519, 35388, 1495, 627, 128006, 78191, 128007, 198, 27, 6486, 877, 12, 2198, 4006, 28, 22, 13, 2495, 29, 220, 128000, 791, 3663, 374, 74820, 13, 220, 128009, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256]
+--- labels: [-100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, 128000, 791, 3663, 374, 74820, 13, 220, 128009, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100]
+--- decoded input_ids:
+ <|begin_of_text|><|begin_of_text|><|start_header_id|>system<|end_header_id|> You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|>
+<|start_header_id|>user<|end_header_id|> INSTRUCTION: Simplify the following text such that its Dale-Chall Readability Score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the Dale-Chall value of the source text. 
+SOURCE TEXT: <DALE-CHALL=9.35> The face is flushed, and the eyes are injected. <|eot_id|>
+EXPLANATION: The <DALE-CHALL=7.78> token specifies that the target Dale-Chall readability score should be approximately 7.78. Lower values indicate simpler text.
+<|start_header_id|>assistant<|end_header_id|>
+<DALE-CHALL=7.78> <|begin_of_text|>The face is flushed. <|eot_id|>[PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD]
+--- decoded labels:
+ The face is flushed. 
+
+>>> [Step 20] Prompt:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|> You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|>
+<|start_header_id|>user<|end_header_id|> INSTRUCTION: Simplify the following text such that its Dale-Chall Readability Score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the Dale-Chall value of the source text. 
+SOURCE TEXT: <DALE-CHALL=13.9> Pericyclic reactions are usually rearrangement or addition reactions. <|eot_id|>
+EXPLANATION: The <DALE-CHALL=13.9> token specifies that the target Dale-Chall readability score should be approximately 13.9. Lower values indicate simpler text.
+<|start_header_id|>assistant<|end_header_id|>
+<DALE-CHALL=13.9> 
+>>> Reference:
+Chemists disagree whether some reactions are pericyclic reactions. <|eot_id|>
+>>> Prediction:
+A pericyclic reaction is a type of chemical reaction where a ring is formed by the addition of two molecules. 
+================================================================================
+
+>>> [Step 20] Prompt:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|> You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|>
+<|start_header_id|>user<|end_header_id|> INSTRUCTION: Simplify the following text such that its Dale-Chall Readability Score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the Dale-Chall value of the source text. 
+SOURCE TEXT: <DALE-CHALL=16.21> Adult patients who require parenteral support may benefit from teduglutide (a glucagon-like peptide-2 [ GLP-2 ] analog). The recommended dosage is 0.05 mg/kg body weight sc once/ day. <|eot_id|>
+EXPLANATION: The <DALE-CHALL=8.18> token specifies that the target Dale-Chall readability score should be approximately 8.18. Lower values indicate simpler text.
+<|start_header_id|>assistant<|end_header_id|>
+<DALE-CHALL=8.18> 
+>>> Reference:
+People who need TPN may be given injections of a drug called teduglutide. This drug may help reduce the amount of TPN people need. <|eot_id|>
+>>> Prediction:
+definido imported from the  as  as  as  as  as  as  as  as  as  as  as  as  as  as  as  as  as  as  as  as  as  as  as  as  as  as  as  as  as  as  as  as  as  as  as  as  as  as  as  as  as  as  as  as  as  as  as  as  as  as  as  as  as  as  as  as  as  as  as  as  as  as  as  as  as  as  as  as  as  as  as  as  as  as  as  as  as  as  as  as  as  as  as  as  as  as  as  as  as  as  as  as  as  as  as  as  as  as  as  as  as  as  as  as  as  as  as  as  as  as  as  as  as  as  as  as  as  as  as  as  as  as  as  as  as  as  as  as  as  as  as  as  as  as  as  as  as  as  as  as  as  as  as  as  as
+================================================================================
+
+>>> [Step 20] Prompt:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|> You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|>
+<|start_header_id|>user<|end_header_id|> INSTRUCTION: Simplify the following text such that its Dale-Chall Readability Score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the Dale-Chall value of the source text. 
+SOURCE TEXT: <DALE-CHALL=10.45> Flaccid penis length is a poor estimate of erect length. <|eot_id|>
+EXPLANATION: The <DALE-CHALL=10.45> token specifies that the target Dale-Chall readability score should be approximately 10.45. Lower values indicate simpler text.
+<|start_header_id|>assistant<|end_header_id|>
+<DALE-CHALL=10.45> 
+>>> Reference:
+Flaccid length is not a reliable indication of erect length. <|eot_id|>
+>>> Prediction:
+# The length of a penis is a poor estimate of the length of an erect penis. 
+================================================================================
+
+>>> [Step 20] Prompt:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|> You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|>
+<|start_header_id|>user<|end_header_id|> INSTRUCTION: Simplify the following text such that its Dale-Chall Readability Score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the Dale-Chall value of the source text. 
+SOURCE TEXT: <DALE-CHALL=11.93> Obstetric manifestations include early and late fetal loss. <|eot_id|>
+EXPLANATION: The <DALE-CHALL=12.79> token specifies that the target Dale-Chall readability score should be approximately 12.79. Lower values indicate simpler text.
+<|start_header_id|>assistant<|end_header_id|>
+<DALE-CHALL=12.79> 
+>>> Reference:
+Pregnant women have a higher-than- normal risk of miscarriage and stillbirth. <|eot_id|>
+>>> Prediction:
+deflate the fetus's placenta. 
+================================================================================
+{'loss': 1.9296, 'grad_norm': 14.414704322814941, 'learning_rate': 6.333333333333333e-06, 'epoch': 0.23}
+{'eval_loss': 1.44179368019104, 'eval_runtime': 8.1021, 'eval_samples_per_second': 21.476, 'eval_steps_per_second': 21.476, 'epoch': 0.23}
+
+>>> [Step 40] Prompt:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|> You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|>
+<|start_header_id|>user<|end_header_id|> INSTRUCTION: Simplify the following text such that its Dale-Chall Readability Score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the Dale-Chall value of the source text. 
+SOURCE TEXT: <DALE-CHALL=12.42> Symptoms include fever, headache, muscle and joint pains, and a characteristic skin rash that is similar to measles. <|eot_id|>
+EXPLANATION: The <DALE-CHALL=9.43> token specifies that the target Dale-Chall readability score should be approximately 9.43. Lower values indicate simpler text.
+<|start_header_id|>assistant<|end_header_id|>
+<DALE-CHALL=9.43> 
+>>> Reference:
+Some of the symptoms of dengue fever are fever; headache; a skin rash that looks like measles; and pain in the muscles and joints. <|eot_id|>
+>>> Prediction:
+The symptoms include fever, headache, muscle and joint pains, and a characteristic rash. 
+================================================================================
+
+>>> [Step 40] Prompt:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|> You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|>
+<|start_header_id|>user<|end_header_id|> INSTRUCTION: Simplify the following text such that its Dale-Chall Readability Score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the Dale-Chall value of the source text. 
+SOURCE TEXT: <DALE-CHALL=9.58> At the time of her death in 1964 from a heart attack, she was still employed at the aforementioned university in Washington, D.C. <|eot_id|>
+EXPLANATION: The <DALE-CHALL=7.39> token specifies that the target Dale-Chall readability score should be approximately 7.39. Lower values indicate simpler text.
+<|start_header_id|>assistant<|end_header_id|>
+<DALE-CHALL=7.39> 
+>>> Reference:
+When she died in 1964 from a heart attack, she was still working at the university. <|eot_id|>
+>>> Prediction:
+defunct. 
+================================================================================
+
+>>> [Step 40] Prompt:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|> You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|>
+<|start_header_id|>user<|end_header_id|> INSTRUCTION: Simplify the following text such that its Dale-Chall Readability Score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the Dale-Chall value of the source text. 
+SOURCE TEXT: <DALE-CHALL=11.45> A sounding of the sea bottom revealed more than 5,000 feet ( 1,500 m ) of water, indicating no land in near proximity. <|eot_id|>
+EXPLANATION: The <DALE-CHALL=11.23> token specifies that the target Dale-Chall readability score should be approximately 11.23. Lower values indicate simpler text.
+<|start_header_id|>assistant<|end_header_id|>
+<DALE-CHALL=11.23> 
+>>> Reference:
+A sounding of the sea bottom revealed more than 5,000 feet ( 1,500 m ) of water, indicating no land nearby. <|eot_id|>
+>>> Prediction:
+The sounding of the sea bottom revealed more than 5,000 feet ( 1,500 m ) of water, indicating no land in near proximity. 
+================================================================================
+
+>>> [Step 40] Prompt:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|> You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|>
+<|start_header_id|>user<|end_header_id|> INSTRUCTION: Simplify the following text such that its Dale-Chall Readability Score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the Dale-Chall value of the source text. 
+SOURCE TEXT: <DALE-CHALL=11.84> `` Malaria was the most significant health hazard encountered by U.S. troops in the South Pacific during World War II, where about 500,000 men were infected. <|eot_id|>
+EXPLANATION: The <DALE-CHALL=10.91> token specifies that the target Dale-Chall readability score should be approximately 10.91. Lower values indicate simpler text.
+<|start_header_id|>assistant<|end_header_id|>
+<DALE-CHALL=10.91> 
+>>> Reference:
+Although some patients died from malaria, this was preferable to the almost-certain death from syphilis. Malaria was the largest hazard encountered by U.S. troops in the South Pacific during World War II, where about 500,000 men were infected. <|eot_id|>
+>>> Prediction:
+# Malaria was the most significant health hazard encountered by US troops in the South Pacific during World War II. 
+================================================================================
+{'loss': 1.2765, 'grad_norm': 13.915566444396973, 'learning_rate': 9.96354437049027e-06, 'epoch': 0.45}
+{'eval_loss': 1.3615012168884277, 'eval_runtime': 8.083, 'eval_samples_per_second': 21.527, 'eval_steps_per_second': 21.527, 'epoch': 0.45}
+
+>>> [Step 60] Prompt:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|> You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|>
+<|start_header_id|>user<|end_header_id|> INSTRUCTION: Simplify the following text such that its Dale-Chall Readability Score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the Dale-Chall value of the source text. 
+SOURCE TEXT: <DALE-CHALL=16.14> As the disease progresses, focal neurologic deficits often develop: Exaggeration of deep tendon reflexes; Extensor plantar response; Gait abnormalities; Weakness of an extremity; Hemiplegias; Pseudobulbar palsy with pathologic laughing and crying; Other signs of extrapyramidal dysfunction; Aphasias. <|eot_id|>
+EXPLANATION: The <DALE-CHALL=9.21> token specifies that the target Dale-Chall readability score should be approximately 9.21. Lower values indicate simpler text.
+<|start_header_id|>assistant<|end_header_id|>
+<DALE-CHALL=9.21> 
+>>> Reference:
+Usually, some aspects of mental function are not impaired because the strokes destroy tissue in only part of the brain. An arm or a leg may become weak or paralyzed. People may have difficulty speaking. Coordination may be lost, making walking unsteady. People may laugh or cry inappropriately. People may have difficulty controlling bladder function, resulting in urinary incontinence. <|eot_id|>
+>>> Prediction:
+In the advanced stages, focal neurologic deficits often develop: Exaggeration of deep tendon reflexes; Extensor plantar response; Gait abnormalities; Weakness of an extremity; Hemiplegias; Pseudobulbar palsy with pathologic laughing and crying; Other signs of extrapyramidal dysfunction; Aphasias. 
+================================================================================
+
+>>> [Step 60] Prompt:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|> You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|>
+<|start_header_id|>user<|end_header_id|> INSTRUCTION: Simplify the following text such that its Dale-Chall Readability Score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the Dale-Chall value of the source text. 
+SOURCE TEXT: <DALE-CHALL=12.15> It is a symptom usually associated with the common cold, pharyngitis, and chesty coughs, but it can also be found in patients with adenoiditis, otitis media, sinusitis or tonsillitis. <|eot_id|>
+EXPLANATION: The <DALE-CHALL=9.54> token specifies that the target Dale-Chall readability score should be approximately 9.54. Lower values indicate simpler text.
+<|start_header_id|>assistant<|end_header_id|>
+<DALE-CHALL=9.54> 
+>>> Reference:
+It is a symptom usually from the common cold and coughs, but can also be found in people with infections of the adenoids, middle ear, sinus or tonsils. <|eot_id|>
+>>> Prediction:
+The symptoms usually associated with tonsillitis, pharyngitis, and chesty coughs, but it can also be found in patients with adenoiditis, otitis media, sinusitis or tonsillitis. 
+================================================================================
+
+>>> [Step 60] Prompt:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|> You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|>
+<|start_header_id|>user<|end_header_id|> INSTRUCTION: Simplify the following text such that its Dale-Chall Readability Score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the Dale-Chall value of the source text. 
+SOURCE TEXT: <DALE-CHALL=13.13> Birley et al. report that excessive washing with soap may dry the mucous membrane that covers the glans penis and cause non-specific dermatitis. <|eot_id|>
+EXPLANATION: The <DALE-CHALL=10.39> token specifies that the target Dale-Chall readability score should be approximately 10.39. Lower values indicate simpler text.
+<|start_header_id|>assistant<|end_header_id|>
+<DALE-CHALL=10.39> 
+>>> Reference:
+The epithelium of the glans penis is moist and washing it too much can dry the mucous membrane that covers the glans penis and cause dermatitis. <|eot_id|>
+>>> Prediction:
+In 1970, Birley et al. report that excessive washing with soap may dry the mucous membrane that covers the glans penis and cause non-specific dermatitis. 
+================================================================================
+
+>>> [Step 60] Prompt:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|> You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|>
+<|start_header_id|>user<|end_header_id|> INSTRUCTION: Simplify the following text such that its Dale-Chall Readability Score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the Dale-Chall value of the source text. 
+SOURCE TEXT: <DALE-CHALL=14.61> Vibrio is a genus of Gram-negative bacteria possessing a curved rod shape ( comma shape ), several species of which can cause foodborne infection, usually associated with eating undercooked seafood. <|eot_id|>
+EXPLANATION: The <DALE-CHALL=15.61> token specifies that the target Dale-Chall readability score should be approximately 15.61. Lower values indicate simpler text.
+<|start_header_id|>assistant<|end_header_id|>
+<DALE-CHALL=15.61> 
+>>> Reference:
+Vibrio is a genus of Gram-negative bacteria possessing a curved rod, shapeseveral species of which can cause foodborne infection, usually associated with eating undercooked seafood. <|eot_id|>
+>>> Prediction:
+In the 17th century, the term was used to describe the bacteria that cause foodborne infection, usually associated with eating undercooked seafood. 
+================================================================================
+{'loss': 1.2809, 'grad_norm': 10.566960334777832, 'learning_rate': 9.62579382872462e-06, 'epoch': 0.68}
+{'eval_loss': 1.3342363834381104, 'eval_runtime': 8.1195, 'eval_samples_per_second': 21.43, 'eval_steps_per_second': 21.43, 'epoch': 0.68}
+
+>>> [Step 80] Prompt:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|> You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|>
+<|start_header_id|>user<|end_header_id|> INSTRUCTION: Simplify the following text such that its Dale-Chall Readability Score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the Dale-Chall value of the source text. 
+SOURCE TEXT: <DALE-CHALL=11.75> Adult patients with encephalitis present with acute onset of fever, headache, confusion, and sometimes seizures. <|eot_id|>
+EXPLANATION: The <DALE-CHALL=11.34> token specifies that the target Dale-Chall readability score should be approximately 11.34. Lower values indicate simpler text.
+<|start_header_id|>assistant<|end_header_id|>
+<DALE-CHALL=11.34> 
+>>> Reference:
+Usually, adults with encephalitis have a fever that starts suddenly, a headache, confusion, and sometimes seizures. <|eot_id|>
+>>> Prediction:
+In adults with encephalitis, the symptoms are sudden and severe. The fever and headache begin suddenly, and the person may have confusion and seizures. 
+================================================================================
+
+>>> [Step 80] Prompt:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|> You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|>
+<|start_header_id|>user<|end_header_id|> INSTRUCTION: Simplify the following text such that its Dale-Chall Readability Score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the Dale-Chall value of the source text. 
+SOURCE TEXT: <DALE-CHALL=6.59> Some pain above the pubic bone or in the lower back may be present. <|eot_id|>
+EXPLANATION: The <DALE-CHALL=7.39> token specifies that the target Dale-Chall readability score should be approximately 7.39. Lower values indicate simpler text.
+<|start_header_id|>assistant<|end_header_id|>
+<DALE-CHALL=7.39> 
+>>> Reference:
+Some people will have pain above the pubic bone (lower abdomen) or in the lower back. <|eot_id|>
+>>> Prediction:
+In some people, a pain in the abdomen, the back, or the chest may be felt. 
+================================================================================
+
+>>> [Step 80] Prompt:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|> You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|>
+<|start_header_id|>user<|end_header_id|> INSTRUCTION: Simplify the following text such that its Dale-Chall Readability Score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the Dale-Chall value of the source text. 
+SOURCE TEXT: <DALE-CHALL=14.41> Dexamethasone at doses of 0.15, 0.3 and 0.6 mg/kg appear to be all equally effective. <|eot_id|>
+EXPLANATION: The <DALE-CHALL=13.36> token specifies that the target Dale-Chall readability score should be approximately 13.36. Lower values indicate simpler text.
+<|start_header_id|>assistant<|end_header_id|>
+<DALE-CHALL=13.36> 
+>>> Reference:
+Dexamethasone at doses of 0.15, 0.3 and 0.6 mg/kg appear to be all equally good. <|eot_id|>
+>>> Prediction:
+The dexamethasone at doses of 0.15, 0.3 and 0.6 mg/kg are all equally effective. 
+================================================================================
+
+>>> [Step 80] Prompt:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|> You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|>
+<|start_header_id|>user<|end_header_id|> INSTRUCTION: Simplify the following text such that its Dale-Chall Readability Score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the Dale-Chall value of the source text. 
+SOURCE TEXT: <DALE-CHALL=15.88> Ankles, knees, elbows, and wrists are usually involved. <|eot_id|>
+EXPLANATION: The <DALE-CHALL=15.88> token specifies that the target Dale-Chall readability score should be approximately 15.88. Lower values indicate simpler text.
+<|start_header_id|>assistant<|end_header_id|>
+<DALE-CHALL=15.88> 
+>>> Reference:
+Ankles, knees, elbows, and wrists are usually affected. <|eot_id|>
+>>> Prediction:
+It also affects the ankles, knees, elbows, and wrists. 
+================================================================================
+{'loss': 1.2629, 'grad_norm': 9.629240036010742, 'learning_rate': 8.95652813534831e-06, 'epoch': 0.9}
+{'eval_loss': 1.3080002069473267, 'eval_runtime': 8.1072, 'eval_samples_per_second': 21.462, 'eval_steps_per_second': 21.462, 'epoch': 0.9}
+
+>>> [Step 100] Prompt:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|> You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|>
+<|start_header_id|>user<|end_header_id|> INSTRUCTION: Simplify the following text such that its Dale-Chall Readability Score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the Dale-Chall value of the source text. 
+SOURCE TEXT: <DALE-CHALL=12.33> Cancer in this location is rare, and the most common type is papillary transitional cell carcinoma. <|eot_id|>
+EXPLANATION: The <DALE-CHALL=11.75> token specifies that the target Dale-Chall readability score should be approximately 11.75. Lower values indicate simpler text.
+<|start_header_id|>assistant<|end_header_id|>
+<DALE-CHALL=11.75> 
+>>> Reference:
+This cancer is very rare, and the most common type is papillary transitional cell carcinoma. <|eot_id|>
+>>> Prediction:
+In this location, cancer is rare, and the most common type is papillary transitional cell carcinoma. 
+================================================================================
+
+>>> [Step 100] Prompt:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|> You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|>
+<|start_header_id|>user<|end_header_id|> INSTRUCTION: Simplify the following text such that its Dale-Chall Readability Score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the Dale-Chall value of the source text. 
+SOURCE TEXT: <DALE-CHALL=10.35> She nearly dies giving birth to her and Edward 's half-vampire-half-human daughter, Renesmee. <|eot_id|>
+EXPLANATION: The <DALE-CHALL=12.81> token specifies that the target Dale-Chall readability score should be approximately 12.81. Lower values indicate simpler text.
+<|start_header_id|>assistant<|end_header_id|>
+<DALE-CHALL=12.81> 
+>>> Reference:
+Edward successfully delivers the baby girl, Renesmee (who is half vampire, half human), but Bella is in critical condition with a broken spine and the bleeding wounds from Edward 's surgery. <|eot_id|>
+>>> Prediction:
+In the first pregnancy, she nearly dies giving birth to her and Edward's half-vampire-half-human daughter, Renesmee. 
+================================================================================
+
+>>> [Step 100] Prompt:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|> You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|>
+<|start_header_id|>user<|end_header_id|> INSTRUCTION: Simplify the following text such that its Dale-Chall Readability Score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the Dale-Chall value of the source text. 
+SOURCE TEXT: <DALE-CHALL=13.7> A peripheral ring scotoma (detectable by visual field testing) widens gradually, and central vision may also be affected in advanced cases. <|eot_id|>
+EXPLANATION: The <DALE-CHALL=9.96> token specifies that the target Dale-Chall readability score should be approximately 9.96. Lower values indicate simpler text.
+<|start_header_id|>assistant<|end_header_id|>
+<DALE-CHALL=9.96> 
+>>> Reference:
+In the late stages of the disease, the person typically has only a small area of central vision and possibly no peripheral vision remaining (tunnel vision). Sometimes in late stages the macula, the area of the retina responsible for central vision, swells. This swelling is called macular edema and affects central vision. <|eot_id|>
+>>> Prediction:
+Many people with peripheral or central vision loss have a ring of loss in their vision. 
+================================================================================
+
+>>> [Step 100] Prompt:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|> You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|>
+<|start_header_id|>user<|end_header_id|> INSTRUCTION: Simplify the following text such that its Dale-Chall Readability Score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the Dale-Chall value of the source text. 
+SOURCE TEXT: <DALE-CHALL=11.23> Modern medicine, both conventional and alternative, recognises that the different rheumatic disorders have different causes ( and several of them have multiple causes ) and require different kinds of treatment. <|eot_id|>
+EXPLANATION: The <DALE-CHALL=9.98> token specifies that the target Dale-Chall readability score should be approximately 9.98. Lower values indicate simpler text.
+<|start_header_id|>assistant<|end_header_id|>
+<DALE-CHALL=9.98> 
+>>> Reference:
+Modern medicine, both conventional and complementary, shows that the different rheumatic disorders have different causes ( and several of them have more than one ) and need different kinds of treatment. <|eot_id|>
+>>> Prediction:
+In the past, rheumatic fever was thought to be caused by a single bacterium, but it is now known that it is caused by a group of bacteria called the group A beta-hemolytic streptococcus. 
+================================================================================
+{'loss': 0.9049, 'grad_norm': 9.873079299926758, 'learning_rate': 8.003711321189895e-06, 'epoch': 1.12}
+{'eval_loss': 1.357549786567688, 'eval_runtime': 8.1079, 'eval_samples_per_second': 21.461, 'eval_steps_per_second': 21.461, 'epoch': 1.12}
+
+>>> [Step 120] Prompt:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|> You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|>
+<|start_header_id|>user<|end_header_id|> INSTRUCTION: Simplify the following text such that its Dale-Chall Readability Score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the Dale-Chall value of the source text. 
+SOURCE TEXT: <DALE-CHALL=10.45> Flaccid penis length is a poor estimate of erect length. <|eot_id|>
+EXPLANATION: The <DALE-CHALL=10.45> token specifies that the target Dale-Chall readability score should be approximately 10.45. Lower values indicate simpler text.
+<|start_header_id|>assistant<|end_header_id|>
+<DALE-CHALL=10.45> 
+>>> Reference:
+Flaccid length is not a reliable indication of erect length. <|eot_id|>
+>>> Prediction:
+The flaccid penis is a poor estimate of the erect penis. 
+================================================================================
+
+>>> [Step 120] Prompt:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|> You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|>
+<|start_header_id|>user<|end_header_id|> INSTRUCTION: Simplify the following text such that its Dale-Chall Readability Score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the Dale-Chall value of the source text. 
+SOURCE TEXT: <DALE-CHALL=12.45> Lifestyle changes have been shown to be effective in reducing (and in the case of diet, reversing) coronary disease: In people with coronary artery disease, aerobic exercise can reduce the risk of mortality. <|eot_id|>
+EXPLANATION: The <DALE-CHALL=9.36> token specifies that the target Dale-Chall readability score should be approximately 9.36. Lower values indicate simpler text.
+<|start_header_id|>assistant<|end_header_id|>
+<DALE-CHALL=9.36> 
+>>> Reference:
+Most people with coronary heart disease can feel healthy for years before they start experiencing symptoms. <|eot_id|>
+>>> Prediction:
+The lifestyle modifications that have been shown to be effective in reducing (and in the case of diet, reversing) coronary artery disease are: In people with coronary artery disease, aerobic exercise can reduce the risk of mortality. 
+================================================================================
+
+>>> [Step 120] Prompt:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|> You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|>
+<|start_header_id|>user<|end_header_id|> INSTRUCTION: Simplify the following text such that its Dale-Chall Readability Score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the Dale-Chall value of the source text. 
+SOURCE TEXT: <DALE-CHALL=11.1> In adults, lassitude, weakness, and anorexia are most common. <|eot_id|>
+EXPLANATION: The <DALE-CHALL=7.68> token specifies that the target Dale-Chall readability score should be approximately 7.68. Lower values indicate simpler text.
+<|start_header_id|>assistant<|end_header_id|>
+<DALE-CHALL=7.68> 
+>>> Reference:
+Other people do not develop symptoms of celiac until adulthood. Adults may have digestive symptoms or other symptoms. Many adults have no digestive symptoms at all. Most affected adults have weakness and loss of appetite. <|eot_id|>
+>>> Prediction:
+He felt weak, tired, and hungry. 
+================================================================================
+
+>>> [Step 120] Prompt:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|> You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|>
+<|start_header_id|>user<|end_header_id|> INSTRUCTION: Simplify the following text such that its Dale-Chall Readability Score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the Dale-Chall value of the source text. 
+SOURCE TEXT: <DALE-CHALL=13.02> Because most Plasmodium is resistant to one or more medications, one of three medications-mefloquine (Lariam), doxycycline (available generically), or the combination of atovaquone and proguanil hydrochloride (Malarone) - is frequently needed. <|eot_id|>
+EXPLANATION: The <DALE-CHALL=11.73> token specifies that the target Dale-Chall readability score should be approximately 11.73. Lower values indicate simpler text.
+<|start_header_id|>assistant<|end_header_id|>
+<DALE-CHALL=11.73> 
+>>> Reference:
+Some Plasmodium are resistant. <|eot_id|>
+>>> Prediction:
+The first step is to treat the person with at least one of the following: Mefloquine (Lariam), doxycycline (available generically), or the combination of atovaquone and proguanil hydrochloride (Malarone). 
+================================================================================
+{'loss': 0.7012, 'grad_norm': 8.82573127746582, 'learning_rate': 6.8356285762726385e-06, 'epoch': 1.35}
+{'eval_loss': 1.3327289819717407, 'eval_runtime': 8.1104, 'eval_samples_per_second': 21.454, 'eval_steps_per_second': 21.454, 'epoch': 1.35}
+
+>>> [Step 140] Prompt:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|> You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|>
+<|start_header_id|>user<|end_header_id|> INSTRUCTION: Simplify the following text such that its Dale-Chall Readability Score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the Dale-Chall value of the source text. 
+SOURCE TEXT: <DALE-CHALL=12.15> It is a symptom usually associated with the common cold, pharyngitis, and chesty coughs, but it can also be found in patients with adenoiditis, otitis media, sinusitis or tonsillitis. <|eot_id|>
+EXPLANATION: The <DALE-CHALL=9.54> token specifies that the target Dale-Chall readability score should be approximately 9.54. Lower values indicate simpler text.
+<|start_header_id|>assistant<|end_header_id|>
+<DALE-CHALL=9.54> 
+>>> Reference:
+It is a symptom usually from the common cold and coughs, but can also be found in people with infections of the adenoids, middle ear, sinus or tonsils. <|eot_id|>
+>>> Prediction:
+These symptoms usually go away after a while. 
+================================================================================
+
+>>> [Step 140] Prompt:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|> You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|>
+<|start_header_id|>user<|end_header_id|> INSTRUCTION: Simplify the following text such that its Dale-Chall Readability Score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the Dale-Chall value of the source text. 
+SOURCE TEXT: <DALE-CHALL=15.26> The Nitrone-olefin cycloaddition is a ( 3+2 ) cycloaddition. <|eot_id|>
+EXPLANATION: The <DALE-CHALL=15.26> token specifies that the target Dale-Chall readability score should be approximately 15.26. Lower values indicate simpler text.
+<|start_header_id|>assistant<|end_header_id|>
+<DALE-CHALL=15.26> 
+>>> Reference:
+The Nitrone-olefin cycloaddition is a [ 3+2 ] cycloaddition. <|eot_id|>
+>>> Prediction:
+In the Nitrone-olefin cycloaddition, a nitrone reacts with an alkyne. 
+================================================================================
+
+>>> [Step 140] Prompt:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|> You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|>
+<|start_header_id|>user<|end_header_id|> INSTRUCTION: Simplify the following text such that its Dale-Chall Readability Score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the Dale-Chall value of the source text. 
+SOURCE TEXT: <DALE-CHALL=14.48> Toxic shock syndrome (TSS) is a potentially fatal illness caused by a bacterial toxin. <|eot_id|>
+EXPLANATION: The <DALE-CHALL=14.91> token specifies that the target Dale-Chall readability score should be approximately 14.91. Lower values indicate simpler text.
+<|start_header_id|>assistant<|end_header_id|>
+<DALE-CHALL=14.91> 
+>>> Reference:
+Toxic shock syndrome or TSS is a non-common, deadly infection caused by toxins from bacteria. <|eot_id|>
+>>> Prediction:
+The bacteria that causes toxic shock syndrome is a toxin that causes the symptoms of TSS. 
+================================================================================
+
+>>> [Step 140] Prompt:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|> You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|>
+<|start_header_id|>user<|end_header_id|> INSTRUCTION: Simplify the following text such that its Dale-Chall Readability Score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the Dale-Chall value of the source text. 
+SOURCE TEXT: <DALE-CHALL=12.03> Patients with osteoporosis are asymptomatic unless a fracture has occurred. <|eot_id|>
+EXPLANATION: The <DALE-CHALL=11.57> token specifies that the target Dale-Chall readability score should be approximately 11.57. Lower values indicate simpler text.
+<|start_header_id|>assistant<|end_header_id|>
+<DALE-CHALL=11.57> 
+>>> Reference:
+At first, osteoporosis causes no symptoms because bone density loss occurs very gradually. <|eot_id|>
+>>> Prediction:
+The first symptom of osteoporosis is a pain in the lower back. 
+================================================================================
+{'loss': 0.6009, 'grad_norm': 12.797904968261719, 'learning_rate': 5.53599247893724e-06, 'epoch': 1.58}
+{'eval_loss': 1.346358060836792, 'eval_runtime': 8.114, 'eval_samples_per_second': 21.444, 'eval_steps_per_second': 21.444, 'epoch': 1.58}
+{'train_runtime': 346.8844, 'train_samples_per_second': 12.203, 'train_steps_per_second': 0.761, 'train_loss': 1.136726529257638, 'epoch': 1.58}

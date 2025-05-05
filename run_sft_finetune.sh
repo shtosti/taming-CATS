@@ -36,7 +36,7 @@ PROMPTING_TYPE="vanilla"
 USER_PROMPT_ID="token_explanation"
 
 # --- metric settings ---
-METRIC_NAME="WORD_COMPRESSION"
+METRIC_NAME="ARI"
 
 # --- hyperparameters ---
 EPOCHS=3
