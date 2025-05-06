@@ -157,14 +157,15 @@ def show_examples(dataset, n=3, show_tokens=False):
 
         print("=" * 50)
 
-def load_and_prepare_dataset(dataset_name, tokenizer, args, reference_based_metric=False):
-
+def is_source_metric(args):
     if args.metric_name in ["FRE", "FKGL", "ARI", "DALE-CHALL"]:
-        reference_based_metric = True
+        return True
     elif args.metric_name in ["CHAR_COMPRESSION", "WORD_COMPRESSION", "SENTENCE_COMPRESSION"]:
-        reference_based_metric = False
+        return False
     else:
         raise KeyError(f"Invalid metric name!")
+
+def load_and_prepare_dataset(dataset_name, tokenizer, args, source_based_metric=False):
 
     control_tokens = load_json(args.control_tokens)
     system_prompts = load_json(args.system_prompts)
@@ -175,7 +176,7 @@ def load_and_prepare_dataset(dataset_name, tokenizer, args, reference_based_metr
     
     def process_instance(row):
         metric_key_in_dataset = metric_mapping[args.metric_name]
-        source_metric_value = row["source_metrics"][metric_key_in_dataset] if reference_based_metric else None
+        source_metric_value = row["source_metrics"][metric_key_in_dataset] if source_based_metric else None
         target_metric_value = row["target_metrics"][metric_key_in_dataset]
         reference_simplification = row["simplification_text"]
 
@@ -374,8 +375,10 @@ def main():
 
     print_gpu_info()
 
+    source_based_metric = is_source_metric(args)
+
     model, tokenizer = load_and_prepare_model(args.model_family, args.model_name, args.model_class, args.peft, args.max_length)
-    train_dataset, val_dataset, test_dataset = load_and_prepare_dataset(args.dataset_name, tokenizer, args)
+    train_dataset, val_dataset, test_dataset = load_and_prepare_dataset(args.dataset_name, tokenizer, args, source_based_metric=source_based_metric)
 
     print("First 10 input_ids:", train_dataset[0]["input_ids"][:10])
     print("First 10 labels:", train_dataset[0]["labels"][:10])
