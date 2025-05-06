@@ -47,25 +47,39 @@ def load_and_prepare_model(model_path, model_class, max_length):
     return model, tokenizer
 
 def is_source_metric(args):
-    if args.metric_name in ["FRE", "FKGL", "ARI", "DALE-CHALL"]:
+    if args.metric_name in ["FRE", "FKGL", "ARI", "DALE-CHALL", "Dale-Chall"]:
         return True
-    elif args.metric_name in ["CHAR_COMPRESSION", "WORD_COMPRESSION", "SENTENCE_COMPRESSION"]:
-        return False
-    else:
-        raise KeyError(f"Invalid metric name!")
+    return False
+    
+def is_compression_metric(args):
+    if args.metric_name in ["CHAR_COMPRESSION", "WORD_COMPRESSION", "SENTENCE_COMPRESSION"]:
+        return True
+    return False
 
-def load_and_prepare_test_set(dataset_name, tokenizer, max_length, control_tokens, system_prompts, user_prompts, metric_mapping, args, user_prompt_id, model_family, slice_test=None, source_based_metric=False):
+def load_and_prepare_test_set(dataset_name, tokenizer, max_length, control_tokens, system_prompts, user_prompts, metric_mapping, args, user_prompt_id, model_family, slice_test=None, source_based_metric=False, compression_metric=False):
     test_dataset = load_dataset_from_hf(dataset_name, split="test", slice=slice_test)
-
-    # Select random system and user prompts
+    
     system_id, system_prompt = select_random_system_prompt(system_prompts)
     
     def process_instance(row):
 
-        # Extract relevant values from the row
         metric_key_mapped = metric_mapping[args.metric_name]
-        source_metric_value = row["source_metrics"][metric_key_mapped] if source_based_metric else None
-        target_metric_value = row["target_metrics"][metric_key_mapped]
+
+        if source_based_metric:
+            source_metric_value = row["source_metrics"][metric_key_mapped]
+            target_metric_value = row["target_metrics"][metric_key_mapped]
+        else:
+            source_metric_value = None
+            target_metric_value = None
+
+        if compression_metric:
+            if args.metric_name == "WORD_COMPRESSION":
+                target_metric_value = row["target_metrics"]["word_count"] / row["source_metrics"]["word_count"]
+            if args.metric_name == "CHAR_COMPRESSION":
+                target_metric_value = row["target_metrics"]["char_count"] / row["source_metrics"]["char_count"]
+            if args.metric_name == "SENTENCE_COMPRESSION":
+                target_metric_value = row["target_metrics"]["sent_count"] / row["source_metrics"]["sent_count"]
+
         reference_simplification = row["simplification_text"]
         
         # Dynamic explanation and examples if needed
@@ -112,7 +126,7 @@ def load_and_prepare_test_set(dataset_name, tokenizer, max_length, control_token
     
     return test_dataset
 
-def run_inference(args, metric_mapping, model, tokenizer, test_dataset, batch_size=4, device="cuda", max_length=512, max_new_tokens=511, source_based_metric=False):
+def run_inference(args, metric_mapping, model, tokenizer, test_dataset, batch_size=4, device="cuda", max_length=512, max_new_tokens=511, source_based_metric=False, compression_metric=False):
     model.eval()
     predictions = []
     
@@ -154,27 +168,41 @@ def run_inference(args, metric_mapping, model, tokenizer, test_dataset, batch_si
             for item, pred in zip(batch, decoded_preds):
                 prediction_metrics = Metrics(input_text=pred.strip(), reference_text=item["simplification_text"], source_text=item["source_text"])
                 computed_prediction_metrics = prediction_metrics.compute_metrics()
-                if source_based_metric:
-                    source_metrics = Metrics(input_text=item["source_text"])
-                    computed_source_metrics = source_metrics.compute_metrics()
+                source_metrics = Metrics(input_text=item["source_text"])
+                computed_source_metrics = source_metrics.compute_metrics()
                 reference_metrics = Metrics(input_text=item["simplification_text"], source_text=item["source_text"])
                 computed_reference_metrics = reference_metrics.compute_metrics()
+
+                prediction_char_compression = round(computed_prediction_metrics["char_count"] / computed_source_metrics["char_count"], 1)
+                prediction_word_compression = round(computed_prediction_metrics["word_count"] / computed_source_metrics["word_count"], 1)
+                prediction_sent_compression = round(computed_prediction_metrics["sent_count"] / computed_source_metrics["sent_count"], 1)
+                computed_prediction_metrics["CHAR_COMPRESSION"] = prediction_char_compression
+                computed_prediction_metrics["WORD_COMPRESSION"] = prediction_word_compression
+                computed_prediction_metrics["SENTENCE_COMPRESSION"] = prediction_sent_compression
+
+                reference_char_compression = round(computed_reference_metrics["char_count"] / computed_source_metrics["char_count"], 1)
+                reference_word_compression = round(computed_reference_metrics["word_count"] / computed_source_metrics["word_count"], 1)
+                reference_sent_compression = round(computed_reference_metrics["sent_count"] / computed_source_metrics["sent_count"], 1)
+                computed_reference_metrics["CHAR_COMPRESSION"] = reference_char_compression
+                computed_reference_metrics["WORD_COMPRESSION"] = reference_word_compression
+                computed_reference_metrics["SENTENCE_COMPRESSION"] = reference_sent_compression
+
                 predictions.append({
                     "global_id": item["global_id"],
-                    "control_token": f"{args.metric_name}={item['target_metrics'][metric_mapping[args.metric_name]]}",
+                    "control_token": f"{args.metric_name}={computed_reference_metrics[metric_mapping[args.metric_name]]}",
                     "metric_name": args.metric_name,
-                    "reference_metric_value": item["target_metrics"][metric_mapping[args.metric_name]],
+                    "reference_metric_value": computed_reference_metrics[metric_mapping[args.metric_name]],
                     "source_text": item["source_text"],
                     "reference_simplification": item["simplification_text"],
                     "prediction": pred.strip(),
                     "prompt": item["prompt"],
+                    "source_metrics": computed_source_metrics,
                     "prediction_metrics": computed_prediction_metrics,
                     "reference_metrics": computed_reference_metrics,
                     })
                 if source_based_metric:
                     predictions.append({
-                        "source_metric_value": item["source_metrics"][metric_mapping[args.metric_name]],
-                        "source_metrics": computed_source_metrics
+                        "source_metric_value": item["source_metrics"][metric_mapping[args.metric_name]]
                     })
                 print(f"{pred.strip()[:50]}...")
 
@@ -221,8 +249,10 @@ def main():
     user_prompts = load_json(args.user_prompts)
     metric_mapping = load_json(args.metric_mapping)
 
-    # check whether source value exists
+    # check if source value exists
     source_based_metric = is_source_metric(args)
+    # check if compression rate needs to be calculated
+    compression_metric = is_compression_metric(args)
 
     # Load and prepare the test dataset with dynamic prompts
     test_dataset = load_and_prepare_test_set(
@@ -237,7 +267,8 @@ def main():
         args.user_prompt_id,
         args.model_family,
         args.slice_test,
-        source_based_metric=source_based_metric
+        source_based_metric=source_based_metric,
+        compression_metric=compression_metric
     )
 
     predictions = run_inference(
@@ -250,7 +281,8 @@ def main():
         device=args.device,
         max_length=args.max_length, 
         max_new_tokens=args.max_length - 1,
-        source_based_metric=source_based_metric
+        source_based_metric=source_based_metric,
+        compression_metric=compression_metric
         )
 
     # Save the predictions to a file
