@@ -2,9 +2,9 @@
 
 
 # ========== inference =========
-MODEL_PATH="models/Llama-3.2-1B-Instruct-Med-EASi-DALE-CHALL-base-token_explanation-20250505-1317-oqxznih4"
+MODEL_PATH="models/Llama-3.2-1B-Instruct-Med-EASi-CHAR_COMPRESSION-base-token_explanation-20250505-1434-3vecd8x3"
 USER_PROMPT_ID="token_explanation"
-METRIC_NAME="DALE-CHALL"
+METRIC_NAME="CHAR_COMPRESSION"
 DATASET_NAME="Med-EASi"
 # "llama", "mistral", "qwen", "base" (for prompt template)
 MODEL_FAMILY="base"
