@@ -93,7 +93,6 @@ def parse_args():
 
     return parser
 
-
 def main():
 
     print("--- Running evaluation...")
