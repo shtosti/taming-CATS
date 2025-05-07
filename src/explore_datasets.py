@@ -112,7 +112,6 @@ def plot_compression(data: list, metric: str, dataset_dir: str) -> None:
         label="Source vs Target"
         )
 
-    # Display the Pearson correlation and line as previously defined
     if len(source_lengths) > 1 and len(target_lengths) > 1:
         corr_coeff, p_value = pearsonr(source_lengths, target_lengths)
 
