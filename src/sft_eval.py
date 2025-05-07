@@ -3,6 +3,7 @@ import argparse
 import matplotlib.pyplot as plt
 import numpy as np
 from sklearn.metrics import mean_squared_error, mean_absolute_error
+from helpers.utils import get_correlation_data
 
 def load_json(file_path: str):
     """Load JSON from a file."""
@@ -105,7 +106,7 @@ def plot_metric_lines(source_vals, reference_vals, prediction_vals, metric_key, 
     plt.savefig(f"{output_dir}/{metric_key}_line.png", bbox_inches='tight', dpi=400)
     print(f"Line plot saved as {metric_key}_line.png")
 
-def safe_polyfit_plot(ax, x, y, color):
+def polyfit_plot(ax, x, y, color):
     x_np = np.array(x, dtype=np.float32)
     y_np = np.array(y, dtype=np.float32)
     mask = ~np.isnan(x_np) & ~np.isnan(y_np)
@@ -141,13 +142,29 @@ def plot_ctrl_attr_vs_metrics(predictions, metric_key, output_dir):
         (SARI, "SARI", "skyblue")
     ]
 
+    # get correlation data
+    for metric_vals, title, color in metric_groups:
+        correlation_data = get_correlation_data(control_attr_vals, metric_vals)
+        corr_coeff = correlation_data["correlation_coefficient"]
+        significance_level = correlation_data["significance_level"]
+        corr_strength = correlation_data["correlation_strength"]
+        significance_level = correlation_data["significance_level"]
+
     for ax, (metric_vals, title, color) in zip(axs.flat, metric_groups):
         ax.scatter(control_attr_vals, metric_vals, color=color, alpha=0.7, label=title)
-        safe_polyfit_plot(ax, control_attr_vals, metric_vals, color="black")
-        # ax.set_title(title)
+        polyfit_plot(ax, control_attr_vals, metric_vals, color="black")
+
+        # Compute correlation
+        correlation_data = get_correlation_data(control_attr_vals, metric_vals)
+        corr_coeff = correlation_data["correlation_coefficient"]
+        p_value = correlation_data["p_value"]
+        significance_level = correlation_data["significance_level"]
+        corr_strength = correlation_data["correlation_strength"]
+
+        ax.set_title(significance_level)
         ax.set_xlabel(metric_key)
         ax.set_ylabel(title)
-        # ax.legend()
+        ax.text(0.05, 0.85, f"p={p_value:.2f}\nr={corr_coeff:.2f} ({corr_strength})", transform=ax.transAxes, fontsize=10)
 
     plt.tight_layout()
     plt.savefig(f"{output_dir}/{metric_key}_vs_metrics.png", bbox_inches='tight', dpi=400)
@@ -186,17 +203,31 @@ def plot_errors_vs_metrics(predictions, metric_key_mapped, metric_key, output_di
         abs_errors_capped = cap_outliers(abs_errors)
         sq_errors_capped = cap_outliers(sq_errors)
 
+        # compute correlations
+        correlation_data_abs = get_correlation_data(x_vals, abs_errors_capped)
+        correlation_data_sq = get_correlation_data(x_vals, sq_errors_capped)
+        corr_coeff_abs = correlation_data_abs["correlation_coefficient"]
+        p_value_abs = correlation_data_abs["p_value"]
+        significance_level_abs = correlation_data_abs["significance_level"]
+        corr_strength_abs = correlation_data_abs["correlation_strength"]
+        corr_coeff_sq = correlation_data_sq["correlation_coefficient"]
+        p_value_sq = correlation_data_sq["p_value"]
+        significance_level_sq = correlation_data_sq["significance_level"]
+        corr_strength_sq = correlation_data_sq["correlation_strength"]
+
         ax_abs.scatter(x_vals, abs_errors_capped, alpha=0.7, color="skyblue")
-        safe_polyfit_plot(ax_abs, x_vals, abs_errors_capped, color="black")
-        # ax_abs.set_title(f"Abs Error vs {label}")
+        polyfit_plot(ax_abs, x_vals, abs_errors_capped, color="black")
         ax_abs.set_xlabel(label)
         ax_abs.set_ylabel(f"Absolute Error ({metric_key_mapped})")
+        ax_abs.set_title(f"{significance_level_abs}")
+        ax_abs.text(0.05, 0.85, f"p={p_value_abs:.2f}\nr={corr_coeff_abs:.2f} ({corr_strength_abs})", transform=ax_abs.transAxes, fontsize=10)
 
         ax_sq.scatter(x_vals, sq_errors_capped, alpha=0.7, color="skyblue")
-        safe_polyfit_plot(ax_sq, x_vals, sq_errors_capped, color="black")
-        # ax_sq.set_title(f"Squared Error vs {label}")
+        polyfit_plot(ax_sq, x_vals, sq_errors_capped, color="black")
+        ax_sq.set_title(f"{significance_level_sq}")
         ax_sq.set_xlabel(label)
         ax_sq.set_ylabel(f"Squared Error ({metric_key_mapped})")
+        ax_sq.text(0.05, 0.85, f"p={p_value_sq:.2f}\nr={corr_coeff_sq:.2f} ({corr_strength_sq})", transform=ax_sq.transAxes, fontsize=10)
 
     fig_abs.tight_layout()
     fig_sq.tight_layout()
