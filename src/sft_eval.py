@@ -58,6 +58,11 @@ def plot_metric_scatter(source_vals, reference_vals, prediction_vals, metric_key
 
     plt.figure(figsize=(6, 5))
 
+    # Cap outliers
+    source_vals = cap_outliers(source_vals) if use_source else []
+    reference_vals = cap_outliers(reference_vals)
+    prediction_vals = cap_outliers(prediction_vals)
+
     if use_source:
         plt.scatter(x, source_vals, color="orchid", label="Source", alpha=0.7)
         source_trend = np.poly1d(np.polyfit(x, source_vals, 1))
@@ -126,13 +131,13 @@ def plot_ctrl_attr_vs_metrics(predictions, metric_key, output_dir):
         COMET.append(item["prediction_metrics"].get("COMET"))
         SARI.append(item["prediction_metrics"].get("SARI"))
 
-    fig, axs = plt.subplots(3, 2, figsize=(8, 10))
+    fig, axs = plt.subplots(2, 3, figsize=(10, 6))
     metric_groups = [
         (BLEU_to_source, "BLEU to Source", "skyblue"),
         (BLEU_to_ref, "BLEU to Reference", "skyblue"),
+        (COMET, "COMET", "skyblue"),
         (BERTScore_to_source, "BERTScore to Source", "skyblue"),
         (BERTScore_to_ref, "BERTScore to Reference", "skyblue"),
-        (COMET, "COMET", "skyblue"),
         (SARI, "SARI", "skyblue")
     ]
 
@@ -141,12 +146,20 @@ def plot_ctrl_attr_vs_metrics(predictions, metric_key, output_dir):
         safe_polyfit_plot(ax, control_attr_vals, metric_vals, color="black")
         # ax.set_title(title)
         ax.set_xlabel(metric_key)
-        ax.set_ylabel(title.split()[0])
+        ax.set_ylabel(title)
         # ax.legend()
 
     plt.tight_layout()
     plt.savefig(f"{output_dir}/{metric_key}_vs_metrics.png", bbox_inches='tight', dpi=400)
     print(f"Control attribute vs metrics plot saved as {metric_key}_ctrl_attr_vs_metrics.png")
+
+def cap_outliers(y_vals, lower_pct=1, upper_pct=99):
+    if len(y_vals) == 0:
+        return y_vals
+    y_np = np.array(y_vals, dtype=np.float32)
+    lower = np.percentile(y_np, lower_pct)
+    upper = np.percentile(y_np, upper_pct)
+    return np.clip(y_np, lower, upper)
 
 def plot_errors_vs_metrics(predictions, metric_key_mapped, metric_key, output_dir):
 
@@ -160,20 +173,12 @@ def plot_errors_vs_metrics(predictions, metric_key_mapped, metric_key, output_di
                 abs_errors.append(loss_data["absolute_error"])
                 sq_errors.append(loss_data["squared_error"])
         return metric_vals, abs_errors, sq_errors
-    
-    def cap_outliers(y_vals, lower_pct=1, upper_pct=99):
-        if len(y_vals) == 0:
-            return y_vals
-        y_np = np.array(y_vals, dtype=np.float32)
-        lower = np.percentile(y_np, lower_pct)
-        upper = np.percentile(y_np, upper_pct)
-        return np.clip(y_np, lower, upper)
 
-    metrics = ["BLEU", "BLEU_ref", "BERTScore", "BERTScore_ref", "COMET", "SARI"]
-    labels = ["BLEU to Source", "BLEU to Reference", "BERTScore to Source", "BERTScore to Reference", "COMET", "SARI"]
+    metrics = ["BLEU", "BLEU_ref", "COMET", "BERTScore", "BERTScore_ref", "SARI"]
+    labels = ["BLEU to Source", "BLEU to Reference", "COMET", "BERTScore to Source", "BERTScore to Reference", "SARI"]
 
-    fig_abs, axs_abs = plt.subplots(3, 2, figsize=(8, 10))
-    fig_sq, axs_sq = plt.subplots(3, 2, figsize=(8, 10))
+    fig_abs, axs_abs = plt.subplots(2, 3, figsize=(10, 6))
+    fig_sq, axs_sq = plt.subplots(2, 3, figsize=(10, 6))
 
     for (ax_abs, ax_sq, metric_name, label) in zip(axs_abs.flat, axs_sq.flat, metrics, labels):
         x_vals, abs_errors, sq_errors = extract_errors_and_metric(predictions, metric_name, metric_key)

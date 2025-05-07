@@ -1,8 +1,8 @@
 #!/bin/bash
 
-INPUT_DIR="output/models/Llama-3.2-1B-Instruct-Med-EASi-DALE-CHALL-base-token_explanation-20250505-1317-oqxznih4"
+INPUT_DIR="output/models/Llama-3.2-1B-Instruct-Med-EASi-ARI-base-token_explanation-20250505-1427-3kmdipyx"
 INPUT_FILE="$INPUT_DIR/output.json"
-METRIC_NAME="DALE-CHALL"
+METRIC_NAME="ARI"
 
 
 
