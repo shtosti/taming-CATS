@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from sklearn.metrics import mean_squared_error, mean_absolute_error
 from helpers.utils import get_correlation_data
+import pandas as pd
 
 def load_json(file_path: str):
     """Load JSON from a file."""
@@ -48,10 +49,12 @@ def compute_mean_losses(reference_vals, prediction_vals):
 def compute_per_sample_losses(reference_vals, prediction_vals):
     mse = []
     mae = []
+    real_errors = []
     for ref, pred in zip(reference_vals, prediction_vals):
         mse.append(mean_squared_error([ref], [pred]))
         mae.append(mean_absolute_error([ref], [pred]))
-    return mse, mae
+        real_errors.append(pred - ref)
+    return mse, mae, real_errors
 
 def plot_metric_scatter(source_vals, reference_vals, prediction_vals, metric_key, output_dir, use_source=False):
 
@@ -236,6 +239,43 @@ def plot_errors_vs_metrics(predictions, metric_key_mapped, metric_key, output_di
     fig_sq.savefig(f"{output_dir}/{metric_key_mapped}_sq_error_vs_metrics.png", bbox_inches='tight', dpi=400)
     print(f"Error-vs-metrics plots saved.")
 
+def plot_error_distribution(real_errors, metric_key, output_dir):
+    plt.figure(figsize=(6, 4))
+    # real_errors = cap_outliers(real_errors, lower_pct=1, upper_pct=99)
+    plt.hist(real_errors, bins=20, color="skyblue", edgecolor="black")
+    plt.axvline(0, color='black', linestyle='--')
+    plt.xlabel("Error (prediction - reference)")
+    plt.ylabel("Frequency")
+    plt.title(f"{metric_key} Error Distribution")
+    plt.tight_layout()
+    plt.grid(True)
+    plt.savefig(f"{output_dir}/{metric_key}_real_error_hist.png", bbox_inches='tight', dpi=400)
+    print(f"Real error distribution plot saved as {metric_key}_real_error_hist.png")
+
+def plot_error_std_vs_reference(reference_vals, real_errors, metric_key, output_dir, num_bins=10):
+    import pandas as pd
+
+    # Create DataFrame
+    df = pd.DataFrame({
+        "reference": reference_vals,
+        "error": real_errors
+    })
+    df["bin"] = pd.qcut(df["reference"], q=num_bins, duplicates='drop')
+    std_by_bin = df.groupby("bin")["error"].std()
+    bin_labels = [f"{interval.left:.1f}–{interval.right:.1f}" for interval in std_by_bin.index]
+
+    plt.figure(figsize=(8, 4))
+    plt.bar(bin_labels, std_by_bin.values, color="skyblue", edgecolor="black")
+    plt.xticks(rotation=45, ha="right")
+    plt.ylabel("error std")
+    plt.xlabel(f"{metric_key}")
+    # plt.title(f"Error Variability by Reference {metric_key}")
+    plt.tight_layout()
+    plt.grid(True, axis='y', linestyle="--", alpha=0.5)
+    plt.savefig(f"{output_dir}/{metric_key}_error_std_by_ref_bin.png", bbox_inches='tight', dpi=400)
+    print(f"STD of error by reference bin saved as {metric_key}_error_std_by_ref_bin.png")
+
+
 def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument("--input_file", type=str, required=True, help="Path to JSON file with predictions")
@@ -262,21 +302,28 @@ def main():
     source_vals, reference_vals, prediction_vals = extract_metric_values(predictions, metric_key_mapped, use_source=use_source)
 
     mse, mae = compute_mean_losses(reference_vals, prediction_vals)
-    per_sample_mse, per_sample_mae = compute_per_sample_losses(reference_vals, prediction_vals)
+    per_sample_mse, per_sample_mae, per_sample_real_loss = compute_per_sample_losses(reference_vals, prediction_vals)
+    std_error = np.std(per_sample_real_loss)
+    var_error = np.var(per_sample_real_loss)
+
     print(f"--- {metric_key_mapped} losses:")
     print(f"Mean Squared Error (MSE): {mse}")
     print(f"Mean Absolute Error (MAE): {mae}")
+    print(f"Standard Deviation of Errors: {std_error}")
+    print(f"Variance of Errors: {var_error}")
     print()
 
     loss_output = {
         "metric": args.metric_key,
         "MSE": mse,
-        "MAE": mae
+        "MAE": mae,
+        "std_error": std_error,
+        "var_error": var_error
     }
 
-    with open(f"{args.output_dir}/losses.json", "w") as f:
+    with open(f"{args.output_dir}/stats.json", "w") as f:
         json.dump(loss_output, f, indent=4)
-    print(f"Saved loss values to losses.json")
+    print(f"Saved loss values to stats.json")
 
     for i, item in enumerate(predictions):
         if i < len(reference_vals):
@@ -284,7 +331,8 @@ def main():
                 "reference": reference_vals[i],
                 "prediction": prediction_vals[i],
                 "squared_error": per_sample_mse[i],
-                "absolute_error": per_sample_mae[i]
+                "absolute_error": per_sample_mae[i],
+                "real_loss": per_sample_real_loss[i]
             }
 
     with open(args.input_file, "w", encoding="utf-8") as f:
@@ -295,6 +343,8 @@ def main():
     plot_metric_lines(source_vals, reference_vals, prediction_vals, metric_key_mapped, args.output_dir, use_source=use_source)
     plot_ctrl_attr_vs_metrics(predictions, metric_key_mapped, args.output_dir)
     plot_errors_vs_metrics(predictions, metric_key_mapped, args.metric_key, args.output_dir)
+    plot_error_distribution(per_sample_real_loss, metric_key_mapped, args.output_dir)
+    plot_error_std_vs_reference(reference_vals, per_sample_real_loss, metric_key_mapped, args.output_dir)
 
     print(f"\nAll plots saved to {args.output_dir}")
     print("\n--- Evaluation complete.")
