@@ -27,8 +27,8 @@ def extract_metric_values(predictions, metric_key, use_source=False):
     prediction_vals = []
 
     for item in predictions:
-        # Extract from nested metrics
         if use_source:
+            print(f"Source metrics: {item['source_metrics']}")
             source_val = item["source_metrics"].get(metric_key)
         reference_val = item["reference_metrics"].get(metric_key)
         prediction_val = item["prediction_metrics"].get(metric_key)

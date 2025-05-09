@@ -182,16 +182,16 @@ def run_inference(args, metric_mapping, model, tokenizer, test_dataset, batch_si
                 prediction_char_compression = round(computed_prediction_metrics["char_count"] / computed_source_metrics["char_count"], 1)
                 prediction_word_compression = round(computed_prediction_metrics["word_count"] / computed_source_metrics["word_count"], 1)
                 prediction_sent_compression = round(computed_prediction_metrics["sent_count"] / computed_source_metrics["sent_count"], 1)
-                computed_prediction_metrics["CHAR_COMPRESSION"] = prediction_char_compression
-                computed_prediction_metrics["WORD_COMPRESSION"] = prediction_word_compression
-                computed_prediction_metrics["SENTENCE_COMPRESSION"] = prediction_sent_compression
+                computed_prediction_metrics["char_compression_rate"] = prediction_char_compression
+                computed_prediction_metrics["word_compression_rate"] = prediction_word_compression
+                computed_prediction_metrics["sentence_compression_rate"] = prediction_sent_compression
 
                 reference_char_compression = round(computed_reference_metrics["char_count"] / computed_source_metrics["char_count"], 1)
                 reference_word_compression = round(computed_reference_metrics["word_count"] / computed_source_metrics["word_count"], 1)
                 reference_sent_compression = round(computed_reference_metrics["sent_count"] / computed_source_metrics["sent_count"], 1)
-                computed_reference_metrics["CHAR_COMPRESSION"] = reference_char_compression
-                computed_reference_metrics["WORD_COMPRESSION"] = reference_word_compression
-                computed_reference_metrics["SENTENCE_COMPRESSION"] = reference_sent_compression
+                computed_reference_metrics["char_compression_rate"] = reference_char_compression
+                computed_reference_metrics["word_compression_rate"] = reference_word_compression
+                computed_reference_metrics["sentence_compression_rate"] = reference_sent_compression
 
                 predictions.append({
                     "global_id": item["global_id"],
