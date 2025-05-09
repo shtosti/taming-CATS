@@ -2,12 +2,13 @@
 
 
 # ========== inference =========
-MODEL_PATH="models/Llama-3.2-1B-Instruct-Med-EASi-CHAR_COMPRESSION-base-token_explanation-20250505-1434-3vecd8x3"
-USER_PROMPT_ID="token_explanation"
-METRIC_NAME="CHAR_COMPRESSION"
+MODEL_PATH="models/Qwen2.5-1.5B-Instruct-Med-EASi-FKGL-token_explanation_examples-20250430-2013-0s2ly6g9"
+USER_PROMPT_ID="token_explanation_examples"
+METRIC_NAME="FKGL"
 DATASET_NAME="Med-EASi"
 # "llama", "mistral", "qwen", "base" (for prompt template)
 MODEL_FAMILY="base"
+MODEL_CLASS="auto"
 
 
 
@@ -18,7 +19,7 @@ mkdir -p "$OUTPUT_DIR"  # Ensure the directory exists
 python src/sft_inference.py \
   --model_path "$MODEL_PATH"\
   --dataset_name "$DATASET_NAME" \
-  --model_class llama \
+  --model_class "$MODEL_CLASS" \
   --model_family "$MODEL_FAMILY" \
   --max_length 512 \
   --batch_size 4 \

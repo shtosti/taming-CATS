@@ -1,0 +1,809 @@
+Fri May  9 18:34:22 2025       
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 560.35.05              Driver Version: 560.35.05      CUDA Version: 12.6     |
+|-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  NVIDIA A100-SXM4-80GB          Off |   00000000:88:00.0 Off |                    0 |
+| N/A   25C    P0             57W /  400W |       1MiB /  81920MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+                                                                                         
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI        PID   Type   Process name                              GPU Memory |
+|        ID   ID                                                               Usage      |
+|=========================================================================================|
+|  No running processes found                                                             |
++-----------------------------------------------------------------------------------------+
+torch.cuda.is_bf16_supported: True
+Transformers version: 4.51.0
+Python path: /home/hhubar/data/conda/envs/sft/bin/python
+Not using PEFT...
+
+Run arguments:
+Namespace(model_class='auto', model_family='qwen', model_name='Qwen/Qwen2.5-1.5B-Instruct', dataset_name='Med-EASi', slice_train=-1, slice_val=-1, slice_test=-1, batch_size=8, eval_batch_size=1, gradient_accumulation_steps=2, learning_rate=1e-05, weight_decay=0.01, epochs=3, max_length=512, logging_steps=20, wandb_project_name='ATS_with_control_tokens', wandb_entity='shtosti', log_every=20, seed=42, patience=3, prompting_type='vanilla', user_prompt_id='token_explanation_examples', metric_name='WORD_COMPRESSION', control_tokens='data/prompts/control_tokens.json', system_prompts='data/prompts/system_prompts.json', user_prompts='data/prompts/user_prompts.json', metric_mapping='data/metric_mapping.json', peft=False)
+
+Saving to: ./models/Qwen2.5-1.5B-Instruct-Med-EASi-WORD_COMPRESSION-qwen-token_explanation_examples-20250509-1834-nickwygb
+
+*** Finetuning Qwen2.5-1.5B-Instruct with Med-EASi ***
+
+CUDA available: True
+Number of GPUs: 1
+GPU name: NVIDIA A100-SXM4-80GB
+--- DEBUG ---
+trainable params:
+Trainable params: 1,543,298,048 / 1,543,298,048 (100.00%)
+--- tokenizer pad_token_id: 151643
+--- tokenizer eos_token_id: 151645
+--- special tokens:
+<|im_start|>: 151644
+<|im_end|>: 151645
+<|object_ref_start|>: 151646
+<|object_ref_end|>: 151647
+<|box_start|>: 151648
+<|box_end|>: 151649
+<|quad_start|>: 151650
+<|quad_end|>: 151651
+<|vision_start|>: 151652
+<|vision_end|>: 151653
+<|vision_pad|>: 151654
+<|image_pad|>: 151655
+<|video_pad|>: 151656
+train:	 Inspect the dataset format:
+ {'global_id': ['medeasi_000457'], 'source_text': ['The face is flushed, and the eyes are injected.'], 'source_metrics': [{'FRE': 96.18, 'ARI': 3.5, 'FKGL': 2.1, 'Dale-Chall': 9.35, 'char_count': 47, 'alphanum_count': 37, 'word_count': 11, 'sentence_count': 1}], 'metadata': [{'dataset': 'medeasi', 'experiment_split': '', 'domain': 'medical', 'language': 'en', 'annotation': 'human', 'level': 'sentence'}], 'simplification_text': ['The face is flushed.'], 'target_metrics': [{'FRE': 118.18, 'ARI': 0.6, 'FKGL': -2.3, 'Dale-Chall': 7.78, 'char_count': 20, 'alphanum_count': 16, 'word_count': 5, 'sentence_count': 1, 'char_compression_rate': 0.43, 'word_compression_rate': 0.45, 'sentence_compression_rate': 1.0, 'BLEU': 21.297646969725616, 'BERTScore': 0.9398951530456543}], 'simplification_version': [1], 'grade_level': [-1], 'simplification_dimensions': [{'linguistic': {'lexical': False, 'syntactic': False}}]}
+validation:	 Inspect the dataset format:
+ {'global_id': ['medeasi_001210'], 'source_text': ['This increased risk is greatest at two to three months of age.'], 'source_metrics': [{'FRE': 93.14, 'ARI': 4.6, 'FKGL': 3.3, 'Dale-Chall': 9.5, 'char_count': 62, 'alphanum_count': 50, 'word_count': 13, 'sentence_count': 1}], 'metadata': [{'dataset': 'medeasi', 'experiment_split': '', 'domain': 'medical', 'language': 'en', 'annotation': 'human', 'level': 'sentence'}], 'simplification_text': ['This risk is highest in infants who are two to three months old.'], 'target_metrics': [{'FRE': 92.12, 'ARI': 3.9, 'FKGL': 3.6, 'Dale-Chall': 9.14, 'char_count': 64, 'alphanum_count': 51, 'word_count': 14, 'sentence_count': 1, 'char_compression_rate': 1.03, 'word_compression_rate': 1.08, 'sentence_compression_rate': 1.0, 'BLEU': 22.718709780542323, 'BERTScore': 0.9562927484512329}], 'simplification_version': [1], 'grade_level': [-1], 'simplification_dimensions': [{'linguistic': {'lexical': False, 'syntactic': False}}]}
+test:	 Inspect the dataset format:
+ {'global_id': ['medeasi_000696'], 'source_text': ['Children may have six to twelve colds a year.'], 'source_metrics': [{'FRE': 104.64, 'ARI': 2.4, 'FKGL': 0.9, 'Dale-Chall': 5.84, 'char_count': 45, 'alphanum_count': 36, 'word_count': 10, 'sentence_count': 1}], 'metadata': [{'dataset': 'medeasi', 'experiment_split': '', 'domain': 'medical', 'language': 'en', 'annotation': 'human', 'level': 'sentence'}], 'simplification_text': ['Children may get six to twelve colds a year.'], 'target_metrics': [{'FRE': 104.64, 'ARI': 1.9, 'FKGL': 0.9, 'Dale-Chall': 5.84, 'char_count': 44, 'alphanum_count': 35, 'word_count': 10, 'sentence_count': 1, 'char_compression_rate': 0.98, 'word_compression_rate': 1.0, 'sentence_compression_rate': 1.0, 'BLEU': 70.71067811865478, 'BERTScore': 0.9896392822265625}], 'simplification_version': [1], 'grade_level': [-1], 'simplification_dimensions': [{'linguistic': {'lexical': False, 'syntactic': False}}]}
+
+
+ *** Before tokenization ***
+>>> train:
+
+Showing 1 example(s):
+
+Example 1 (index 1363)
+--- Prompt:
+ <|im_start|>system
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.
+<|im_end|>
+<|im_start|>user
+INSTRUCTION: Simplify the following text such that the length of the output text (number of words) relative to the source text is approximately equal to the ratio specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. 
+SOURCE TEXT: As in trigeminal neuralgia, paroxysmal attacks of unilateral brief, excruciating pain occur spontaneously or are precipitated when areas innervated by the glossopharyngeal nerve are stimulated (eg, by chewing, swallowing, coughing, talking, yawning, or sneezing). <|eot_id|>
+EXPLANATION: The <WORD_COMPRESSION=0.91> token specifies that the word-level compression rate should be around 0.91. Values less than 1 indicate text reduction. Values greater than 1 indicate text expansion. 
+EXAMPLES: 
+- The <WORD_COMPRESSION=1.2> token specifies that the word-level compression rate should be around 1.2, which means the number of words in the output text should be approximately 120% of the number of words in the original text. 
+-The <WORD_COMPRESSION=0.5> token specifies that the word-level compression rate should be around 0.5, which means the number of words in the output text should be approximately half (1/2) of the number of words in the original text. 
+- The <WORD_COMPRESSION=1.0> token specifies that the word-level compression rate should be around 1.0, which means the number of words in the output text should be approximately the same as the number of words in the original text.
+<|im_end|>
+<|im_start|>assistant
+<WORD_COMPRESSION=0.91> 
+--- Completion:
+ In glossopharyngeal neuralgia, attacks are brief and occur intermittently, but they cause excruciating pain. Attacks may be triggered by a particular action, such as chewing, swallowing, talking, yawning, coughing, or sneezing.
+<|im_end|>
+==================================================
+
+
+ *** After tokenization ***
+>>> train:
+
+Showing 1 example(s):
+
+Example 1 (index 426)
+--- Prompt:
+ <|im_start|>system
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.
+<|im_end|>
+<|im_start|>user
+INSTRUCTION: Simplify the following text such that the length of the output text (number of words) relative to the source text is approximately equal to the ratio specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. 
+SOURCE TEXT: This popular seventeenth century poem describes the plague doctor 's costume. <|eot_id|>
+EXPLANATION: The <WORD_COMPRESSION=0.67> token specifies that the word-level compression rate should be around 0.67. Values less than 1 indicate text reduction. Values greater than 1 indicate text expansion. 
+EXAMPLES: 
+- The <WORD_COMPRESSION=0.5> token specifies that the word-level compression rate should be around 0.5, which means the number of words in the output text should be approximately half (1/2) of the number of words in the original text. 
+-The <WORD_COMPRESSION=0.8> token specifies that the word-level compression rate should be around 0.8, which means the number of words in the output text should be approximately 80% of the number of words in the original text. 
+- The <WORD_COMPRESSION=1.0> token specifies that the word-level compression rate should be around 1.0, which means the number of words in the output text should be approximately the same as the number of words in the original text.
+<|im_end|>
+<|im_start|>assistant
+<WORD_COMPRESSION=0.67> 
+--- Completion:
+ It describes the plague doctor 's costume.
+<|im_end|>
+--- input_ids:
+ [151644, 8948, 198, 2610, 525, 264, 10950, 6203, 304, 1467, 15491, 2404, 13, 1446, 6923, 264, 43799, 2319, 315, 279, 1467, 1946, 553, 279, 1196, 13, 1446, 39721, 279, 1467, 4092, 311, 279, 11221, 2661, 553, 279, 1196, 13, 3197, 4588, 311, 39721, 264, 1467, 11, 6923, 1172, 279, 11223, 15491, 2404, 11, 2041, 894, 5107, 6042, 11, 8388, 476, 40841, 624, 151645, 198, 151644, 872, 198, 687, 57455, 25, 61242, 1437, 279, 2701, 1467, 1741, 429, 279, 3084, 315, 279, 2550, 1467, 320, 4082, 315, 4244, 8, 8674, 311, 279, 2530, 1467, 374, 13187, 6144, 311, 279, 11341, 5189, 304, 279, 2524, 3950, 21327, 2883, 311, 697, 7907, 15491, 2404, 13, 576, 2524, 3950, 702, 279, 2701, 3561, 25, 366, 44875, 35978, 28, 23832, 14276, 715, 42998, 15762, 25, 1096, 5411, 21373, 61555, 9294, 32794, 16555, 279, 54437, 10668, 364, 82, 31419, 13, 82639, 68, 354, 842, 91, 397, 3257, 94079, 3495, 25, 576, 366, 7227, 14969, 81663, 28, 15, 13, 21, 22, 29, 3950, 29102, 429, 279, 3409, 11591, 25111, 4379, 1265, 387, 2163, 220, 15, 13, 21, 22, 13, 24979, 2686, 1091, 220, 16, 13216, 1467, 13951, 13, 24979, 7046, 1091, 220, 16, 13216, 1467, 14461, 13, 715, 95875, 50, 25, 715, 12, 576, 366, 7227, 14969, 81663, 28, 15, 13, 20, 29, 3950, 29102, 429, 279, 3409, 11591, 25111, 4379, 1265, 387, 2163, 220, 15, 13, 20, 11, 892, 3363, 279, 1372, 315, 4244, 304, 279, 2550, 1467, 1265, 387, 13187, 4279, 320, 16, 14, 17, 8, 315, 279, 1372, 315, 4244, 304, 279, 4024, 1467, 13, 715, 65006, 366, 7227, 14969, 81663, 28, 15, 13, 23, 29, 3950, 29102, 429, 279, 3409, 11591, 25111, 4379, 1265, 387, 2163, 220, 15, 13, 23, 11, 892, 3363, 279, 1372, 315, 4244, 304, 279, 2550, 1467, 1265, 387, 13187, 220, 23, 15, 4, 315, 279, 1372, 315, 4244, 304, 279, 4024, 1467, 13, 715, 12, 576, 366, 7227, 14969, 81663, 28, 16, 13, 15, 29, 3950, 29102, 429, 279, 3409, 11591, 25111, 4379, 1265, 387, 2163, 220, 16, 13, 15, 11, 892, 3363, 279, 1372, 315, 4244, 304, 279, 2550, 1467, 1265, 387, 13187, 279, 1852, 438, 279, 1372, 315, 4244, 304, 279, 4024, 1467, 624, 151645, 198, 151644, 77091, 198, 27, 7227, 14969, 81663, 28, 15, 13, 21, 22, 29, 220, 2132, 16555, 279, 54437, 10668, 364, 82, 31419, 624, 151645, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643]
+--- labels:
+ [-100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, 2132, 16555, 279, 54437, 10668, 364, 82, 31419, 624, 151645, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100]
+==================================================
+********** DEBUG **********
+Train dataset columns: ['global_id', 'source_text', 'source_metrics', 'metadata', 'simplification_text', 'target_metrics', 'simplification_version', 'grade_level', 'simplification_dimensions', 'prompt', 'completion', 'system_prompt_id', 'user_prompt_id', 'metric_name', 'source_metric_value', 'target_metric_value', 'input_ids', 'labels', 'attention_mask']
+Validation dataset columns: ['global_id', 'source_text', 'source_metrics', 'metadata', 'simplification_text', 'target_metrics', 'simplification_version', 'grade_level', 'simplification_dimensions', 'prompt', 'completion', 'system_prompt_id', 'user_prompt_id', 'metric_name', 'source_metric_value', 'target_metric_value', 'input_ids', 'labels', 'attention_mask']
+Test dataset columns: ['global_id', 'source_text', 'source_metrics', 'metadata', 'simplification_text', 'target_metrics', 'simplification_version', 'grade_level', 'simplification_dimensions', 'prompt', 'completion', 'system_prompt_id', 'user_prompt_id', 'metric_name', 'source_metric_value', 'target_metric_value', 'input_ids', 'labels', 'attention_mask']
+First 10 input_ids: [151644, 8948, 198, 2610, 525, 264, 10950, 6203, 304, 1467]
+First 10 labels: [-100, -100, -100, -100, -100, -100, -100, -100, -100, -100]
+type of input_ids: <class 'list'>
+type of labels: <class 'list'>
+
+--- DEBUG: Tokenized fields ---
+--- Tokenizer vocab size: 151643
+--- input_ids: [151644, 8948, 198, 2610, 525, 264, 10950, 6203, 304, 1467, 15491, 2404, 13, 1446, 6923, 264, 43799, 2319, 315, 279, 1467, 1946, 553, 279, 1196, 13, 1446, 39721, 279, 1467, 4092, 311, 279, 11221, 2661, 553, 279, 1196, 13, 3197, 4588, 311, 39721, 264, 1467, 11, 6923, 1172, 279, 11223, 15491, 2404, 11, 2041, 894, 5107, 6042, 11, 8388, 476, 40841, 624, 151645, 198, 151644, 872, 198, 687, 57455, 25, 61242, 1437, 279, 2701, 1467, 1741, 429, 279, 3084, 315, 279, 2550, 1467, 320, 4082, 315, 4244, 8, 8674, 311, 279, 2530, 1467, 374, 13187, 6144, 311, 279, 11341, 5189, 304, 279, 2524, 3950, 21327, 2883, 311, 697, 7907, 15491, 2404, 13, 576, 2524, 3950, 702, 279, 2701, 3561, 25, 366, 44875, 35978, 28, 23832, 14276, 715, 42998, 15762, 25, 576, 3579, 374, 73720, 11, 323, 279, 6414, 525, 40672, 13, 82639, 68, 354, 842, 91, 397, 3257, 94079, 3495, 25, 576, 366, 7227, 14969, 81663, 28, 15, 13, 19, 20, 29, 3950, 29102, 429, 279, 3409, 11591, 25111, 4379, 1265, 387, 2163, 220, 15, 13, 19, 20, 13, 24979, 2686, 1091, 220, 16, 13216, 1467, 13951, 13, 24979, 7046, 1091, 220, 16, 13216, 1467, 14461, 13, 715, 95875, 50, 25, 715, 12, 576, 366, 7227, 14969, 81663, 28, 15, 13, 17, 29, 3950, 29102, 429, 279, 3409, 11591, 25111, 4379, 1265, 387, 2163, 220, 15, 13, 17, 11, 892, 3363, 279, 1372, 315, 4244, 304, 279, 2550, 1467, 1265, 387, 13187, 825, 2220, 57610, 320, 16, 14, 20, 8, 315, 279, 1372, 315, 4244, 304, 279, 4024, 1467, 13, 715, 65006, 366, 7227, 14969, 81663, 28, 16, 13, 17, 29, 3950, 29102, 429, 279, 3409, 11591, 25111, 4379, 1265, 387, 2163, 220, 16, 13, 17, 11, 892, 3363, 279, 1372, 315, 4244, 304, 279, 2550, 1467, 1265, 387, 13187, 220, 16, 17, 15, 4, 315, 279, 1372, 315, 4244, 304, 279, 4024, 1467, 13, 715, 12, 576, 366, 7227, 14969, 81663, 28, 15, 13, 23, 29, 3950, 29102, 429, 279, 3409, 11591, 25111, 4379, 1265, 387, 2163, 220, 15, 13, 23, 11, 892, 3363, 279, 1372, 315, 4244, 304, 279, 2550, 1467, 1265, 387, 13187, 220, 23, 15, 4, 315, 279, 1372, 315, 4244, 304, 279, 4024, 1467, 624, 151645, 198, 151644, 77091, 198, 27, 7227, 14969, 81663, 28, 15, 13, 19, 20, 29, 220, 785, 3579, 374, 73720, 624, 151645, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643]
+--- labels: [-100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, 785, 3579, 374, 73720, 624, 151645, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100]
+--- decoded input_ids:
+ <|im_start|>system
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.
+<|im_end|>
+<|im_start|>user
+INSTRUCTION: Simplify the following text such that the length of the output text (number of words) relative to the source text is approximately equal to the ratio specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. 
+SOURCE TEXT: The face is flushed, and the eyes are injected. <|eot_id|>
+EXPLANATION: The <WORD_COMPRESSION=0.45> token specifies that the word-level compression rate should be around 0.45. Values less than 1 indicate text reduction. Values greater than 1 indicate text expansion. 
+EXAMPLES: 
+- The <WORD_COMPRESSION=0.2> token specifies that the word-level compression rate should be around 0.2, which means the number of words in the output text should be approximately one-fifth (1/5) of the number of words in the original text. 
+-The <WORD_COMPRESSION=1.2> token specifies that the word-level compression rate should be around 1.2, which means the number of words in the output text should be approximately 120% of the number of words in the original text. 
+- The <WORD_COMPRESSION=0.8> token specifies that the word-level compression rate should be around 0.8, which means the number of words in the output text should be approximately 80% of the number of words in the original text.
+<|im_end|>
+<|im_start|>assistant
+<WORD_COMPRESSION=0.45> The face is flushed.
+<|im_end|><|endoftext|><|endoftext|><|endoftext|><|endoftext|><|endoftext|><|endoftext|><|endoftext|><|endoftext|><|endoftext|><|endoftext|><|endoftext|><|endoftext|><|endoftext|><|endoftext|><|endoftext|><|endoftext|><|endoftext|><|endoftext|><|endoftext|><|endoftext|><|endoftext|><|endoftext|><|endoftext|><|endoftext|><|endoftext|><|endoftext|><|endoftext|><|endoftext|><|endoftext|><|endoftext|><|endoftext|><|endoftext|><|endoftext|><|endoftext|><|endoftext|><|endoftext|><|endoftext|><|endoftext|><|endoftext|><|endoftext|><|endoftext|><|endoftext|><|endoftext|><|endoftext|><|endoftext|><|endoftext|><|endoftext|><|endoftext|><|endoftext|><|endoftext|><|endoftext|><|endoftext|><|endoftext|><|endoftext|><|endoftext|><|endoftext|><|endoftext|><|endoftext|><|endoftext|><|endoftext|><|endoftext|><|endoftext|><|endoftext|><|endoftext|><|endoftext|><|endoftext|><|endoftext|><|endoftext|><|endoftext|><|endoftext|><|endoftext|><|endoftext|><|endoftext|><|endoftext|><|endoftext|><|endoftext|><|endoftext|><|endoftext|><|endoftext|><|endoftext|><|endoftext|><|endoftext|><|endoftext|><|endoftext|><|endoftext|><|endoftext|><|endoftext|><|endoftext|><|endoftext|><|endoftext|><|endoftext|><|endoftext|><|endoftext|><|endoftext|><|endoftext|><|endoftext|><|endoftext|><|endoftext|><|endoftext|><|endoftext|><|endoftext|><|endoftext|><|endoftext|><|endoftext|><|endoftext|><|endoftext|><|endoftext|><|endoftext|><|endoftext|><|endoftext|><|endoftext|><|endoftext|><|endoftext|><|endoftext|><|endoftext|><|endoftext|><|endoftext|><|endoftext|><|endoftext|><|endoftext|>
+--- decoded labels:
+ The face is flushed.
+
+
+>>> [Step 20] Prompt:
+<|im_start|>system
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.
+<|im_end|>
+<|im_start|>user
+INSTRUCTION: Simplify the following text such that the length of the output text (number of words) relative to the source text is approximately equal to the ratio specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. 
+SOURCE TEXT: Pericyclic reactions are usually rearrangement or addition reactions. <|eot_id|>
+EXPLANATION: The <WORD_COMPRESSION=1.0> token specifies that the word-level compression rate should be around 1.0. Values less than 1 indicate text reduction. Values greater than 1 indicate text expansion. 
+EXAMPLES: 
+- The <WORD_COMPRESSION=1.2> token specifies that the word-level compression rate should be around 1.2, which means the number of words in the output text should be approximately 120% of the number of words in the original text. 
+-The <WORD_COMPRESSION=0.2> token specifies that the word-level compression rate should be around 0.2, which means the number of words in the output text should be approximately one-fifth (1/5) of the number of words in the original text. 
+- The <WORD_COMPRESSION=0.8> token specifies that the word-level compression rate should be around 0.8, which means the number of words in the output text should be approximately 80% of the number of words in the original text.
+<|im_end|>
+<|im_start|>assistant
+<WORD_COMPRESSION=1.0> 
+>>> Reference:
+Chemists disagree whether some reactions are pericyclic reactions.
+<|im_end|>
+>>> Prediction:
+Pericyclic reactions are usually rearrangements or additions.
+
+================================================================================
+
+>>> [Step 20] Prompt:
+<|im_start|>system
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.
+<|im_end|>
+<|im_start|>user
+INSTRUCTION: Simplify the following text such that the length of the output text (number of words) relative to the source text is approximately equal to the ratio specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. 
+SOURCE TEXT: Adult patients who require parenteral support may benefit from teduglutide (a glucagon-like peptide-2 [ GLP-2 ] analog). The recommended dosage is 0.05 mg/kg body weight sc once/ day. <|eot_id|>
+EXPLANATION: The <WORD_COMPRESSION=0.81> token specifies that the word-level compression rate should be around 0.81. Values less than 1 indicate text reduction. Values greater than 1 indicate text expansion. 
+EXAMPLES: 
+- The <WORD_COMPRESSION=1.2> token specifies that the word-level compression rate should be around 1.2, which means the number of words in the output text should be approximately 120% of the number of words in the original text. 
+-The <WORD_COMPRESSION=0.8> token specifies that the word-level compression rate should be around 0.8, which means the number of words in the output text should be approximately 80% of the number of words in the original text. 
+- The <WORD_COMPRESSION=1.0> token specifies that the word-level compression rate should be around 1.0, which means the number of words in the output text should be approximately the same as the number of words in the original text.
+<|im_end|>
+<|im_start|>assistant
+<WORD_COMPRESSION=0.81> 
+>>> Reference:
+People who need TPN may be given injections of a drug called teduglutide. This drug may help reduce the amount of TPN people need.
+<|im_end|>
+>>> Prediction:
+Adults with diabetes and who need intravenous insulin injections can take Teduglutide.
+
+================================================================================
+
+>>> [Step 20] Prompt:
+<|im_start|>system
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.
+<|im_end|>
+<|im_start|>user
+INSTRUCTION: Simplify the following text such that the length of the output text (number of words) relative to the source text is approximately equal to the ratio specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. 
+SOURCE TEXT: Flaccid penis length is a poor estimate of erect length. <|eot_id|>
+EXPLANATION: The <WORD_COMPRESSION=1.0> token specifies that the word-level compression rate should be around 1.0. Values less than 1 indicate text reduction. Values greater than 1 indicate text expansion. 
+EXAMPLES: 
+- The <WORD_COMPRESSION=0.2> token specifies that the word-level compression rate should be around 0.2, which means the number of words in the output text should be approximately one-fifth (1/5) of the number of words in the original text. 
+-The <WORD_COMPRESSION=0.5> token specifies that the word-level compression rate should be around 0.5, which means the number of words in the output text should be approximately half (1/2) of the number of words in the original text. 
+- The <WORD_COMPRESSION=1.2> token specifies that the word-level compression rate should be around 1.2, which means the number of words in the output text should be approximately 120% of the number of words in the original text.
+<|im_end|>
+<|im_start|>assistant
+<WORD_COMPRESSION=1.0> 
+>>> Reference:
+Flaccid length is not a reliable indication of erect length.
+<|im_end|>
+>>> Prediction:
+A flaccid penis length is not a good measure of an erection's size.
+
+================================================================================
+
+>>> [Step 20] Prompt:
+<|im_start|>system
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.
+<|im_end|>
+<|im_start|>user
+INSTRUCTION: Simplify the following text such that the length of the output text (number of words) relative to the source text is approximately equal to the ratio specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. 
+SOURCE TEXT: Obstetric manifestations include early and late fetal loss. <|eot_id|>
+EXPLANATION: The <WORD_COMPRESSION=1.33> token specifies that the word-level compression rate should be around 1.33. Values less than 1 indicate text reduction. Values greater than 1 indicate text expansion. 
+EXAMPLES: 
+- The <WORD_COMPRESSION=1.2> token specifies that the word-level compression rate should be around 1.2, which means the number of words in the output text should be approximately 120% of the number of words in the original text. 
+-The <WORD_COMPRESSION=1.0> token specifies that the word-level compression rate should be around 1.0, which means the number of words in the output text should be approximately the same as the number of words in the original text. 
+- The <WORD_COMPRESSION=0.8> token specifies that the word-level compression rate should be around 0.8, which means the number of words in the output text should be approximately 80% of the number of words in the original text.
+<|im_end|>
+<|im_start|>assistant
+<WORD_COMPRESSION=1.33> 
+>>> Reference:
+Pregnant women have a higher-than- normal risk of miscarriage and stillbirth.
+<|im_end|>
+>>> Prediction:
+Obstetric manifestations include early and late fetal losses.
+
+================================================================================
+{'loss': 1.6874, 'grad_norm': 11.35958480834961, 'learning_rate': 6.333333333333333e-06, 'epoch': 0.23}
+{'eval_loss': 1.2526438236236572, 'eval_runtime': 12.4247, 'eval_samples_per_second': 14.004, 'eval_steps_per_second': 14.004, 'epoch': 0.23}
+
+>>> [Step 40] Prompt:
+<|im_start|>system
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.
+<|im_end|>
+<|im_start|>user
+INSTRUCTION: Simplify the following text such that the length of the output text (number of words) relative to the source text is approximately equal to the ratio specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. 
+SOURCE TEXT: Symptoms include fever, headache, muscle and joint pains, and a characteristic skin rash that is similar to measles. <|eot_id|>
+EXPLANATION: The <WORD_COMPRESSION=1.27> token specifies that the word-level compression rate should be around 1.27. Values less than 1 indicate text reduction. Values greater than 1 indicate text expansion. 
+EXAMPLES: 
+- The <WORD_COMPRESSION=1.2> token specifies that the word-level compression rate should be around 1.2, which means the number of words in the output text should be approximately 120% of the number of words in the original text. 
+-The <WORD_COMPRESSION=0.8> token specifies that the word-level compression rate should be around 0.8, which means the number of words in the output text should be approximately 80% of the number of words in the original text. 
+- The <WORD_COMPRESSION=0.2> token specifies that the word-level compression rate should be around 0.2, which means the number of words in the output text should be approximately one-fifth (1/5) of the number of words in the original text.
+<|im_end|>
+<|im_start|>assistant
+<WORD_COMPRESSION=1.27> 
+>>> Reference:
+Some of the symptoms of dengue fever are fever; headache; a skin rash that looks like measles; and pain in the muscles and joints.
+<|im_end|>
+>>> Prediction:
+Symptoms include fever, headache, muscle and joint pains, and a characteristic rash on the face, chest, arms, and legs.
+
+================================================================================
+
+>>> [Step 40] Prompt:
+<|im_start|>system
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.
+<|im_end|>
+<|im_start|>user
+INSTRUCTION: Simplify the following text such that the length of the output text (number of words) relative to the source text is approximately equal to the ratio specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. 
+SOURCE TEXT: At the time of her death in 1964 from a heart attack, she was still employed at the aforementioned university in Washington, D.C. <|eot_id|>
+EXPLANATION: The <WORD_COMPRESSION=0.69> token specifies that the word-level compression rate should be around 0.69. Values less than 1 indicate text reduction. Values greater than 1 indicate text expansion. 
+EXAMPLES: 
+- The <WORD_COMPRESSION=0.5> token specifies that the word-level compression rate should be around 0.5, which means the number of words in the output text should be approximately half (1/2) of the number of words in the original text. 
+-The <WORD_COMPRESSION=0.8> token specifies that the word-level compression rate should be around 0.8, which means the number of words in the output text should be approximately 80% of the number of words in the original text. 
+- The <WORD_COMPRESSION=0.2> token specifies that the word-level compression rate should be around 0.2, which means the number of words in the output text should be approximately one-fifth (1/5) of the number of words in the original text.
+<|im_end|>
+<|im_start|>assistant
+<WORD_COMPRESSION=0.69> 
+>>> Reference:
+When she died in 1964 from a heart attack, she was still working at the university.
+<|im_end|>
+>>> Prediction:
+She died on March 31, 1964 from a heart attack.
+
+================================================================================
+
+>>> [Step 40] Prompt:
+<|im_start|>system
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.
+<|im_end|>
+<|im_start|>user
+INSTRUCTION: Simplify the following text such that the length of the output text (number of words) relative to the source text is approximately equal to the ratio specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. 
+SOURCE TEXT: A sounding of the sea bottom revealed more than 5,000 feet ( 1,500 m ) of water, indicating no land in near proximity. <|eot_id|>
+EXPLANATION: The <WORD_COMPRESSION=0.92> token specifies that the word-level compression rate should be around 0.92. Values less than 1 indicate text reduction. Values greater than 1 indicate text expansion. 
+EXAMPLES: 
+- The <WORD_COMPRESSION=1.2> token specifies that the word-level compression rate should be around 1.2, which means the number of words in the output text should be approximately 120% of the number of words in the original text. 
+-The <WORD_COMPRESSION=0.8> token specifies that the word-level compression rate should be around 0.8, which means the number of words in the output text should be approximately 80% of the number of words in the original text. 
+- The <WORD_COMPRESSION=0.5> token specifies that the word-level compression rate should be around 0.5, which means the number of words in the output text should be approximately half (1/2) of the number of words in the original text.
+<|im_end|>
+<|im_start|>assistant
+<WORD_COMPRESSION=0.92> 
+>>> Reference:
+A sounding of the sea bottom revealed more than 5,000 feet ( 1,500 m ) of water, indicating no land nearby.
+<|im_end|>
+>>> Prediction:
+A sounding of the sea floor revealed more than five thousand feet ( 1,500 m ) of water, indicating there was no land nearby.
+
+================================================================================
+
+>>> [Step 40] Prompt:
+<|im_start|>system
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.
+<|im_end|>
+<|im_start|>user
+INSTRUCTION: Simplify the following text such that the length of the output text (number of words) relative to the source text is approximately equal to the ratio specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. 
+SOURCE TEXT: `` Malaria was the most significant health hazard encountered by U.S. troops in the South Pacific during World War II, where about 500,000 men were infected. <|eot_id|>
+EXPLANATION: The <WORD_COMPRESSION=1.5> token specifies that the word-level compression rate should be around 1.5. Values less than 1 indicate text reduction. Values greater than 1 indicate text expansion. 
+EXAMPLES: 
+- The <WORD_COMPRESSION=0.5> token specifies that the word-level compression rate should be around 0.5, which means the number of words in the output text should be approximately half (1/2) of the number of words in the original text. 
+-The <WORD_COMPRESSION=1.2> token specifies that the word-level compression rate should be around 1.2, which means the number of words in the output text should be approximately 120% of the number of words in the original text. 
+- The <WORD_COMPRESSION=1.0> token specifies that the word-level compression rate should be around 1.0, which means the number of words in the output text should be approximately the same as the number of words in the original text.
+<|im_end|>
+<|im_start|>assistant
+<WORD_COMPRESSION=1.5> 
+>>> Reference:
+Although some patients died from malaria, this was preferable to the almost-certain death from syphilis. Malaria was the largest hazard encountered by U.S. troops in the South Pacific during World War II, where about 500,000 men were infected.
+<|im_end|>
+>>> Prediction:
+Malaria was the most serious health risk faced by American soldiers fighting in the Pacific theater of World War II, and about 500,000 people got malaria while serving there.
+
+================================================================================
+{'loss': 1.0831, 'grad_norm': 10.483344078063965, 'learning_rate': 9.96354437049027e-06, 'epoch': 0.45}
+{'eval_loss': 1.1934181451797485, 'eval_runtime': 12.2367, 'eval_samples_per_second': 14.219, 'eval_steps_per_second': 14.219, 'epoch': 0.45}
+
+>>> [Step 60] Prompt:
+<|im_start|>system
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.
+<|im_end|>
+<|im_start|>user
+INSTRUCTION: Simplify the following text such that the length of the output text (number of words) relative to the source text is approximately equal to the ratio specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. 
+SOURCE TEXT: As the disease progresses, focal neurologic deficits often develop: Exaggeration of deep tendon reflexes; Extensor plantar response; Gait abnormalities; Weakness of an extremity; Hemiplegias; Pseudobulbar palsy with pathologic laughing and crying; Other signs of extrapyramidal dysfunction; Aphasias. <|eot_id|>
+EXPLANATION: The <WORD_COMPRESSION=1.45> token specifies that the word-level compression rate should be around 1.45. Values less than 1 indicate text reduction. Values greater than 1 indicate text expansion. 
+EXAMPLES: 
+- The <WORD_COMPRESSION=0.8> token specifies that the word-level compression rate should be around 0.8, which means the number of words in the output text should be approximately 80% of the number of words in the original text. 
+-The <WORD_COMPRESSION=0.5> token specifies that the word-level compression rate should be around 0.5, which means the number of words in the output text should be approximately half (1/2) of the number of words in the original text. 
+- The <WORD_COMPRESSION=1.2> token specifies that the word-level compression rate should be around 1.2, which means the number of words in the output text should be approximately 120% of the number of words in the original text.
+<|im_end|>
+<|im_start|>assistant
+<WORD_COMPRESSION=1.45> 
+>>> Reference:
+Usually, some aspects of mental function are not impaired because the strokes destroy tissue in only part of the brain. An arm or a leg may become weak or paralyzed. People may have difficulty speaking. Coordination may be lost, making walking unsteady. People may laugh or cry inappropriately. People may have difficulty controlling bladder function, resulting in urinary incontinence.
+<|im_end|>
+>>> Prediction:
+As the disease progresses, symptoms usually begin suddenly. They include muscle weakness, abnormal movements, changes in speech patterns, problems swallowing, and difficulty speaking. Symptoms may worsen over time.
+
+================================================================================
+
+>>> [Step 60] Prompt:
+<|im_start|>system
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.
+<|im_end|>
+<|im_start|>user
+INSTRUCTION: Simplify the following text such that the length of the output text (number of words) relative to the source text is approximately equal to the ratio specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. 
+SOURCE TEXT: It is a symptom usually associated with the common cold, pharyngitis, and chesty coughs, but it can also be found in patients with adenoiditis, otitis media, sinusitis or tonsillitis. <|eot_id|>
+EXPLANATION: The <WORD_COMPRESSION=0.91> token specifies that the word-level compression rate should be around 0.91. Values less than 1 indicate text reduction. Values greater than 1 indicate text expansion. 
+EXAMPLES: 
+- The <WORD_COMPRESSION=0.5> token specifies that the word-level compression rate should be around 0.5, which means the number of words in the output text should be approximately half (1/2) of the number of words in the original text. 
+-The <WORD_COMPRESSION=0.8> token specifies that the word-level compression rate should be around 0.8, which means the number of words in the output text should be approximately 80% of the number of words in the original text. 
+- The <WORD_COMPRESSION=0.2> token specifies that the word-level compression rate should be around 0.2, which means the number of words in the output text should be approximately one-fifth (1/5) of the number of words in the original text.
+<|im_end|>
+<|im_start|>assistant
+<WORD_COMPRESSION=0.91> 
+>>> Reference:
+It is a symptom usually from the common cold and coughs, but can also be found in people with infections of the adenoids, middle ear, sinus or tonsils.
+<|im_end|>
+>>> Prediction:
+It is a symptom usually associated with the common cold, pharyngitis, and chesty coughs, but it can also be found in patients with adenoiditis, ear infections, sinus infections or tonsillitis.
+
+================================================================================
+
+>>> [Step 60] Prompt:
+<|im_start|>system
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.
+<|im_end|>
+<|im_start|>user
+INSTRUCTION: Simplify the following text such that the length of the output text (number of words) relative to the source text is approximately equal to the ratio specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. 
+SOURCE TEXT: Birley et al. report that excessive washing with soap may dry the mucous membrane that covers the glans penis and cause non-specific dermatitis. <|eot_id|>
+EXPLANATION: The <WORD_COMPRESSION=1.08> token specifies that the word-level compression rate should be around 1.08. Values less than 1 indicate text reduction. Values greater than 1 indicate text expansion. 
+EXAMPLES: 
+- The <WORD_COMPRESSION=1.2> token specifies that the word-level compression rate should be around 1.2, which means the number of words in the output text should be approximately 120% of the number of words in the original text. 
+-The <WORD_COMPRESSION=0.8> token specifies that the word-level compression rate should be around 0.8, which means the number of words in the output text should be approximately 80% of the number of words in the original text. 
+- The <WORD_COMPRESSION=1.0> token specifies that the word-level compression rate should be around 1.0, which means the number of words in the output text should be approximately the same as the number of words in the original text.
+<|im_end|>
+<|im_start|>assistant
+<WORD_COMPRESSION=1.08> 
+>>> Reference:
+The epithelium of the glans penis is moist and washing it too much can dry the mucous membrane that covers the glans penis and cause dermatitis.
+<|im_end|>
+>>> Prediction:
+Birley et al. report that excessive washing with soap may dry the mucous membrane that covers the glans penis and cause non-specific dermatitis.
+
+================================================================================
+
+>>> [Step 60] Prompt:
+<|im_start|>system
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.
+<|im_end|>
+<|im_start|>user
+INSTRUCTION: Simplify the following text such that the length of the output text (number of words) relative to the source text is approximately equal to the ratio specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. 
+SOURCE TEXT: Vibrio is a genus of Gram-negative bacteria possessing a curved rod shape ( comma shape ), several species of which can cause foodborne infection, usually associated with eating undercooked seafood. <|eot_id|>
+EXPLANATION: The <WORD_COMPRESSION=0.85> token specifies that the word-level compression rate should be around 0.85. Values less than 1 indicate text reduction. Values greater than 1 indicate text expansion. 
+EXAMPLES: 
+- The <WORD_COMPRESSION=0.2> token specifies that the word-level compression rate should be around 0.2, which means the number of words in the output text should be approximately one-fifth (1/5) of the number of words in the original text. 
+-The <WORD_COMPRESSION=0.8> token specifies that the word-level compression rate should be around 0.8, which means the number of words in the output text should be approximately 80% of the number of words in the original text. 
+- The <WORD_COMPRESSION=1.2> token specifies that the word-level compression rate should be around 1.2, which means the number of words in the output text should be approximately 120% of the number of words in the original text.
+<|im_end|>
+<|im_start|>assistant
+<WORD_COMPRESSION=0.85> 
+>>> Reference:
+Vibrio is a genus of Gram-negative bacteria possessing a curved rod, shapeseveral species of which can cause foodborne infection, usually associated with eating undercooked seafood.
+<|im_end|>
+>>> Prediction:
+Vibrio is a genus of Gram-negative bacteria possessing a curved rod shape ( comma shape ).
+
+================================================================================
+{'loss': 1.1034, 'grad_norm': 7.370858669281006, 'learning_rate': 9.62579382872462e-06, 'epoch': 0.68}
+{'eval_loss': 1.1614925861358643, 'eval_runtime': 12.2085, 'eval_samples_per_second': 14.252, 'eval_steps_per_second': 14.252, 'epoch': 0.68}
+
+>>> [Step 80] Prompt:
+<|im_start|>system
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.
+<|im_end|>
+<|im_start|>user
+INSTRUCTION: Simplify the following text such that the length of the output text (number of words) relative to the source text is approximately equal to the ratio specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. 
+SOURCE TEXT: Adult patients with encephalitis present with acute onset of fever, headache, confusion, and sometimes seizures. <|eot_id|>
+EXPLANATION: The <WORD_COMPRESSION=1.11> token specifies that the word-level compression rate should be around 1.11. Values less than 1 indicate text reduction. Values greater than 1 indicate text expansion. 
+EXAMPLES: 
+- The <WORD_COMPRESSION=1.2> token specifies that the word-level compression rate should be around 1.2, which means the number of words in the output text should be approximately 120% of the number of words in the original text. 
+-The <WORD_COMPRESSION=0.2> token specifies that the word-level compression rate should be around 0.2, which means the number of words in the output text should be approximately one-fifth (1/5) of the number of words in the original text. 
+- The <WORD_COMPRESSION=0.5> token specifies that the word-level compression rate should be around 0.5, which means the number of words in the output text should be approximately half (1/2) of the number of words in the original text.
+<|im_end|>
+<|im_start|>assistant
+<WORD_COMPRESSION=1.11> 
+>>> Reference:
+Usually, adults with encephalitis have a fever that starts suddenly, a headache, confusion, and sometimes seizures.
+<|im_end|>
+>>> Prediction:
+The symptoms of encephalitis depend on what caused it and how much damage was done to the brain. For example, if bacteria caused the infection, people may have a high fever, headaches, nausea, vomiting, dizziness, muscle pain, and sensitivity to bright light.
+
+================================================================================
+
+>>> [Step 80] Prompt:
+<|im_start|>system
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.
+<|im_end|>
+<|im_start|>user
+INSTRUCTION: Simplify the following text such that the length of the output text (number of words) relative to the source text is approximately equal to the ratio specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. 
+SOURCE TEXT: Some pain above the pubic bone or in the lower back may be present. <|eot_id|>
+EXPLANATION: The <WORD_COMPRESSION=1.27> token specifies that the word-level compression rate should be around 1.27. Values less than 1 indicate text reduction. Values greater than 1 indicate text expansion. 
+EXAMPLES: 
+- The <WORD_COMPRESSION=0.8> token specifies that the word-level compression rate should be around 0.8, which means the number of words in the output text should be approximately 80% of the number of words in the original text. 
+-The <WORD_COMPRESSION=1.2> token specifies that the word-level compression rate should be around 1.2, which means the number of words in the output text should be approximately 120% of the number of words in the original text. 
+- The <WORD_COMPRESSION=1.0> token specifies that the word-level compression rate should be around 1.0, which means the number of words in the output text should be approximately the same as the number of words in the original text.
+<|im_end|>
+<|im_start|>assistant
+<WORD_COMPRESSION=1.27> 
+>>> Reference:
+Some people will have pain above the pubic bone (lower abdomen) or in the lower back.
+<|im_end|>
+>>> Prediction:
+Women with endometriosis have cramps and pelvic pain during menstruation; some women also have pain over their pubic bone or at the bottom of their uterus (lower back).
+
+================================================================================
+
+>>> [Step 80] Prompt:
+<|im_start|>system
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.
+<|im_end|>
+<|im_start|>user
+INSTRUCTION: Simplify the following text such that the length of the output text (number of words) relative to the source text is approximately equal to the ratio specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. 
+SOURCE TEXT: Dexamethasone at doses of 0.15, 0.3 and 0.6 mg/kg appear to be all equally effective. <|eot_id|>
+EXPLANATION: The <WORD_COMPRESSION=1.0> token specifies that the word-level compression rate should be around 1.0. Values less than 1 indicate text reduction. Values greater than 1 indicate text expansion. 
+EXAMPLES: 
+- The <WORD_COMPRESSION=0.8> token specifies that the word-level compression rate should be around 0.8, which means the number of words in the output text should be approximately 80% of the number of words in the original text. 
+-The <WORD_COMPRESSION=1.2> token specifies that the word-level compression rate should be around 1.2, which means the number of words in the output text should be approximately 120% of the number of words in the original text. 
+- The <WORD_COMPRESSION=1.0> token specifies that the word-level compression rate should be around 1.0, which means the number of words in the output text should be approximately the same as the number of words in the original text.
+<|im_end|>
+<|im_start|>assistant
+<WORD_COMPRESSION=1.0> 
+>>> Reference:
+Dexamethasone at doses of 0.15, 0.3 and 0.6 mg/kg appear to be all equally good.
+<|im_end|>
+>>> Prediction:
+Dexamethasone at doses of 0.15, 0.3 and 0.6 mg/kg appear to be all equally effective.
+
+================================================================================
+
+>>> [Step 80] Prompt:
+<|im_start|>system
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.
+<|im_end|>
+<|im_start|>user
+INSTRUCTION: Simplify the following text such that the length of the output text (number of words) relative to the source text is approximately equal to the ratio specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. 
+SOURCE TEXT: Ankles, knees, elbows, and wrists are usually involved. <|eot_id|>
+EXPLANATION: The <WORD_COMPRESSION=1.0> token specifies that the word-level compression rate should be around 1.0. Values less than 1 indicate text reduction. Values greater than 1 indicate text expansion. 
+EXAMPLES: 
+- The <WORD_COMPRESSION=1.0> token specifies that the word-level compression rate should be around 1.0, which means the number of words in the output text should be approximately the same as the number of words in the original text. 
+-The <WORD_COMPRESSION=1.2> token specifies that the word-level compression rate should be around 1.2, which means the number of words in the output text should be approximately 120% of the number of words in the original text. 
+- The <WORD_COMPRESSION=0.8> token specifies that the word-level compression rate should be around 0.8, which means the number of words in the output text should be approximately 80% of the number of words in the original text.
+<|im_end|>
+<|im_start|>assistant
+<WORD_COMPRESSION=1.0> 
+>>> Reference:
+Ankles, knees, elbows, and wrists are usually affected.
+<|im_end|>
+>>> Prediction:
+Ankles, knees, elbows, and wrists are affected more often.
+
+================================================================================
+{'loss': 1.0758, 'grad_norm': 7.250972747802734, 'learning_rate': 8.95652813534831e-06, 'epoch': 0.9}
+{'eval_loss': 1.1413413286209106, 'eval_runtime': 12.1851, 'eval_samples_per_second': 14.28, 'eval_steps_per_second': 14.28, 'epoch': 0.9}
+
+>>> [Step 100] Prompt:
+<|im_start|>system
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.
+<|im_end|>
+<|im_start|>user
+INSTRUCTION: Simplify the following text such that the length of the output text (number of words) relative to the source text is approximately equal to the ratio specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. 
+SOURCE TEXT: Cancer in this location is rare, and the most common type is papillary transitional cell carcinoma. <|eot_id|>
+EXPLANATION: The <WORD_COMPRESSION=0.94> token specifies that the word-level compression rate should be around 0.94. Values less than 1 indicate text reduction. Values greater than 1 indicate text expansion. 
+EXAMPLES: 
+- The <WORD_COMPRESSION=0.2> token specifies that the word-level compression rate should be around 0.2, which means the number of words in the output text should be approximately one-fifth (1/5) of the number of words in the original text. 
+-The <WORD_COMPRESSION=1.0> token specifies that the word-level compression rate should be around 1.0, which means the number of words in the output text should be approximately the same as the number of words in the original text. 
+- The <WORD_COMPRESSION=0.5> token specifies that the word-level compression rate should be around 0.5, which means the number of words in the output text should be approximately half (1/2) of the number of words in the original text.
+<|im_end|>
+<|im_start|>assistant
+<WORD_COMPRESSION=0.94> 
+>>> Reference:
+This cancer is very rare, and the most common type is papillary transitional cell carcinoma.
+<|im_end|>
+>>> Prediction:
+Cancer in this area is very rare, and the most common kind is papillary transitional cell carcinoma.
+
+================================================================================
+
+>>> [Step 100] Prompt:
+<|im_start|>system
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.
+<|im_end|>
+<|im_start|>user
+INSTRUCTION: Simplify the following text such that the length of the output text (number of words) relative to the source text is approximately equal to the ratio specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. 
+SOURCE TEXT: She nearly dies giving birth to her and Edward 's half-vampire-half-human daughter, Renesmee. <|eot_id|>
+EXPLANATION: The <WORD_COMPRESSION=2.47> token specifies that the word-level compression rate should be around 2.47. Values less than 1 indicate text reduction. Values greater than 1 indicate text expansion. 
+EXAMPLES: 
+- The <WORD_COMPRESSION=0.5> token specifies that the word-level compression rate should be around 0.5, which means the number of words in the output text should be approximately half (1/2) of the number of words in the original text. 
+-The <WORD_COMPRESSION=0.2> token specifies that the word-level compression rate should be around 0.2, which means the number of words in the output text should be approximately one-fifth (1/5) of the number of words in the original text. 
+- The <WORD_COMPRESSION=1.0> token specifies that the word-level compression rate should be around 1.0, which means the number of words in the output text should be approximately the same as the number of words in the original text.
+<|im_end|>
+<|im_start|>assistant
+<WORD_COMPRESSION=2.47> 
+>>> Reference:
+Edward successfully delivers the baby girl, Renesmee (who is half vampire, half human), but Bella is in critical condition with a broken spine and the bleeding wounds from Edward 's surgery.
+<|im_end|>
+>>> Prediction:
+She gives birth to her and Edward's half-vampire-half-human daughter, Renesmee, but dies during childbirth.
+
+================================================================================
+
+>>> [Step 100] Prompt:
+<|im_start|>system
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.
+<|im_end|>
+<|im_start|>user
+INSTRUCTION: Simplify the following text such that the length of the output text (number of words) relative to the source text is approximately equal to the ratio specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. 
+SOURCE TEXT: A peripheral ring scotoma (detectable by visual field testing) widens gradually, and central vision may also be affected in advanced cases. <|eot_id|>
+EXPLANATION: The <WORD_COMPRESSION=2.4> token specifies that the word-level compression rate should be around 2.4. Values less than 1 indicate text reduction. Values greater than 1 indicate text expansion. 
+EXAMPLES: 
+- The <WORD_COMPRESSION=0.8> token specifies that the word-level compression rate should be around 0.8, which means the number of words in the output text should be approximately 80% of the number of words in the original text. 
+-The <WORD_COMPRESSION=1.0> token specifies that the word-level compression rate should be around 1.0, which means the number of words in the output text should be approximately the same as the number of words in the original text. 
+- The <WORD_COMPRESSION=1.2> token specifies that the word-level compression rate should be around 1.2, which means the number of words in the output text should be approximately 120% of the number of words in the original text.
+<|im_end|>
+<|im_start|>assistant
+<WORD_COMPRESSION=2.4> 
+>>> Reference:
+In the late stages of the disease, the person typically has only a small area of central vision and possibly no peripheral vision remaining (tunnel vision). Sometimes in late stages the macula, the area of the retina responsible for central vision, swells. This swelling is called macular edema and affects central vision.
+<|im_end|>
+>>> Prediction:
+A peripheral ring scotoma (detectable by visual field testing) widens gradually, and central vision may also be affected in severe cases.
+
+================================================================================
+
+>>> [Step 100] Prompt:
+<|im_start|>system
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.
+<|im_end|>
+<|im_start|>user
+INSTRUCTION: Simplify the following text such that the length of the output text (number of words) relative to the source text is approximately equal to the ratio specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. 
+SOURCE TEXT: Modern medicine, both conventional and alternative, recognises that the different rheumatic disorders have different causes ( and several of them have multiple causes ) and require different kinds of treatment. <|eot_id|>
+EXPLANATION: The <WORD_COMPRESSION=1.03> token specifies that the word-level compression rate should be around 1.03. Values less than 1 indicate text reduction. Values greater than 1 indicate text expansion. 
+EXAMPLES: 
+- The <WORD_COMPRESSION=1.0> token specifies that the word-level compression rate should be around 1.0, which means the number of words in the output text should be approximately the same as the number of words in the original text. 
+-The <WORD_COMPRESSION=0.8> token specifies that the word-level compression rate should be around 0.8, which means the number of words in the output text should be approximately 80% of the number of words in the original text. 
+- The <WORD_COMPRESSION=1.2> token specifies that the word-level compression rate should be around 1.2, which means the number of words in the output text should be approximately 120% of the number of words in the original text.
+<|im_end|>
+<|im_start|>assistant
+<WORD_COMPRESSION=1.03> 
+>>> Reference:
+Modern medicine, both conventional and complementary, shows that the different rheumatic disorders have different causes ( and several of them have more than one ) and need different kinds of treatment.
+<|im_end|>
+>>> Prediction:
+Modern medicine recognizes that the different rheumatic diseases have different causes ( and several of them have more than one cause ) and need different kinds of treatment.
+
+================================================================================
+{'loss': 0.8062, 'grad_norm': 6.445458889007568, 'learning_rate': 8.003711321189895e-06, 'epoch': 1.12}
+{'eval_loss': 1.2066437005996704, 'eval_runtime': 12.3302, 'eval_samples_per_second': 14.112, 'eval_steps_per_second': 14.112, 'epoch': 1.12}
+
+>>> [Step 120] Prompt:
+<|im_start|>system
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.
+<|im_end|>
+<|im_start|>user
+INSTRUCTION: Simplify the following text such that the length of the output text (number of words) relative to the source text is approximately equal to the ratio specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. 
+SOURCE TEXT: Flaccid penis length is a poor estimate of erect length. <|eot_id|>
+EXPLANATION: The <WORD_COMPRESSION=1.0> token specifies that the word-level compression rate should be around 1.0. Values less than 1 indicate text reduction. Values greater than 1 indicate text expansion. 
+EXAMPLES: 
+- The <WORD_COMPRESSION=0.2> token specifies that the word-level compression rate should be around 0.2, which means the number of words in the output text should be approximately one-fifth (1/5) of the number of words in the original text. 
+-The <WORD_COMPRESSION=0.5> token specifies that the word-level compression rate should be around 0.5, which means the number of words in the output text should be approximately half (1/2) of the number of words in the original text. 
+- The <WORD_COMPRESSION=1.2> token specifies that the word-level compression rate should be around 1.2, which means the number of words in the output text should be approximately 120% of the number of words in the original text.
+<|im_end|>
+<|im_start|>assistant
+<WORD_COMPRESSION=1.0> 
+>>> Reference:
+Flaccid length is not a reliable indication of erect length.
+<|im_end|>
+>>> Prediction:
+A flaccid penis can not give an accurate measurement of erect penis length.
+
+================================================================================
+
+>>> [Step 120] Prompt:
+<|im_start|>system
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.
+<|im_end|>
+<|im_start|>user
+INSTRUCTION: Simplify the following text such that the length of the output text (number of words) relative to the source text is approximately equal to the ratio specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. 
+SOURCE TEXT: Lifestyle changes have been shown to be effective in reducing (and in the case of diet, reversing) coronary disease: In people with coronary artery disease, aerobic exercise can reduce the risk of mortality. <|eot_id|>
+EXPLANATION: The <WORD_COMPRESSION=0.44> token specifies that the word-level compression rate should be around 0.44. Values less than 1 indicate text reduction. Values greater than 1 indicate text expansion. 
+EXAMPLES: 
+- The <WORD_COMPRESSION=0.5> token specifies that the word-level compression rate should be around 0.5, which means the number of words in the output text should be approximately half (1/2) of the number of words in the original text. 
+-The <WORD_COMPRESSION=1.0> token specifies that the word-level compression rate should be around 1.0, which means the number of words in the output text should be approximately the same as the number of words in the original text. 
+- The <WORD_COMPRESSION=0.2> token specifies that the word-level compression rate should be around 0.2, which means the number of words in the output text should be approximately one-fifth (1/5) of the number of words in the original text.
+<|im_end|>
+<|im_start|>assistant
+<WORD_COMPRESSION=0.44> 
+>>> Reference:
+Most people with coronary heart disease can feel healthy for years before they start experiencing symptoms.
+<|im_end|>
+>>> Prediction:
+Lifestyle changes have been shown to help lower cholesterol and blood pressure levels.
+
+================================================================================
+
+>>> [Step 120] Prompt:
+<|im_start|>system
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.
+<|im_end|>
+<|im_start|>user
+INSTRUCTION: Simplify the following text such that the length of the output text (number of words) relative to the source text is approximately equal to the ratio specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. 
+SOURCE TEXT: In adults, lassitude, weakness, and anorexia are most common. <|eot_id|>
+EXPLANATION: The <WORD_COMPRESSION=3.0> token specifies that the word-level compression rate should be around 3.0. Values less than 1 indicate text reduction. Values greater than 1 indicate text expansion. 
+EXAMPLES: 
+- The <WORD_COMPRESSION=1.0> token specifies that the word-level compression rate should be around 1.0, which means the number of words in the output text should be approximately the same as the number of words in the original text. 
+-The <WORD_COMPRESSION=0.5> token specifies that the word-level compression rate should be around 0.5, which means the number of words in the output text should be approximately half (1/2) of the number of words in the original text. 
+- The <WORD_COMPRESSION=0.8> token specifies that the word-level compression rate should be around 0.8, which means the number of words in the output text should be approximately 80% of the number of words in the original text.
+<|im_end|>
+<|im_start|>assistant
+<WORD_COMPRESSION=3.0> 
+>>> Reference:
+Other people do not develop symptoms of celiac until adulthood. Adults may have digestive symptoms or other symptoms. Many adults have no digestive symptoms at all. Most affected adults have weakness and loss of appetite.
+<|im_end|>
+>>> Prediction:
+Limbic system damage can also cause depression, loss of pleasure in usual activities (anhedonia), and sleep problems (such as insomnia).
+
+================================================================================
+
+>>> [Step 120] Prompt:
+<|im_start|>system
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.
+<|im_end|>
+<|im_start|>user
+INSTRUCTION: Simplify the following text such that the length of the output text (number of words) relative to the source text is approximately equal to the ratio specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. 
+SOURCE TEXT: Because most Plasmodium is resistant to one or more medications, one of three medications-mefloquine (Lariam), doxycycline (available generically), or the combination of atovaquone and proguanil hydrochloride (Malarone) - is frequently needed. <|eot_id|>
+EXPLANATION: The <WORD_COMPRESSION=0.12> token specifies that the word-level compression rate should be around 0.12. Values less than 1 indicate text reduction. Values greater than 1 indicate text expansion. 
+EXAMPLES: 
+- The <WORD_COMPRESSION=1.0> token specifies that the word-level compression rate should be around 1.0, which means the number of words in the output text should be approximately the same as the number of words in the original text. 
+-The <WORD_COMPRESSION=1.2> token specifies that the word-level compression rate should be around 1.2, which means the number of words in the output text should be approximately 120% of the number of words in the original text. 
+- The <WORD_COMPRESSION=0.2> token specifies that the word-level compression rate should be around 0.2, which means the number of words in the output text should be approximately one-fifth (1/5) of the number of words in the original text.
+<|im_end|>
+<|im_start|>assistant
+<WORD_COMPRESSION=0.12> 
+>>> Reference:
+Some Plasmodium are resistant.
+<|im_end|>
+>>> Prediction:
+Most Plasmodium is resistant to one or more drugs.
+
+================================================================================
+{'loss': 0.6464, 'grad_norm': 6.532253265380859, 'learning_rate': 6.8356285762726385e-06, 'epoch': 1.35}
+{'eval_loss': 1.2219442129135132, 'eval_runtime': 12.2787, 'eval_samples_per_second': 14.171, 'eval_steps_per_second': 14.171, 'epoch': 1.35}
+
+>>> [Step 140] Prompt:
+<|im_start|>system
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.
+<|im_end|>
+<|im_start|>user
+INSTRUCTION: Simplify the following text such that the length of the output text (number of words) relative to the source text is approximately equal to the ratio specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. 
+SOURCE TEXT: It is a symptom usually associated with the common cold, pharyngitis, and chesty coughs, but it can also be found in patients with adenoiditis, otitis media, sinusitis or tonsillitis. <|eot_id|>
+EXPLANATION: The <WORD_COMPRESSION=0.91> token specifies that the word-level compression rate should be around 0.91. Values less than 1 indicate text reduction. Values greater than 1 indicate text expansion. 
+EXAMPLES: 
+- The <WORD_COMPRESSION=0.5> token specifies that the word-level compression rate should be around 0.5, which means the number of words in the output text should be approximately half (1/2) of the number of words in the original text. 
+-The <WORD_COMPRESSION=0.8> token specifies that the word-level compression rate should be around 0.8, which means the number of words in the output text should be approximately 80% of the number of words in the original text. 
+- The <WORD_COMPRESSION=0.2> token specifies that the word-level compression rate should be around 0.2, which means the number of words in the output text should be approximately one-fifth (1/5) of the number of words in the original text.
+<|im_end|>
+<|im_start|>assistant
+<WORD_COMPRESSION=0.91> 
+>>> Reference:
+It is a symptom usually from the common cold and coughs, but can also be found in people with infections of the adenoids, middle ear, sinus or tonsils.
+<|im_end|>
+>>> Prediction:
+It is a symptom usually associated with the common cold, pharyngitis, and chesty coughs, but it can also be found in people with adenoiditis, otitis media, sinusitis or tonsillitis.
+
+================================================================================
+
+>>> [Step 140] Prompt:
+<|im_start|>system
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.
+<|im_end|>
+<|im_start|>user
+INSTRUCTION: Simplify the following text such that the length of the output text (number of words) relative to the source text is approximately equal to the ratio specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. 
+SOURCE TEXT: The Nitrone-olefin cycloaddition is a ( 3+2 ) cycloaddition. <|eot_id|>
+EXPLANATION: The <WORD_COMPRESSION=1.0> token specifies that the word-level compression rate should be around 1.0. Values less than 1 indicate text reduction. Values greater than 1 indicate text expansion. 
+EXAMPLES: 
+- The <WORD_COMPRESSION=1.2> token specifies that the word-level compression rate should be around 1.2, which means the number of words in the output text should be approximately 120% of the number of words in the original text. 
+-The <WORD_COMPRESSION=1.0> token specifies that the word-level compression rate should be around 1.0, which means the number of words in the output text should be approximately the same as the number of words in the original text. 
+- The <WORD_COMPRESSION=0.8> token specifies that the word-level compression rate should be around 0.8, which means the number of words in the output text should be approximately 80% of the number of words in the original text.
+<|im_end|>
+<|im_start|>assistant
+<WORD_COMPRESSION=1.0> 
+>>> Reference:
+The Nitrone-olefin cycloaddition is a [ 3+2 ] cycloaddition.
+<|im_end|>
+>>> Prediction:
+The nitrone-olefin cycloaddition is an [ E2 ] elimination-cycloaddition.
+
+================================================================================
+
+>>> [Step 140] Prompt:
+<|im_start|>system
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.
+<|im_end|>
+<|im_start|>user
+INSTRUCTION: Simplify the following text such that the length of the output text (number of words) relative to the source text is approximately equal to the ratio specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. 
+SOURCE TEXT: Toxic shock syndrome (TSS) is a potentially fatal illness caused by a bacterial toxin. <|eot_id|>
+EXPLANATION: The <WORD_COMPRESSION=1.0> token specifies that the word-level compression rate should be around 1.0. Values less than 1 indicate text reduction. Values greater than 1 indicate text expansion. 
+EXAMPLES: 
+- The <WORD_COMPRESSION=1.2> token specifies that the word-level compression rate should be around 1.2, which means the number of words in the output text should be approximately 120% of the number of words in the original text. 
+-The <WORD_COMPRESSION=0.8> token specifies that the word-level compression rate should be around 0.8, which means the number of words in the output text should be approximately 80% of the number of words in the original text. 
+- The <WORD_COMPRESSION=0.2> token specifies that the word-level compression rate should be around 0.2, which means the number of words in the output text should be approximately one-fifth (1/5) of the number of words in the original text.
+<|im_end|>
+<|im_start|>assistant
+<WORD_COMPRESSION=1.0> 
+>>> Reference:
+Toxic shock syndrome or TSS is a non-common, deadly infection caused by toxins from bacteria.
+<|im_end|>
+>>> Prediction:
+Toxic shock syndrome (TSS) is an uncommon but serious infection caused by toxins produced by bacteria.
+
+================================================================================
+
+>>> [Step 140] Prompt:
+<|im_start|>system
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.
+<|im_end|>
+<|im_start|>user
+INSTRUCTION: Simplify the following text such that the length of the output text (number of words) relative to the source text is approximately equal to the ratio specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. 
+SOURCE TEXT: Patients with osteoporosis are asymptomatic unless a fracture has occurred. <|eot_id|>
+EXPLANATION: The <WORD_COMPRESSION=1.36> token specifies that the word-level compression rate should be around 1.36. Values less than 1 indicate text reduction. Values greater than 1 indicate text expansion. 
+EXAMPLES: 
+- The <WORD_COMPRESSION=1.0> token specifies that the word-level compression rate should be around 1.0, which means the number of words in the output text should be approximately the same as the number of words in the original text. 
+-The <WORD_COMPRESSION=0.2> token specifies that the word-level compression rate should be around 0.2, which means the number of words in the output text should be approximately one-fifth (1/5) of the number of words in the original text. 
+- The <WORD_COMPRESSION=0.5> token specifies that the word-level compression rate should be around 0.5, which means the number of words in the output text should be approximately half (1/2) of the number of words in the original text.
+<|im_end|>
+<|im_start|>assistant
+<WORD_COMPRESSION=1.36> 
+>>> Reference:
+At first, osteoporosis causes no symptoms because bone density loss occurs very gradually.
+<|im_end|>
+>>> Prediction:
+Osteoporosis occurs when bones become weak and more likely to break. Women are affected more commonly than men because their bones naturally have less calcium and other important minerals.
+
+================================================================================
+{'loss': 0.5486, 'grad_norm': 8.627354621887207, 'learning_rate': 5.53599247893724e-06, 'epoch': 1.58}
+{'eval_loss': 1.2353713512420654, 'eval_runtime': 12.246, 'eval_samples_per_second': 14.209, 'eval_steps_per_second': 14.209, 'epoch': 1.58}
+{'train_runtime': 463.4823, 'train_samples_per_second': 9.133, 'train_steps_per_second': 0.57, 'train_loss': 0.9929928234645299, 'epoch': 1.58}

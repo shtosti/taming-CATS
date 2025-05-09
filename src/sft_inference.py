@@ -16,7 +16,7 @@ def load_json(file_path: str):
     with open(file_path, "r", encoding="utf-8") as file:
         return json.load(file)
 
-def load_and_prepare_model(model_path, model_class, max_length):
+def load_and_prepare_model(model_family, model_path, model_class, max_length):
     # Load the tokenizer
     tokenizer = AutoTokenizer.from_pretrained(model_path)
     tokenizer.model_max_length = max_length
@@ -28,10 +28,16 @@ def load_and_prepare_model(model_path, model_class, max_length):
         })
     tokenizer.padding_side = "left"
     
-    if tokenizer.eos_token is None or tokenizer.eos_token != "<|eot_id|>":
-        tokenizer.add_special_tokens({
-            'eos_token': '<|eot_id|>'
-        })
+    if model_family == "qwen":
+        if tokenizer.eos_token is None or tokenizer.eos_token != "<|im_end|>":
+            tokenizer.add_special_tokens({
+                'eos_token': '<|im_end|>'
+            })
+    elif model_family == "base":
+        if tokenizer.eos_token is None or tokenizer.eos_token != "<|eot_id|>":
+            tokenizer.add_special_tokens({
+                'eos_token': '<|eot_id|>'
+            })
 
     # Load the model
     if model_class == "llama":
@@ -240,7 +246,7 @@ def main():
     print(f"Inference args:\n{args}\n")
 
     # Load the model and tokenizer
-    model, tokenizer = load_and_prepare_model(args.model_path, args.model_class, args.max_length)
+    model, tokenizer = load_and_prepare_model(args.model_family, args.model_path, args.model_class, args.max_length)
     model.to(args.device)
 
     # Load and prepare the dynamic prompting information (control tokens, system prompts, etc.)

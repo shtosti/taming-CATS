@@ -3,15 +3,15 @@
 # *** TODO ***
 # *** **** ***
 # --- model class: "llama" for llama and mistral, "auto" for qwen
-MODEL_CLASS="llama"
+MODEL_CLASS="auto"
 
 # --- model family: "llama", "mistral", "qwen", "base" (for prompt template)
-MODEL_FAMILY="base"
+MODEL_FAMILY="qwen"
 
 # --- model name
-MODEL_NAME="meta-llama/Llama-3.2-1B-Instruct"
+# MODEL_NAME="meta-llama/Llama-3.2-1B-Instruct"
 # MODEL_NAME="meta-llama/Meta-Llama-3-8B-Instruct"
-# MODEL_NAME="Qwen/Qwen2.5-1.5B-Instruct"
+MODEL_NAME="Qwen/Qwen2.5-1.5B-Instruct"
 # MODEL_NAME="Qwen/Qwen2.5-14B-Instruct"
 # MODEL_NAME="ministral/Ministral-3b-instruct"
 # MODEL_NAME="mistralai/Mistral-7B-Instruct-v0.1"
@@ -36,7 +36,7 @@ PROMPTING_TYPE="vanilla"
 USER_PROMPT_ID="token_explanation_examples"
 
 # --- metric settings ---
-METRIC_NAME="WORD_COMPRESSION"
+METRIC_NAME="CHAR_COMPRESSION"
 
 # --- hyperparameters ---
 EPOCHS=3
