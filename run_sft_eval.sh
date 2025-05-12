@@ -1,8 +1,8 @@
 #!/bin/bash
 
-INPUT_DIR="output/models/Qwen2.5-1.5B-Instruct-Med-EASi-WORD_COMPRESSION-qwen-token_explanation_examples-20250509-1834-nickwygb"
+INPUT_DIR="output/models/Qwen2.5-1.5B-Instruct-Med-EASi-FKGL-token_explanation_examples-20250430-2050-bo5uv8tc"
 INPUT_FILE="$INPUT_DIR/output.json"
-METRIC_NAME="WORD_COMPRESSION"
+METRIC_NAME="FKGL"
 
 
 
