@@ -5,7 +5,7 @@ import pandas as pd
 results = {}
 
 # Path to your experiment results file
-EXPERIMENT_NAME = "splits"
+EXPERIMENT_NAME = "splits_sampling"
 RESULTS_FILE = f"./../experiments/{EXPERIMENT_NAME}/all_results.json"
 
 with open(RESULTS_FILE, "r") as f:
@@ -22,10 +22,10 @@ LOG_FILE_ACROSS_DATASETS = f"./../experiments/{EXPERIMENT_NAME}/best_stratificat
 with open(LOG_FILE_PER_DATASET, "w") as log_file:
     log_file.write("Best Stratification Results (Per Dataset)\n")
     log_file.write("="*50 + "\n\n")
-    log_file.write("Note: For each dataset, the best stratification metric and number of bins were "
-                   "determined based on the lowest average KS divergence. We considered all seed runs "
+    log_file.write("Note: For each dataset, the best stratification metric and number of bins are "
+                   "determined based on the lowest average KS divergence. All seed runs (10 seeds)"
                    "and averaged the KS divergence values. The metric with the lowest average KS divergence "
-                   "across all combinations of stratification metric and number of bins is selected.\n")
+                   "across all combinations of stratification metric and number of bins is chosen.\n")
     log_file.write("="*50 + "\n\n")
     
     # Per dataset: Find the best result for each stratification metric and number of bins, for each dataset
