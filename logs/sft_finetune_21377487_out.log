@@ -1,0 +1,196 @@
+Mon May 12 12:00:54 2025       
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 560.35.05              Driver Version: 560.35.05      CUDA Version: 12.6     |
+|-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  NVIDIA A100-SXM4-80GB          Off |   00000000:48:00.0 Off |                    0 |
+| N/A   27C    P0             73W /  400W |       1MiB /  81920MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+                                                                                         
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI        PID   Type   Process name                              GPU Memory |
+|        ID   ID                                                               Usage      |
+|=========================================================================================|
+|  No running processes found                                                             |
++-----------------------------------------------------------------------------------------+
+Using PEFT...
+torch.cuda.is_bf16_supported: True
+Transformers version: 4.51.0
+Python path: /home/hhubar/data/conda/envs/sft/bin/python
+Using PEFT...
+
+Run arguments:
+Namespace(model_class='auto', model_family='llama', model_name='meta-llama/Llama-2-13b-chat-hf', dataset_name='Med-EASi', slice_train=-1, slice_val=-1, slice_test=-1, batch_size=8, eval_batch_size=1, gradient_accumulation_steps=2, learning_rate=1e-05, weight_decay=0.01, epochs=3, max_length=512, logging_steps=20, wandb_project_name='ATS_with_control_tokens', wandb_entity='shtosti', log_every=20, seed=42, patience=3, prompting_type='vanilla', user_prompt_id='token_explanation_examples', metric_name='ARI', control_tokens='data/prompts/control_tokens.json', system_prompts='data/prompts/system_prompts.json', user_prompts='data/prompts/user_prompts.json', metric_mapping='data/metric_mapping.json', peft=True)
+
+Saving to: ./models/Llama-2-13b-chat-hf-Med-EASi-ARI-llama-token_explanation_examples-20250512-1201-zcva4824
+
+*** Finetuning Llama-2-13b-chat-hf with Med-EASi ***
+
+CUDA available: True
+Number of GPUs: 1
+GPU name: NVIDIA A100-SXM4-80GB
+Using PEFT for fine-tuning...
+--- DEBUG ---
+trainable params:
+Trainable params: 6,553,600 / 13,022,428,160 (0.05%)
+--- tokenizer pad_token_id: 32000
+--- tokenizer eos_token_id: 2
+--- special tokens:
+train:	 Inspect the dataset format:
+ {'global_id': ['medeasi_000457'], 'source_text': ['The face is flushed, and the eyes are injected.'], 'source_metrics': [{'FRE': 96.18, 'ARI': 3.5, 'FKGL': 2.1, 'Dale-Chall': 9.35, 'char_count': 47, 'alphanum_count': 37, 'word_count': 11, 'sentence_count': 1}], 'metadata': [{'dataset': 'medeasi', 'experiment_split': '', 'domain': 'medical', 'language': 'en', 'annotation': 'human', 'level': 'sentence'}], 'simplification_text': ['The face is flushed.'], 'target_metrics': [{'FRE': 118.18, 'ARI': 0.6, 'FKGL': -2.3, 'Dale-Chall': 7.78, 'char_count': 20, 'alphanum_count': 16, 'word_count': 5, 'sentence_count': 1, 'char_compression_rate': 0.43, 'word_compression_rate': 0.45, 'sentence_compression_rate': 1.0, 'BLEU': 21.297646969725616, 'BERTScore': 0.9398951530456543}], 'simplification_version': [1], 'grade_level': [-1], 'simplification_dimensions': [{'linguistic': {'lexical': False, 'syntactic': False}}]}
+validation:	 Inspect the dataset format:
+ {'global_id': ['medeasi_001210'], 'source_text': ['This increased risk is greatest at two to three months of age.'], 'source_metrics': [{'FRE': 93.14, 'ARI': 4.6, 'FKGL': 3.3, 'Dale-Chall': 9.5, 'char_count': 62, 'alphanum_count': 50, 'word_count': 13, 'sentence_count': 1}], 'metadata': [{'dataset': 'medeasi', 'experiment_split': '', 'domain': 'medical', 'language': 'en', 'annotation': 'human', 'level': 'sentence'}], 'simplification_text': ['This risk is highest in infants who are two to three months old.'], 'target_metrics': [{'FRE': 92.12, 'ARI': 3.9, 'FKGL': 3.6, 'Dale-Chall': 9.14, 'char_count': 64, 'alphanum_count': 51, 'word_count': 14, 'sentence_count': 1, 'char_compression_rate': 1.03, 'word_compression_rate': 1.08, 'sentence_compression_rate': 1.0, 'BLEU': 22.718709780542323, 'BERTScore': 0.9562927484512329}], 'simplification_version': [1], 'grade_level': [-1], 'simplification_dimensions': [{'linguistic': {'lexical': False, 'syntactic': False}}]}
+test:	 Inspect the dataset format:
+ {'global_id': ['medeasi_000696'], 'source_text': ['Children may have six to twelve colds a year.'], 'source_metrics': [{'FRE': 104.64, 'ARI': 2.4, 'FKGL': 0.9, 'Dale-Chall': 5.84, 'char_count': 45, 'alphanum_count': 36, 'word_count': 10, 'sentence_count': 1}], 'metadata': [{'dataset': 'medeasi', 'experiment_split': '', 'domain': 'medical', 'language': 'en', 'annotation': 'human', 'level': 'sentence'}], 'simplification_text': ['Children may get six to twelve colds a year.'], 'target_metrics': [{'FRE': 104.64, 'ARI': 1.9, 'FKGL': 0.9, 'Dale-Chall': 5.84, 'char_count': 44, 'alphanum_count': 35, 'word_count': 10, 'sentence_count': 1, 'char_compression_rate': 0.98, 'word_compression_rate': 1.0, 'sentence_compression_rate': 1.0, 'BLEU': 70.71067811865478, 'BERTScore': 0.9896392822265625}], 'simplification_version': [1], 'grade_level': [-1], 'simplification_dimensions': [{'linguistic': {'lexical': False, 'syntactic': False}}]}
+
+
+ *** Before tokenization ***
+>>> train:
+
+Showing 1 example(s):
+
+Example 1 (index 1296)
+--- Prompt:
+ [INST] <<SYS>>
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.
+<</SYS>>
+INSTRUCTION: Simplify the following text such that its Automated Readability Index (ARI) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the ARI value of the source text. 
+SOURCE TEXT: <ARI=27.1> Since then, several other high-resolution structures have been determined by electron crystallography, including the light-harvesting complex, the nicotinic acetylcholine receptor, and the bacterial flagellum. <|eot_id|>
+EXPLANATION: The <ARI=23.0> token specifies that the target Automated Readability Index (ARI) score should be approximately 23.0. Lower values indicate simpler text. 
+EXAMPLES: 
+- The <ARI=7> token specifies that the target Automated Readability Index (ARI) score should be approximately 7, which corresponds to a 7th-grade reading level in the US education system (12-13 years old). 
+-The <ARI=5> token specifies that the target Automated Readability Index (ARI)ç score should be approximately 5, which corresponds to a 5th-grade reading level in the US education system (10-11 years old). 
+- The <ARI=3> token specifies that the target Automated Readability Index (ARI) score should be approximately 3, which corresponds to a 3rd-grade reading level in the US education system (8-9 years old). [/INST] <ARI=23.0> 
+--- Completion:
+ Since then, several other high-resolution structures have been done by electron crystallography, including the light-harvesting complex, and the bacterial flagellum.
+==================================================
+
+
+ *** After tokenization ***
+>>> train:
+
+Showing 1 example(s):
+
+Example 1 (index 1376)
+--- Prompt:
+ [INST] <<SYS>>
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.
+<</SYS>>
+INSTRUCTION: Simplify the following text such that its Automated Readability Index (ARI) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the ARI value of the source text. 
+SOURCE TEXT: <ARI=25.6> Most patients with primary coccidioidomycosis are asymptomatic, but nonspecific respiratory symptoms resembling those of influenza, acute bronchitis, or, less often, acute pneumonia or pleural effusion sometimes occur. <|eot_id|>
+EXPLANATION: The <ARI=9.3> token specifies that the target Automated Readability Index (ARI) score should be approximately 9.3. Lower values indicate simpler text. 
+EXAMPLES: 
+- The <ARI=12> token specifies that the target Automated Readability Index (ARI) score should be approximately 12, which corresponds to a 12th-grade reading level in the US education system (18 years old or older). 
+-The <ARI=3> token specifies that the target Automated Readability Index (ARI) score should be approximately 3, which corresponds to a 3rd-grade reading level in the US education system (8-9 years old). 
+- The <ARI=2> token specifies that the target Automated Readability Index (ARI) score should be approximately 2, which corresponds to a 2nd-grade reading level in the US education system (7-8 years old). [/INST] <ARI=9.3> 
+--- Completion:
+ Most people with acute primary coccidioidomycosis have no symptoms. Symptoms are usually mild and often flu - like. Occasionally, when lung infection is severe, spaces may form in the lungs and people may cough up blood.
+--- input_ids:
+ [1, 518, 25580, 29962, 3532, 14816, 29903, 6778, 13, 3492, 526, 263, 8444, 17924, 297, 1426, 5466, 2450, 29889, 887, 5706, 263, 20875, 1873, 310, 278, 1426, 1881, 491, 278, 1404, 29889, 887, 21092, 278, 1426, 5034, 304, 278, 11994, 2183, 491, 278, 1404, 29889, 1932, 4433, 304, 21092, 263, 1426, 29892, 5706, 871, 278, 13877, 5466, 2450, 29892, 1728, 738, 5684, 6589, 29892, 11486, 470, 7309, 800, 29889, 13, 29966, 829, 14816, 29903, 6778, 13, 1177, 10810, 29965, 9838, 29901, 3439, 572, 1598, 278, 1494, 1426, 1316, 393, 967, 15854, 630, 7523, 3097, 11374, 313, 1718, 29902, 29897, 8158, 338, 14235, 5186, 304, 393, 6790, 297, 278, 2761, 5993, 8273, 2760, 304, 596, 5759, 5466, 2450, 29889, 450, 2761, 5993, 756, 278, 1494, 3402, 29901, 529, 2303, 5659, 2965, 29922, 19143, 15513, 450, 2761, 5993, 8273, 2760, 304, 278, 2752, 1426, 14088, 278, 319, 3960, 995, 310, 278, 2752, 1426, 29889, 29871, 13, 27839, 4741, 323, 12194, 29901, 529, 1718, 29902, 29922, 29906, 29945, 29889, 29953, 29958, 7849, 22069, 411, 7601, 274, 15693, 333, 601, 333, 16103, 3944, 275, 526, 22784, 290, 2454, 29892, 541, 302, 787, 3135, 928, 4613, 381, 7606, 25828, 4835, 620, 1590, 1847, 1906, 310, 13787, 1362, 29892, 1274, 1082, 12246, 305, 23448, 29892, 470, 29892, 3109, 4049, 29892, 1274, 1082, 282, 29765, 6405, 470, 5644, 3631, 1801, 3958, 6041, 6403, 29889, 529, 29989, 29872, 327, 29918, 333, 29989, 29958, 13, 5746, 7390, 2190, 8098, 29901, 450, 529, 1718, 29902, 29922, 29929, 29889, 29941, 29958, 5993, 1580, 11057, 393, 278, 3646, 15854, 630, 7523, 3097, 11374, 313, 1718, 29902, 29897, 8158, 881, 367, 14235, 29871, 29929, 29889, 29941, 29889, 27723, 1819, 12266, 13682, 1426, 29889, 29871, 13, 5746, 19297, 17101, 29901, 29871, 13, 29899, 450, 529, 1718, 29902, 29922, 29896, 29906, 29958, 5993, 1580, 11057, 393, 278, 3646, 15854, 630, 7523, 3097, 11374, 313, 1718, 29902, 29897, 8158, 881, 367, 14235, 29871, 29896, 29906, 29892, 607, 16161, 304, 263, 29871, 29896, 29906, 386, 29899, 8228, 5183, 3233, 297, 278, 3148, 9793, 1788, 313, 29896, 29947, 2440, 2030, 470, 9642, 467, 29871, 13, 29899, 1576, 529, 1718, 29902, 29922, 29941, 29958, 5993, 1580, 11057, 393, 278, 3646, 15854, 630, 7523, 3097, 11374, 313, 1718, 29902, 29897, 8158, 881, 367, 14235, 29871, 29941, 29892, 607, 16161, 304, 263, 29871, 29941, 5499, 29899, 8228, 5183, 3233, 297, 278, 3148, 9793, 1788, 313, 29947, 29899, 29929, 2440, 2030, 467, 29871, 13, 29899, 450, 529, 1718, 29902, 29922, 29906, 29958, 5993, 1580, 11057, 393, 278, 3646, 15854, 630, 7523, 3097, 11374, 313, 1718, 29902, 29897, 8158, 881, 367, 14235, 29871, 29906, 29892, 607, 16161, 304, 263, 29871, 29906, 299, 29899, 8228, 5183, 3233, 297, 278, 3148, 9793, 1788, 313, 29955, 29899, 29947, 2440, 2030, 467, 518, 29914, 25580, 29962, 529, 1718, 29902, 29922, 29929, 29889, 29941, 29958, 29871, 1, 7849, 2305, 411, 1274, 1082, 7601, 274, 15693, 333, 601, 333, 16103, 3944, 275, 505, 694, 25828, 4835, 29889, 10667, 415, 4835, 526, 5491, 286, 789, 322, 4049, 20501, 448, 763, 29889, 16117, 7002, 635, 29892, 746, 13030, 297, 20309, 338, 22261, 29892]
+--- labels:
+ [-100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, 1, 7849, 2305, 411, 1274, 1082, 7601, 274, 15693, 333, 601, 333, 16103, 3944, 275, 505, 694, 25828, 4835, 29889, 10667, 415, 4835, 526, 5491, 286, 789, 322, 4049, 20501, 448, 763, 29889, 16117, 7002, 635, 29892, 746, 13030, 297, 20309, 338, 22261, 29892]
+==================================================
+********** DEBUG **********
+Train dataset columns: ['global_id', 'source_text', 'source_metrics', 'metadata', 'simplification_text', 'target_metrics', 'simplification_version', 'grade_level', 'simplification_dimensions', 'prompt', 'completion', 'system_prompt_id', 'user_prompt_id', 'metric_name', 'source_metric_value', 'target_metric_value', 'input_ids', 'labels', 'attention_mask']
+Validation dataset columns: ['global_id', 'source_text', 'source_metrics', 'metadata', 'simplification_text', 'target_metrics', 'simplification_version', 'grade_level', 'simplification_dimensions', 'prompt', 'completion', 'system_prompt_id', 'user_prompt_id', 'metric_name', 'source_metric_value', 'target_metric_value', 'input_ids', 'labels', 'attention_mask']
+Test dataset columns: ['global_id', 'source_text', 'source_metrics', 'metadata', 'simplification_text', 'target_metrics', 'simplification_version', 'grade_level', 'simplification_dimensions', 'prompt', 'completion', 'system_prompt_id', 'user_prompt_id', 'metric_name', 'source_metric_value', 'target_metric_value', 'input_ids', 'labels', 'attention_mask']
+First 10 input_ids: [1, 518, 25580, 29962, 3532, 14816, 29903, 6778, 13, 3492]
+First 10 labels: [-100, -100, -100, -100, -100, -100, -100, -100, -100, -100]
+type of input_ids: <class 'list'>
+type of labels: <class 'list'>
+
+--- DEBUG: Tokenized fields ---
+--- Tokenizer vocab size: 32000
+--- input_ids: [1, 518, 25580, 29962, 3532, 14816, 29903, 6778, 13, 3492, 526, 263, 8444, 17924, 297, 1426, 5466, 2450, 29889, 887, 5706, 263, 20875, 1873, 310, 278, 1426, 1881, 491, 278, 1404, 29889, 887, 21092, 278, 1426, 5034, 304, 278, 11994, 2183, 491, 278, 1404, 29889, 1932, 4433, 304, 21092, 263, 1426, 29892, 5706, 871, 278, 13877, 5466, 2450, 29892, 1728, 738, 5684, 6589, 29892, 11486, 470, 7309, 800, 29889, 13, 29966, 829, 14816, 29903, 6778, 13, 1177, 10810, 29965, 9838, 29901, 3439, 572, 1598, 278, 1494, 1426, 1316, 393, 967, 15854, 630, 7523, 3097, 11374, 313, 1718, 29902, 29897, 8158, 338, 14235, 5186, 304, 393, 6790, 297, 278, 2761, 5993, 8273, 2760, 304, 596, 5759, 5466, 2450, 29889, 450, 2761, 5993, 756, 278, 1494, 3402, 29901, 529, 2303, 5659, 2965, 29922, 19143, 15513, 450, 2761, 5993, 8273, 2760, 304, 278, 2752, 1426, 14088, 278, 319, 3960, 995, 310, 278, 2752, 1426, 29889, 29871, 13, 27839, 4741, 323, 12194, 29901, 529, 1718, 29902, 29922, 29941, 29889, 29945, 29958, 450, 3700, 338, 1652, 15392, 29892, 322, 278, 5076, 526, 11658, 287, 29889, 529, 29989, 29872, 327, 29918, 333, 29989, 29958, 13, 5746, 7390, 2190, 8098, 29901, 450, 529, 1718, 29902, 29922, 29900, 29889, 29953, 29958, 5993, 1580, 11057, 393, 278, 3646, 15854, 630, 7523, 3097, 11374, 313, 1718, 29902, 29897, 8158, 881, 367, 14235, 29871, 29900, 29889, 29953, 29889, 27723, 1819, 12266, 13682, 1426, 29889, 29871, 13, 5746, 19297, 17101, 29901, 29871, 13, 29899, 450, 529, 1718, 29902, 29922, 29896, 29958, 5993, 1580, 11057, 393, 278, 3646, 15854, 630, 7523, 3097, 11374, 313, 1718, 29902, 29897, 8158, 881, 367, 14235, 29871, 29896, 29892, 607, 16161, 304, 263, 29871, 29896, 303, 29899, 8228, 5183, 3233, 297, 278, 3148, 9793, 1788, 313, 29953, 29899, 29955, 2440, 2030, 467, 29871, 13, 29899, 1576, 529, 1718, 29902, 29922, 29900, 29958, 5993, 1580, 11057, 393, 278, 3646, 15854, 630, 7523, 3097, 11374, 313, 1718, 29902, 29897, 8158, 881, 367, 14235, 29871, 29900, 29892, 607, 16161, 304, 278, 5183, 3233, 310, 263, 758, 29899, 27041, 261, 297, 278, 3148, 9793, 1788, 313, 29945, 29899, 29953, 2440, 2030, 467, 29871, 13, 29899, 450, 529, 1718, 29902, 29922, 29946, 29958, 5993, 1580, 11057, 393, 278, 3646, 15854, 630, 7523, 3097, 11374, 313, 1718, 29902, 29897, 8158, 881, 367, 14235, 29871, 29946, 29892, 607, 16161, 304, 263, 29871, 29946, 386, 29899, 8228, 5183, 3233, 297, 278, 3148, 9793, 1788, 313, 29929, 29899, 29896, 29900, 2440, 2030, 467, 518, 29914, 25580, 29962, 529, 1718, 29902, 29922, 29900, 29889, 29953, 29958, 29871, 1, 450, 3700, 338, 1652, 15392, 29889, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000]
+--- labels: [-100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, 1, 450, 3700, 338, 1652, 15392, 29889, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100]
+--- decoded input_ids:
+ <s> [INST] <<SYS>>
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.
+<</SYS>>
+INSTRUCTION: Simplify the following text such that its Automated Readability Index (ARI) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the ARI value of the source text. 
+SOURCE TEXT: <ARI=3.5> The face is flushed, and the eyes are injected. <|eot_id|>
+EXPLANATION: The <ARI=0.6> token specifies that the target Automated Readability Index (ARI) score should be approximately 0.6. Lower values indicate simpler text. 
+EXAMPLES: 
+- The <ARI=1> token specifies that the target Automated Readability Index (ARI) score should be approximately 1, which corresponds to a 1st-grade reading level in the US education system (6-7 years old). 
+-The <ARI=0> token specifies that the target Automated Readability Index (ARI) score should be approximately 0, which corresponds to the reading level of a pre-schooler in the US education system (5-6 years old). 
+- The <ARI=4> token specifies that the target Automated Readability Index (ARI) score should be approximately 4, which corresponds to a 4th-grade reading level in the US education system (9-10 years old). [/INST] <ARI=0.6> <s> The face is flushed.[PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD]
+--- decoded labels:
+ The face is flushed.
+
+>>> [Step 20] Prompt:
+[INST] <<SYS>>
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.
+<</SYS>>
+INSTRUCTION: Simplify the following text such that its Automated Readability Index (ARI) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the ARI value of the source text. 
+SOURCE TEXT: <ARI=19.1> Pericyclic reactions are usually rearrangement or addition reactions. <|eot_id|>
+EXPLANATION: The <ARI=17.3> token specifies that the target Automated Readability Index (ARI) score should be approximately 17.3. Lower values indicate simpler text. 
+EXAMPLES: 
+- The <ARI=11> token specifies that the target Automated Readability Index (ARI) score should be approximately 11, which corresponds to an 11th-grade reading level in the US education system (16-17 years old). 
+-The <ARI=6> token specifies that the target Automated Readability Index (ARI) score should be approximately 6, which corresponds to a 6th-grade reading level in the US education system (11-12 years old). 
+- The <ARI=9> token specifies that the target Automated Readability Index (ARI) score should be approximately 9, which corresponds to a 9th-grade reading level in the US education system (14-15 years old). [/INST] <ARI=17.3> 
+>>> Reference:
+Chemists disagree whether some reactions are pericyclic reactions.
+>>> Prediction:
+Pericyclic reactions are usually addition or rearrangement reactions.
+================================================================================
+
+>>> [Step 20] Prompt:
+[INST] <<SYS>>
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.
+<</SYS>>
+INSTRUCTION: Simplify the following text such that its Automated Readability Index (ARI) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the ARI value of the source text. 
+SOURCE TEXT: <ARI=11.2> Adult patients who require parenteral support may benefit from teduglutide (a glucagon-like peptide-2 [ GLP-2 ] analog). The recommended dosage is 0.05 mg/kg body weight sc once/ day. <|eot_id|>
+EXPLANATION: The <ARI=5.6> token specifies that the target Automated Readability Index (ARI) score should be approximately 5.6. Lower values indicate simpler text. 
+EXAMPLES: 
+- The <ARI=7> token specifies that the target Automated Readability Index (ARI) score should be approximately 7, which corresponds to a 7th-grade reading level in the US education system (12-13 years old). 
+-The <ARI=8> token specifies that the target Automated Readability Index (ARI) score should be approximately 8, which corresponds to an 8th-grade reading level in the US education system (13-14 years old). 
+- The <ARI=12> token specifies that the target Automated Readability Index (ARI) score should be approximately 12, which corresponds to a 12th-grade reading level in the US education system (18 years old or older). [/INST] <ARI=5.6> 
+>>> Reference:
+People who need TPN may be given injections of a drug called teduglutide. This drug may help reduce the amount of TPN people need.
+>>> Prediction:
+Teduglutide, a glucagon-like peptide-2 (GLP-2) analog, may benefit adult patients requiring parenteral support. The recommended dosage is 0.05 mg/kg body weight once a day.
+================================================================================
+
+>>> [Step 20] Prompt:
+[INST] <<SYS>>
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.
+<</SYS>>
+INSTRUCTION: Simplify the following text such that its Automated Readability Index (ARI) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the ARI value of the source text. 
+SOURCE TEXT: <ARI=5.7> Flaccid penis length is a poor estimate of erect length. <|eot_id|>
+EXPLANATION: The <ARI=7.6> token specifies that the target Automated Readability Index (ARI) score should be approximately 7.6. Lower values indicate simpler text. 
+EXAMPLES: 
+- The <ARI=5> token specifies that the target Automated Readability Index (ARI)ç score should be approximately 5, which corresponds to a 5th-grade reading level in the US education system (10-11 years old). 
+-The <ARI=10> token specifies that the target Automated Readability Index (ARI) score should be approximately 10, which corresponds to a 10th-grade reading level in the US education system (15-16 years old). 
+- The <ARI=11> token specifies that the target Automated Readability Index (ARI) score should be approximately 11, which corresponds to an 11th-grade reading level in the US education system (16-17 years old). [/INST] <ARI=7.6> 
+>>> Reference:
+Flaccid length is not a reliable indication of erect length.
+>>> Prediction:
+Flaccid penis length is a poor estimate of erect length.
+================================================================================
+
+>>> [Step 20] Prompt:
+[INST] <<SYS>>
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.
+<</SYS>>
+INSTRUCTION: Simplify the following text such that its Automated Readability Index (ARI) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the ARI value of the source text. 
+SOURCE TEXT: <ARI=13.2> Obstetric manifestations include early and late fetal loss. <|eot_id|>
+EXPLANATION: The <ARI=12.8> token specifies that the target Automated Readability Index (ARI) score should be approximately 12.8. Lower values indicate simpler text. 
+EXAMPLES: 
+- The <ARI=2> token specifies that the target Automated Readability Index (ARI) score should be approximately 2, which corresponds to a 2nd-grade reading level in the US education system (7-8 years old). 
+-The <ARI=9> token specifies that the target Automated Readability Index (ARI) score should be approximately 9, which corresponds to a 9th-grade reading level in the US education system (14-15 years old). 
+- The <ARI=5> token specifies that the target Automated Readability Index (ARI)ç score should be approximately 5, which corresponds to a 5th-grade reading level in the US education system (10-11 years old). [/INST] <ARI=12.8> 
+>>> Reference:
+Pregnant women have a higher-than- normal risk of miscarriage and stillbirth.
+>>> Prediction:
+Obstetric manifestations include.
+================================================================================
+{'loss': 2.4113, 'grad_norm': 1.6990092992782593, 'learning_rate': 6.333333333333333e-06, 'epoch': 0.23}
+{'eval_runtime': 37.1754, 'eval_samples_per_second': 4.681, 'eval_steps_per_second': 4.681, 'epoch': 0.23}
+[1;34mwandb[0m: 
+[1;34mwandb[0m: 🚀 View run [33mdry-aardvark-34[0m at: [34mhttps://wandb.ai/shtosti/ATS_with_control_tokens/runs/zcva4824[0m
+[1;34mwandb[0m: Find logs at: [1;35m../../../../scratch/hhubar/keep-it-simple/wandb/run-20250512_120103-zcva4824/logs[0m
