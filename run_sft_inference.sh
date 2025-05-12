@@ -18,6 +18,7 @@ mkdir -p "$OUTPUT_DIR"  # Ensure the directory exists
 
 python src/sft_inference.py \
   --model_path "$MODEL_PATH"\
+  --peft_path "$MODEL_PATH" \
   --dataset_name "$DATASET_NAME" \
   --model_class "$MODEL_CLASS" \
   --model_family "$MODEL_FAMILY" \
