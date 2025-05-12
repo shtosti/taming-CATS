@@ -219,11 +219,11 @@ def load_and_prepare_dataset(dataset_name, tokenizer, args, source_based_metric=
 
     train_dataset = load_dataset_from_hf(dataset_name, split="train", slice=args.slice_train)
     val_dataset = load_dataset_from_hf(dataset_name, split="validation", slice=args.slice_val)
-    test_dataset = load_dataset_from_hf(dataset_name, split="test", slice=args.slice_test)
+    # test_dataset = load_dataset_from_hf(dataset_name, split="test", slice=args.slice_test)
 
     train_dataset = train_dataset.map(process_instance)
     val_dataset = val_dataset.map(process_instance)
-    test_dataset = test_dataset.map(process_instance)
+    # test_dataset = test_dataset.map(process_instance)
 
     print("\n\n *** Before tokenization ***")
     print(">>> train:")
@@ -231,7 +231,7 @@ def load_and_prepare_dataset(dataset_name, tokenizer, args, source_based_metric=
 
     train_dataset = tokenize_dataset(train_dataset, tokenizer, args.max_length)
     val_dataset = tokenize_dataset(val_dataset, tokenizer, args.max_length)
-    test_dataset = tokenize_dataset(test_dataset, tokenizer, args.max_length)
+    # test_dataset = tokenize_dataset(test_dataset, tokenizer, args.max_length)
 
     print("\n\n *** After tokenization ***")
     print(">>> train:")
@@ -240,9 +240,9 @@ def load_and_prepare_dataset(dataset_name, tokenizer, args, source_based_metric=
     print(10*"*", "DEBUG", 10*"*")
     print("Train dataset columns:", train_dataset.column_names)
     print("Validation dataset columns:", val_dataset.column_names)
-    print("Test dataset columns:", test_dataset.column_names)
+    # print("Test dataset columns:", test_dataset.column_names)
 
-    return train_dataset, val_dataset, test_dataset
+    return train_dataset, val_dataset
 
 def train_model(model, tokenizer, train_dataset, val_dataset, args, output_dir, peft_enabled):
 
@@ -279,6 +279,7 @@ def train_model(model, tokenizer, train_dataset, val_dataset, args, output_dir, 
         eval_dataset=val_dataset,
         args=training_args,
         tokenizer=tokenizer,
+        compute_metrics=None, # TODO DEBUG!!!! remove if does not help the eval error
         callbacks=[PredictionLoggerCallback(
                         tokenizer=tokenizer, 
                         val_dataset=val_dataset, 
@@ -378,10 +379,11 @@ def main():
     source_based_metric = is_source_metric(args)
 
     model, tokenizer = load_and_prepare_model(args.model_family, args.model_name, args.model_class, args.peft, args.max_length)
-    train_dataset, val_dataset, test_dataset = load_and_prepare_dataset(args.dataset_name, tokenizer, args, source_based_metric=source_based_metric)
+    train_dataset, val_dataset = load_and_prepare_dataset(args.dataset_name, tokenizer, args, source_based_metric=source_based_metric)
 
     print("First 10 input_ids:", train_dataset[0]["input_ids"][:10])
     print("First 10 labels:", train_dataset[0]["labels"][:10])
+    print("\n--- DEBUG: Explore first instance of the val set:\n", val_dataset[0])
 
 
     example = train_dataset[0]
