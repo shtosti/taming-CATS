@@ -193,7 +193,7 @@ def run_inference(args, metric_mapping, model, tokenizer, test_dataset, batch_si
                 computed_reference_metrics["word_compression_rate"] = reference_word_compression
                 computed_reference_metrics["sentence_compression_rate"] = reference_sent_compression
 
-                predictions.append({
+                prediction_dict = {
                     "global_id": item["global_id"],
                     "control_token": f"{args.metric_name}={computed_reference_metrics[metric_mapping[args.metric_name]]}",
                     "metric_name": args.metric_name,
@@ -205,11 +205,12 @@ def run_inference(args, metric_mapping, model, tokenizer, test_dataset, batch_si
                     "source_metrics": computed_source_metrics,
                     "prediction_metrics": computed_prediction_metrics,
                     "reference_metrics": computed_reference_metrics,
-                    })
+                    }
                 if source_based_metric:
-                    predictions.append({
-                        "source_metric_value": item["source_metrics"][metric_mapping[args.metric_name]]
-                    })
+                    prediction_dict["source_metric_value"] = item["source_metrics"][metric_mapping[args.metric_name]]
+                
+                predictions.append(prediction_dict)
+
                 print(f"{pred.strip()[:50]}...")
 
     return predictions
