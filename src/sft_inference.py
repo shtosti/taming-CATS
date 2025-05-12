@@ -5,6 +5,8 @@ from tqdm import tqdm
 import json
 from transformers import AutoModelForCausalLM, AutoTokenizer, LlamaForCausalLM
 from datasets import load_dataset
+from peft import PeftModel, PeftConfig
+
 from helpers.prompting import select_random_system_prompt, select_random_user_prompt, select_control_token_explanation, select_random_control_token_examples
 from helpers.prompting import create_user_prompt, format_prompt_with_special_tokens, format_completion_with_special_tokens
 from helpers.hugging_face import load_dataset_from_hf, get_model_short_name
@@ -16,7 +18,7 @@ def load_json(file_path: str):
     with open(file_path, "r", encoding="utf-8") as file:
         return json.load(file)
 
-def load_and_prepare_model(model_family, model_path, model_class, max_length):
+def load_and_prepare_model(model_family, model_path, model_class, max_length, peft_path=None):
     # Load the tokenizer
     tokenizer = AutoTokenizer.from_pretrained(model_path)
     tokenizer.model_max_length = max_length
@@ -39,11 +41,16 @@ def load_and_prepare_model(model_family, model_path, model_class, max_length):
                 'eos_token': '<|eot_id|>'
             })
 
-    # Load the model
+    # Load the fine-tuned model
     if model_class == "llama":
         model = LlamaForCausalLM.from_pretrained(model_path, device_map="auto")
     else:
         model = AutoModelForCausalLM.from_pretrained(model_path, device_map="auto")
+
+    # load peft adapter, if any
+    if peft_path is not None:
+        # peft_config = PeftConfig.from_pretrained(peft_path)
+        model = PeftModel.from_pretrained(model, peft_path)
 
     model.gradient_checkpointing_enable()  # for batching imitation
     model.config.use_cache = False  # use less memory
@@ -230,6 +237,8 @@ def parse_args():
     parser.add_argument("--slice_test", type=int, default=-1, help="Slice the test set for dev. -1 means no slicing.")
     parser.add_argument("--output_file", type=str, required=True, help="Path to save the predictions.")
     parser.add_argument("--device", type=str, default="cuda", choices=["cuda", "cpu"], help="Device to run inference on.")
+    parser.add_argument("--peft_path", type=str, default=None, help="Path to PEFT adapter dir.")
+
     
     # Arguments for dynamic prompting
     parser.add_argument("--control_tokens", type=str, required=True, help="Path to the control tokens JSON file.")
@@ -247,7 +256,13 @@ def main():
     print(f"Inference args:\n{args}\n")
 
     # Load the model and tokenizer
-    model, tokenizer = load_and_prepare_model(args.model_family, args.model_path, args.model_class, args.max_length)
+    model, tokenizer = load_and_prepare_model(
+        args.model_family, 
+        args.model_path, 
+        args.model_class, 
+        args.max_length,
+        peft_path=args.peft_path
+        )
     model.to(args.device)
 
     # Load and prepare the dynamic prompting information (control tokens, system prompts, etc.)
