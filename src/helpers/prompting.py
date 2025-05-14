@@ -66,27 +66,31 @@ def create_user_prompt(user_prompts, metric_name, source_metric_value, target_me
     # Fallback: If the metric is not found, return a default prompt
     return user_prompt_id, f"Simplify the following text: \n\n{text}"
 
-def format_prompt_with_special_tokens(system_prompt, user_prompt, metric_name, target_metric_value, model_family="base"):
+def format_prompt_with_special_tokens(tokenizer, system_prompt, user_prompt, metric_name, target_metric_value, model_family="base"):
+    eos = tokenizer.eos_token if hasattr(tokenizer, "eos_token") else ""
+    bos = tokenizer.bos_token if hasattr(tokenizer, "bos_token") else ""
+    control_token = f"<{metric_name}={target_metric_value}> "
+    
     if model_family in ["llama", "mistral"]:
         formatted_prompt = (
             f"[INST] <<SYS>>\n{system_prompt}\n<</SYS>>\n"
             f"{user_prompt.strip()} [/INST] "
-            f"<{metric_name}={target_metric_value}> "
+            f"{control_token}"
         )
     elif model_family == "qwen":
         formatted_prompt = (
             f"<|im_start|>system\n{system_prompt.strip()}\n<|im_end|>\n"
             f"<|im_start|>user\n{user_prompt.strip()}\n<|im_end|>\n"
             f"<|im_start|>assistant\n"
-            f"<{metric_name}={target_metric_value}> "
+            f"{control_token}"
         )
     elif model_family == "base":
         formatted_prompt = (
-            f"<|begin_of_text|>"
-            f"<|start_header_id|>system<|end_header_id|> {system_prompt}<|eot_id|>\n"
-            f"<|start_header_id|>user<|end_header_id|> {user_prompt}\n"
+            f"{bos}"
+            f"<|start_header_id|>system<|end_header_id|> {system_prompt}{eos}\n"
+            f"<|start_header_id|>user<|end_header_id|> {user_prompt}{eos}\n"
             f"<|start_header_id|>assistant<|end_header_id|>\n"
-            f"<{metric_name}={target_metric_value}> "
+            f"{control_token}"
         )
         
     else:
@@ -94,25 +98,28 @@ def format_prompt_with_special_tokens(system_prompt, user_prompt, metric_name, t
 
     return formatted_prompt
 
-def format_completion_with_special_tokens(completion, model_family="base"):
+def format_completion_with_special_tokens(tokenizer, completion, model_family="base"):
+    eos = tokenizer.eos_token if hasattr(tokenizer, "eos_token") else ""
+    bos = tokenizer.bos_token if hasattr(tokenizer, "bos_token") else ""
     if model_family in ["llama", "mistral"]:
         return completion.strip()
-    if model_family == "qwen":
-        return f"{completion.strip()}\n<|im_end|>"
-    elif model_family == "base":
-        return f"{completion.strip()} <|eot_id|>"
+    else:
+        return f"{completion.strip()}{eos}"
 
 
 def format_prompt_with_tokenizer(tokenizer, system_prompt, user_prompt, metric_name, target_metric_value):
+    control_token = f"<{metric_name}={target_metric_value}> "
     messages = [
         {"role": "system", "content": system_prompt},
         {"role": "user", "content": user_prompt},
+        {"role": "assistant", "content": control_token}
     ]
     formatted_prompt = tokenizer.apply_chat_template(
-        messages, tokenize=False, add_generation_prompt=True
+        messages, tokenize=True, add_generation_prompt=False
     )
-    formatted_prompt += f"<{metric_name}={target_metric_value}> "
+    print("--- DEBUG (printing helper):")
+    print(f"Formatted prompt: {formatted_prompt}")
     return formatted_prompt
 
-def format_completion_with_tokenizer(completion, tokenizer):
+def format_completion_with_tokenizer(tokenizer, completion):
     return f"{completion.strip()} {tokenizer.eos_token}"
