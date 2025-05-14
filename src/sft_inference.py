@@ -21,9 +21,6 @@ def load_json(file_path: str):
 def load_and_prepare_model(model_family, model_path, model_class, max_length, peft_path=None):
     # Load the tokenizer
     tokenizer = AutoTokenizer.from_pretrained(model_path)
-    print("---DEBUG: before reshaping:")
-    print(f"Tokenizer vocab size: {len(tokenizer)}")
-
     tokenizer.model_max_length = max_length
     # tokenizer.truncation_side = "right"
     
@@ -50,7 +47,7 @@ def load_and_prepare_model(model_family, model_path, model_class, max_length, pe
     else:
         model = AutoModelForCausalLM.from_pretrained(model_path, device_map="auto")
 
-    model.resize_token_embeddings(len(tokenizer)) # TODO make sure works without peft too, if not remove this line
+    # model.resize_token_embeddings(len(tokenizer)) # TODO make sure works without peft too, if not remove this line
 
     # load peft adapter, if any
     if peft_path is not None:
@@ -59,14 +56,8 @@ def load_and_prepare_model(model_family, model_path, model_class, max_length, pe
 
     model.gradient_checkpointing_enable()  # for batching imitation
     model.config.use_cache = False  # use less memory
-    model.resize_token_embeddings(len(tokenizer))  # resize after adding new tokens
+    # model.resize_token_embeddings(len(tokenizer))  # resize after adding new tokens
     model.config.pad_token_id = tokenizer.pad_token_id
-
-    print("---DEBUG: after reshaping:")
-    print(f"Tokenizer vocab size: {len(tokenizer)}")
-    print(f"Model embed_tokens size: {model.get_input_embeddings().weight.shape[0]}")
-    print(f"Model config: {model.config}")
-    print(f"Tokenizer config: {tokenizer}")
 
     return model, tokenizer
 
@@ -127,6 +118,7 @@ def load_and_prepare_test_set(dataset_name, tokenizer, max_length, control_token
         
         # Format the prompt with special tokens
         formatted_prompt = format_prompt_with_special_tokens(
+            tokenizer=tokenizer,
             system_prompt=system_prompt,
             user_prompt=user_prompt,
             metric_name=metric_key_mapped,
@@ -135,7 +127,11 @@ def load_and_prepare_test_set(dataset_name, tokenizer, max_length, control_token
         )
         
         # Format the completion
-        formatted_completion = format_completion_with_special_tokens(completion=reference_simplification, model_family=model_family)
+        formatted_completion = format_completion_with_special_tokens(
+            tokenizer=tokenizer,
+            completion=reference_simplification, 
+            model_family=model_family
+            )
         # Encode the prompt and completion using the tokenizer
         input_ids = tokenizer.encode(formatted_prompt, truncation=True, max_length=max_length, padding="max_length", return_tensors="pt")
         completion_ids = tokenizer.encode(formatted_completion, truncation=True, max_length=max_length, padding="max_length", return_tensors="pt")
@@ -145,6 +141,7 @@ def load_and_prepare_test_set(dataset_name, tokenizer, max_length, control_token
             "input_ids": input_ids.squeeze(0),  # Remove batch dimension
             "completion_ids": completion_ids.squeeze(0),  # Remove batch dimension
         }
+
 
     test_dataset = test_dataset.map(process_instance, batched=False) # batching enabled
     
