@@ -19,7 +19,7 @@ from transformers import EarlyStoppingCallback
 
 from helpers.hugging_face import load_dataset_from_hf, get_model_short_name
 from helpers.prompting import select_random_system_prompt, select_random_user_prompt, select_control_token_explanation, select_random_control_token_examples
-from helpers.prompting import create_user_prompt, format_prompt_with_special_tokens, format_completion_with_special_tokens
+from helpers.prompting import create_user_prompt, format_prompt_with_special_tokens, format_completion_with_special_tokens, format_prompt_with_tokenizer, format_completion_with_tokenizer
 
 from classes.PredictionLoggerCallback import PredictionLoggerCallback
 
@@ -52,19 +52,19 @@ def load_and_prepare_model(model_family, model_name, model_class, peft_enabled, 
     tokenizer = AutoTokenizer.from_pretrained(model_name)
     tokenizer.model_max_length = max_length
     tokenizer.truncation_side = "right"
-    if tokenizer.pad_token is None or tokenizer.pad_token_id is None:
+    tokenizer.padding_side = "left"
+    # add special tokens if missing from the original tokenizer
+    if tokenizer.pad_token is None:
         tokenizer.add_special_tokens({
             'pad_token': '[PAD]'
         })
-    tokenizer.padding_side = "left"
-
     if model_family == "qwen":
-        if tokenizer.eos_token is None or tokenizer.eos_token != "<|im_end|>":
+        if tokenizer.eos_token is None:
             tokenizer.add_special_tokens({
                 'eos_token': '<|im_end|>'
             })
     elif model_family == "base":
-        if tokenizer.eos_token is None or tokenizer.eos_token != "<|eot_id|>":
+        if tokenizer.eos_token:
             tokenizer.add_special_tokens({
                 'eos_token': '<|eot_id|>'
             })
@@ -200,16 +200,20 @@ def load_and_prepare_dataset(dataset_name, tokenizer, args, source_based_metric=
         )
 
         return {
-            "prompt": format_prompt_with_special_tokens(
+            # "prompt": format_prompt_with_special_tokens(
+            "prompt": format_prompt_with_tokenizer(
+                                                        tokenizer=tokenizer,
                                                         system_prompt=system_prompt, 
                                                         user_prompt=user_prompt, 
                                                         metric_name=args.metric_name, 
                                                         target_metric_value=target_metric_value,
-                                                        model_family=args.model_family
+                                                        # model_family=args.model_family
                                                         ),
-            "completion": format_completion_with_special_tokens(
+            # "completion": format_completion_with_special_tokens(
+            "completion": format_completion_with_tokenizer(
+                                                        tokenizer=tokenizer,
                                                         completion=reference_simplification, 
-                                                        model_family=args.model_family
+                                                        # model_family=args.model_family
                                                         ),
             "system_prompt_id": system_id,
             "user_prompt_id": args.user_prompt_id,
@@ -221,19 +225,16 @@ def load_and_prepare_dataset(dataset_name, tokenizer, args, source_based_metric=
 
     train_dataset = load_dataset_from_hf(dataset_name, split="train", slice=args.slice_train)
     val_dataset = load_dataset_from_hf(dataset_name, split="validation", slice=args.slice_val)
-    # test_dataset = load_dataset_from_hf(dataset_name, split="test", slice=args.slice_test)
 
     train_dataset = train_dataset.map(process_instance)
     val_dataset = val_dataset.map(process_instance)
-    # test_dataset = test_dataset.map(process_instance)
 
     print("\n\n *** Before tokenization ***")
     print(">>> train:")
-    show_examples(train_dataset, n=1)
+    show_examples(train_dataset, n=1, show_tokens=False)
 
     train_dataset = tokenize_dataset(train_dataset, tokenizer, args.max_length)
     val_dataset = tokenize_dataset(val_dataset, tokenizer, args.max_length)
-    # test_dataset = tokenize_dataset(test_dataset, tokenizer, args.max_length)
 
     print("\n\n *** After tokenization ***")
     print(">>> train:")
@@ -242,7 +243,6 @@ def load_and_prepare_dataset(dataset_name, tokenizer, args, source_based_metric=
     print(10*"*", "DEBUG", 10*"*")
     print("Train dataset columns:", train_dataset.column_names)
     print("Validation dataset columns:", val_dataset.column_names)
-    # print("Test dataset columns:", test_dataset.column_names)
 
     return train_dataset, val_dataset
 
@@ -311,7 +311,6 @@ def parse_args():
     parser.add_argument("--dataset_name", type=str, required=True)
     parser.add_argument("--slice_train", type=int, default=-1)
     parser.add_argument("--slice_val", type=int, default=-1)
-    parser.add_argument("--slice_test", type=int, default=-1)
     parser.add_argument("--batch_size", type=int, default=4)
     parser.add_argument("--eval_batch_size", type=int, default=1)
     parser.add_argument("--gradient_accumulation_steps", type=int, default=4)
