@@ -18,6 +18,9 @@ finetune:
 infer:
 	sbatch ./slurm_sft_inference.sh
 
+infer-peft
+	sbatch ./slurm_sft_inference_peft.sh
+
 eval:
 	sbatch ./slurm_sft_eval.sh
 
@@ -27,5 +30,6 @@ help:
 	@echo "  activate     - Activate the conda environment"
 	@echo "  finetune        - Run the training script"
 	@echo "  infer        - Run the inference script"
+	@echo "  infer-peft   - Run the inference script with PEFT"
 	@echo "  eval        - Run the evaluation script"
 	@echo "  clean        - Clean python caches"
