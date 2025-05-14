@@ -100,10 +100,11 @@ def generate_splits(data, metric_values, strat_metric, num_bins=25, seed=None):
 
 def main():
     DATASETS = [
-        "medeasi",
-        "newsela",
-        "simpa",
-        "wikilarge_ori_splitwise"
+        # "medeasi",
+        # "newsela",
+        # "simpa",
+        # "wikilarge_ori_splitwise",
+        "wikilarge_ori_global"
     ]
     DATA_DIR = "./../data"
 

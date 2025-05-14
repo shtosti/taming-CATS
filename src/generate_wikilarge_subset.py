@@ -78,7 +78,6 @@ def stratified_sampling_from_split(data: list, metric_values: dict, metric: str,
         subset = df.groupby("bin", group_keys=False).apply(lambda x: x.sample(frac=split_size / len(df), random_state=42))
         return subset["data"].tolist()
 
-    # Sample from each split
     sampled_train = sample_split(train_data, train_metrics, train_size)
     sampled_valid = sample_split(valid_data, valid_metrics, valid_size)
     sampled_test = sample_split(test_data, test_metrics, test_size)
@@ -87,36 +86,36 @@ def stratified_sampling_from_split(data: list, metric_values: dict, metric: str,
 
 def main():
     # Parameters
+
     num_bins = 25
     stratification_metric = "FKGL"
-    subset_size = 2000  # subset size as requested
+    subset_size = 7000
     base_dir = "./../data/datasets"
+    experiment_name = f"wikilarge_ori_global_{subset_size}"
     full_dataset_path = f"{base_dir}/wikilarge_ori/dataset.jsonl"
-    
-    # create output dirs and paths
-    splitwise_output_dir = f"{base_dir}/wikilarge_ori_splitwise"
-    global_output_dir = f"{base_dir}/wikilarge_ori_global"
-    os.makedirs(splitwise_output_dir, exist_ok=True)
-    os.makedirs(global_output_dir, exist_ok=True)
-    splitwise_output_path = f"{splitwise_output_dir}/dataset.jsonl"
-    global_output_path = f"{global_output_dir}/dataset.jsonl"
     
     # Load dataset
     data = load_jsonl(full_dataset_path)
     metrics = ["char_count", "word_count", "FKGL", "ARI", "FRE", "Dale-Chall"]
     metric_values = extract_metrics(data, metrics)
 
+    # splitwise_output_dir = f"{base_dir}/{experiment_name}"
+    # os.makedirs(splitwise_output_dir, exist_ok=True)
+    # splitwise_output_path = f"{splitwise_output_dir}/dataset.jsonl"
 
-    # Stratified Sampling - Splitwise
-    sampled_splitwise = stratified_sampling_from_split(
-        data, 
-        metric_values, 
-        stratification_metric, 
-        num_bins=num_bins, 
-        subset_size=subset_size
-    )
-    save_jsonl(sampled_splitwise, splitwise_output_path)
-    print(f"Saved splitwise stratified dataset to {splitwise_output_path}.")
+    # sampled_splitwise = stratified_sampling_from_split(
+    #     data, 
+    #     metric_values, 
+    #     stratification_metric, 
+    #     num_bins=num_bins, 
+    #     subset_size=subset_size
+    # )
+    # save_jsonl(sampled_splitwise, splitwise_output_path)
+    # print(f"Saved splitwise stratified dataset to {splitwise_output_path}.")
+
+    global_output_dir = f"{base_dir}/wikilarge_ori_global_{subset_size}"
+    os.makedirs(global_output_dir, exist_ok=True)
+    global_output_path = f"{global_output_dir}/dataset.jsonl"
 
     # Stratified Sampling - Global
     sampled_global = stratified_sampling(
@@ -127,7 +126,7 @@ def main():
         subset_size=subset_size
     )
     save_jsonl(sampled_global, global_output_path)
-    print(f"Saved global stratified dataset to {global_output_path}.")
+    print(f"Saved global stratified dataset to {global_output_dir}.")
 
 if __name__ == "__main__":
     main()

@@ -50,6 +50,7 @@ def main():
                 "simpa", 
                 "medeasi",
                 "wikilarge_ori_splitwise",
+                "wikilarge_ori_global"
                 ]
     for dataset in datasets:
         print(f"{5*"*"} Processing {dataset}... {5*"*"}")
