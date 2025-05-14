@@ -1,0 +1,1636 @@
+Wed May 14 18:20:19 2025       
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 560.35.05              Driver Version: 560.35.05      CUDA Version: 12.6     |
+|-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  Tesla V100-SXM2-16GB           Off |   00000000:16:00.0 Off |                    0 |
+| N/A   40C    P0             43W /  300W |       1MiB /  16384MiB |      0%      Default |
+|                                         |                        |                  N/A |
++-----------------------------------------+------------------------+----------------------+
+                                                                                         
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI        PID   Type   Process name                              GPU Memory |
+|        ID   ID                                                               Usage      |
+|=========================================================================================|
+|  No running processes found                                                             |
++-----------------------------------------------------------------------------------------+
+torch.cuda.is_bf16_supported: True
+Transformers version: 4.51.0
+Python path: /home/hhubar/data/conda/envs/sft/bin/python
+Not using PEFT...
+
+Run arguments:
+Namespace(model_class='llama', model_family='base', model_name='meta-llama/Llama-3.2-1B-Instruct', dataset_name='Med-EASi', slice_train=50, slice_val=50, batch_size=8, eval_batch_size=1, gradient_accumulation_steps=2, learning_rate=1e-05, weight_decay=0.01, epochs=3, max_length=512, logging_steps=20, wandb_project_name='ATS_with_control_tokens', wandb_entity='shtosti', log_every=20, seed=42, patience=3, prompting_type='vanilla', user_prompt_id='token_explanation', metric_name='FKGL', control_tokens='data/prompts/control_tokens.json', system_prompts='data/prompts/system_prompts.json', user_prompts='data/prompts/user_prompts.json', metric_mapping='data/metric_mapping.json', peft=False)
+
+Saving to: ./models/Llama-3.2-1B-Instruct-Med-EASi-FKGL-base-token_explanation-20250514-1821-pae9lkls
+
+*** Finetuning Llama-3.2-1B-Instruct with Med-EASi ***
+
+CUDA available: True
+Number of GPUs: 1
+GPU name: Tesla V100-SXM2-16GB
+--- DEBUG ---
+trainable params:
+Trainable params: 1,235,816,448 / 1,235,816,448 (100.00%)
+--- tokenizer pad_token_id: 128256
+--- tokenizer eos_token_id: 128009
+--- special tokens:
+train:	 Inspect the dataset format:
+ {'global_id': ['medeasi_000457'], 'source_text': ['The face is flushed, and the eyes are injected.'], 'source_metrics': [{'FRE': 96.18, 'ARI': 3.5, 'FKGL': 2.1, 'Dale-Chall': 9.35, 'char_count': 47, 'alphanum_count': 37, 'word_count': 11, 'sentence_count': 1}], 'metadata': [{'dataset': 'medeasi', 'experiment_split': '', 'domain': 'medical', 'language': 'en', 'annotation': 'human', 'level': 'sentence'}], 'simplification_text': ['The face is flushed.'], 'target_metrics': [{'FRE': 118.18, 'ARI': 0.6, 'FKGL': -2.3, 'Dale-Chall': 7.78, 'char_count': 20, 'alphanum_count': 16, 'word_count': 5, 'sentence_count': 1, 'char_compression_rate': 0.43, 'word_compression_rate': 0.45, 'sentence_compression_rate': 1.0, 'BLEU': 21.297646969725616, 'BERTScore': 0.9398951530456543}], 'simplification_version': [1], 'grade_level': [-1], 'simplification_dimensions': [{'linguistic': {'lexical': False, 'syntactic': False}}]}
+validation:	 Inspect the dataset format:
+ {'global_id': ['medeasi_001210'], 'source_text': ['This increased risk is greatest at two to three months of age.'], 'source_metrics': [{'FRE': 93.14, 'ARI': 4.6, 'FKGL': 3.3, 'Dale-Chall': 9.5, 'char_count': 62, 'alphanum_count': 50, 'word_count': 13, 'sentence_count': 1}], 'metadata': [{'dataset': 'medeasi', 'experiment_split': '', 'domain': 'medical', 'language': 'en', 'annotation': 'human', 'level': 'sentence'}], 'simplification_text': ['This risk is highest in infants who are two to three months old.'], 'target_metrics': [{'FRE': 92.12, 'ARI': 3.9, 'FKGL': 3.6, 'Dale-Chall': 9.14, 'char_count': 64, 'alphanum_count': 51, 'word_count': 14, 'sentence_count': 1, 'char_compression_rate': 1.03, 'word_compression_rate': 1.08, 'sentence_compression_rate': 1.0, 'BLEU': 22.718709780542323, 'BERTScore': 0.9562927484512329}], 'simplification_version': [1], 'grade_level': [-1], 'simplification_dimensions': [{'linguistic': {'lexical': False, 'syntactic': False}}]}
+--- DEBUG (printing helper):
+Formatted prompt: <|begin_of_text|><|start_header_id|>system<|end_header_id|>
+
+Cutting Knowledge Date: December 2023
+Today Date: 14 May 2025
+
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|><|start_header_id|>user<|end_header_id|>
+
+INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=2.1> The face is flushed, and the eyes are injected. <|eot_id|>
+EXPLANATION: The <FKGL=-2.3> token specifies that the target Flesch-Kincaid Grade Level should be approximately -2.3. Lower values indicate simpler text.<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+<FKGL=-2.3><|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+
+--- DEBUG (printing helper):
+Formatted prompt: <|begin_of_text|><|start_header_id|>system<|end_header_id|>
+
+Cutting Knowledge Date: December 2023
+Today Date: 14 May 2025
+
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|><|start_header_id|>user<|end_header_id|>
+
+INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=1.7> Ives died of a stroke in 1954 in New York City. <|eot_id|>
+EXPLANATION: The <FKGL=2.9> token specifies that the target Flesch-Kincaid Grade Level should be approximately 2.9. Lower values indicate simpler text.<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+<FKGL=2.9><|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+
+--- DEBUG (printing helper):
+Formatted prompt: <|begin_of_text|><|start_header_id|>system<|end_header_id|>
+
+Cutting Knowledge Date: December 2023
+Today Date: 14 May 2025
+
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|><|start_header_id|>user<|end_header_id|>
+
+INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=0.9> Pain in the neck, back, or head may occur. <|eot_id|>
+EXPLANATION: The <FKGL=11.7> token specifies that the target Flesch-Kincaid Grade Level should be approximately 11.7. Lower values indicate simpler text.<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+<FKGL=11.7><|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+
+--- DEBUG (printing helper):
+Formatted prompt: <|begin_of_text|><|start_header_id|>system<|end_header_id|>
+
+Cutting Knowledge Date: December 2023
+Today Date: 14 May 2025
+
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|><|start_header_id|>user<|end_header_id|>
+
+INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=3.6> Septicemic ( or septicaemic ) plague is one of the three main forms of plague. <|eot_id|>
+EXPLANATION: The <FKGL=8.0> token specifies that the target Flesch-Kincaid Grade Level should be approximately 8.0. Lower values indicate simpler text.<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+<FKGL=8.0><|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+
+--- DEBUG (printing helper):
+Formatted prompt: <|begin_of_text|><|start_header_id|>system<|end_header_id|>
+
+Cutting Knowledge Date: December 2023
+Today Date: 14 May 2025
+
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|><|start_header_id|>user<|end_header_id|>
+
+INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=3.3> A pioneer of this field was James J. Gibson. <|eot_id|>
+EXPLANATION: The <FKGL=3.3> token specifies that the target Flesch-Kincaid Grade Level should be approximately 3.3. Lower values indicate simpler text.<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+<FKGL=3.3><|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+
+--- DEBUG (printing helper):
+Formatted prompt: <|begin_of_text|><|start_header_id|>system<|end_header_id|>
+
+Cutting Knowledge Date: December 2023
+Today Date: 14 May 2025
+
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|><|start_header_id|>user<|end_header_id|>
+
+INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=2.5> Splenomegaly is an enlargement of the spleen. <|eot_id|>
+EXPLANATION: The <FKGL=2.5> token specifies that the target Flesch-Kincaid Grade Level should be approximately 2.5. Lower values indicate simpler text.<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+<FKGL=2.5><|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+
+--- DEBUG (printing helper):
+Formatted prompt: <|begin_of_text|><|start_header_id|>system<|end_header_id|>
+
+Cutting Knowledge Date: December 2023
+Today Date: 14 May 2025
+
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|><|start_header_id|>user<|end_header_id|>
+
+INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=2.9> It makes up 15.9 % of all deaths making it the most common cause of death globally. <|eot_id|>
+EXPLANATION: The <FKGL=5.6> token specifies that the target Flesch-Kincaid Grade Level should be approximately 5.6. Lower values indicate simpler text.<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+<FKGL=5.6><|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+
+--- DEBUG (printing helper):
+Formatted prompt: <|begin_of_text|><|start_header_id|>system<|end_header_id|>
+
+Cutting Knowledge Date: December 2023
+Today Date: 14 May 2025
+
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|><|start_header_id|>user<|end_header_id|>
+
+INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=2.9> It is best known as the site of the Joseph Curseen Jr. and Thomas Morris Jr.. <|eot_id|>
+EXPLANATION: The <FKGL=5.7> token specifies that the target Flesch-Kincaid Grade Level should be approximately 5.7. Lower values indicate simpler text.<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+<FKGL=5.7><|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+
+--- DEBUG (printing helper):
+Formatted prompt: <|begin_of_text|><|start_header_id|>system<|end_header_id|>
+
+Cutting Knowledge Date: December 2023
+Today Date: 14 May 2025
+
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|><|start_header_id|>user<|end_header_id|>
+
+INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=4.8> Most people who have auras have the same type of aura every time. <|eot_id|>
+EXPLANATION: The <FKGL=5.6> token specifies that the target Flesch-Kincaid Grade Level should be approximately 5.6. Lower values indicate simpler text.<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+<FKGL=5.6><|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+
+--- DEBUG (printing helper):
+Formatted prompt: <|begin_of_text|><|start_header_id|>system<|end_header_id|>
+
+Cutting Knowledge Date: December 2023
+Today Date: 14 May 2025
+
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|><|start_header_id|>user<|end_header_id|>
+
+INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=4.8> New Zealand has never had a case of foot-and-mouth disease. <|eot_id|>
+EXPLANATION: The <FKGL=16.9> token specifies that the target Flesch-Kincaid Grade Level should be approximately 16.9. Lower values indicate simpler text.<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+<FKGL=16.9><|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+
+--- DEBUG (printing helper):
+Formatted prompt: <|begin_of_text|><|start_header_id|>system<|end_header_id|>
+
+Cutting Knowledge Date: December 2023
+Today Date: 14 May 2025
+
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|><|start_header_id|>user<|end_header_id|>
+
+INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=4.8> A rhyme scheme is the pattern of rhymes at the end of each line of a poem or song. <|eot_id|>
+EXPLANATION: The <FKGL=4.4> token specifies that the target Flesch-Kincaid Grade Level should be approximately 4.4. Lower values indicate simpler text.<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+<FKGL=4.4><|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+
+--- DEBUG (printing helper):
+Formatted prompt: <|begin_of_text|><|start_header_id|>system<|end_header_id|>
+
+Cutting Knowledge Date: December 2023
+Today Date: 14 May 2025
+
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|><|start_header_id|>user<|end_header_id|>
+
+INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=3.7> This is caused by hormones from the mother before birth. <|eot_id|>
+EXPLANATION: The <FKGL=6.4> token specifies that the target Flesch-Kincaid Grade Level should be approximately 6.4. Lower values indicate simpler text.<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+<FKGL=6.4><|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+
+--- DEBUG (printing helper):
+Formatted prompt: <|begin_of_text|><|start_header_id|>system<|end_header_id|>
+
+Cutting Knowledge Date: December 2023
+Today Date: 14 May 2025
+
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|><|start_header_id|>user<|end_header_id|>
+
+INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=4.8> A unary function is a function that takes one argument . <|eot_id|>
+EXPLANATION: The <FKGL=5.6> token specifies that the target Flesch-Kincaid Grade Level should be approximately 5.6. Lower values indicate simpler text.<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+<FKGL=5.6><|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+
+--- DEBUG (printing helper):
+Formatted prompt: <|begin_of_text|><|start_header_id|>system<|end_header_id|>
+
+Cutting Knowledge Date: December 2023
+Today Date: 14 May 2025
+
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|><|start_header_id|>user<|end_header_id|>
+
+INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=4.4> The first time this bleeding occurs , it may not be very severe . <|eot_id|>
+EXPLANATION: The <FKGL=4.0> token specifies that the target Flesch-Kincaid Grade Level should be approximately 4.0. Lower values indicate simpler text.<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+<FKGL=4.0><|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+
+--- DEBUG (printing helper):
+Formatted prompt: <|begin_of_text|><|start_header_id|>system<|end_header_id|>
+
+Cutting Knowledge Date: December 2023
+Today Date: 14 May 2025
+
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|><|start_header_id|>user<|end_header_id|>
+
+INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=4.0> In 2003, the Centers for Disease Control and Prevention (CDC) reported that 26 % of abortions in the United States were known to have been obtained at less than 6 weeks ' gestation, 18 % at 7 weeks, 15 % at 8 weeks, 18 % at 9 through 10 weeks, 9.7 % at 11 through 12 weeks, 6.2 % at 13 through 15 weeks, 4.1 % at 16 through 20 weeks and 1.4 % at more than 21 weeks. <|eot_id|>
+EXPLANATION: The <FKGL=1.7> token specifies that the target Flesch-Kincaid Grade Level should be approximately 1.7. Lower values indicate simpler text.<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+<FKGL=1.7><|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+
+--- DEBUG (printing helper):
+Formatted prompt: <|begin_of_text|><|start_header_id|>system<|end_header_id|>
+
+Cutting Knowledge Date: December 2023
+Today Date: 14 May 2025
+
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|><|start_header_id|>user<|end_header_id|>
+
+INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=4.4> A cold wave can cause death and injury to livestock and wildlife. <|eot_id|>
+EXPLANATION: The <FKGL=6.8> token specifies that the target Flesch-Kincaid Grade Level should be approximately 6.8. Lower values indicate simpler text.<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+<FKGL=6.8><|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+
+--- DEBUG (printing helper):
+Formatted prompt: <|begin_of_text|><|start_header_id|>system<|end_header_id|>
+
+Cutting Knowledge Date: December 2023
+Today Date: 14 May 2025
+
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|><|start_header_id|>user<|end_header_id|>
+
+INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=4.0> Malthus was not the first to outline the problems he perceived. <|eot_id|>
+EXPLANATION: The <FKGL=5.2> token specifies that the target Flesch-Kincaid Grade Level should be approximately 5.2. Lower values indicate simpler text.<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+<FKGL=5.2><|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+
+--- DEBUG (printing helper):
+Formatted prompt: <|begin_of_text|><|start_header_id|>system<|end_header_id|>
+
+Cutting Knowledge Date: December 2023
+Today Date: 14 May 2025
+
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|><|start_header_id|>user<|end_header_id|>
+
+INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=3.7> Hot, wet compresses may relieve some pain. <|eot_id|>
+EXPLANATION: The <FKGL=4.4> token specifies that the target Flesch-Kincaid Grade Level should be approximately 4.4. Lower values indicate simpler text.<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+<FKGL=4.4><|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+
+--- DEBUG (printing helper):
+Formatted prompt: <|begin_of_text|><|start_header_id|>system<|end_header_id|>
+
+Cutting Knowledge Date: December 2023
+Today Date: 14 May 2025
+
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|><|start_header_id|>user<|end_header_id|>
+
+INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=4.0> This left him no time to train during the day, so he would sneak out of the house at night to train, sometimes at 1 or 2 a.m. and often in the freezing cold. <|eot_id|>
+EXPLANATION: The <FKGL=3.8> token specifies that the target Flesch-Kincaid Grade Level should be approximately 3.8. Lower values indicate simpler text.<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+<FKGL=3.8><|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+
+--- DEBUG (printing helper):
+Formatted prompt: <|begin_of_text|><|start_header_id|>system<|end_header_id|>
+
+Cutting Knowledge Date: December 2023
+Today Date: 14 May 2025
+
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|><|start_header_id|>user<|end_header_id|>
+
+INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=4.8> All countries have laws which in some way limit privacy. <|eot_id|>
+EXPLANATION: The <FKGL=8.0> token specifies that the target Flesch-Kincaid Grade Level should be approximately 8.0. Lower values indicate simpler text.<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+<FKGL=8.0><|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+
+--- DEBUG (printing helper):
+Formatted prompt: <|begin_of_text|><|start_header_id|>system<|end_header_id|>
+
+Cutting Knowledge Date: December 2023
+Today Date: 14 May 2025
+
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|><|start_header_id|>user<|end_header_id|>
+
+INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=4.8> Fearing for his life, he feigned madness and was placed under house arrest. <|eot_id|>
+EXPLANATION: The <FKGL=5.6> token specifies that the target Flesch-Kincaid Grade Level should be approximately 5.6. Lower values indicate simpler text.<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+<FKGL=5.6><|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+
+--- DEBUG (printing helper):
+Formatted prompt: <|begin_of_text|><|start_header_id|>system<|end_header_id|>
+
+Cutting Knowledge Date: December 2023
+Today Date: 14 May 2025
+
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|><|start_header_id|>user<|end_header_id|>
+
+INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=4.4> Two types of sweat glands can be found in humans: Eccrine glands and apocrine glands. <|eot_id|>
+EXPLANATION: The <FKGL=8.7> token specifies that the target Flesch-Kincaid Grade Level should be approximately 8.7. Lower values indicate simpler text.<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+<FKGL=8.7><|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+
+--- DEBUG (printing helper):
+Formatted prompt: <|begin_of_text|><|start_header_id|>system<|end_header_id|>
+
+Cutting Knowledge Date: December 2023
+Today Date: 14 May 2025
+
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|><|start_header_id|>user<|end_header_id|>
+
+INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=4.0> He returned to his house to lie down and soon fell into a coma. <|eot_id|>
+EXPLANATION: The <FKGL=0.5> token specifies that the target Flesch-Kincaid Grade Level should be approximately 0.5. Lower values indicate simpler text.<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+<FKGL=0.5><|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+
+--- DEBUG (printing helper):
+Formatted prompt: <|begin_of_text|><|start_header_id|>system<|end_header_id|>
+
+Cutting Knowledge Date: December 2023
+Today Date: 14 May 2025
+
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|><|start_header_id|>user<|end_header_id|>
+
+INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=3.7> On 24 March 1950, his eyes were infected by trachoma. <|eot_id|>
+EXPLANATION: The <FKGL=3.7> token specifies that the target Flesch-Kincaid Grade Level should be approximately 3.7. Lower values indicate simpler text.<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+<FKGL=3.7><|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+
+--- DEBUG (printing helper):
+Formatted prompt: <|begin_of_text|><|start_header_id|>system<|end_header_id|>
+
+Cutting Knowledge Date: December 2023
+Today Date: 14 May 2025
+
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|><|start_header_id|>user<|end_header_id|>
+
+INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=4.4> Young children who bite or suck on extension cords can burn their mouth and lips. <|eot_id|>
+EXPLANATION: The <FKGL=5.6> token specifies that the target Flesch-Kincaid Grade Level should be approximately 5.6. Lower values indicate simpler text.<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+<FKGL=5.6><|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+
+--- DEBUG (printing helper):
+Formatted prompt: <|begin_of_text|><|start_header_id|>system<|end_header_id|>
+
+Cutting Knowledge Date: December 2023
+Today Date: 14 May 2025
+
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|><|start_header_id|>user<|end_header_id|>
+
+INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=4.4> It often can be cured if found and treated in early stages. <|eot_id|>
+EXPLANATION: The <FKGL=4.8> token specifies that the target Flesch-Kincaid Grade Level should be approximately 4.8. Lower values indicate simpler text.<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+<FKGL=4.8><|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+
+--- DEBUG (printing helper):
+Formatted prompt: <|begin_of_text|><|start_header_id|>system<|end_header_id|>
+
+Cutting Knowledge Date: December 2023
+Today Date: 14 May 2025
+
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|><|start_header_id|>user<|end_header_id|>
+
+INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=6.4> Health care for homeless people is a major public health challenge. <|eot_id|>
+EXPLANATION: The <FKGL=5.2> token specifies that the target Flesch-Kincaid Grade Level should be approximately 5.2. Lower values indicate simpler text.<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+<FKGL=5.2><|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+
+--- DEBUG (printing helper):
+Formatted prompt: <|begin_of_text|><|start_header_id|>system<|end_header_id|>
+
+Cutting Knowledge Date: December 2023
+Today Date: 14 May 2025
+
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|><|start_header_id|>user<|end_header_id|>
+
+INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=6.4> Appetite is the desire to eat food, sometimes due to hunger. <|eot_id|>
+EXPLANATION: The <FKGL=6.0> token specifies that the target Flesch-Kincaid Grade Level should be approximately 6.0. Lower values indicate simpler text.<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+<FKGL=6.0><|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+
+--- DEBUG (printing helper):
+Formatted prompt: <|begin_of_text|><|start_header_id|>system<|end_header_id|>
+
+Cutting Knowledge Date: December 2023
+Today Date: 14 May 2025
+
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|><|start_header_id|>user<|end_header_id|>
+
+INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=5.2> On 17 March 1979 , Walter Legge suffered a severe heart attack . <|eot_id|>
+EXPLANATION: The <FKGL=5.2> token specifies that the target Flesch-Kincaid Grade Level should be approximately 5.2. Lower values indicate simpler text.<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+<FKGL=5.2><|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+
+--- DEBUG (printing helper):
+Formatted prompt: <|begin_of_text|><|start_header_id|>system<|end_header_id|>
+
+Cutting Knowledge Date: December 2023
+Today Date: 14 May 2025
+
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|><|start_header_id|>user<|end_header_id|>
+
+INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=5.6> This causes the plant to have elongated cells on the farthest side from the light. <|eot_id|>
+EXPLANATION: The <FKGL=5.6> token specifies that the target Flesch-Kincaid Grade Level should be approximately 5.6. Lower values indicate simpler text.<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+<FKGL=5.6><|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+
+--- DEBUG (printing helper):
+Formatted prompt: <|begin_of_text|><|start_header_id|>system<|end_header_id|>
+
+Cutting Knowledge Date: December 2023
+Today Date: 14 May 2025
+
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|><|start_header_id|>user<|end_header_id|>
+
+INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=5.6> The forward rate k1 was found to decrease by a factor of 4.5 going from cyclohexane to methanol. <|eot_id|>
+EXPLANATION: The <FKGL=14.6> token specifies that the target Flesch-Kincaid Grade Level should be approximately 14.6. Lower values indicate simpler text.<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+<FKGL=14.6><|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+
+--- DEBUG (printing helper):
+Formatted prompt: <|begin_of_text|><|start_header_id|>system<|end_header_id|>
+
+Cutting Knowledge Date: December 2023
+Today Date: 14 May 2025
+
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|><|start_header_id|>user<|end_header_id|>
+
+INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=6.4> CA 19­-9 and CA 125 are other tumor markers that may be similarly used. <|eot_id|>
+EXPLANATION: The <FKGL=13.5> token specifies that the target Flesch-Kincaid Grade Level should be approximately 13.5. Lower values indicate simpler text.<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+<FKGL=13.5><|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+
+--- DEBUG (printing helper):
+Formatted prompt: <|begin_of_text|><|start_header_id|>system<|end_header_id|>
+
+Cutting Knowledge Date: December 2023
+Today Date: 14 May 2025
+
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|><|start_header_id|>user<|end_header_id|>
+
+INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=6.4> Influenza B has not been reported in pigs. <|eot_id|>
+EXPLANATION: The <FKGL=6.8> token specifies that the target Flesch-Kincaid Grade Level should be approximately 6.8. Lower values indicate simpler text.<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+<FKGL=6.8><|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+
+--- DEBUG (printing helper):
+Formatted prompt: <|begin_of_text|><|start_header_id|>system<|end_header_id|>
+
+Cutting Knowledge Date: December 2023
+Today Date: 14 May 2025
+
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|><|start_header_id|>user<|end_header_id|>
+
+INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=6.4> A few months prior to the London Paralympics, he had problems with his tendons. <|eot_id|>
+EXPLANATION: The <FKGL=7.2> token specifies that the target Flesch-Kincaid Grade Level should be approximately 7.2. Lower values indicate simpler text.<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+<FKGL=7.2><|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+
+--- DEBUG (printing helper):
+Formatted prompt: <|begin_of_text|><|start_header_id|>system<|end_header_id|>
+
+Cutting Knowledge Date: December 2023
+Today Date: 14 May 2025
+
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|><|start_header_id|>user<|end_header_id|>
+
+INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=6.4> It was said, that she had a rare quality; she knew her own limitations. <|eot_id|>
+EXPLANATION: The <FKGL=6.0> token specifies that the target Flesch-Kincaid Grade Level should be approximately 6.0. Lower values indicate simpler text.<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+<FKGL=6.0><|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+
+--- DEBUG (printing helper):
+Formatted prompt: <|begin_of_text|><|start_header_id|>system<|end_header_id|>
+
+Cutting Knowledge Date: December 2023
+Today Date: 14 May 2025
+
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|><|start_header_id|>user<|end_header_id|>
+
+INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=6.0> The lowest reliably measured temperature on Earth of 183.9 K (128.6°F ) was recorded there at Vostok Station on 21 July 1983. <|eot_id|>
+EXPLANATION: The <FKGL=5.4> token specifies that the target Flesch-Kincaid Grade Level should be approximately 5.4. Lower values indicate simpler text.<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+<FKGL=5.4><|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+
+--- DEBUG (printing helper):
+Formatted prompt: <|begin_of_text|><|start_header_id|>system<|end_header_id|>
+
+Cutting Knowledge Date: December 2023
+Today Date: 14 May 2025
+
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|><|start_header_id|>user<|end_header_id|>
+
+INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=6.0> Infection may cause pain, bleeding, or discharge. <|eot_id|>
+EXPLANATION: The <FKGL=8.0> token specifies that the target Flesch-Kincaid Grade Level should be approximately 8.0. Lower values indicate simpler text.<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+<FKGL=8.0><|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+
+--- DEBUG (printing helper):
+Formatted prompt: <|begin_of_text|><|start_header_id|>system<|end_header_id|>
+
+Cutting Knowledge Date: December 2023
+Today Date: 14 May 2025
+
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|><|start_header_id|>user<|end_header_id|>
+
+INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=6.4> The glans penis is the expanded cap of the corpus spongiosum . <|eot_id|>
+EXPLANATION: The <FKGL=6.0> token specifies that the target Flesch-Kincaid Grade Level should be approximately 6.0. Lower values indicate simpler text.<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+<FKGL=6.0><|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+
+--- DEBUG (printing helper):
+Formatted prompt: <|begin_of_text|><|start_header_id|>system<|end_header_id|>
+
+Cutting Knowledge Date: December 2023
+Today Date: 14 May 2025
+
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|><|start_header_id|>user<|end_header_id|>
+
+INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=5.8> It is estimated that 0.2 % of the population has this form of synesthesia. <|eot_id|>
+EXPLANATION: The <FKGL=3.7> token specifies that the target Flesch-Kincaid Grade Level should be approximately 3.7. Lower values indicate simpler text.<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+<FKGL=3.7><|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+
+--- DEBUG (printing helper):
+Formatted prompt: <|begin_of_text|><|start_header_id|>system<|end_header_id|>
+
+Cutting Knowledge Date: December 2023
+Today Date: 14 May 2025
+
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|><|start_header_id|>user<|end_header_id|>
+
+INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=6.4> Common symptoms include thick nasal mucus, a plugged nose, and pain in the face. <|eot_id|>
+EXPLANATION: The <FKGL=7.2> token specifies that the target Flesch-Kincaid Grade Level should be approximately 7.2. Lower values indicate simpler text.<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+<FKGL=7.2><|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+
+--- DEBUG (printing helper):
+Formatted prompt: <|begin_of_text|><|start_header_id|>system<|end_header_id|>
+
+Cutting Knowledge Date: December 2023
+Today Date: 14 May 2025
+
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|><|start_header_id|>user<|end_header_id|>
+
+INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=6.0> Schizophrenia affects around 0.3-0.7 % of people at some point in their life, or 24 million people worldwide as of 2011. <|eot_id|>
+EXPLANATION: The <FKGL=5.0> token specifies that the target Flesch-Kincaid Grade Level should be approximately 5.0. Lower values indicate simpler text.<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+<FKGL=5.0><|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+
+--- DEBUG (printing helper):
+Formatted prompt: <|begin_of_text|><|start_header_id|>system<|end_header_id|>
+
+Cutting Knowledge Date: December 2023
+Today Date: 14 May 2025
+
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|><|start_header_id|>user<|end_header_id|>
+
+INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=6.4> Seidl 's sudden death in 1898 from food poisoning at the age of 47 was widely mourned. <|eot_id|>
+EXPLANATION: The <FKGL=8.0> token specifies that the target Flesch-Kincaid Grade Level should be approximately 8.0. Lower values indicate simpler text.<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+<FKGL=8.0><|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+
+--- DEBUG (printing helper):
+Formatted prompt: <|begin_of_text|><|start_header_id|>system<|end_header_id|>
+
+Cutting Knowledge Date: December 2023
+Today Date: 14 May 2025
+
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|><|start_header_id|>user<|end_header_id|>
+
+INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=6.0> Care is supportive with treatment of pain, fever, and itching. <|eot_id|>
+EXPLANATION: The <FKGL=7.2> token specifies that the target Flesch-Kincaid Grade Level should be approximately 7.2. Lower values indicate simpler text.<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+<FKGL=7.2><|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+
+--- DEBUG (printing helper):
+Formatted prompt: <|begin_of_text|><|start_header_id|>system<|end_header_id|>
+
+Cutting Knowledge Date: December 2023
+Today Date: 14 May 2025
+
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|><|start_header_id|>user<|end_header_id|>
+
+INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=6.4> The infection can be passed through vaginal, anal, or oral sex. <|eot_id|>
+EXPLANATION: The <FKGL=11.9> token specifies that the target Flesch-Kincaid Grade Level should be approximately 11.9. Lower values indicate simpler text.<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+<FKGL=11.9><|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+
+--- DEBUG (printing helper):
+Formatted prompt: <|begin_of_text|><|start_header_id|>system<|end_header_id|>
+
+Cutting Knowledge Date: December 2023
+Today Date: 14 May 2025
+
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|><|start_header_id|>user<|end_header_id|>
+
+INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=6.4> Such people are also referred to as carriers. <|eot_id|>
+EXPLANATION: The <FKGL=4.4> token specifies that the target Flesch-Kincaid Grade Level should be approximately 4.4. Lower values indicate simpler text.<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+<FKGL=4.4><|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+
+--- DEBUG (printing helper):
+Formatted prompt: <|begin_of_text|><|start_header_id|>system<|end_header_id|>
+
+Cutting Knowledge Date: December 2023
+Today Date: 14 May 2025
+
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|><|start_header_id|>user<|end_header_id|>
+
+INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=6.4> Archived from the original on 25 April 2017 . <|eot_id|>
+EXPLANATION: The <FKGL=5.2> token specifies that the target Flesch-Kincaid Grade Level should be approximately 5.2. Lower values indicate simpler text.<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+<FKGL=5.2><|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+
+--- DEBUG (printing helper):
+Formatted prompt: <|begin_of_text|><|start_header_id|>system<|end_header_id|>
+
+Cutting Knowledge Date: December 2023
+Today Date: 14 May 2025
+
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|><|start_header_id|>user<|end_header_id|>
+
+INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=5.2> Shepard had suffered fractures to the back of his head and in front of his right ear. <|eot_id|>
+EXPLANATION: The <FKGL=6.8> token specifies that the target Flesch-Kincaid Grade Level should be approximately 6.8. Lower values indicate simpler text.<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+<FKGL=6.8><|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+
+--- DEBUG (printing helper):
+Formatted prompt: <|begin_of_text|><|start_header_id|>system<|end_header_id|>
+
+Cutting Knowledge Date: December 2023
+Today Date: 14 May 2025
+
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|><|start_header_id|>user<|end_header_id|>
+
+INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=6.0> Treatment for kidney cancer depends on the type and stage of the disease. <|eot_id|>
+EXPLANATION: The <FKGL=6.0> token specifies that the target Flesch-Kincaid Grade Level should be approximately 6.0. Lower values indicate simpler text.<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+<FKGL=6.0><|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+
+--- DEBUG (printing helper):
+Formatted prompt: <|begin_of_text|><|start_header_id|>system<|end_header_id|>
+
+Cutting Knowledge Date: December 2023
+Today Date: 14 May 2025
+
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|><|start_header_id|>user<|end_header_id|>
+
+INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=6.4> Sucking out the pus with a needle is often not sufficient.Skin abscesses are common and have become more common in recent years . <|eot_id|>
+EXPLANATION: The <FKGL=6.6> token specifies that the target Flesch-Kincaid Grade Level should be approximately 6.6. Lower values indicate simpler text.<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+<FKGL=6.6><|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+
+--- DEBUG (printing helper):
+Formatted prompt: <|begin_of_text|><|start_header_id|>system<|end_header_id|>
+
+Cutting Knowledge Date: December 2023
+Today Date: 14 May 2025
+
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|><|start_header_id|>user<|end_header_id|>
+
+INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=6.4> In extreme cases, a person may only be able to tell light from dark in that eye. <|eot_id|>
+EXPLANATION: The <FKGL=6.4> token specifies that the target Flesch-Kincaid Grade Level should be approximately 6.4. Lower values indicate simpler text.<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+<FKGL=6.4><|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+
+--- DEBUG (printing helper):
+Formatted prompt: <|begin_of_text|><|start_header_id|>system<|end_header_id|>
+
+Cutting Knowledge Date: December 2023
+Today Date: 14 May 2025
+
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|><|start_header_id|>user<|end_header_id|>
+
+INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=3.3> This increased risk is greatest at two to three months of age. <|eot_id|>
+EXPLANATION: The <FKGL=3.6> token specifies that the target Flesch-Kincaid Grade Level should be approximately 3.6. Lower values indicate simpler text.<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+<FKGL=3.6><|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+
+--- DEBUG (printing helper):
+Formatted prompt: <|begin_of_text|><|start_header_id|>system<|end_header_id|>
+
+Cutting Knowledge Date: December 2023
+Today Date: 14 May 2025
+
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|><|start_header_id|>user<|end_header_id|>
+
+INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=4.8> No cure for the common cold exists , but the symptoms can be treated . <|eot_id|>
+EXPLANATION: The <FKGL=4.0> token specifies that the target Flesch-Kincaid Grade Level should be approximately 4.0. Lower values indicate simpler text.<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+<FKGL=4.0><|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+
+--- DEBUG (printing helper):
+Formatted prompt: <|begin_of_text|><|start_header_id|>system<|end_header_id|>
+
+Cutting Knowledge Date: December 2023
+Today Date: 14 May 2025
+
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|><|start_header_id|>user<|end_header_id|>
+
+INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=4.4> Poor immune function is a risk factor for disease. <|eot_id|>
+EXPLANATION: The <FKGL=6.0> token specifies that the target Flesch-Kincaid Grade Level should be approximately 6.0. Lower values indicate simpler text.<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+<FKGL=6.0><|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+
+--- DEBUG (printing helper):
+Formatted prompt: <|begin_of_text|><|start_header_id|>system<|end_header_id|>
+
+Cutting Knowledge Date: December 2023
+Today Date: 14 May 2025
+
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|><|start_header_id|>user<|end_header_id|>
+
+INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=6.0> A number of vaccines are in development as of 2018. <|eot_id|>
+EXPLANATION: The <FKGL=6.0> token specifies that the target Flesch-Kincaid Grade Level should be approximately 6.0. Lower values indicate simpler text.<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+<FKGL=6.0><|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+
+--- DEBUG (printing helper):
+Formatted prompt: <|begin_of_text|><|start_header_id|>system<|end_header_id|>
+
+Cutting Knowledge Date: December 2023
+Today Date: 14 May 2025
+
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|><|start_header_id|>user<|end_header_id|>
+
+INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=5.2> Clubbing is present in about 50 % of cases. <|eot_id|>
+EXPLANATION: The <FKGL=17.3> token specifies that the target Flesch-Kincaid Grade Level should be approximately 17.3. Lower values indicate simpler text.<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+<FKGL=17.3><|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+
+--- DEBUG (printing helper):
+Formatted prompt: <|begin_of_text|><|start_header_id|>system<|end_header_id|>
+
+Cutting Knowledge Date: December 2023
+Today Date: 14 May 2025
+
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|><|start_header_id|>user<|end_header_id|>
+
+INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=6.4> He traveled to Spain in 1826, but returned to Bordeaux, where he died of a stroke in 1828, at the age of 82. <|eot_id|>
+EXPLANATION: The <FKGL=8.3> token specifies that the target Flesch-Kincaid Grade Level should be approximately 8.3. Lower values indicate simpler text.<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+<FKGL=8.3><|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+
+--- DEBUG (printing helper):
+Formatted prompt: <|begin_of_text|><|start_header_id|>system<|end_header_id|>
+
+Cutting Knowledge Date: December 2023
+Today Date: 14 May 2025
+
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|><|start_header_id|>user<|end_header_id|>
+
+INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=6.0> Flaccid penis length is a poor estimate of erect length. <|eot_id|>
+EXPLANATION: The <FKGL=9.6> token specifies that the target Flesch-Kincaid Grade Level should be approximately 9.6. Lower values indicate simpler text.<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+<FKGL=9.6><|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+
+--- DEBUG (printing helper):
+Formatted prompt: <|begin_of_text|><|start_header_id|>system<|end_header_id|>
+
+Cutting Knowledge Date: December 2023
+Today Date: 14 May 2025
+
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|><|start_header_id|>user<|end_header_id|>
+
+INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=5.2> Dexamethasone at doses of 0.15, 0.3 and 0.6 mg/kg appear to be all equally effective. <|eot_id|>
+EXPLANATION: The <FKGL=4.1> token specifies that the target Flesch-Kincaid Grade Level should be approximately 4.1. Lower values indicate simpler text.<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+<FKGL=4.1><|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+
+--- DEBUG (printing helper):
+Formatted prompt: <|begin_of_text|><|start_header_id|>system<|end_header_id|>
+
+Cutting Knowledge Date: December 2023
+Today Date: 14 May 2025
+
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|><|start_header_id|>user<|end_header_id|>
+
+INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=5.2> Some pain above the pubic bone or in the lower back may be present. <|eot_id|>
+EXPLANATION: The <FKGL=7.2> token specifies that the target Flesch-Kincaid Grade Level should be approximately 7.2. Lower values indicate simpler text.<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+<FKGL=7.2><|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+
+--- DEBUG (printing helper):
+Formatted prompt: <|begin_of_text|><|start_header_id|>system<|end_header_id|>
+
+Cutting Knowledge Date: December 2023
+Today Date: 14 May 2025
+
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|><|start_header_id|>user<|end_header_id|>
+
+INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=7.2> In about 10 % of patients, knee involvement is chronic (unremittent for 6 months). <|eot_id|>
+EXPLANATION: The <FKGL=6.4> token specifies that the target Flesch-Kincaid Grade Level should be approximately 6.4. Lower values indicate simpler text.<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+<FKGL=6.4><|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+
+--- DEBUG (printing helper):
+Formatted prompt: <|begin_of_text|><|start_header_id|>system<|end_header_id|>
+
+Cutting Knowledge Date: December 2023
+Today Date: 14 May 2025
+
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|><|start_header_id|>user<|end_header_id|>
+
+INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=6.8> It occurs in most people with asthma and up to 20 % of people without asthma. <|eot_id|>
+EXPLANATION: The <FKGL=6.4> token specifies that the target Flesch-Kincaid Grade Level should be approximately 6.4. Lower values indicate simpler text.<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+<FKGL=6.4><|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+
+--- DEBUG (printing helper):
+Formatted prompt: <|begin_of_text|><|start_header_id|>system<|end_header_id|>
+
+Cutting Knowledge Date: December 2023
+Today Date: 14 May 2025
+
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|><|start_header_id|>user<|end_header_id|>
+
+INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=7.2> The anus, where present, is also anterior, but is dorsal to the mouth. <|eot_id|>
+EXPLANATION: The <FKGL=8.0> token specifies that the target Flesch-Kincaid Grade Level should be approximately 8.0. Lower values indicate simpler text.<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+<FKGL=8.0><|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+
+--- DEBUG (printing helper):
+Formatted prompt: <|begin_of_text|><|start_header_id|>system<|end_header_id|>
+
+Cutting Knowledge Date: December 2023
+Today Date: 14 May 2025
+
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|><|start_header_id|>user<|end_header_id|>
+
+INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=6.8> Trimethoprim alone is deemed to be equivalent to TMP/SMX in some countries. <|eot_id|>
+EXPLANATION: The <FKGL=6.8> token specifies that the target Flesch-Kincaid Grade Level should be approximately 6.8. Lower values indicate simpler text.<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+<FKGL=6.8><|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+
+--- DEBUG (printing helper):
+Formatted prompt: <|begin_of_text|><|start_header_id|>system<|end_header_id|>
+
+Cutting Knowledge Date: December 2023
+Today Date: 14 May 2025
+
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|><|start_header_id|>user<|end_header_id|>
+
+INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=7.2> The disease was first described by Marion Robinson and W.H.R. <|eot_id|>
+EXPLANATION: The <FKGL=9.2> token specifies that the target Flesch-Kincaid Grade Level should be approximately 9.2. Lower values indicate simpler text.<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+<FKGL=9.2><|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+
+--- DEBUG (printing helper):
+Formatted prompt: <|begin_of_text|><|start_header_id|>system<|end_header_id|>
+
+Cutting Knowledge Date: December 2023
+Today Date: 14 May 2025
+
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|><|start_header_id|>user<|end_header_id|>
+
+INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=6.8> In December 1878, diphtheria swept through the Grand Ducal House of Hesse. <|eot_id|>
+EXPLANATION: The <FKGL=6.4> token specifies that the target Flesch-Kincaid Grade Level should be approximately 6.4. Lower values indicate simpler text.<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+<FKGL=6.4><|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+
+--- DEBUG (printing helper):
+Formatted prompt: <|begin_of_text|><|start_header_id|>system<|end_header_id|>
+
+Cutting Knowledge Date: December 2023
+Today Date: 14 May 2025
+
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|><|start_header_id|>user<|end_header_id|>
+
+INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=7.6> Joint pain and fever usually subside within 2 wk and seldom last > 1 mo. <|eot_id|>
+EXPLANATION: The <FKGL=7.2> token specifies that the target Flesch-Kincaid Grade Level should be approximately 7.2. Lower values indicate simpler text.<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+<FKGL=7.2><|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+
+--- DEBUG (printing helper):
+Formatted prompt: <|begin_of_text|><|start_header_id|>system<|end_header_id|>
+
+Cutting Knowledge Date: December 2023
+Today Date: 14 May 2025
+
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|><|start_header_id|>user<|end_header_id|>
+
+INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=7.2> Cowpox is more commonly found in animals other than bovines, such as rodents. <|eot_id|>
+EXPLANATION: The <FKGL=2.9> token specifies that the target Flesch-Kincaid Grade Level should be approximately 2.9. Lower values indicate simpler text.<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+<FKGL=2.9><|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+
+--- DEBUG (printing helper):
+Formatted prompt: <|begin_of_text|><|start_header_id|>system<|end_header_id|>
+
+Cutting Knowledge Date: December 2023
+Today Date: 14 May 2025
+
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|><|start_header_id|>user<|end_header_id|>
+
+INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=8.4> Chikungunya is an infection caused by the chikungunya virus (CHIKV). <|eot_id|>
+EXPLANATION: The <FKGL=12.3> token specifies that the target Flesch-Kincaid Grade Level should be approximately 12.3. Lower values indicate simpler text.<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+<FKGL=12.3><|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+
+--- DEBUG (printing helper):
+Formatted prompt: <|begin_of_text|><|start_header_id|>system<|end_header_id|>
+
+Cutting Knowledge Date: December 2023
+Today Date: 14 May 2025
+
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|><|start_header_id|>user<|end_header_id|>
+
+INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=8.6> Diagnosis of vocal cord paralysis is based on laryngoscopy. The cause must always be sought. <|eot_id|>
+EXPLANATION: The <FKGL=6.4> token specifies that the target Flesch-Kincaid Grade Level should be approximately 6.4. Lower values indicate simpler text.<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+<FKGL=6.4><|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+
+--- DEBUG (printing helper):
+Formatted prompt: <|begin_of_text|><|start_header_id|>system<|end_header_id|>
+
+Cutting Knowledge Date: December 2023
+Today Date: 14 May 2025
+
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|><|start_header_id|>user<|end_header_id|>
+
+INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=9.2> Influenza viruses infect both humans and pigs, but do not infect birds. <|eot_id|>
+EXPLANATION: The <FKGL=7.6> token specifies that the target Flesch-Kincaid Grade Level should be approximately 7.6. Lower values indicate simpler text.<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+<FKGL=7.6><|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+
+--- DEBUG (printing helper):
+Formatted prompt: <|begin_of_text|><|start_header_id|>system<|end_header_id|>
+
+Cutting Knowledge Date: December 2023
+Today Date: 14 May 2025
+
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|><|start_header_id|>user<|end_header_id|>
+
+INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=8.7> Marchers stretched from Avenue d'Eylau, where the author was living, down the Champs Ales, and all the way to the center of Paris. <|eot_id|>
+EXPLANATION: The <FKGL=6.8> token specifies that the target Flesch-Kincaid Grade Level should be approximately 6.8. Lower values indicate simpler text.<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+<FKGL=6.8><|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+
+--- DEBUG (printing helper):
+Formatted prompt: <|begin_of_text|><|start_header_id|>system<|end_header_id|>
+
+Cutting Knowledge Date: December 2023
+Today Date: 14 May 2025
+
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|><|start_header_id|>user<|end_header_id|>
+
+INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=8.8> Underwear is worn for a variety of reasons . <|eot_id|>
+EXPLANATION: The <FKGL=6.8> token specifies that the target Flesch-Kincaid Grade Level should be approximately 6.8. Lower values indicate simpler text.<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+<FKGL=6.8><|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+
+--- DEBUG (printing helper):
+Formatted prompt: <|begin_of_text|><|start_header_id|>system<|end_header_id|>
+
+Cutting Knowledge Date: December 2023
+Today Date: 14 May 2025
+
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|><|start_header_id|>user<|end_header_id|>
+
+INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=9.0> Birley et al. report that excessive washing with soap may dry the mucous membrane that covers the glans penis and cause non-specific dermatitis. <|eot_id|>
+EXPLANATION: The <FKGL=12.3> token specifies that the target Flesch-Kincaid Grade Level should be approximately 12.3. Lower values indicate simpler text.<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+<FKGL=12.3><|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+
+--- DEBUG (printing helper):
+Formatted prompt: <|begin_of_text|><|start_header_id|>system<|end_header_id|>
+
+Cutting Knowledge Date: December 2023
+Today Date: 14 May 2025
+
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|><|start_header_id|>user<|end_header_id|>
+
+INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=8.8> Ankles, knees, elbows, and wrists are usually involved. <|eot_id|>
+EXPLANATION: The <FKGL=10.0> token specifies that the target Flesch-Kincaid Grade Level should be approximately 10.0. Lower values indicate simpler text.<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+<FKGL=10.0><|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+
+--- DEBUG (printing helper):
+Formatted prompt: <|begin_of_text|><|start_header_id|>system<|end_header_id|>
+
+Cutting Knowledge Date: December 2023
+Today Date: 14 May 2025
+
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|><|start_header_id|>user<|end_header_id|>
+
+INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=8.4> Certain medications like pirfenidone or nintedanib may slow the progression of the disease. <|eot_id|>
+EXPLANATION: The <FKGL=6.4> token specifies that the target Flesch-Kincaid Grade Level should be approximately 6.4. Lower values indicate simpler text.<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+<FKGL=6.4><|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+
+--- DEBUG (printing helper):
+Formatted prompt: <|begin_of_text|><|start_header_id|>system<|end_header_id|>
+
+Cutting Knowledge Date: December 2023
+Today Date: 14 May 2025
+
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|><|start_header_id|>user<|end_header_id|>
+
+INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=9.1> In early April 1711 , her father-in-law Le Grand Dauphin caught smallpox and died on 14 April at the Chateau de Meudon . <|eot_id|>
+EXPLANATION: The <FKGL=8.0> token specifies that the target Flesch-Kincaid Grade Level should be approximately 8.0. Lower values indicate simpler text.<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+<FKGL=8.0><|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+
+--- DEBUG (printing helper):
+Formatted prompt: <|begin_of_text|><|start_header_id|>system<|end_header_id|>
+
+Cutting Knowledge Date: December 2023
+Today Date: 14 May 2025
+
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|><|start_header_id|>user<|end_header_id|>
+
+INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=8.2> `` Malaria was the most significant health hazard encountered by U.S. troops in the South Pacific during World War II, where about 500,000 men were infected. <|eot_id|>
+EXPLANATION: The <FKGL=9.4> token specifies that the target Flesch-Kincaid Grade Level should be approximately 9.4. Lower values indicate simpler text.<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+<FKGL=9.4><|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+
+--- DEBUG (printing helper):
+Formatted prompt: <|begin_of_text|><|start_header_id|>system<|end_header_id|>
+
+Cutting Knowledge Date: December 2023
+Today Date: 14 May 2025
+
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|><|start_header_id|>user<|end_header_id|>
+
+INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=8.0> Up to 20 % of bone density loss occurs during the first 5 yr after menopause. After this period of rapid bone loss, the age-related rate of bone loss in women is similar to that in men. <|eot_id|>
+EXPLANATION: The <FKGL=8.4> token specifies that the target Flesch-Kincaid Grade Level should be approximately 8.4. Lower values indicate simpler text.<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+<FKGL=8.4><|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+
+--- DEBUG (printing helper):
+Formatted prompt: <|begin_of_text|><|start_header_id|>system<|end_header_id|>
+
+Cutting Knowledge Date: December 2023
+Today Date: 14 May 2025
+
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|><|start_header_id|>user<|end_header_id|>
+
+INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=9.0> Adult patients who require parenteral support may benefit from teduglutide (a glucagon-like peptide-2 [ GLP-2 ] analog). The recommended dosage is 0.05 mg/kg body weight sc once/ day. <|eot_id|>
+EXPLANATION: The <FKGL=5.6> token specifies that the target Flesch-Kincaid Grade Level should be approximately 5.6. Lower values indicate simpler text.<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+<FKGL=5.6><|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+
+--- DEBUG (printing helper):
+Formatted prompt: <|begin_of_text|><|start_header_id|>system<|end_header_id|>
+
+Cutting Knowledge Date: December 2023
+Today Date: 14 May 2025
+
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|><|start_header_id|>user<|end_header_id|>
+
+INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=9.1> The points given for each factor is listed in the adjacent table, and the final score ranges from 0 to 17. <|eot_id|>
+EXPLANATION: The <FKGL=7.6> token specifies that the target Flesch-Kincaid Grade Level should be approximately 7.6. Lower values indicate simpler text.<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+<FKGL=7.6><|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+
+--- DEBUG (printing helper):
+Formatted prompt: <|begin_of_text|><|start_header_id|>system<|end_header_id|>
+
+Cutting Knowledge Date: December 2023
+Today Date: 14 May 2025
+
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|><|start_header_id|>user<|end_header_id|>
+
+INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=10.3> Urinary tract infections occur four times more frequently in females than males. <|eot_id|>
+EXPLANATION: The <FKGL=9.2> token specifies that the target Flesch-Kincaid Grade Level should be approximately 9.2. Lower values indicate simpler text.<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+<FKGL=9.2><|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+
+--- DEBUG (printing helper):
+Formatted prompt: <|begin_of_text|><|start_header_id|>system<|end_header_id|>
+
+Cutting Knowledge Date: December 2023
+Today Date: 14 May 2025
+
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|><|start_header_id|>user<|end_header_id|>
+
+INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=9.9> Doctors also found that if the bullet had been only one millimeter higher or lower , the wound would not have been as severe . <|eot_id|>
+EXPLANATION: The <FKGL=9.9> token specifies that the target Flesch-Kincaid Grade Level should be approximately 9.9. Lower values indicate simpler text.<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+<FKGL=9.9><|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+
+--- DEBUG (printing helper):
+Formatted prompt: <|begin_of_text|><|start_header_id|>system<|end_header_id|>
+
+Cutting Knowledge Date: December 2023
+Today Date: 14 May 2025
+
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|><|start_header_id|>user<|end_header_id|>
+
+INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=9.5> Other symptoms may include shortness of breath, nausea, feeling faint, a cold sweat, or feeling tired. <|eot_id|>
+EXPLANATION: The <FKGL=10.3> token specifies that the target Flesch-Kincaid Grade Level should be approximately 10.3. Lower values indicate simpler text.<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+<FKGL=10.3><|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+
+--- DEBUG (printing helper):
+Formatted prompt: <|begin_of_text|><|start_header_id|>system<|end_header_id|>
+
+Cutting Knowledge Date: December 2023
+Today Date: 14 May 2025
+
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|><|start_header_id|>user<|end_header_id|>
+
+INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=9.6> Precipitating drugs and substances that can cause syncope are stopped. <|eot_id|>
+EXPLANATION: The <FKGL=8.7> token specifies that the target Flesch-Kincaid Grade Level should be approximately 8.7. Lower values indicate simpler text.<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+<FKGL=8.7><|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+
+--- DEBUG (printing helper):
+Formatted prompt: <|begin_of_text|><|start_header_id|>system<|end_header_id|>
+
+Cutting Knowledge Date: December 2023
+Today Date: 14 May 2025
+
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|><|start_header_id|>user<|end_header_id|>
+
+INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=9.9> Both men and women may have reduced fertility; women may not have menstrual periods. <|eot_id|>
+EXPLANATION: The <FKGL=6.4> token specifies that the target Flesch-Kincaid Grade Level should be approximately 6.4. Lower values indicate simpler text.<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+<FKGL=6.4><|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+
+--- DEBUG (printing helper):
+Formatted prompt: <|begin_of_text|><|start_header_id|>system<|end_header_id|>
+
+Cutting Knowledge Date: December 2023
+Today Date: 14 May 2025
+
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|><|start_header_id|>user<|end_header_id|>
+
+INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=10.3> A sounding of the sea bottom revealed more than 5,000 feet ( 1,500 m ) of water, indicating no land in near proximity. <|eot_id|>
+EXPLANATION: The <FKGL=8.3> token specifies that the target Flesch-Kincaid Grade Level should be approximately 8.3. Lower values indicate simpler text.<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+<FKGL=8.3><|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+
+--- DEBUG (printing helper):
+Formatted prompt: <|begin_of_text|><|start_header_id|>system<|end_header_id|>
+
+Cutting Knowledge Date: December 2023
+Today Date: 14 May 2025
+
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|><|start_header_id|>user<|end_header_id|>
+
+INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=10.3> In his 1995 novel Blindness, an entire unnamed country is stricken with a mysterious plague of `` white blindness ''. <|eot_id|>
+EXPLANATION: The <FKGL=9.9> token specifies that the target Flesch-Kincaid Grade Level should be approximately 9.9. Lower values indicate simpler text.<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+<FKGL=9.9><|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+
+--- DEBUG (printing helper):
+Formatted prompt: <|begin_of_text|><|start_header_id|>system<|end_header_id|>
+
+Cutting Knowledge Date: December 2023
+Today Date: 14 May 2025
+
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|><|start_header_id|>user<|end_header_id|>
+
+INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=9.5> Lady Burdett-Coutts died of acute bronchitis at her home on Stratton Street, Piccadilly. <|eot_id|>
+EXPLANATION: The <FKGL=9.5> token specifies that the target Flesch-Kincaid Grade Level should be approximately 9.5. Lower values indicate simpler text.<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+<FKGL=9.5><|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+
+--- DEBUG (printing helper):
+Formatted prompt: <|begin_of_text|><|start_header_id|>system<|end_header_id|>
+
+Cutting Knowledge Date: December 2023
+Today Date: 14 May 2025
+
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|><|start_header_id|>user<|end_header_id|>
+
+INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=10.3> More widespread cancer may cause obstructive uropathy, back pain, and leg swelling due to venous or lymphatic obstruction. <|eot_id|>
+EXPLANATION: The <FKGL=7.0> token specifies that the target Flesch-Kincaid Grade Level should be approximately 7.0. Lower values indicate simpler text.<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+<FKGL=7.0><|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+
+--- DEBUG (printing helper):
+Formatted prompt: <|begin_of_text|><|start_header_id|>system<|end_header_id|>
+
+Cutting Knowledge Date: December 2023
+Today Date: 14 May 2025
+
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|><|start_header_id|>user<|end_header_id|>
+
+INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=9.9> Women 's fertility peaks in the early 20s, and drops considerably after age 35. <|eot_id|>
+EXPLANATION: The <FKGL=9.1> token specifies that the target Flesch-Kincaid Grade Level should be approximately 9.1. Lower values indicate simpler text.<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+<FKGL=9.1><|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+
+--- DEBUG (printing helper):
+Formatted prompt: <|begin_of_text|><|start_header_id|>system<|end_header_id|>
+
+Cutting Knowledge Date: December 2023
+Today Date: 14 May 2025
+
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|><|start_header_id|>user<|end_header_id|>
+
+INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=10.3> Stomach cancer, also known as gastric cancer, is a cancer which develops from the lining of the stomach. <|eot_id|>
+EXPLANATION: The <FKGL=7.2> token specifies that the target Flesch-Kincaid Grade Level should be approximately 7.2. Lower values indicate simpler text.<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+<FKGL=7.2><|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+
+--- DEBUG (printing helper):
+Formatted prompt: <|begin_of_text|><|start_header_id|>system<|end_header_id|>
+
+Cutting Knowledge Date: December 2023
+Today Date: 14 May 2025
+
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|><|start_header_id|>user<|end_header_id|>
+
+INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=9.9> Whicker died on 12 July 2013 from bronchial pneumonia at his home in Jersey, in the Channel Islands, aged 91. <|eot_id|>
+EXPLANATION: The <FKGL=7.6> token specifies that the target Flesch-Kincaid Grade Level should be approximately 7.6. Lower values indicate simpler text.<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+<FKGL=7.6><|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+
+--- DEBUG (printing helper):
+Formatted prompt: <|begin_of_text|><|start_header_id|>system<|end_header_id|>
+
+Cutting Knowledge Date: December 2023
+Today Date: 14 May 2025
+
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|><|start_header_id|>user<|end_header_id|>
+
+INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=9.9> At the age of eight, she was struck by an automobile in front of the family home, and her legs suffered multiple fractures. <|eot_id|>
+EXPLANATION: The <FKGL=4.0> token specifies that the target Flesch-Kincaid Grade Level should be approximately 4.0. Lower values indicate simpler text.<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+<FKGL=4.0><|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+
+--- DEBUG (printing helper):
+Formatted prompt: <|begin_of_text|><|start_header_id|>system<|end_header_id|>
+
+Cutting Knowledge Date: December 2023
+Today Date: 14 May 2025
+
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|><|start_header_id|>user<|end_header_id|>
+
+INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=9.5> The World Health Organization estimates that as of 2010 there are 208 million people with alcoholism worldwide (4.1 % of the population over 15 years of age). <|eot_id|>
+EXPLANATION: The <FKGL=11.9> token specifies that the target Flesch-Kincaid Grade Level should be approximately 11.9. Lower values indicate simpler text.<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+<FKGL=11.9><|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+
+--- DEBUG (printing helper):
+Formatted prompt: <|begin_of_text|><|start_header_id|>system<|end_header_id|>
+
+Cutting Knowledge Date: December 2023
+Today Date: 14 May 2025
+
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|><|start_header_id|>user<|end_header_id|>
+
+INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=10.3> The total number of tuberculosis cases has been decreasing since 2005, while new cases have decreased since 2002. <|eot_id|>
+EXPLANATION: The <FKGL=8.6> token specifies that the target Flesch-Kincaid Grade Level should be approximately 8.6. Lower values indicate simpler text.<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+<FKGL=8.6><|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+
+--- DEBUG (printing helper):
+Formatted prompt: <|begin_of_text|><|start_header_id|>system<|end_header_id|>
+
+Cutting Knowledge Date: December 2023
+Today Date: 14 May 2025
+
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|><|start_header_id|>user<|end_header_id|>
+
+INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=11.5> Chlamydia can also be passed from an infected mother to her baby during vaginal childbirth. <|eot_id|>
+EXPLANATION: The <FKGL=9.1> token specifies that the target Flesch-Kincaid Grade Level should be approximately 9.1. Lower values indicate simpler text.<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+<FKGL=9.1><|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+
+--- DEBUG (printing helper):
+Formatted prompt: <|begin_of_text|><|start_header_id|>system<|end_header_id|>
+
+Cutting Knowledge Date: December 2023
+Today Date: 14 May 2025
+
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|><|start_header_id|>user<|end_header_id|>
+
+INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=11.9> The outcome is frequently coma, with over 90 % of patients with severe DAI never regaining consciousness. <|eot_id|>
+EXPLANATION: The <FKGL=13.8> token specifies that the target Flesch-Kincaid Grade Level should be approximately 13.8. Lower values indicate simpler text.<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+<FKGL=13.8><|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+
+--- DEBUG (printing helper):
+Formatted prompt: <|begin_of_text|><|start_header_id|>system<|end_header_id|>
+
+Cutting Knowledge Date: December 2023
+Today Date: 14 May 2025
+
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|><|start_header_id|>user<|end_header_id|>
+
+INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=11.1> Generally the component parts have boiling points that differ by less than 25 °C from each other under a pressure of one atmosphere . <|eot_id|>
+EXPLANATION: The <FKGL=11.1> token specifies that the target Flesch-Kincaid Grade Level should be approximately 11.1. Lower values indicate simpler text.<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+<FKGL=11.1><|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+
+--- DEBUG (printing helper):
+Formatted prompt: <|begin_of_text|><|start_header_id|>system<|end_header_id|>
+
+Cutting Knowledge Date: December 2023
+Today Date: 14 May 2025
+
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|><|start_header_id|>user<|end_header_id|>
+
+INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=11.9> About 1/1000 hypertensive patients has a pheochromocytoma. <|eot_id|>
+EXPLANATION: The <FKGL=5.2> token specifies that the target Flesch-Kincaid Grade Level should be approximately 5.2. Lower values indicate simpler text.<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+<FKGL=5.2><|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+
+--- DEBUG (printing helper):
+Formatted prompt: <|begin_of_text|><|start_header_id|>system<|end_header_id|>
+
+Cutting Knowledge Date: December 2023
+Today Date: 14 May 2025
+
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|><|start_header_id|>user<|end_header_id|>
+
+INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=11.1> Ascaris is a genus of parasitic nematode worms known as the `` small intestinal roundworms ''. <|eot_id|>
+EXPLANATION: The <FKGL=12.3> token specifies that the target Flesch-Kincaid Grade Level should be approximately 12.3. Lower values indicate simpler text.<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+<FKGL=12.3><|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+
+
+
+ *** Before tokenization ***
+>>> train:
+
+Showing 1 example(s):
+
+Example 1 (index 7)
+--- Prompt:
+ <|begin_of_text|><|start_header_id|>system<|end_header_id|>
+
+Cutting Knowledge Date: December 2023
+Today Date: 14 May 2025
+
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|><|start_header_id|>user<|end_header_id|>
+
+INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=2.9> It is best known as the site of the Joseph Curseen Jr. and Thomas Morris Jr.. <|eot_id|>
+EXPLANATION: The <FKGL=5.7> token specifies that the target Flesch-Kincaid Grade Level should be approximately 5.7. Lower values indicate simpler text.<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+<FKGL=5.7><|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+
+--- Completion:
+ The Post Office is now named after Joseph Curseen Jr. and Thomas Morris Jr., who were postal workers who died after exposure to the anthrax in the incident. <|eot_id|>
+==================================================
+
+
+ *** After tokenization ***
+>>> train:
+
+Showing 1 example(s):
+
+Example 1 (index 1)
+--- Prompt:
+ <|begin_of_text|><|start_header_id|>system<|end_header_id|>
+
+Cutting Knowledge Date: December 2023
+Today Date: 14 May 2025
+
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|><|start_header_id|>user<|end_header_id|>
+
+INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=1.7> Ives died of a stroke in 1954 in New York City. <|eot_id|>
+EXPLANATION: The <FKGL=2.9> token specifies that the target Flesch-Kincaid Grade Level should be approximately 2.9. Lower values indicate simpler text.<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+<FKGL=2.9><|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+
+--- Completion:
+ Ives died in 1954 in New York City at 12:32 PM <|eot_id|>
+--- input_ids:
+ [128000, 128000, 128006, 9125, 128007, 271, 38766, 1303, 33025, 2696, 25, 6790, 220, 2366, 18, 198, 15724, 2696, 25, 220, 975, 3297, 220, 2366, 20, 271, 2675, 527, 264, 11190, 6335, 304, 1495, 15858, 2461, 13, 1472, 7068, 264, 44899, 2373, 315, 279, 1495, 1988, 555, 279, 1217, 13, 1472, 40821, 279, 1495, 4184, 311, 279, 11470, 2728, 555, 279, 1217, 13, 3277, 4691, 311, 40821, 264, 1495, 11, 7068, 1193, 279, 11472, 15858, 2461, 11, 2085, 904, 5217, 6170, 11, 8554, 477, 41941, 13, 128009, 128006, 882, 128007, 271, 691, 58555, 25, 62342, 1463, 279, 2768, 1495, 1778, 430, 1202, 435, 645, 331, 16222, 258, 936, 307, 24749, 9580, 320, 28096, 3910, 8, 5573, 374, 13489, 6273, 311, 430, 5300, 304, 279, 2585, 4037, 22033, 2954, 311, 701, 8066, 15858, 2461, 13, 578, 2585, 4037, 706, 279, 2768, 3645, 25, 366, 45975, 37078, 28, 24771, 14611, 578, 2585, 4037, 22033, 2954, 311, 279, 2592, 1495, 15151, 279, 85346, 3910, 907, 315, 279, 2592, 1495, 13, 720, 44098, 16139, 25, 366, 28096, 3910, 28, 16, 13, 22, 29, 358, 2396, 8636, 315, 264, 12943, 304, 220, 6280, 19, 304, 1561, 4356, 4409, 13, 220, 128009, 198, 3337, 95179, 3579, 25, 578, 366, 28096, 3910, 28, 17, 13, 24, 29, 4037, 30202, 430, 279, 2218, 435, 645, 331, 16222, 258, 936, 307, 24749, 9580, 1288, 387, 13489, 220, 17, 13, 24, 13, 28636, 2819, 13519, 35388, 1495, 13, 128009, 128006, 78191, 128007, 271, 27, 28096, 3910, 28, 17, 13, 24, 29, 128009, 128006, 78191, 128007, 271, 128000, 40, 2396, 8636, 304, 220, 6280, 19, 304, 1561, 4356, 4409, 520, 220, 717, 25, 843, 5975, 220, 128009, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256]
+--- labels:
+ [-100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, 128000, 40, 2396, 8636, 304, 220, 6280, 19, 304, 1561, 4356, 4409, 520, 220, 717, 25, 843, 5975, 220, 128009, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100]
+==================================================
+********** DEBUG **********
+Train dataset columns: ['global_id', 'source_text', 'source_metrics', 'metadata', 'simplification_text', 'target_metrics', 'simplification_version', 'grade_level', 'simplification_dimensions', 'prompt', 'completion', 'system_prompt_id', 'user_prompt_id', 'metric_name', 'source_metric_value', 'target_metric_value', 'input_ids', 'labels', 'attention_mask']
+Validation dataset columns: ['global_id', 'source_text', 'source_metrics', 'metadata', 'simplification_text', 'target_metrics', 'simplification_version', 'grade_level', 'simplification_dimensions', 'prompt', 'completion', 'system_prompt_id', 'user_prompt_id', 'metric_name', 'source_metric_value', 'target_metric_value', 'input_ids', 'labels', 'attention_mask']
+First 10 input_ids: [128000, 128000, 128006, 9125, 128007, 271, 38766, 1303, 33025, 2696]
+First 10 labels: [-100, -100, -100, -100, -100, -100, -100, -100, -100, -100]
+
+--- DEBUG: Explore first instance of the val set:
+ {'global_id': 'medeasi_001210', 'source_text': 'This increased risk is greatest at two to three months of age.', 'source_metrics': {'FRE': 93.14, 'ARI': 4.6, 'FKGL': 3.3, 'Dale-Chall': 9.5, 'char_count': 62, 'alphanum_count': 50, 'word_count': 13, 'sentence_count': 1}, 'metadata': {'dataset': 'medeasi', 'experiment_split': '', 'domain': 'medical', 'language': 'en', 'annotation': 'human', 'level': 'sentence'}, 'simplification_text': 'This risk is highest in infants who are two to three months old.', 'target_metrics': {'FRE': 92.12, 'ARI': 3.9, 'FKGL': 3.6, 'Dale-Chall': 9.14, 'char_count': 64, 'alphanum_count': 51, 'word_count': 14, 'sentence_count': 1, 'char_compression_rate': 1.03, 'word_compression_rate': 1.08, 'sentence_compression_rate': 1.0, 'BLEU': 22.718709780542323, 'BERTScore': 0.9562927484512329}, 'simplification_version': 1, 'grade_level': -1, 'simplification_dimensions': {'linguistic': {'lexical': False, 'syntactic': False}}, 'prompt': '<|begin_of_text|><|start_header_id|>system<|end_header_id|>\n\nCutting Knowledge Date: December 2023\nToday Date: 14 May 2025\n\nYou are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|><|start_header_id|>user<|end_header_id|>\n\nINSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. \nSOURCE TEXT: <FKGL=3.3> This increased risk is greatest at two to three months of age. <|eot_id|>\nEXPLANATION: The <FKGL=3.6> token specifies that the target Flesch-Kincaid Grade Level should be approximately 3.6. Lower values indicate simpler text.<|eot_id|><|start_header_id|>assistant<|end_header_id|>\n\n<FKGL=3.6><|eot_id|><|start_header_id|>assistant<|end_header_id|>\n\n', 'completion': 'This risk is highest in infants who are two to three months old. <|eot_id|>', 'system_prompt_id': 'sys_prompt_6', 'user_prompt_id': 'token_explanation', 'metric_name': 'FKGL', 'source_metric_value': 3.3, 'target_metric_value': 3.6, 'input_ids': [128000, 128000, 128006, 9125, 128007, 271, 38766, 1303, 33025, 2696, 25, 6790, 220, 2366, 18, 198, 15724, 2696, 25, 220, 975, 3297, 220, 2366, 20, 271, 2675, 527, 264, 11190, 6335, 304, 1495, 15858, 2461, 13, 1472, 7068, 264, 44899, 2373, 315, 279, 1495, 1988, 555, 279, 1217, 13, 1472, 40821, 279, 1495, 4184, 311, 279, 11470, 2728, 555, 279, 1217, 13, 3277, 4691, 311, 40821, 264, 1495, 11, 7068, 1193, 279, 11472, 15858, 2461, 11, 2085, 904, 5217, 6170, 11, 8554, 477, 41941, 13, 128009, 128006, 882, 128007, 271, 691, 58555, 25, 62342, 1463, 279, 2768, 1495, 1778, 430, 1202, 435, 645, 331, 16222, 258, 936, 307, 24749, 9580, 320, 28096, 3910, 8, 5573, 374, 13489, 6273, 311, 430, 5300, 304, 279, 2585, 4037, 22033, 2954, 311, 701, 8066, 15858, 2461, 13, 578, 2585, 4037, 706, 279, 2768, 3645, 25, 366, 45975, 37078, 28, 24771, 14611, 578, 2585, 4037, 22033, 2954, 311, 279, 2592, 1495, 15151, 279, 85346, 3910, 907, 315, 279, 2592, 1495, 13, 720, 44098, 16139, 25, 366, 28096, 3910, 28, 18, 13, 18, 29, 1115, 7319, 5326, 374, 12474, 520, 1403, 311, 2380, 4038, 315, 4325, 13, 220, 128009, 198, 3337, 95179, 3579, 25, 578, 366, 28096, 3910, 28, 18, 13, 21, 29, 4037, 30202, 430, 279, 2218, 435, 645, 331, 16222, 258, 936, 307, 24749, 9580, 1288, 387, 13489, 220, 18, 13, 21, 13, 28636, 2819, 13519, 35388, 1495, 13, 128009, 128006, 78191, 128007, 271, 27, 28096, 3910, 28, 18, 13, 21, 29, 128009, 128006, 78191, 128007, 271, 128000, 2028, 5326, 374, 8592, 304, 42534, 889, 527, 1403, 311, 2380, 4038, 2362, 13, 220, 128009, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256], 'labels': [-100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, 128000, 2028, 5326, 374, 8592, 304, 42534, 889, 527, 1403, 311, 2380, 4038, 2362, 13, 220, 128009, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100], 'attention_mask': [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]}
+type of input_ids: <class 'list'>
+type of labels: <class 'list'>
+
+--- DEBUG: Tokenized fields ---
+--- Tokenizer vocab size: 128000
+--- input_ids: [128000, 128000, 128006, 9125, 128007, 271, 38766, 1303, 33025, 2696, 25, 6790, 220, 2366, 18, 198, 15724, 2696, 25, 220, 975, 3297, 220, 2366, 20, 271, 2675, 527, 264, 11190, 6335, 304, 1495, 15858, 2461, 13, 1472, 7068, 264, 44899, 2373, 315, 279, 1495, 1988, 555, 279, 1217, 13, 1472, 40821, 279, 1495, 4184, 311, 279, 11470, 2728, 555, 279, 1217, 13, 3277, 4691, 311, 40821, 264, 1495, 11, 7068, 1193, 279, 11472, 15858, 2461, 11, 2085, 904, 5217, 6170, 11, 8554, 477, 41941, 13, 128009, 128006, 882, 128007, 271, 691, 58555, 25, 62342, 1463, 279, 2768, 1495, 1778, 430, 1202, 435, 645, 331, 16222, 258, 936, 307, 24749, 9580, 320, 28096, 3910, 8, 5573, 374, 13489, 6273, 311, 430, 5300, 304, 279, 2585, 4037, 22033, 2954, 311, 701, 8066, 15858, 2461, 13, 578, 2585, 4037, 706, 279, 2768, 3645, 25, 366, 45975, 37078, 28, 24771, 14611, 578, 2585, 4037, 22033, 2954, 311, 279, 2592, 1495, 15151, 279, 85346, 3910, 907, 315, 279, 2592, 1495, 13, 720, 44098, 16139, 25, 366, 28096, 3910, 28, 17, 13, 16, 29, 578, 3663, 374, 74820, 11, 323, 279, 6548, 527, 41772, 13, 220, 128009, 198, 3337, 95179, 3579, 25, 578, 366, 28096, 3910, 11065, 17, 13, 18, 29, 4037, 30202, 430, 279, 2218, 435, 645, 331, 16222, 258, 936, 307, 24749, 9580, 1288, 387, 13489, 482, 17, 13, 18, 13, 28636, 2819, 13519, 35388, 1495, 13, 128009, 128006, 78191, 128007, 271, 27, 28096, 3910, 11065, 17, 13, 18, 29, 128009, 128006, 78191, 128007, 271, 128000, 791, 3663, 374, 74820, 13, 220, 128009, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256]
+--- labels: [-100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, 128000, 791, 3663, 374, 74820, 13, 220, 128009, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100]
+--- decoded input_ids:
+ <|begin_of_text|><|begin_of_text|><|start_header_id|>system<|end_header_id|>
+
+Cutting Knowledge Date: December 2023
+Today Date: 14 May 2025
+
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|><|start_header_id|>user<|end_header_id|>
+
+INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=2.1> The face is flushed, and the eyes are injected. <|eot_id|>
+EXPLANATION: The <FKGL=-2.3> token specifies that the target Flesch-Kincaid Grade Level should be approximately -2.3. Lower values indicate simpler text.<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+<FKGL=-2.3><|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+<|begin_of_text|>The face is flushed. <|eot_id|>[PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD]
+--- decoded labels:
+ The face is flushed. 
+[1;34mwandb[0m: 
+[1;34mwandb[0m: 🚀 View run [33msuper-bush-41[0m at: [34mhttps://wandb.ai/shtosti/ATS_with_control_tokens/runs/pae9lkls[0m
+[1;34mwandb[0m: Find logs at: [1;35m../../../../scratch/hhubar/keep-it-simple/wandb/run-20250514_182115-pae9lkls/logs[0m

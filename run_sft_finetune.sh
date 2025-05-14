@@ -9,8 +9,8 @@ MODEL_CLASS="llama"
 MODEL_FAMILY="base"
 
 # --- model name
-# MODEL_NAME="meta-llama/Llama-3.2-1B-Instruct"
-MODEL_NAME="meta-llama/Meta-Llama-3-8B-Instruct"
+MODEL_NAME="meta-llama/Llama-3.2-1B-Instruct"
+# MODEL_NAME="meta-llama/Meta-Llama-3-8B-Instruct"
 # MODEL_NAME="meta-llama/Llama-2-13b-chat-hf"
 # MODEL_NAME="Qwen/Qwen2.5-1.5B-Instruct"
 # MODEL_NAME="Qwen/Qwen2.5-14B-Instruct"
@@ -18,7 +18,7 @@ MODEL_NAME="meta-llama/Meta-Llama-3-8B-Instruct"
 # MODEL_NAME="mistralai/Mistral-7B-Instruct-v0.1"
 
 # --- PEFT flag: set true for models above e.g. 2B
-USE_PEFT=true 
+USE_PEFT=false 
 
 # *** **** ***
 # *** **** ***
@@ -26,9 +26,8 @@ USE_PEFT=true
 
 # --- dataset settings ---
 DATASET_NAME="Med-EASi"
-SLICE_TRAIN="-1" # -1 means no slicing
-SLICE_VAL="-1" # -1 means no slicing
-SLICE_TEST="-1" # -1 means no slicing
+SLICE_TRAIN="50" # -1 means no slicing
+SLICE_VAL="50" # -1 means no slicing
 
 # --- prompting settings ---
 # "vanilla", "reasoning", "transformations"
@@ -37,7 +36,7 @@ PROMPTING_TYPE="vanilla"
 USER_PROMPT_ID="token_explanation"
 
 # --- metric settings ---
-METRIC_NAME="ARI"
+METRIC_NAME="FKGL"
 
 # --- hyperparameters ---
 EPOCHS=3
@@ -72,7 +71,6 @@ python src/sft_finetune.py \
     --dataset_name "$DATASET_NAME" \
     --slice_train "$SLICE_TRAIN" \
     --slice_val "$SLICE_VAL" \
-    --slice_test "$SLICE_TEST" \
     --batch_size "$BATCH_SIZE" \
     --eval_batch_size "$EVAL_BATCH_SIZE" \
     --gradient_accumulation_steps "$GRADIENT_ACCUMULATION_STEPS" \
