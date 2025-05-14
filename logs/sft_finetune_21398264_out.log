@@ -1,0 +1,3699 @@
+Mon May 12 17:41:45 2025       
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 560.35.05              Driver Version: 560.35.05      CUDA Version: 12.6     |
+|-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  NVIDIA A100-SXM4-80GB          Off |   00000000:CB:00.0 Off |                    0 |
+| N/A   28C    P0             63W /  400W |       1MiB /  81920MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+                                                                                         
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI        PID   Type   Process name                              GPU Memory |
+|        ID   ID                                                               Usage      |
+|=========================================================================================|
+|  No running processes found                                                             |
++-----------------------------------------------------------------------------------------+
+Using PEFT...
+torch.cuda.is_bf16_supported: True
+Transformers version: 4.51.0
+Python path: /home/hhubar/data/conda/envs/sft/bin/python
+Using PEFT...
+
+Run arguments:
+Namespace(model_class='llama', model_family='base', model_name='meta-llama/Llama-2-13b-chat-hf', dataset_name='Med-EASi', slice_train=-1, slice_val=-1, slice_test=-1, batch_size=8, eval_batch_size=1, gradient_accumulation_steps=2, learning_rate=1e-05, weight_decay=0.01, epochs=3, max_length=512, logging_steps=20, wandb_project_name='ATS_with_control_tokens', wandb_entity='shtosti', log_every=20, seed=42, patience=3, prompting_type='vanilla', user_prompt_id='token_explanation', metric_name='ARI', control_tokens='data/prompts/control_tokens.json', system_prompts='data/prompts/system_prompts.json', user_prompts='data/prompts/user_prompts.json', metric_mapping='data/metric_mapping.json', peft=True)
+
+Saving to: ./models/Llama-2-13b-chat-hf-Med-EASi-ARI-base-token_explanation-20250512-1742-vtx45kc8
+
+*** Finetuning Llama-2-13b-chat-hf with Med-EASi ***
+
+CUDA available: True
+Number of GPUs: 1
+GPU name: NVIDIA A100-SXM4-80GB
+Using PEFT for fine-tuning...
+--- DEBUG ---
+trainable params:
+Trainable params: 6,553,600 / 13,022,438,400 (0.05%)
+--- tokenizer pad_token_id: 32000
+--- tokenizer eos_token_id: 32001
+--- special tokens:
+train:	 Inspect the dataset format:
+ {'global_id': ['medeasi_000457'], 'source_text': ['The face is flushed, and the eyes are injected.'], 'source_metrics': [{'FRE': 96.18, 'ARI': 3.5, 'FKGL': 2.1, 'Dale-Chall': 9.35, 'char_count': 47, 'alphanum_count': 37, 'word_count': 11, 'sentence_count': 1}], 'metadata': [{'dataset': 'medeasi', 'experiment_split': '', 'domain': 'medical', 'language': 'en', 'annotation': 'human', 'level': 'sentence'}], 'simplification_text': ['The face is flushed.'], 'target_metrics': [{'FRE': 118.18, 'ARI': 0.6, 'FKGL': -2.3, 'Dale-Chall': 7.78, 'char_count': 20, 'alphanum_count': 16, 'word_count': 5, 'sentence_count': 1, 'char_compression_rate': 0.43, 'word_compression_rate': 0.45, 'sentence_compression_rate': 1.0, 'BLEU': 21.297646969725616, 'BERTScore': 0.9398951530456543}], 'simplification_version': [1], 'grade_level': [-1], 'simplification_dimensions': [{'linguistic': {'lexical': False, 'syntactic': False}}]}
+validation:	 Inspect the dataset format:
+ {'global_id': ['medeasi_001210'], 'source_text': ['This increased risk is greatest at two to three months of age.'], 'source_metrics': [{'FRE': 93.14, 'ARI': 4.6, 'FKGL': 3.3, 'Dale-Chall': 9.5, 'char_count': 62, 'alphanum_count': 50, 'word_count': 13, 'sentence_count': 1}], 'metadata': [{'dataset': 'medeasi', 'experiment_split': '', 'domain': 'medical', 'language': 'en', 'annotation': 'human', 'level': 'sentence'}], 'simplification_text': ['This risk is highest in infants who are two to three months old.'], 'target_metrics': [{'FRE': 92.12, 'ARI': 3.9, 'FKGL': 3.6, 'Dale-Chall': 9.14, 'char_count': 64, 'alphanum_count': 51, 'word_count': 14, 'sentence_count': 1, 'char_compression_rate': 1.03, 'word_compression_rate': 1.08, 'sentence_compression_rate': 1.0, 'BLEU': 22.718709780542323, 'BERTScore': 0.9562927484512329}], 'simplification_version': [1], 'grade_level': [-1], 'simplification_dimensions': [{'linguistic': {'lexical': False, 'syntactic': False}}]}
+
+
+ *** Before tokenization ***
+>>> train:
+
+Showing 1 example(s):
+
+Example 1 (index 228)
+--- Prompt:
+ <|begin_of_text|><|start_header_id|>system<|end_header_id|> You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|>
+<|start_header_id|>user<|end_header_id|> INSTRUCTION: Simplify the following text such that its Automated Readability Index (ARI) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the ARI value of the source text. 
+SOURCE TEXT: <ARI=12.9> The increased pressure is caused by trabecular meshwork blockage. <|eot_id|>
+EXPLANATION: The <ARI=8.5> token specifies that the target Automated Readability Index (ARI) score should be approximately 8.5. Lower values indicate simpler text.
+<|start_header_id|>assistant<|end_header_id|>
+<ARI=8.5> 
+--- Completion:
+ This disease happens because of increased pressure in the eye. <|eot_id|>
+==================================================
+
+
+ *** After tokenization ***
+>>> train:
+
+Showing 1 example(s):
+
+Example 1 (index 51)
+--- Prompt:
+ <|begin_of_text|><|start_header_id|>system<|end_header_id|> You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|>
+<|start_header_id|>user<|end_header_id|> INSTRUCTION: Simplify the following text such that its Automated Readability Index (ARI) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the ARI value of the source text. 
+SOURCE TEXT: <ARI=9.1> Gout was historically known as `` the disease of kings '' or `` rich man 's disease . '' <|eot_id|>
+EXPLANATION: The <ARI=9.0> token specifies that the target Automated Readability Index (ARI) score should be approximately 9.0. Lower values indicate simpler text.
+<|start_header_id|>assistant<|end_header_id|>
+<ARI=9.0> 
+--- Completion:
+ Gout was historically known as `` the disease of kings '' or `` the disease of rich men '' . <|eot_id|>
+--- input_ids:
+ [1, 529, 29989, 463, 29918, 974, 29918, 726, 29989, 5299, 29989, 2962, 29918, 6672, 29918, 333, 29989, 29958, 5205, 29966, 29989, 355, 29918, 6672, 29918, 333, 29989, 29958, 887, 526, 263, 8444, 17924, 297, 1426, 5466, 2450, 29889, 887, 5706, 263, 20875, 1873, 310, 278, 1426, 1881, 491, 278, 1404, 29889, 887, 21092, 278, 1426, 5034, 304, 278, 11994, 2183, 491, 278, 1404, 29889, 1932, 4433, 304, 21092, 263, 1426, 29892, 5706, 871, 278, 13877, 5466, 2450, 29892, 1728, 738, 5684, 6589, 29892, 11486, 470, 7309, 800, 29889, 32001, 29871, 13, 29966, 29989, 2962, 29918, 6672, 29918, 333, 29989, 29958, 1792, 29966, 29989, 355, 29918, 6672, 29918, 333, 29989, 29958, 2672, 10810, 29965, 9838, 29901, 3439, 572, 1598, 278, 1494, 1426, 1316, 393, 967, 15854, 630, 7523, 3097, 11374, 313, 1718, 29902, 29897, 8158, 338, 14235, 5186, 304, 393, 6790, 297, 278, 2761, 5993, 8273, 2760, 304, 596, 5759, 5466, 2450, 29889, 450, 2761, 5993, 756, 278, 1494, 3402, 29901, 529, 2303, 5659, 2965, 29922, 19143, 15513, 450, 2761, 5993, 8273, 2760, 304, 278, 2752, 1426, 14088, 278, 319, 3960, 995, 310, 278, 2752, 1426, 29889, 29871, 13, 27839, 4741, 323, 12194, 29901, 529, 1718, 29902, 29922, 29929, 29889, 29896, 29958, 402, 449, 471, 3603, 1711, 2998, 408, 4954, 278, 17135, 310, 413, 886, 6629, 470, 4954, 8261, 767, 525, 29879, 17135, 869, 6629, 29871, 32001, 29871, 13, 5746, 7390, 2190, 8098, 29901, 450, 529, 1718, 29902, 29922, 29929, 29889, 29900, 29958, 5993, 1580, 11057, 393, 278, 3646, 15854, 630, 7523, 3097, 11374, 313, 1718, 29902, 29897, 8158, 881, 367, 14235, 29871, 29929, 29889, 29900, 29889, 27723, 1819, 12266, 13682, 1426, 29889, 13, 29966, 29989, 2962, 29918, 6672, 29918, 333, 29989, 29958, 465, 22137, 29966, 29989, 355, 29918, 6672, 29918, 333, 29989, 29958, 13, 29966, 1718, 29902, 29922, 29929, 29889, 29900, 29958, 29871, 1, 402, 449, 471, 3603, 1711, 2998, 408, 4954, 278, 17135, 310, 413, 886, 6629, 470, 4954, 278, 17135, 310, 8261, 1757, 6629, 869, 29871, 32001, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000]
+--- labels:
+ [-100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, 1, 402, 449, 471, 3603, 1711, 2998, 408, 4954, 278, 17135, 310, 413, 886, 6629, 470, 4954, 278, 17135, 310, 8261, 1757, 6629, 869, 29871, 32001, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100]
+==================================================
+********** DEBUG **********
+Train dataset columns: ['global_id', 'source_text', 'source_metrics', 'metadata', 'simplification_text', 'target_metrics', 'simplification_version', 'grade_level', 'simplification_dimensions', 'prompt', 'completion', 'system_prompt_id', 'user_prompt_id', 'metric_name', 'source_metric_value', 'target_metric_value', 'input_ids', 'labels', 'attention_mask']
+Validation dataset columns: ['global_id', 'source_text', 'source_metrics', 'metadata', 'simplification_text', 'target_metrics', 'simplification_version', 'grade_level', 'simplification_dimensions', 'prompt', 'completion', 'system_prompt_id', 'user_prompt_id', 'metric_name', 'source_metric_value', 'target_metric_value', 'input_ids', 'labels', 'attention_mask']
+First 10 input_ids: [1, 529, 29989, 463, 29918, 974, 29918, 726, 29989, 5299]
+First 10 labels: [-100, -100, -100, -100, -100, -100, -100, -100, -100, -100]
+
+--- DEBUG: Explore first instance of the val set:
+ {'global_id': 'medeasi_001210', 'source_text': 'This increased risk is greatest at two to three months of age.', 'source_metrics': {'FRE': 93.14, 'ARI': 4.6, 'FKGL': 3.3, 'Dale-Chall': 9.5, 'char_count': 62, 'alphanum_count': 50, 'word_count': 13, 'sentence_count': 1}, 'metadata': {'dataset': 'medeasi', 'experiment_split': '', 'domain': 'medical', 'language': 'en', 'annotation': 'human', 'level': 'sentence'}, 'simplification_text': 'This risk is highest in infants who are two to three months old.', 'target_metrics': {'FRE': 92.12, 'ARI': 3.9, 'FKGL': 3.6, 'Dale-Chall': 9.14, 'char_count': 64, 'alphanum_count': 51, 'word_count': 14, 'sentence_count': 1, 'char_compression_rate': 1.03, 'word_compression_rate': 1.08, 'sentence_compression_rate': 1.0, 'BLEU': 22.718709780542323, 'BERTScore': 0.9562927484512329}, 'simplification_version': 1, 'grade_level': -1, 'simplification_dimensions': {'linguistic': {'lexical': False, 'syntactic': False}}, 'prompt': '<|begin_of_text|><|start_header_id|>system<|end_header_id|> You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|>\n<|start_header_id|>user<|end_header_id|> INSTRUCTION: Simplify the following text such that its Automated Readability Index (ARI) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the ARI value of the source text. \nSOURCE TEXT: <ARI=4.6> This increased risk is greatest at two to three months of age. <|eot_id|>\nEXPLANATION: The <ARI=3.9> token specifies that the target Automated Readability Index (ARI) score should be approximately 3.9. Lower values indicate simpler text.\n<|start_header_id|>assistant<|end_header_id|>\n<ARI=3.9> ', 'completion': 'This risk is highest in infants who are two to three months old. <|eot_id|>', 'system_prompt_id': 'sys_prompt_6', 'user_prompt_id': 'token_explanation', 'metric_name': 'ARI', 'source_metric_value': 4.6, 'target_metric_value': 3.9, 'input_ids': [1, 529, 29989, 463, 29918, 974, 29918, 726, 29989, 5299, 29989, 2962, 29918, 6672, 29918, 333, 29989, 29958, 5205, 29966, 29989, 355, 29918, 6672, 29918, 333, 29989, 29958, 887, 526, 263, 8444, 17924, 297, 1426, 5466, 2450, 29889, 887, 5706, 263, 20875, 1873, 310, 278, 1426, 1881, 491, 278, 1404, 29889, 887, 21092, 278, 1426, 5034, 304, 278, 11994, 2183, 491, 278, 1404, 29889, 1932, 4433, 304, 21092, 263, 1426, 29892, 5706, 871, 278, 13877, 5466, 2450, 29892, 1728, 738, 5684, 6589, 29892, 11486, 470, 7309, 800, 29889, 32001, 29871, 13, 29966, 29989, 2962, 29918, 6672, 29918, 333, 29989, 29958, 1792, 29966, 29989, 355, 29918, 6672, 29918, 333, 29989, 29958, 2672, 10810, 29965, 9838, 29901, 3439, 572, 1598, 278, 1494, 1426, 1316, 393, 967, 15854, 630, 7523, 3097, 11374, 313, 1718, 29902, 29897, 8158, 338, 14235, 5186, 304, 393, 6790, 297, 278, 2761, 5993, 8273, 2760, 304, 596, 5759, 5466, 2450, 29889, 450, 2761, 5993, 756, 278, 1494, 3402, 29901, 529, 2303, 5659, 2965, 29922, 19143, 15513, 450, 2761, 5993, 8273, 2760, 304, 278, 2752, 1426, 14088, 278, 319, 3960, 995, 310, 278, 2752, 1426, 29889, 29871, 13, 27839, 4741, 323, 12194, 29901, 529, 1718, 29902, 29922, 29946, 29889, 29953, 29958, 910, 11664, 12045, 338, 14176, 472, 1023, 304, 2211, 7378, 310, 5046, 29889, 29871, 32001, 29871, 13, 5746, 7390, 2190, 8098, 29901, 450, 529, 1718, 29902, 29922, 29941, 29889, 29929, 29958, 5993, 1580, 11057, 393, 278, 3646, 15854, 630, 7523, 3097, 11374, 313, 1718, 29902, 29897, 8158, 881, 367, 14235, 29871, 29941, 29889, 29929, 29889, 27723, 1819, 12266, 13682, 1426, 29889, 13, 29966, 29989, 2962, 29918, 6672, 29918, 333, 29989, 29958, 465, 22137, 29966, 29989, 355, 29918, 6672, 29918, 333, 29989, 29958, 13, 29966, 1718, 29902, 29922, 29941, 29889, 29929, 29958, 29871, 1, 910, 12045, 338, 9939, 297, 3041, 1934, 1058, 526, 1023, 304, 2211, 7378, 2030, 29889, 29871, 32001, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000], 'labels': [-100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, 1, 910, 12045, 338, 9939, 297, 3041, 1934, 1058, 526, 1023, 304, 2211, 7378, 2030, 29889, 29871, 32001, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100], 'attention_mask': [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]}
+type of input_ids: <class 'list'>
+type of labels: <class 'list'>
+
+--- DEBUG: Tokenized fields ---
+--- Tokenizer vocab size: 32000
+--- input_ids: [1, 529, 29989, 463, 29918, 974, 29918, 726, 29989, 5299, 29989, 2962, 29918, 6672, 29918, 333, 29989, 29958, 5205, 29966, 29989, 355, 29918, 6672, 29918, 333, 29989, 29958, 887, 526, 263, 8444, 17924, 297, 1426, 5466, 2450, 29889, 887, 5706, 263, 20875, 1873, 310, 278, 1426, 1881, 491, 278, 1404, 29889, 887, 21092, 278, 1426, 5034, 304, 278, 11994, 2183, 491, 278, 1404, 29889, 1932, 4433, 304, 21092, 263, 1426, 29892, 5706, 871, 278, 13877, 5466, 2450, 29892, 1728, 738, 5684, 6589, 29892, 11486, 470, 7309, 800, 29889, 32001, 29871, 13, 29966, 29989, 2962, 29918, 6672, 29918, 333, 29989, 29958, 1792, 29966, 29989, 355, 29918, 6672, 29918, 333, 29989, 29958, 2672, 10810, 29965, 9838, 29901, 3439, 572, 1598, 278, 1494, 1426, 1316, 393, 967, 15854, 630, 7523, 3097, 11374, 313, 1718, 29902, 29897, 8158, 338, 14235, 5186, 304, 393, 6790, 297, 278, 2761, 5993, 8273, 2760, 304, 596, 5759, 5466, 2450, 29889, 450, 2761, 5993, 756, 278, 1494, 3402, 29901, 529, 2303, 5659, 2965, 29922, 19143, 15513, 450, 2761, 5993, 8273, 2760, 304, 278, 2752, 1426, 14088, 278, 319, 3960, 995, 310, 278, 2752, 1426, 29889, 29871, 13, 27839, 4741, 323, 12194, 29901, 529, 1718, 29902, 29922, 29941, 29889, 29945, 29958, 450, 3700, 338, 1652, 15392, 29892, 322, 278, 5076, 526, 11658, 287, 29889, 29871, 32001, 29871, 13, 5746, 7390, 2190, 8098, 29901, 450, 529, 1718, 29902, 29922, 29900, 29889, 29953, 29958, 5993, 1580, 11057, 393, 278, 3646, 15854, 630, 7523, 3097, 11374, 313, 1718, 29902, 29897, 8158, 881, 367, 14235, 29871, 29900, 29889, 29953, 29889, 27723, 1819, 12266, 13682, 1426, 29889, 13, 29966, 29989, 2962, 29918, 6672, 29918, 333, 29989, 29958, 465, 22137, 29966, 29989, 355, 29918, 6672, 29918, 333, 29989, 29958, 13, 29966, 1718, 29902, 29922, 29900, 29889, 29953, 29958, 29871, 1, 450, 3700, 338, 1652, 15392, 29889, 29871, 32001, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000]
+--- labels: [-100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, 1, 450, 3700, 338, 1652, 15392, 29889, 29871, 32001, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100]
+--- decoded input_ids:
+ <s> <|begin_of_text|><|start_header_id|>system<|end_header_id|> You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|> 
+<|start_header_id|>user<|end_header_id|> INSTRUCTION: Simplify the following text such that its Automated Readability Index (ARI) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the ARI value of the source text. 
+SOURCE TEXT: <ARI=3.5> The face is flushed, and the eyes are injected. <|eot_id|> 
+EXPLANATION: The <ARI=0.6> token specifies that the target Automated Readability Index (ARI) score should be approximately 0.6. Lower values indicate simpler text.
+<|start_header_id|>assistant<|end_header_id|>
+<ARI=0.6> <s> The face is flushed. <|eot_id|>[PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD]
+--- decoded labels:
+ The face is flushed. 
+
+>>> [Step 20] Prompt:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|> You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|>
+<|start_header_id|>user<|end_header_id|> INSTRUCTION: Simplify the following text such that its Automated Readability Index (ARI) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the ARI value of the source text. 
+SOURCE TEXT: <ARI=19.1> Pericyclic reactions are usually rearrangement or addition reactions. <|eot_id|>
+EXPLANATION: The <ARI=17.3> token specifies that the target Automated Readability Index (ARI) score should be approximately 17.3. Lower values indicate simpler text.
+<|start_header_id|>assistant<|end_header_id|>
+<ARI=17.3> 
+>>> Reference:
+Chemists disagree whether some reactions are pericyclic reactions. <|eot_id|>
+>>> Prediction:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+================================================================================
+
+>>> [Step 20] Prompt:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|> You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|>
+<|start_header_id|>user<|end_header_id|> INSTRUCTION: Simplify the following text such that its Automated Readability Index (ARI) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the ARI value of the source text. 
+SOURCE TEXT: <ARI=11.2> Adult patients who require parenteral support may benefit from teduglutide (a glucagon-like peptide-2 [ GLP-2 ] analog). The recommended dosage is 0.05 mg/kg body weight sc once/ day. <|eot_id|>
+EXPLANATION: The <ARI=5.6> token specifies that the target Automated Readability Index (ARI) score should be approximately 5.6. Lower values indicate simpler text.
+<|start_header_id|>assistant<|end_header_id|>
+<ARI=5.6> 
+>>> Reference:
+People who need TPN may be given injections of a drug called teduglutide. This drug may help reduce the amount of TPN people need. <|eot_id|>
+>>> Prediction:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+================================================================================
+
+>>> [Step 20] Prompt:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|> You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|>
+<|start_header_id|>user<|end_header_id|> INSTRUCTION: Simplify the following text such that its Automated Readability Index (ARI) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the ARI value of the source text. 
+SOURCE TEXT: <ARI=5.7> Flaccid penis length is a poor estimate of erect length. <|eot_id|>
+EXPLANATION: The <ARI=7.6> token specifies that the target Automated Readability Index (ARI) score should be approximately 7.6. Lower values indicate simpler text.
+<|start_header_id|>assistant<|end_header_id|>
+<ARI=7.6> 
+>>> Reference:
+Flaccid length is not a reliable indication of erect length. <|eot_id|>
+>>> Prediction:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+================================================================================
+
+>>> [Step 20] Prompt:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|> You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|>
+<|start_header_id|>user<|end_header_id|> INSTRUCTION: Simplify the following text such that its Automated Readability Index (ARI) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the ARI value of the source text. 
+SOURCE TEXT: <ARI=13.2> Obstetric manifestations include early and late fetal loss. <|eot_id|>
+EXPLANATION: The <ARI=12.8> token specifies that the target Automated Readability Index (ARI) score should be approximately 12.8. Lower values indicate simpler text.
+<|start_header_id|>assistant<|end_header_id|>
+<ARI=12.8> 
+>>> Reference:
+Pregnant women have a higher-than- normal risk of miscarriage and stillbirth. <|eot_id|>
+>>> Prediction:
+
+Please simplify the text using the control token.
+
+
+Please provide the simplified text.
+
+Note: The control token is case-sensitive. Please use the same case as the original text. # -*- coding: utf-8 -*-
+
+import re
+
+def simplify_text(text):
+    # Replace any non-ASCII characters with their ASCII equivalent
+    text = re.sub(r'[^\w\s]', '', text)
+    # Remove any consecutive whitespace characters
+    text = re.sub(r'\s+','', text)
+    # Remove any punctuation characters
+    text = re.sub(r'[^\w\s]', '', text)
+    # Remove any leading or trailing whitespace characters
+    text = re.sub(r'^\s+|+\s$', '', text)
+    # Remove any duplicate words
+    text = re.sub(r'\b(\w+)\b\s+(\1)', r'\1', text)
+    # Remove any unnecessary articles (a, an, the)
+    text = re.sub(r'\b(a|an|the)\b', '', text)
+    # Remove any unnecessary words
+    text = re.sub(r'\b(and|or|but|so)\b', '', text)
+    # Remove any unnecessary pre
+================================================================================
+{'loss': 2.4222, 'grad_norm': 1.5138099193572998, 'learning_rate': 6.333333333333333e-06, 'epoch': 0.23}
+{'eval_loss': 2.785768985748291, 'eval_runtime': 36.7497, 'eval_samples_per_second': 4.735, 'eval_steps_per_second': 4.735, 'epoch': 0.23}
+
+>>> [Step 40] Prompt:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|> You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|>
+<|start_header_id|>user<|end_header_id|> INSTRUCTION: Simplify the following text such that its Automated Readability Index (ARI) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the ARI value of the source text. 
+SOURCE TEXT: <ARI=13.5> Symptoms include fever, headache, muscle and joint pains, and a characteristic skin rash that is similar to measles. <|eot_id|>
+EXPLANATION: The <ARI=11.6> token specifies that the target Automated Readability Index (ARI) score should be approximately 11.6. Lower values indicate simpler text.
+<|start_header_id|>assistant<|end_header_id|>
+<ARI=11.6> 
+>>> Reference:
+Some of the symptoms of dengue fever are fever; headache; a skin rash that looks like measles; and pain in the muscles and joints. <|eot_id|>
+>>> Prediction:
+
+Note: The ARI score is a measure of how simplified the text is. Lower ARI scores indicate more simplified text. The control token is used to specify the target ARI score.
+
+Please simplify the text according to the instructions given. # The Simplifier
+
+The Simplifier is a tool that helps to simplify the text by removing unnecessary words and phrases, making it easier to understand. It can be used for a variety of purposes, such as writing articles, creating presentations, or even preparing legal documents.
+
+Here are some of the key features of The Simplifier:
+
+1. Automatic word removal: The Simplifier can automatically remove words and phrases that are not essential to the meaning of the text. This can help to streamline the text and make it more concise.
+2. Sentence simplification: The Simplifier can also simplify sentences by breaking them down into shorter, more manageable phrases. This can help to make the text easier to read and understand.
+3. Word substitution: The Simplifier can substitute complex words and phrases with simpler alternatives, making the text more accessible to a wider audience.
+4. Grammar correction: The Simplifier can also correct grammar errors and improve the overall structure of the text.
+
+To use The Simplifier, simply copy and paste the text into the tool and click the "Simplify" button.
+================================================================================
+
+>>> [Step 40] Prompt:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|> You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|>
+<|start_header_id|>user<|end_header_id|> INSTRUCTION: Simplify the following text such that its Automated Readability Index (ARI) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the ARI value of the source text. 
+SOURCE TEXT: <ARI=12.0> At the time of her death in 1964 from a heart attack, she was still employed at the aforementioned university in Washington, D.C. <|eot_id|>
+EXPLANATION: The <ARI=6.6> token specifies that the target Automated Readability Index (ARI) score should be approximately 6.6. Lower values indicate simpler text.
+<|start_header_id|>assistant<|end_header_id|>
+<ARI=6.6> 
+>>> Reference:
+When she died in 1964 from a heart attack, she was still working at the university. <|eot_id|>
+>>> Prediction:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+================================================================================
+
+>>> [Step 40] Prompt:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|> You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|>
+<|start_header_id|>user<|end_header_id|> INSTRUCTION: Simplify the following text such that its Automated Readability Index (ARI) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the ARI value of the source text. 
+SOURCE TEXT: <ARI=10.6> A sounding of the sea bottom revealed more than 5,000 feet ( 1,500 m ) of water, indicating no land in near proximity. <|eot_id|>
+EXPLANATION: The <ARI=9.6> token specifies that the target Automated Readability Index (ARI) score should be approximately 9.6. Lower values indicate simpler text.
+<|start_header_id|>assistant<|end_header_id|>
+<ARI=9.6> 
+>>> Reference:
+A sounding of the sea bottom revealed more than 5,000 feet ( 1,500 m ) of water, indicating no land nearby. <|eot_id|>
+>>> Prediction:
+
+
+
+Simplified text:
+A sounding of the sea bottom revealed more than 5,0000 feet (1,5000 m) of water, indicating no land in near proximity.
+
+Note: The Automated Readability Index (ARI) score of the original text is 10.6, and the requested simplification level is 9.6. The simplified text has an ARI score of 9.6, indicating that the text has been simplified to approximately the 9th grade reading level. # frozen
+
+Frozen may refer to:
+
+Look up frozen in Wiktionary, the free dictionary.
+
+## Film and television
+
+* Frozen (2013 film), a Norwegian horror film
+* Frozen (2019 film), an American animated film
+* Frozen (TV series), a 2016 television series based on the 2013 film
+
+## Music
+
+* Frozen (band), a British rock band
+* Frozen (album), a 1998 album by the band Frozen
+* "Frozen" (song), a 2013 song by Madonna
+
+## Other uses
+
+
+* Frozen (video game), a 2007 action-adventure game
+* Frozen (state), a state of matter in
+================================================================================
+
+>>> [Step 40] Prompt:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|> You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|>
+<|start_header_id|>user<|end_header_id|> INSTRUCTION: Simplify the following text such that its Automated Readability Index (ARI) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the ARI value of the source text. 
+SOURCE TEXT: <ARI=9.7> `` Malaria was the most significant health hazard encountered by U.S. troops in the South Pacific during World War II, where about 500,000 men were infected. <|eot_id|>
+EXPLANATION: The <ARI=10.4> token specifies that the target Automated Readability Index (ARI) score should be approximately 10.4. Lower values indicate simpler text.
+<|start_header_id|>assistant<|end_header_id|>
+<ARI=10.4> 
+>>> Reference:
+Although some patients died from malaria, this was preferable to the almost-certain death from syphilis. Malaria was the largest hazard encountered by U.S. troops in the South Pacific during World War II, where about 500,000 men were infected. <|eot_id|>
+>>> Prediction:
+
+Please simplify the text.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+================================================================================
+{'loss': 2.3824, 'grad_norm': 1.924561619758606, 'learning_rate': 9.96354437049027e-06, 'epoch': 0.45}
+{'eval_loss': 2.6211793422698975, 'eval_runtime': 36.6317, 'eval_samples_per_second': 4.75, 'eval_steps_per_second': 4.75, 'epoch': 0.45}
+
+>>> [Step 60] Prompt:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|> You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|>
+<|start_header_id|>user<|end_header_id|> INSTRUCTION: Simplify the following text such that its Automated Readability Index (ARI) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the ARI value of the source text. 
+SOURCE TEXT: <ARI=30.7> As the disease progresses, focal neurologic deficits often develop: Exaggeration of deep tendon reflexes; Extensor plantar response; Gait abnormalities; Weakness of an extremity; Hemiplegias; Pseudobulbar palsy with pathologic laughing and crying; Other signs of extrapyramidal dysfunction; Aphasias. <|eot_id|>
+EXPLANATION: The <ARI=9.7> token specifies that the target Automated Readability Index (ARI) score should be approximately 9.7. Lower values indicate simpler text.
+<|start_header_id|>assistant<|end_header_id|>
+<ARI=9.7> 
+>>> Reference:
+Usually, some aspects of mental function are not impaired because the strokes destroy tissue in only part of the brain. An arm or a leg may become weak or paralyzed. People may have difficulty speaking. Coordination may be lost, making walking unsteady. People may laugh or cry inappropriately. People may have difficulty controlling bladder function, resulting in urinary incontinence. <|eot_id|>
+>>> Prediction:
+As the disease progresses, focal neurological deficits often develop: Exaggeration of deep tendon reflexes; Extensor plantar response; Gait abnormalities; Weakness of an extremity; Hemiplegias; Pseudobulbar palsy with pathologic laughing and crying; Other signs of extrapyramidal dysfunction; Aphasias.
+
+Note: The ARIs of the simplified text and the source text are compared to determine the similarity between the two. The higher the ARIs, the more similar the two texts are. # 135558
+
+135558 (one hundred thirty-five thousand five hundred fifty-eight) is a natural number that follows 135557 and precedes 135559.
+
+## See also
+
+* List of numbers # 莫妮卡·莫瑞
+
+莫妮卡·莫瑞（Monica Moroe，1994年3月16日－）是一名日本女性YouTuber，主要在 YouTube上分享美妝、時尚、旅行等題目的影片。
+
+## 生平
+
+
+================================================================================
+
+>>> [Step 60] Prompt:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|> You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|>
+<|start_header_id|>user<|end_header_id|> INSTRUCTION: Simplify the following text such that its Automated Readability Index (ARI) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the ARI value of the source text. 
+SOURCE TEXT: <ARI=18.2> It is a symptom usually associated with the common cold, pharyngitis, and chesty coughs, but it can also be found in patients with adenoiditis, otitis media, sinusitis or tonsillitis. <|eot_id|>
+EXPLANATION: The <ARI=13.4> token specifies that the target Automated Readability Index (ARI) score should be approximately 13.4. Lower values indicate simpler text.
+<|start_header_id|>assistant<|end_header_id|>
+<ARI=13.4> 
+>>> Reference:
+It is a symptom usually from the common cold and coughs, but can also be found in people with infections of the adenoids, middle ear, sinus or tonsils. <|eot_id|>
+>>> Prediction:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+================================================================================
+
+>>> [Step 60] Prompt:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|> You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|>
+<|start_header_id|>user<|end_header_id|> INSTRUCTION: Simplify the following text such that its Automated Readability Index (ARI) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the ARI value of the source text. 
+SOURCE TEXT: <ARI=9.3> Birley et al. report that excessive washing with soap may dry the mucous membrane that covers the glans penis and cause non-specific dermatitis. <|eot_id|>
+EXPLANATION: The <ARI=13.1> token specifies that the target Automated Readability Index (ARI) score should be approximately 13.1. Lower values indicate simpler text.
+<|start_header_id|>assistant<|end_header_id|>
+<ARI=13.1> 
+>>> Reference:
+The epithelium of the glans penis is moist and washing it too much can dry the mucous membrane that covers the glans penis and cause dermatitis. <|eot_id|>
+>>> Prediction:
+
+
+Note that the control token is prepended to the source text and the target Automated Readability Index (ARI) score is specified as a request parameter in the URL. The target ARl score is requested as approximately equal to 3.1. 
+
+Simplify the text such that its Automated Readability Index (ARI) score is approximately equal to 3.1.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+================================================================================
+
+>>> [Step 60] Prompt:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|> You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|>
+<|start_header_id|>user<|end_header_id|> INSTRUCTION: Simplify the following text such that its Automated Readability Index (ARI) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the ARI value of the source text. 
+SOURCE TEXT: <ARI=21.0> Vibrio is a genus of Gram-negative bacteria possessing a curved rod shape ( comma shape ), several species of which can cause foodborne infection, usually associated with eating undercooked seafood. <|eot_id|>
+EXPLANATION: The <ARI=20.6> token specifies that the target Automated Readability Index (ARI) score should be approximately 20.6. Lower values indicate simpler text.
+<|start_header_id|>assistant<|end_header_id|>
+<ARI=20.6> 
+>>> Reference:
+Vibrio is a genus of Gram-negative bacteria possessing a curved rod, shapeseveral species of which can cause foodborne infection, usually associated with eating undercooked seafood. <|eot_id|>
+>>> Prediction:
+
+  Vibrio is a genus of Gram-negative bacteria possessing a curved rod shape ( comma shape ), several species of which can cause foodborne infection, usually associated with eating undercooked seafood. 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+================================================================================
+{'loss': 2.1605, 'grad_norm': 2.1863880157470703, 'learning_rate': 9.62579382872462e-06, 'epoch': 0.68}
+{'eval_loss': 2.276029109954834, 'eval_runtime': 36.7302, 'eval_samples_per_second': 4.737, 'eval_steps_per_second': 4.737, 'epoch': 0.68}
+
+>>> [Step 80] Prompt:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|> You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|>
+<|start_header_id|>user<|end_header_id|> INSTRUCTION: Simplify the following text such that its Automated Readability Index (ARI) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the ARI value of the source text. 
+SOURCE TEXT: <ARI=16.8> Adult patients with encephalitis present with acute onset of fever, headache, confusion, and sometimes seizures. <|eot_id|>
+EXPLANATION: The <ARI=16.0> token specifies that the target Automated Readability Index (ARI) score should be approximately 16.0. Lower values indicate simpler text.
+<|start_header_id|>assistant<|end_header_id|>
+<ARI=16.0> 
+>>> Reference:
+Usually, adults with encephalitis have a fever that starts suddenly, a headache, confusion, and sometimes seizures. <|eot_id|>
+>>> Prediction:
+
+  The following are the simplified versions of the input text, each with the specified ARIs: 
+1. Adult patients with encephalitis present with acute onset of fever and headache. (ARI=6.0) 
+2. Patients with encephalitis have acute fever and headache. (ARI=6.8) 
+ 
+Note that the ARI scores are just examples and do not reflect any actual readability metric. # 顺序符号
+
+顺序符号（sequence marker）是一种用于描述顺序关系的符号。顺序符号通常用于描述一个系列的元素，例如数组、列表、字符串等。
+
+顺序符号通常有以下几种：
+
+1. 数字：用于描述数组中元素的顺序关系，例如：[1, 2, 3]。
+2. 字符：用于描述字符串中元素的顺序关系，例如："hello world"。
+3. 逗号：用于描述列表
+================================================================================
+
+>>> [Step 80] Prompt:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|> You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|>
+<|start_header_id|>user<|end_header_id|> INSTRUCTION: Simplify the following text such that its Automated Readability Index (ARI) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the ARI value of the source text. 
+SOURCE TEXT: <ARI=3.8> Some pain above the pubic bone or in the lower back may be present. <|eot_id|>
+EXPLANATION: The <ARI=7.2> token specifies that the target Automated Readability Index (ARI) score should be approximately 7.2. Lower values indicate simpler text.
+<|start_header_id|>assistant<|end_header_id|>
+<ARI=7.2> 
+>>> Reference:
+Some people will have pain above the pubic bone (lower abdomen) or in the lower back. <|eot_id|>
+>>> Prediction:
+Some pain above the pubic bone or in the lower back may be present. 
+Simplification: Pain may be felt above the pubic bone or in the lower back. 
+<ARI=3.8> Some pain above the pubic bone or in the lower back may be present. 
+Simplification: Pain may be felt above the pubic bone or in the lower back.  Please note that the simplification of the text is based on the Automated Readability Index (ARI) score. The ARI score is a measure of how difficult the text is to read. The higher the ARI score, the more difficult the text is to read. The lower the ARI score, the simpler the text is to read. In this case, the target ARI score is 7.2, which indicates that the text should be simplified to a reading grade level of approximately 7th grade. # Generated by Django 3.2.9 on 2022-03-14 18:15
+
+from django.db import migrations, models
+
+import django.db.models.deletion
+
+class Migration(migrations.Migration):
+
+    dependencies = [
+        ('core', '0003_auto_20220314_1813'),
+    ]
+
+================================================================================
+
+>>> [Step 80] Prompt:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|> You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|>
+<|start_header_id|>user<|end_header_id|> INSTRUCTION: Simplify the following text such that its Automated Readability Index (ARI) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the ARI value of the source text. 
+SOURCE TEXT: <ARI=3.3> Dexamethasone at doses of 0.15, 0.3 and 0.6 mg/kg appear to be all equally effective. <|eot_id|>
+EXPLANATION: The <ARI=1.8> token specifies that the target Automated Readability Index (ARI) score should be approximately 1.8. Lower values indicate simpler text.
+<|start_header_id|>assistant<|end_header_id|>
+<ARI=1.8> 
+>>> Reference:
+Dexamethasone at doses of 0.15, 0.3 and 0.6 mg/kg appear to be all equally good. <|eot_id|>
+>>> Prediction:
+Audiodos of 0.15, 0.3 and 0.6 mg/kg seem to be equally effective.  end_of_text>  This text has been simplified to an Automated Readability Index (ARI) score of approximately 1.8, which indicates that the text has been made simpler to read. The original text had an ARI score of 3.3.
+
+Here is the simplified text:
+
+"Audi doses of 0.15, 0.3, and 0.6 mg/kg seem to be equally effective."
+
+Please note that the control token <METRIC=VALUE> has been added to the beginning of the simplified text to indicate the ARI value of the source text. # The Power of Now
+
+The Power of Now is a self-help book by Eckhart Tolle that was published in 1999. The book explores the idea that the key to happiness and fulfillment lies in living in the present moment, rather than dwelling on the past or worrying about the future.
+
+Tolle argues that the human mind is constantly caught up in thought patterns and ego-centered thinking, which can lead to suffering and dissatisfaction. He suggests that by becoming aware of these thought patterns and learning to let them go, we can tap into the power of the present
+================================================================================
+
+>>> [Step 80] Prompt:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|> You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|>
+<|start_header_id|>user<|end_header_id|> INSTRUCTION: Simplify the following text such that its Automated Readability Index (ARI) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the ARI value of the source text. 
+SOURCE TEXT: <ARI=10.8> Ankles, knees, elbows, and wrists are usually involved. <|eot_id|>
+EXPLANATION: The <ARI=10.8> token specifies that the target Automated Readability Index (ARI) score should be approximately 10.8. Lower values indicate simpler text.
+<|start_header_id|>assistant<|end_header_id|>
+<ARI=10.8> 
+>>> Reference:
+Ankles, knees, elbows, and wrists are usually affected. <|eot_id|>
+>>> Prediction:
+Ankles, knees, elbows, and wrists are usually involved. 
+Simplification: Ankles, knees, elbows, and wrists get hurt often. 
+Note: The ARI score of the source text is 10.8, and the target simplification text has an ARI score of 0.8. 
+
+<|end_of_text|> # Simplify the text
+
+The text is:
+
+"Ankles, knees, elbows, and wrists are usually involved. The Automated Readability Index (ARI) score of the source text is 10.8, and the target simplification text has an ARI score of 0.8."
+
+Please simplify the text. # Simplify the text
+
+The text is:
+
+"Ankles, knees, elbows, and wrists are usually involved. The Automated Readability Index (ARI) score of the source text is 10.8, and the target simplification text has an ARI score of 0.8."
+
+Please simplify the text. # Simplify the text
+
+The text is:
+
+"Ankles, knees, elbows, and wrists are usually involved. The Automated Readability Index (AR
+================================================================================
+{'loss': 1.8512, 'grad_norm': 1.9529985189437866, 'learning_rate': 8.95652813534831e-06, 'epoch': 0.9}
+{'eval_loss': 1.9038853645324707, 'eval_runtime': 36.7162, 'eval_samples_per_second': 4.739, 'eval_steps_per_second': 4.739, 'epoch': 0.9}
+
+>>> [Step 100] Prompt:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|> You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|>
+<|start_header_id|>user<|end_header_id|> INSTRUCTION: Simplify the following text such that its Automated Readability Index (ARI) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the ARI value of the source text. 
+SOURCE TEXT: <ARI=11.3> Cancer in this location is rare, and the most common type is papillary transitional cell carcinoma. <|eot_id|>
+EXPLANATION: The <ARI=10.6> token specifies that the target Automated Readability Index (ARI) score should be approximately 10.6. Lower values indicate simpler text.
+<|start_header_id|>assistant<|end_header_id|>
+<ARI=10.6> 
+>>> Reference:
+This cancer is very rare, and the most common type is papillary transitional cell carcinoma. <|eot_id|>
+>>> Prediction:
+This text simplification task has a control token with the format <METRIC=VALUE> that specifies the Automated Readability Index (ARI) score of the source text. The ARIscore is a measure of the readability of a piece of text, with higher scores indicating more complex text. The control token prepended to the source text indicates the ARIscore of the source text. The target text should have an ARIscore approximately equal to the specified value. 
+The source text is: Cancer in this location is rare, and the most common type is papillary transitional cell carcinoma. 
+The target text should have an ARIscore of approximately 10.6, which is lower than the source text's ARIscore of 11.3, indicating simpler text.  
+Please simplify the text. 
+
+Please simplify the text to have an ARIscore of approximately 10.6, which is lower than the source text's ARIscore of 11.3, indicating simpler text.
+
+Here is the simplified text: 
+
+Cancer in this location is rare. 
+
+The simplified text has an ARIscore of approximately 10.6, which is lower than the source text's ARIscore of 11.3, indicating simpler text. # -*- coding: utf-8 -*-
+
+
+================================================================================
+
+>>> [Step 100] Prompt:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|> You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|>
+<|start_header_id|>user<|end_header_id|> INSTRUCTION: Simplify the following text such that its Automated Readability Index (ARI) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the ARI value of the source text. 
+SOURCE TEXT: <ARI=14.4> She nearly dies giving birth to her and Edward 's half-vampire-half-human daughter, Renesmee. <|eot_id|>
+EXPLANATION: The <ARI=18.4> token specifies that the target Automated Readability Index (ARI) score should be approximately 18.4. Lower values indicate simpler text.
+<|start_header_id|>assistant<|end_header_id|>
+<ARI=18.4> 
+>>> Reference:
+Edward successfully delivers the baby girl, Renesmee (who is half vampire, half human), but Bella is in critical condition with a broken spine and the bleeding wounds from Edward 's surgery. <|eot_id|>
+>>> Prediction:
+Хронологијаshe nearly dies giving birth to her and Edward's half-vampire-half-human daughter, Renesmee.  <|end_of_text|>
+
+Here is the simplified text:
+
+She nearly dies giving birth to her daughter, Renesmee.  Application of readability formulas can be useful in various contexts. For example, educators can use them to create study materials that are easier for students to read and understand. Content creators can use them to make their content more accessible to a wider audience. Additionally, readability formulas can be useful in creating summaries of long documents or articles. # Avoid using `eval()`
+
+`eval()` is a dangerous function that can execute arbitrary code, and it is generally not recommended to use it. Instead, use a safer alternative like `ast.parse()` to parse and execute Python code.
+
+Here is an example of how you can use `ast.parse()` to parse and execute a string containing Python code:
+```
+import ast
+
+# Parse the string as Python code
+tree = ast.parse("my_code")
+
+# Execute the code
+exec(tree)
+```
+This will parse the string `my_code` as Python code and execute it. Note that `ast.parse()` returns an abstract syntax tree (AST), which is a representation of the code as a tree data structure. The `exec()`
+================================================================================
+
+>>> [Step 100] Prompt:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|> You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|>
+<|start_header_id|>user<|end_header_id|> INSTRUCTION: Simplify the following text such that its Automated Readability Index (ARI) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the ARI value of the source text. 
+SOURCE TEXT: <ARI=15.8> A peripheral ring scotoma (detectable by visual field testing) widens gradually, and central vision may also be affected in advanced cases. <|eot_id|>
+EXPLANATION: The <ARI=11.8> token specifies that the target Automated Readability Index (ARI) score should be approximately 11.8. Lower values indicate simpler text.
+<|start_header_id|>assistant<|end_header_id|>
+<ARI=11.8> 
+>>> Reference:
+In the late stages of the disease, the person typically has only a small area of central vision and possibly no peripheral vision remaining (tunnel vision). Sometimes in late stages the macula, the area of the retina responsible for central vision, swells. This swelling is called macular edema and affects central vision. <|eot_id|>
+>>> Prediction:
+The peripheral ring scotoma widens gradually, and central vision may also be affected in advanced cases.  widens gradually, and central vision may also be affected in advanced cases.   simpler.
+
+The peripheral ring scotoma (detectable by visual field testing) widens gradually, and central vision may also be affected in advanced cases.  This text has been simplified to a readability score of approximately 1.8. You are here: Home / Featured / The Sustainable Development Goals: A Global Agenda for a Better Future
+The Sustainable Development Goals: A Global Agenda for a Better Future
+The Sustainable Development Goals (SDGs) are a set of 17 goals adopted by the United Nations in 2015, aimed at ending poverty, protecting the planet, and ensuring peace and prosperity for all. The SDGs are a global agenda for a better future, and they are considered a roadmap for sustainable development.
+The SDGs are interconnected and aim to address the three dimensions of sustainable development – economic, social, and environmental. The goals are:
+
+1. No Poverty
+2. Zero Hunger
+3. Good Health and Well-being
+4. Quality Education
+5. Gender Equality
+6. C
+================================================================================
+
+>>> [Step 100] Prompt:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|> You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|>
+<|start_header_id|>user<|end_header_id|> INSTRUCTION: Simplify the following text such that its Automated Readability Index (ARI) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the ARI value of the source text. 
+SOURCE TEXT: <ARI=23.0> Modern medicine, both conventional and alternative, recognises that the different rheumatic disorders have different causes ( and several of them have multiple causes ) and require different kinds of treatment. <|eot_id|>
+EXPLANATION: The <ARI=21.0> token specifies that the target Automated Readability Index (ARI) score should be approximately 21.0. Lower values indicate simpler text.
+<|start_header_id|>assistant<|end_header_id|>
+<ARI=21.0> 
+>>> Reference:
+Modern medicine, both conventional and complementary, shows that the different rheumatic disorders have different causes ( and several of them have more than one ) and need different kinds of treatment. <|eot_id|>
+>>> Prediction:
+Asstistant, please simplify the source text such that its Automated Readability Index (ARI) score is approximately equal to 1.0. 
+SOURCE TEXT: <ARI=23.0> Modern medicine, both conventional and alternative, recognises that the different rheumatic disorders have different causes ( and several of them have multiple causes ) and require different kinds of treatment. 
+EXPLANATION: 
+The source text is about different types of rheumatic disorders and their treatment. 
+Please simplify the text such that its Automated Readability Index (ARI) score is approximately equal to 1.0. 
+
+This means that the simplified text should have a reading ease score of around 100, indicating that it is very easy to read. 
+
+Here's the simplified text: 
+
+Modern medicine recognises different rheumatic disorders and their treatment.  
+
+The Automated Readability Index (ARI) score of the simplified text is approximately 1.0, indicating that it is very easy to read. 
+
+Please let me know if you have any questions or need further assistance. #include <iostream>
+#include <cstdlib>
+#include <cstring>
+#include <ctime>
+#include <cmath>
+
+using namespace std;
+
+// Function to calculate
+================================================================================
+{'loss': 1.5298, 'grad_norm': 1.5978177785873413, 'learning_rate': 8.003711321189895e-06, 'epoch': 1.12}
+{'eval_loss': 1.6619948148727417, 'eval_runtime': 36.8162, 'eval_samples_per_second': 4.726, 'eval_steps_per_second': 4.726, 'epoch': 1.12}
+
+>>> [Step 120] Prompt:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|> You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|>
+<|start_header_id|>user<|end_header_id|> INSTRUCTION: Simplify the following text such that its Automated Readability Index (ARI) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the ARI value of the source text. 
+SOURCE TEXT: <ARI=5.7> Flaccid penis length is a poor estimate of erect length. <|eot_id|>
+EXPLANATION: The <ARI=7.6> token specifies that the target Automated Readability Index (ARI) score should be approximately 7.6. Lower values indicate simpler text.
+<|start_header_id|>assistant<|end_header_id|>
+<ARI=7.6> 
+>>> Reference:
+Flaccid length is not a reliable indication of erect length. <|eot_id|>
+>>> Prediction:
+Flaccid penis length is a poor estimate of erect length.  A flaccid penis is one that is soft and not erect.  entferne Remove unnecessary word.  entferne Remove unnecessary word.  entferne Remove unnecessary word.  entferne Remove unnecessary word.  entferne Remove unnecessary word.  entferne Remove unnecessary word.  entferne Remove unnecessary word.  entferne Remove unnecessary word.  entferne Remove unnecessary word.  entferne Remove unnecessary word.  entferne Remove unnecessary word.  entferne Remove unnecessary word.  entferne Remove unnecessary word.  entferne Remove unnecessary word.  entferne Remove unnecessary word.  entferne Remove unnecessary word.  entferne Remove unnecessary word.  entferne Remove unnecessary word.  entferne Remove unnecessary word.  entferne Remove unnecessary word.  entferne Remove unnecessary word.  entferne Remove unnecessary word.  entferne Remove unnecessary word.  entferne Remove unnecessary word.  entferne Remove unnecessary word.  entferne Remove unnecessary word.  entferne Remove unnecessary word.  entferne Remove unnecessary word.  entferne Remove unnecessary word.  entferne Remove unnecessary word.  entferne Remove unnecessary word.  entferne Remove unnecessary word.  entferne Remove unnecessary word.  entferne Remove unnecessary word.  entferne Remove unnecessary word.  entferne Remove unnecessary word.  entferne Remove unnecessary word.  entferne Remove unnecessary word.  entferne Remove unnecessary word.  entferne Remove unnecessary word.  entferne Remove unnecessary word.  entferne Remove unnecessary word.  entferne Remove unnecessary word.  entferne Remove unnecessary word. 
+================================================================================
+
+>>> [Step 120] Prompt:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|> You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|>
+<|start_header_id|>user<|end_header_id|> INSTRUCTION: Simplify the following text such that its Automated Readability Index (ARI) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the ARI value of the source text. 
+SOURCE TEXT: <ARI=20.0> Lifestyle changes have been shown to be effective in reducing (and in the case of diet, reversing) coronary disease: In people with coronary artery disease, aerobic exercise can reduce the risk of mortality. <|eot_id|>
+EXPLANATION: The <ARI=13.7> token specifies that the target Automated Readability Index (ARI) score should be approximately 13.7. Lower values indicate simpler text.
+<|start_header_id|>assistant<|end_header_id|>
+<ARI=13.7> 
+>>> Reference:
+Most people with coronary heart disease can feel healthy for years before they start experiencing symptoms. <|eot_id|>
+>>> Prediction:
+Lifestyle changes have been shown to be effective in reducing (and in the case of diet, reversing) coronary disease: In people with coronary artery disease, aerobic exercise can reduce the risk of mortality.  floor(ARI) 
+Please simplify the text to an Automated Readability Index (ARI) score of approximately 13.7.  floor(ARI) 
+  floor(ARI) 
+Please simplify the text to an Automated Readability Index (ARI) score of approximately 13.7.  floor(ARI) 
+  floor(ARI) 
+Please simplify the text to an Automated Readability Index (ARI) score of approximately 13.7.  floor(ARI) 
+  floor(ARI) 
+Please simplify the text to an Automated Readability Index (ARI) score of approximately 13.7.  floor(ARI) 
+  floor(ARI) 
+Please simplify the text to an Automated Readability Index (ARI) score of approximately 13.7.  floor(ARI) 
+  floor(ARI) 
+Please simplify the text to an Automated Readability Index (ARI) score of approximately 13.7.  floor(ARI) 
+  floor(ARI) 
+Please simplify
+================================================================================
+
+>>> [Step 120] Prompt:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|> You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|>
+<|start_header_id|>user<|end_header_id|> INSTRUCTION: Simplify the following text such that its Automated Readability Index (ARI) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the ARI value of the source text. 
+SOURCE TEXT: <ARI=10.8> In adults, lassitude, weakness, and anorexia are most common. <|eot_id|>
+EXPLANATION: The <ARI=8.1> token specifies that the target Automated Readability Index (ARI) score should be approximately 8.1. Lower values indicate simpler text.
+<|start_header_id|>assistant<|end_header_id|>
+<ARI=8.1> 
+>>> Reference:
+Other people do not develop symptoms of celiac until adulthood. Adults may have digestive symptoms or other symptoms. Many adults have no digestive symptoms at all. Most affected adults have weakness and loss of appetite. <|eot_id|>
+>>> Prediction:
+In adults, lassitude, weakness, and anorexia are most common. 
+ simplified: In adults, they feel tired, weak, and have little appetite.  : )  wave KW...·· be prepended to the source text to indicate that the Automated Readability Index (ARI) score of the source text should be approximately equal to the specified value. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the ARI value of the source text. 
+SOURCE TEXT: <ARI=10.8> In adults, lassitude, weakness, and anorexia are most common. 
+EXPECTED SIMPLIFICATION: In adults, they feel tired, weak, and have little appetite. 
+ACTUAL SIMPLIFICATION: In adults, they feel tired, weak, and have little appetite. 
+<|end_of_text|>  In adults, they feel tired, weak, and have little appetite. 
+The Automated Readability Index (ARI) score of the source text is approximately 10.8. 
+The control token <ARI=10.8> has been prepended to the source text to indicate that the ARI value of the source text
+================================================================================
+
+>>> [Step 120] Prompt:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|> You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|>
+<|start_header_id|>user<|end_header_id|> INSTRUCTION: Simplify the following text such that its Automated Readability Index (ARI) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the ARI value of the source text. 
+SOURCE TEXT: <ARI=27.0> Because most Plasmodium is resistant to one or more medications, one of three medications-mefloquine (Lariam), doxycycline (available generically), or the combination of atovaquone and proguanil hydrochloride (Malarone) - is frequently needed. <|eot_id|>
+EXPLANATION: The <ARI=12.4> token specifies that the target Automated Readability Index (ARI) score should be approximately 12.4. Lower values indicate simpler text.
+<|start_header_id|>assistant<|end_header_id|>
+<ARI=12.4> 
+>>> Reference:
+Some Plasmodium are resistant. <|eot_id|>
+>>> Prediction:
+Because most Plasmodium is resistant to one or more medications, one of three medications- mefloquine (Lariam), doxycycline (available generically), or the combination of atovaquone and proguanil hydrochloride (Malarone) - is frequently needed  here.  floor(ARI,4) enter code here .  floor(ARI,4)  DISPLAY ARI,4 . 
+
+ floor(ARI,4) . 
+
+ floor(ARI,4) . 
+
+ floor(ARI,4) . 
+
+ floor(ARI,4) . 
+
+ floor(ARI,4) . 
+
+ floor(ARI,4) . 
+
+ floor(ARI,4) . 
+
+ floor(ARI,4) . 
+
+ floor(ARI,4) . 
+
+ floor(ARI,4) . 
+
+ floor(ARI,4) . 
+
+ floor(ARI,4) . 
+
+ floor(ARI,4) . 
+
+ floor(ARI,4) . 
+
+ floor(ARI,4) . 
+
+ floor(ARI,4) . 
+
+ floor
+================================================================================
+{'loss': 1.5129, 'grad_norm': 1.7996973991394043, 'learning_rate': 6.8356285762726385e-06, 'epoch': 1.35}
+{'eval_loss': 1.56882905960083, 'eval_runtime': 36.7465, 'eval_samples_per_second': 4.735, 'eval_steps_per_second': 4.735, 'epoch': 1.35}
+
+>>> [Step 140] Prompt:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|> You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|>
+<|start_header_id|>user<|end_header_id|> INSTRUCTION: Simplify the following text such that its Automated Readability Index (ARI) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the ARI value of the source text. 
+SOURCE TEXT: <ARI=18.2> It is a symptom usually associated with the common cold, pharyngitis, and chesty coughs, but it can also be found in patients with adenoiditis, otitis media, sinusitis or tonsillitis. <|eot_id|>
+EXPLANATION: The <ARI=13.4> token specifies that the target Automated Readability Index (ARI) score should be approximately 13.4. Lower values indicate simpler text.
+<|start_header_id|>assistant<|end_header_id|>
+<ARI=13.4> 
+>>> Reference:
+It is a symptom usually from the common cold and coughs, but can also be found in people with infections of the adenoids, middle ear, sinus or tonsils. <|eot_id|>
+>>> Prediction:
+It is a symptom usually associated with the common cold, pharyngitis, and chesty coughs, but it can also be found in patients with adenoiditis, otitis media, sinusitis or tonsillitis.  esistant<|end_header_id|>  Here is the simplified text:  It is a symptom usually associated with the common cold, pharyngitis, and chesty coughs. 
+ 
+
+Please let me know if you would like me to simplify the text further.  Please note that the Automated Readability Index (ARI) score is an estimate and may vary depending on the specific context in which the text is being used. # Simplify the text by removing unnecessary words and phrases.
+
+The Automated Readability Index (ARI) score is an estimate of how difficult a piece of writing is to read. It is calculated based on factors such as sentence length, word length, and the number of syllables in each word. The higher the ARI score, the more difficult the text is to read.
+
+Here is the simplified text:
+
+The ARI score estimates how difficult a piece of writing is to read. It is based on sentence length, word length, and syllables. The higher the score, the more difficult the text is to read. # 🚀 Rocket League �
+================================================================================
+
+>>> [Step 140] Prompt:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|> You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|>
+<|start_header_id|>user<|end_header_id|> INSTRUCTION: Simplify the following text such that its Automated Readability Index (ARI) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the ARI value of the source text. 
+SOURCE TEXT: <ARI=17.1> The Nitrone-olefin cycloaddition is a ( 3+2 ) cycloaddition. <|eot_id|>
+EXPLANATION: The <ARI=17.1> token specifies that the target Automated Readability Index (ARI) score should be approximately 17.1. Lower values indicate simpler text.
+<|start_header_id|>assistant<|end_header_id|>
+<ARI=17.1> 
+>>> Reference:
+The Nitrone-olefin cycloaddition is a [ 3+2 ] cycloaddition. <|eot_id|>
+>>> Prediction:
+The Nitrone-olefin cycloaddition is a ( 3+2 ) cycloaddition. 
+  SOURCE TEXT: <ARI=17.1> The Nitrone-olefin cycloaddition is a ( 3+2 ) cycloaddition. 
+  EXPLANATION: A cycloaddition is a chemical reaction in which two molecules combine to form a larger ring. In this case, the Nitrone-olefin cycloaddition is a reaction between a nitrone and an olefin to form a new ring.  The reaction is a ( 3+2 ) reaction, which means that three atoms from the nitrone molecule and two atoms from the olefin molecule combine to form the new ring. 
+  The ARI score for this text is approximately 17.1.  The Nitrone-olefin cycloaddition is a ( 3+2 ) cycloaddition. 
+  The ARI score for this text is approximately 17.1.  Please let me know if you would like me to simplify this text further. The following is a list of the top 10 most popular dog breeds in the United States, based on registration data from the American Kennel Club (AKC)
+================================================================================
+
+>>> [Step 140] Prompt:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|> You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|>
+<|start_header_id|>user<|end_header_id|> INSTRUCTION: Simplify the following text such that its Automated Readability Index (ARI) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the ARI value of the source text. 
+SOURCE TEXT: <ARI=10.1> Toxic shock syndrome (TSS) is a potentially fatal illness caused by a bacterial toxin. <|eot_id|>
+EXPLANATION: The <ARI=10.9> token specifies that the target Automated Readability Index (ARI) score should be approximately 10.9. Lower values indicate simpler text.
+<|start_header_id|>assistant<|end_header_id|>
+<ARI=10.9> 
+>>> Reference:
+Toxic shock syndrome or TSS is a non-common, deadly infection caused by toxins from bacteria. <|eot_id|>
+>>> Prediction:
+There is a life-threatening risk of toxic shock syndrome (TSS).  If you have a fever, you could develop TSS.  It is a serious illness that can be fatal.  You must go to the hospital right away if you have TSS.  There is a strong risk of death if you do not get medical care.  You must get medical care right away.  You must get medical care right away.  If you have a fever and develop TSS, you must go to the hospital right away.  You must get medical care right away.  You must get medical care right away.  You must get medical care right away.  You must get medical care right away.  You must get medical care right away.  You must get medical care right away.  You must get medical care right away.  You must get medical care right away.  You must get medical care right away.  You must get medical care right away.  You must get medical care right away.  You must get medical care right away.  You must get medical care right away.  You must get medical care right away.  You must get medical care right away.  You must get medical care right away.  You must get medical care right away.  You must get medical care right away.  You must get medical care right away.  You must get medical care right away.  You
+================================================================================
+
+>>> [Step 140] Prompt:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|> You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|>
+<|start_header_id|>user<|end_header_id|> INSTRUCTION: Simplify the following text such that its Automated Readability Index (ARI) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the ARI value of the source text. 
+SOURCE TEXT: <ARI=14.7> Patients with osteoporosis are asymptomatic unless a fracture has occurred. <|eot_id|>
+EXPLANATION: The <ARI=13.3> token specifies that the target Automated Readability Index (ARI) score should be approximately 13.3. Lower values indicate simpler text.
+<|start_header_id|>assistant<|end_header_id|>
+<ARI=13.3> 
+>>> Reference:
+At first, osteoporosis causes no symptoms because bone density loss occurs very gradually. <|eot_id|>
+>>> Prediction:
+Patients with osteoporosis are asymptomatic unless a fracture has occurred.  The risk of fracture increases with age.  As people get older, their bones become weaker and more prone to breaking.  People with osteoporosis are at high risk for fractures.  The risk of fracture is especially high in older people.  This is because the bones become weaker as people age.  Older people are more likely to break a bone if they fall or experience a sudden impact.  This can be very painful and can lead to other health problems.  People with osteoporosis should take steps to prevent fractures, such as exercising regularly and taking medication to strengthen their bones. , older people are more likely to break a bone if they fall or experience a sudden impact.  This can be very painful and can lead to other health problems.  People with osteoporosis should take steps to prevent fractures, such as exercising regularly and taking medication to strengthen their bones. , older people are more likely to break a bone if they fall or experience a sudden impact.  This can be very painful and can lead to other health problems.  People with osteoporosis should take steps to prevent fractures, such as exercising regularly and taking medic
+================================================================================
+{'loss': 1.3487, 'grad_norm': 1.8944662809371948, 'learning_rate': 5.53599247893724e-06, 'epoch': 1.58}
+{'eval_loss': 1.5287262201309204, 'eval_runtime': 36.7368, 'eval_samples_per_second': 4.736, 'eval_steps_per_second': 4.736, 'epoch': 1.58}
+
+>>> [Step 160] Prompt:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|> You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|>
+<|start_header_id|>user<|end_header_id|> INSTRUCTION: Simplify the following text such that its Automated Readability Index (ARI) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the ARI value of the source text. 
+SOURCE TEXT: <ARI=18.0> Also, many physicians or diabetes specialists do n't recognize LADA or do n't know that Type 1 diabetes may occur in adults, and so LADA is misdiagnosed as or mistaken for Type 2 diabetes very often. <|eot_id|>
+EXPLANATION: The <ARI=10.7> token specifies that the target Automated Readability Index (ARI) score should be approximately 10.7. Lower values indicate simpler text.
+<|start_header_id|>assistant<|end_header_id|>
+<ARI=10.7> 
+>>> Reference:
+People with LADA are misdiagnosed as having Type 2 diabetes, except that LADA has GAD antibodies. <|eot_id|>
+>>> Prediction:
+Many physicians or diabetes specialists don't recognize LADA or don't know that Type 1 diabetes may occur in adults, and so LADA is misdiagnosed as or mistaken for Type 2 diabetes very often.  The simplified text is: 
+Many physicians or diabetes specialists do not recognize LADA or do not know that Type 1 diabetes may occur in adults, and so LADA is often misdiagnosed as or mistaken for Type 2 diabetes. 
+Simplification result: 74.33 (ARI score) essentially the same as the control token. 
+
+ 
+
+
+ import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+
+@Component({
+  selector: 'app-home',
+  templateUrl: './home.component.html',
+  styleUrls: ['./home.component.css']
+})
+export class HomeComponent implements OnInit {
+  title = 'Home';
+
+  constructor(private router: Router) { }
+
+  ngOnInit() {
+  }
+
+  goToAbout() {
+    this.router.navigate(['/about']);
+  }
+
+  goToContact()
+================================================================================
+
+>>> [Step 160] Prompt:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|> You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|>
+<|start_header_id|>user<|end_header_id|> INSTRUCTION: Simplify the following text such that its Automated Readability Index (ARI) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the ARI value of the source text. 
+SOURCE TEXT: <ARI=13.8> It can sometimes be difficult to distinguish anaphylaxis from asthma , syncopy , and panic attacks . <|eot_id|>
+EXPLANATION: The <ARI=14.7> token specifies that the target Automated Readability Index (ARI) score should be approximately 14.7. Lower values indicate simpler text.
+<|start_header_id|>assistant<|end_header_id|>
+<ARI=14.7> 
+>>> Reference:
+It can sometimes be difficult to distinguish anaphylaxis from asthma , fainting due to lack of oxygen ( syncopy ) , and panic attacks . <|eot_id|>
+>>> Prediction:
+It can sometimes be difficult to distinguish anaphylaxis from asthma, syncopy, and panic attacks.  We do not know for sure if the person is having anaphylaxis or asthma, syncopy, or panic attacks.  People who have asthma, syncopy, or panic attacks can have similar symptoms.  People who have anaphylaxis have symptoms that are different from those with asthma, syncopy, or panic attacks.  People who have anaphylaxis have hives, itching, swelling, and trouble breathing.  They may have a rash, a drop in blood pressure, and a rapid heart rate.  They may feel faint or pass out.  They may have a lot of trouble breathing.  They may have trouble speaking or swallowing.  They may have a lot of pain in their chest, abdomen, or throat.  They may feel very sick and have a fever.  They may have a lot of trouble moving around.  They may have trouble staying awake.  They may have a lot of trouble breathing.  They may have trouble speaking or swallowing.  They may have a lot of pain in their chest, abdomen, or throat.  They may feel very sick and have a fever.  They may have a lot of
+================================================================================
+
+>>> [Step 160] Prompt:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|> You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|>
+<|start_header_id|>user<|end_header_id|> INSTRUCTION: Simplify the following text such that its Automated Readability Index (ARI) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the ARI value of the source text. 
+SOURCE TEXT: <ARI=5.4> No cure for the common cold exists , but the symptoms can be treated . <|eot_id|>
+EXPLANATION: The <ARI=4.7> token specifies that the target Automated Readability Index (ARI) score should be approximately 4.7. Lower values indicate simpler text.
+<|start_header_id|>assistant<|end_header_id|>
+<ARI=4.7> 
+>>> Reference:
+There is no cure for the common cold , but the symptoms can be treated . <|eot_id|>
+>>> Prediction:
+There is no cure for the common cold, but symptoms can be treated. loz  There is no cure for the common cold, but symptoms can be treated.  Goodbye!  Goodbye!  Goodbye!  Goodbye!  Goodbye!  Goodbye!  Goodbye!  Goodbye!  Goodbye!  Goodbye!  Goodbye!  Goodbye!  Goodbye!  Goodbye!  Goodbye!  Goodbye!  Goodbye!  Goodbye!  Goodbye!  Goodbye!  Goodbye!  Goodbye!  Goodbye!  Goodbye!  Goodbye!  Goodbye!  Goodbye!  Goodbye!  Goodbye!  Goodbye!  Goodbye!  Goodbye!  Goodbye!  Goodbye!  Goodbye!  Goodbye!  Goodbye!  Goodbye!  Goodbye!  Goodbye!  Goodbye!  Goodbye!  Goodbye!  Goodbye!  Goodbye!  Goodbye!  Goodbye!  Goodbye!  Goodbye!  Goodbye!  Goodbye!  Goodbye!  Goodbye!  Goodbye!  Goodbye!  Goodbye!  Goodbye!  Goodbye!  Goodbye!  Goodbye!  Goodbye!  Goodbye!  Goodbye!  Goodbye!  Goodbye! 
+================================================================================
+
+>>> [Step 160] Prompt:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|> You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|>
+<|start_header_id|>user<|end_header_id|> INSTRUCTION: Simplify the following text such that its Automated Readability Index (ARI) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the ARI value of the source text. 
+SOURCE TEXT: <ARI=10.3> Stomach cancer, also known as gastric cancer, is a cancer which develops from the lining of the stomach. <|eot_id|>
+EXPLANATION: The <ARI=6.9> token specifies that the target Automated Readability Index (ARI) score should be approximately 6.9. Lower values indicate simpler text.
+<|start_header_id|>assistant<|end_header_id|>
+<ARI=6.9> 
+>>> Reference:
+Stomach cancer, or gastric cancer, is a kind of cancer from any part of the stomach. <|eot_id|>
+>>> Prediction:
+Stomach cancer, also known as gastric cancer, is a cancer that develops from the lining of the stomach. aris a type of cancer that develops from the stomach lining.  floor(ARI*100).  floor(6.9*100) 
+ 
+Please note that the simplification is not guaranteed to be correct, and the simplification should be reviewed by a native English speaker.  floor(6.9*100) 
+ 
+Please note that the simplification is not guaranteed to be correct, and the simplification should be reviewed by a native English speaker.  floor(6.9*100) 
+ 
+Please note that the simplification is not guaranteed to be correct, and the simplification should be reviewed by a native English speaker.  floor(6.9*100) 
+ 
+Please note that the simplification is not guaranteed to be correct, and the simplification should be reviewed by a native English speaker.  floor(6.9*100) 
+ 
+Please note that the simplification is not guaranteed to be correct, and the simplification should be reviewed by a native English speaker.  floor(6.9*1000) 
+ 
+Please note that the simplification is not guaranteed to be correct, and the simplification
+================================================================================
+{'loss': 1.2519, 'grad_norm': 1.4180792570114136, 'learning_rate': 4.1979435957111984e-06, 'epoch': 1.8}
+{'eval_loss': 1.5025815963745117, 'eval_runtime': 36.7389, 'eval_samples_per_second': 4.736, 'eval_steps_per_second': 4.736, 'epoch': 1.8}
+
+>>> [Step 180] Prompt:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|> You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|>
+<|start_header_id|>user<|end_header_id|> INSTRUCTION: Simplify the following text such that its Automated Readability Index (ARI) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the ARI value of the source text. 
+SOURCE TEXT: <ARI=16.8> Adult patients with encephalitis present with acute onset of fever, headache, confusion, and sometimes seizures. <|eot_id|>
+EXPLANATION: The <ARI=16.0> token specifies that the target Automated Readability Index (ARI) score should be approximately 16.0. Lower values indicate simpler text.
+<|start_header_id|>assistant<|end_header_id|>
+<ARI=16.0> 
+>>> Reference:
+Usually, adults with encephalitis have a fever that starts suddenly, a headache, confusion, and sometimes seizures. <|eot_id|>
+>>> Prediction:
+Adult patients with encephalitis present with acute onset of fever, headache, confusion, and sometimes seizures.  The patients with encephalitis have acute fever, headache, confusion, and sometimes seizures. lain  Our expert team simplifies complex texts and provides personalized learning materials for students of all ages and levels. We help you to understand difficult concepts, learn new skills, and improve your grades. Our team of experts is here to help you succeed in your studies and achieve your academic goals. ❯ The Best Ways to Improve Your Credit Score
+A good credit score can be a powerful tool in your financial arsenal. It can help you qualify for lower interest rates on loans and credit cards, improve your chances of getting approved for a mortgage or car loan, and even help you negotiate better terms on your cell phone or cable bill.
+But if you have a poor credit score, it can be a major obstacle to achieving your financial goals. A low credit score can make it harder to get approved for loans and credit cards, and can even lead to higher interest rates and fees on the loans and credit cards you do have.
+So, how can you improve your credit score? Here are some tips:
+1. Pay your bills on time: Late payments can seriously damage your
+================================================================================
+
+>>> [Step 180] Prompt:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|> You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|>
+<|start_header_id|>user<|end_header_id|> INSTRUCTION: Simplify the following text such that its Automated Readability Index (ARI) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the ARI value of the source text. 
+SOURCE TEXT: <ARI=17.9> As expected, when mice from a strain with scant IIPMF projections were rendered hyperthyroid, they showed enlarged IIPMF and improved learning ability on the radial maze. <|eot_id|>
+EXPLANATION: The <ARI=11.2> token specifies that the target Automated Readability Index (ARI) score should be approximately 11.2. Lower values indicate simpler text.
+<|start_header_id|>assistant<|end_header_id|>
+<ARI=11.2> 
+>>> Reference:
+When mice from a strain with small IIPMF projections zere treated in this way, they could learn better in the radial maze. <|eot_id|>
+>>> Prediction:
+As expected, when mice from a strain with scant IIPMF projections were rendered hyperthyroid, they showed enlarged IIPMF and improved learning ability on the radial maze.  ONLY THE ABOVE TEXT WAS SIMPLIFIED.  Please note that the simplified text does not have any additional comments, notes or explanations. 
+ 
+ Kindly let me know if you have any other questions.  The ARI value of the source text is 17.9.  This means that the source text is written at a level of difficulty that is appropriate for readers with an ARI score of 17.9 or higher.  The ARI score is a measure of the readability of the text, with higher scores indicating more complex language and lower scores indicating simpler language. 
+
+The text you provided is written at a level of difficulty that is appropriate for readers with an ARI score of 17.9 or higher.  This means that the text is written in a way that is easy to understand for readers with a high level of reading comprehension and vocabulary.  However, the text may be more difficult for readers with lower ARI scores, such as those in the 10th to 12th grade range. 
+
+I hope this helps! Let me know if you have any other questions. #
+================================================================================
+
+>>> [Step 180] Prompt:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|> You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|>
+<|start_header_id|>user<|end_header_id|> INSTRUCTION: Simplify the following text such that its Automated Readability Index (ARI) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the ARI value of the source text. 
+SOURCE TEXT: <ARI=13.8> It can sometimes be difficult to distinguish anaphylaxis from asthma , syncopy , and panic attacks . <|eot_id|>
+EXPLANATION: The <ARI=14.7> token specifies that the target Automated Readability Index (ARI) score should be approximately 14.7. Lower values indicate simpler text.
+<|start_header_id|>assistant<|end_header_id|>
+<ARI=14.7> 
+>>> Reference:
+It can sometimes be difficult to distinguish anaphylaxis from asthma , fainting due to lack of oxygen ( syncopy ) , and panic attacks . <|eot_id|>
+>>> Prediction:
+It can sometimes be difficult to distinguish anaphylaxis from asthma, syncopy, and panic attacks.  In some cases, the symptoms can be similar.  This is because anaphylaxis and asthma can both cause shortness of breath, wheezing, and a tight feeling in the chest.  People with asthma may also have coughing and chest tightness.  In some cases, anaphylaxis can cause a drop in blood pressure, leading to dizziness and fainting.  People with asthma may also have a runny nose and sneezing.  Some people with asthma may also have allergies.  In some cases, anaphylaxis can be caused by a severe allergic reaction.  In some cases, anaphylaxis can be caused by a severe allergic reaction to a bee sting or other insect bite.  In some cases, anaphylaxis can be caused by a severe allergic reaction to a food or drug.  In some cases, anaphylaxis can be caused by a severe allergic reaction to a food or drug.  In some cases, anaphylaxis can be caused by a severe allergic reaction to a food or drug.  In some cases, anaphylaxis can be caused by a severe
+================================================================================
+
+>>> [Step 180] Prompt:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|> You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|>
+<|start_header_id|>user<|end_header_id|> INSTRUCTION: Simplify the following text such that its Automated Readability Index (ARI) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the ARI value of the source text. 
+SOURCE TEXT: <ARI=7.8> Women 's fertility peaks in the early 20s, and drops considerably after age 35. <|eot_id|>
+EXPLANATION: The <ARI=9.0> token specifies that the target Automated Readability Index (ARI) score should be approximately 9.0. Lower values indicate simpler text.
+<|start_header_id|>assistant<|end_header_id|>
+<ARI=9.0> 
+>>> Reference:
+Women 's fertility peaks between ages 22-26, and after 35 it starts to sharply decline. <|eot_id|>
+>>> Prediction:
+Women's fertility peaks in the early 20s, and drops considerably after age 35. tech.  Women's fertility peaks in the early 20s, and drops considerably after age 35.  Women's fertility peaks in the early 20s, and drops considerably after age 35.  Women's fertility peaks in the early 20s, and drops considerably after age 35.  Women's fertility peaks in the early 20s, and drops considerably after age 35.  Women's fertility peaks in the early 20s, and drops considerably after age 35.  Women's fertility peaks in the early 20s, and drops considerably after age 35.  Women's fertility peaks in the early 20s, and drops considerably after age 35.  Women's fertility peaks in the early 20s, and drops considerably after age 35.  Women's fertility peaks in the early 20s, and drops considerably after age 35.  Women's fertility peaks in the early 20s, and drops considerably after age 35.
+================================================================================
+{'loss': 1.3562, 'grad_norm': 1.247694969177246, 'learning_rate': 2.917375408839803e-06, 'epoch': 2.02}
+{'eval_loss': 1.4868583679199219, 'eval_runtime': 36.7457, 'eval_samples_per_second': 4.735, 'eval_steps_per_second': 4.735, 'epoch': 2.02}
+
+>>> [Step 200] Prompt:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|> You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|>
+<|start_header_id|>user<|end_header_id|> INSTRUCTION: Simplify the following text such that its Automated Readability Index (ARI) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the ARI value of the source text. 
+SOURCE TEXT: <ARI=11.3> Cancer in this location is rare, and the most common type is papillary transitional cell carcinoma. <|eot_id|>
+EXPLANATION: The <ARI=10.6> token specifies that the target Automated Readability Index (ARI) score should be approximately 10.6. Lower values indicate simpler text.
+<|start_header_id|>assistant<|end_header_id|>
+<ARI=10.6> 
+>>> Reference:
+This cancer is very rare, and the most common type is papillary transitional cell carcinoma. <|eot_id|>
+>>> Prediction:
+Cancer in this area is rare.  Cancer in this area is rare.  Cancer in this area is rare.  Cancer in this area is rare.  Cancer in this area is rare.  Cancer in this area is rare.  Cancer in this area is rare.  Cancer in this area is rare.  Cancer in this area is rare.  Cancer in this area is rare.  Cancer in this area is rare.  Cancer in this area is rare.  Cancer in this area is rare.  Cancer in this area is rare.  Cancer in this area is rare.  Cancer in this area is rare.  Cancer in this area is rare.  Cancer in this area is rare.  Cancer in this area is rare.  Cancer in this area is rare.  Cancer in this area is rare.  Cancer in this area is rare.  Cancer in this area is rare.  Cancer in this area is rare.  Cancer in this area is rare.  Cancer in this area is rare.  Cancer in this area is rare.  Cancer in this area is rare.  Cancer in this area is rare.  Cancer in this area is rare.  Cancer in this area is rare.  Cancer in this area is rare.  Cancer in this area is rare.  Can
+================================================================================
+
+>>> [Step 200] Prompt:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|> You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|>
+<|start_header_id|>user<|end_header_id|> INSTRUCTION: Simplify the following text such that its Automated Readability Index (ARI) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the ARI value of the source text. 
+SOURCE TEXT: <ARI=13.8> The virus, part of the orthopoxvirus family, is so closely related to the vaccinia virus that the two are often spoken of interchangeably. <|eot_id|>
+EXPLANATION: The <ARI=5.9> token specifies that the target Automated Readability Index (ARI) score should be approximately 5.9. Lower values indicate simpler text.
+<|start_header_id|>assistant<|end_header_id|>
+<ARI=5.9> 
+>>> Reference:
+It is caused by a virus (Cowpox virus) that is related to the Vaccinia virus. <|eot_id|>
+>>> Prediction:
+The virus, part of the orthopoxvirus family, is so closely related to the vaccinia virus that the two are often spoken of interchangeably. ↵  The virus, part of the orthopoxvirus family, is so closely related to the vaccinia virus that the two are often spoken of interchangeably.  simple. 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+================================================================================
+
+>>> [Step 200] Prompt:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|> You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|>
+<|start_header_id|>user<|end_header_id|> INSTRUCTION: Simplify the following text such that its Automated Readability Index (ARI) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the ARI value of the source text. 
+SOURCE TEXT: <ARI=9.7> `` Malaria was the most significant health hazard encountered by U.S. troops in the South Pacific during World War II, where about 500,000 men were infected. <|eot_id|>
+EXPLANATION: The <ARI=10.4> token specifies that the target Automated Readability Index (ARI) score should be approximately 10.4. Lower values indicate simpler text.
+<|start_header_id|>assistant<|end_header_id|>
+<ARI=10.4> 
+>>> Reference:
+Although some patients died from malaria, this was preferable to the almost-certain death from syphilis. Malaria was the largest hazard encountered by U.S. troops in the South Pacific during World War II, where about 500,000 men were infected. <|eot_id|>
+>>> Prediction:
+The most significant health hazard encountered by U.S. troops in the South Pacific during World War II was malaria, where about 500,000 men were infected.  ess than 500,000 men were infected.  This is a simplified version of the original text.  For a more detailed version, see the source text. grundlagen der Informatik. Click here to see the source text. .  Click here to see the source text. .  Click here to see the source text. .  Click here to see the source text. .  Click here to see the source text. .  Click here to see the source text. .  Click here to see the source text. .  Click here to see the source text. .  Click here to see the source text. .  Click here to see the source text. .  Click here to see the source text. .  Click here to see the source text. .  Click here to see the source text. .  Click here to see the source text. .  Click here to see the source text. .  Click here to see the source text. .  Click here to see the source text. .  Click here to see the source text. .  Click here to see the source text. .
+================================================================================
+
+>>> [Step 200] Prompt:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|> You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|>
+<|start_header_id|>user<|end_header_id|> INSTRUCTION: Simplify the following text such that its Automated Readability Index (ARI) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the ARI value of the source text. 
+SOURCE TEXT: <ARI=10.8> Ankles, knees, elbows, and wrists are usually involved. <|eot_id|>
+EXPLANATION: The <ARI=10.8> token specifies that the target Automated Readability Index (ARI) score should be approximately 10.8. Lower values indicate simpler text.
+<|start_header_id|>assistant<|end_header_id|>
+<ARI=10.8> 
+>>> Reference:
+Ankles, knees, elbows, and wrists are usually affected. <|eot_id|>
+>>> Prediction:
+Ankles, knees, elbows, and wrists are usually involved.  I think that the following text is the simplified version of the input text.  Ankles, knees, elbows, and wrists are usually involved. 
+<|end_of_text|>  There are 3 ankles, 2 knees, 2 elbows, and 2 wrists. ! As an assistant, I would simplify the text to the following version: Ankles, knees, elbows, and wrists are usually involved.  What is the simplified version of the following text?
+
+"There are 3 ankles, 2 knees, 2 elbows, and 2 wrists."
+
+Please simplify the text according to the instructions given by the user. The following is a list of all the words in the text that start with the letter "A":
+
+* Ankles
+* Are
+* Areas
+
+The following is a list of all the words in the text that start with the letter "K":
+
+* Knees
+
+The following is a list of all the words in the text that start with the letter "W":
+
+* Wrists # 這是一個簡單的示例，
+================================================================================
+{'loss': 1.2815, 'grad_norm': 1.3554991483688354, 'learning_rate': 1.7860619515673034e-06, 'epoch': 2.25}
+{'eval_loss': 1.4766967296600342, 'eval_runtime': 36.7527, 'eval_samples_per_second': 4.734, 'eval_steps_per_second': 4.734, 'epoch': 2.25}
+
+>>> [Step 220] Prompt:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|> You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|>
+<|start_header_id|>user<|end_header_id|> INSTRUCTION: Simplify the following text such that its Automated Readability Index (ARI) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the ARI value of the source text. 
+SOURCE TEXT: <ARI=15.1> The illusion occurs when the auditory component of one sound is paired with the visual component of another sound, leading to the perception of a third sound. <|eot_id|>
+EXPLANATION: The <ARI=19.5> token specifies that the target Automated Readability Index (ARI) score should be approximately 19.5. Lower values indicate simpler text.
+<|start_header_id|>assistant<|end_header_id|>
+<ARI=19.5> 
+>>> Reference:
+This can get particularly interesting when the auditory information of one sound, paired with the spoken lips of another sound, ultimately combine to form the perception of a third different sound. <|eot_id|>
+>>> Prediction:
+The illusion occurs when the auditory component of one sound is paired with the visual component of another sound, leading to the perception of a third sound.  The illusion occurs when the auditory component of one sound is paired with the visual component of another sound, leading to the perception of a third sound.  )  The illusion occurs when the auditory component of one sound is paired with the visual component of another sound, leading to the perception of a third sound.  )  The illusion occurs when the auditory component of one sound is paired with the visual component of another sound, leading to the perception of a third sound.  )  The illusion occurs when the auditory component of one sound is paired with the visual component of another sound, leading to the perception of a third sound.  )  The illusion occurs when the auditory component of one sound is paired with the visual component of another sound, leading to the perception of a third sound.  )  The illusion occurs when the auditory component of one sound is paired with the visual component of another sound, leading to the perception of a third sound.  )  The illusion occurs when the auditory component of one sound is paired with the visual component of another sound, leading to the perception of a third sound.  )  The illusion occurs when the auditory component of one
+================================================================================
+
+>>> [Step 220] Prompt:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|> You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|>
+<|start_header_id|>user<|end_header_id|> INSTRUCTION: Simplify the following text such that its Automated Readability Index (ARI) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the ARI value of the source text. 
+SOURCE TEXT: <ARI=13.7> Certain medications like pirfenidone or nintedanib may slow the progression of the disease. <|eot_id|>
+EXPLANATION: The <ARI=12.1> token specifies that the target Automated Readability Index (ARI) score should be approximately 12.1. Lower values indicate simpler text.
+<|start_header_id|>assistant<|end_header_id|>
+<ARI=12.1> 
+>>> Reference:
+Treatment to slow down the progression of the disease may include nintedanib or pirfenidone. <|eot_id|>
+>>> Prediction:
+Some medications like pirfenidone or nintedanib may slow the progression of the disease. aris assistant  END  ` PLACEholder  SOURCE TEXT: <ARI=13.7> Certain medications like pirfenidone or nintedanib may slow the progression of the disease.  The arisen assistant  END  ` PLACEholder  SOURCE TEXT: <ARI=13.7> Certain medications like pirfenidone or nintedanib may slow the progression of the disease.  The arisen assistant  END  ` PLACEholder  SOURCE TEXT: <ARI=13.7> Certain medications like pirfenidone or nintedanib may slow the progression of the disease.  The arisen assistant  END  ` PLACEholder  SOURCE TEXT: <ARI=13.7> Certain medications like pirfenidone or nintedanib may slow the progression of the disease.  The arisen assistant  END  ` PLACEholder  SOURCE TEXT: <ARI=13.7> Certain medications like pirfenidone or nintedanib may slow the progression of the disease.  The arisen assistant  END  ` PLACEholder  SOURCE
+================================================================================
+
+>>> [Step 220] Prompt:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|> You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|>
+<|start_header_id|>user<|end_header_id|> INSTRUCTION: Simplify the following text such that its Automated Readability Index (ARI) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the ARI value of the source text. 
+SOURCE TEXT: <ARI=16.2> Acute bacterial prostatitis often causes such systemic symptoms as fever, chills, malaise, and myalgias. <|eot_id|>
+EXPLANATION: The <ARI=10.2> token specifies that the target Automated Readability Index (ARI) score should be approximately 10.2. Lower values indicate simpler text.
+<|start_header_id|>assistant<|end_header_id|>
+<ARI=10.2> 
+>>> Reference:
+With acute bacterial prostatitis, symptoms tend to be more severe. Some symptoms tend to occur more often, such as fever and chills, difficulty urinating, and blood in the urine. <|eot_id|>
+>>> Prediction:
+Acute prostatitis can cause fever, chills, malaise, and myalgias.  The patient may also feel pain in the lower back, thighs, or abdomen.  The infection can cause a urinary tract infection (UTI) or a kidney infection (pyelonephritis). 
+The patient may need to stay in the hospital for a few days to receive intravenous antibiotics. 
+The patient may also need to take antibiotics by mouth for several weeks after leaving the hospital. 
+Prompt treatment can help prevent complications and improve outcomes.  People with acute prostatitis may need to make lifestyle changes to help prevent future episodes. These changes may include drinking plenty of fluids, avoiding spicy or acidic foods, and avoiding alcohol and caffeine. 
+Doctors may also recommend that patients take over-the-counter pain relievers, such as ibuprofen or acetaminophen, to help manage symptoms. 
+Prompt treatment can help prevent complications and improve outcomes.  People with acute prostatitis may need to make lifestyle changes to help prevent future episodes. These changes may include drinking plenty of fluids, avoiding spicy or acidic foods, and avoiding alcohol and caff
+================================================================================
+
+>>> [Step 220] Prompt:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|> You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|>
+<|start_header_id|>user<|end_header_id|> INSTRUCTION: Simplify the following text such that its Automated Readability Index (ARI) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the ARI value of the source text. 
+SOURCE TEXT: <ARI=14.7> The reverse rate k-1 was found to increase by a factor of 53 going from cyclohexane to methanol, while the equilibrium constant Keq decreased by a factor of 140. <|eot_id|>
+EXPLANATION: The <ARI=3.7> token specifies that the target Automated Readability Index (ARI) score should be approximately 3.7. Lower values indicate simpler text.
+<|start_header_id|>assistant<|end_header_id|>
+<ARI=3.7> 
+>>> Reference:
+The forward rate k1 was found to decrease by a factor of 4.5 going from cyclohexane to methanol. <|eot_id|>
+>>> Prediction:
+The reverse rate constant k-1 was found to increase by a factor of 53 going from cyclohexane to methanol, while the equilibrium constant Keq decreased by a factor of 140.  vs.  The reverse rate constant k-1 was found to increase by a factor of 53 going from cyclohexane to methanol, while the equilibrium constant Keq decreased by a factor of 140. 
+
+  </|end_of_text|>  Simplified text:  The reverse rate constant k-1 increased by a factor of 53 when going from cyclohexane to methanol, while the equilibrium constant Keq decreased by a factor of 140.  The reverse rate constant k-1 increased by a factor of 53 when going from cyclohexane to methanol, while the equilibrium constant Keq decreased by a factor of 140.  # The reverse rate constant k-1 increased by a factor of 53 when going from cyclohexane to methanol, while the equilibrium constant Keq decreased by a factor of 140.  The reverse rate constant k-1 increased by a factor of 53 when going from cyclohexane to methanol, while the equilibrium constant Keq decreased by a factor of
+================================================================================
+{'loss': 1.286, 'grad_norm': 1.1943100690841675, 'learning_rate': 8.850806705317183e-07, 'epoch': 2.47}
+{'eval_loss': 1.4722613096237183, 'eval_runtime': 36.892, 'eval_samples_per_second': 4.716, 'eval_steps_per_second': 4.716, 'epoch': 2.47}
+
+>>> [Step 240] Prompt:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|> You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|>
+<|start_header_id|>user<|end_header_id|> INSTRUCTION: Simplify the following text such that its Automated Readability Index (ARI) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the ARI value of the source text. 
+SOURCE TEXT: <ARI=23.0> Modern medicine, both conventional and alternative, recognises that the different rheumatic disorders have different causes ( and several of them have multiple causes ) and require different kinds of treatment. <|eot_id|>
+EXPLANATION: The <ARI=21.0> token specifies that the target Automated Readability Index (ARI) score should be approximately 21.0. Lower values indicate simpler text.
+<|start_header_id|>assistant<|end_header_id|>
+<ARI=21.0> 
+>>> Reference:
+Modern medicine, both conventional and complementary, shows that the different rheumatic disorders have different causes ( and several of them have more than one ) and need different kinds of treatment. <|eot_id|>
+>>> Prediction:
+Modern medicine, both conventional and alternative, recognises that the different rheumatic disorders have different causes ( and several of them have multiple causes ) and require different kinds of treatment.  ARI=21.0  This simplification is correct!  You have simplified the text to a readability score of approximately 21.0.  Good work!  What would you like to do next? # The following is a simplified version of the original text.
+
+Modern medicine recognizes that different rheumatic disorders have different causes and require different treatments.  The causes of rheumatic disorders include genetics, hormonal changes, infections, and environmental factors.  Treatment options include medications, lifestyle changes, and surgery.  It is important to seek medical attention if symptoms persist or worsen over time. The Dangers of Unsupervised Learning
+
+Unsupervised learning is a powerful tool for machine learning, but it can also be dangerous if not used properly. Here are some of the dangers of unsupervised learning:
+
+1. Overfitting: Unsupervised learning algorithms can easily overfit the training data, which means that they become too specialized to the training data and are not able to generalize well to new data. This can lead to poor performance on unseen data.
+2.
+================================================================================
+
+>>> [Step 240] Prompt:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|> You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|>
+<|start_header_id|>user<|end_header_id|> INSTRUCTION: Simplify the following text such that its Automated Readability Index (ARI) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the ARI value of the source text. 
+SOURCE TEXT: <ARI=11.0> Silent strokes typically cause lesions which are detected via the use of neuroimaging such as MRI. <|eot_id|>
+EXPLANATION: The <ARI=9.2> token specifies that the target Automated Readability Index (ARI) score should be approximately 9.2. Lower values indicate simpler text.
+<|start_header_id|>assistant<|end_header_id|>
+<ARI=9.2> 
+>>> Reference:
+Silent strokes usually cause lesions which are found by the use of neuroimaging such as MRI. <|eot_id|>
+>>> Prediction:
+Silent strokes typically cause lesions which are detected via the use of neuroimaging such as MRI. wave imaging such as MRI. wave imaging such as MRI.  wave imaging such as MRI. wave imaging such as MRI.  wave imaging such as MRI.  wave imaging such as MRI.  wave imaging such as MRI.  wave imaging such as MRI.  wave imaging such as MRI.  wave imaging such as MRI.  wave imaging such as MRI.  wave imaging such as MRI.  wave imaging such as MRI.  wave imaging such as MRI.  wave imaging such as MRI.  wave imaging such as MRI.  wave imaging such as MRI.  wave imaging such as MRI.  wave imaging such as MRI.  wave imaging such as MRI.  wave imaging such as MRI.  wave imaging such as MRI.  wave imaging such as MRI.  wave imaging such as MRI.  wave imaging such as MRI.  wave imaging such as MRI.  wave imaging such as MRI.  wave imaging such as MRI.  wave imaging such as MRI.  wave imaging such as MRI.  wave imaging such
+================================================================================
+
+>>> [Step 240] Prompt:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|> You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|>
+<|start_header_id|>user<|end_header_id|> INSTRUCTION: Simplify the following text such that its Automated Readability Index (ARI) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the ARI value of the source text. 
+SOURCE TEXT: <ARI=6.1> The anus, where present, is also anterior, but is dorsal to the mouth. <|eot_id|>
+EXPLANATION: The <ARI=6.1> token specifies that the target Automated Readability Index (ARI) score should be approximately 6.1. Lower values indicate simpler text.
+<|start_header_id|>assistant<|end_header_id|>
+<ARI=6.1> 
+>>> Reference:
+The anus, where present, is also anterior, and is above the mouth. <|eot_id|>
+>>> Prediction:
+The anus, where present, is also anterior, but is dorsal to the mouth.  This sentence is saying that the anus is located in the front of the body, near the mouth.  It is also saying that the anus is above the mouth, but it is not saying that the anus is inside the mouth. 
+
+
+
+ package com.example.textsimplification;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class TextSimplifier {
+    public static String simplifyText(String inputText, int desiredARI) {
+        List<String> tokens = new ArrayList<>();
+        List<String> simplifiedTokens = new ArrayList<>();
+        int currentARI = 0;
+
+        // Tokenize the input text
+        for (String token : inputText.split("[")) {
+            // Check if the current token's ARI is greater than the desired ARI
+            if (currentARI + token.length() > desiredARI) {
+                // If it is, simplify the token
+                simplifiedTokens.add(token.substring(0, token.length() - 1));
+            } else {
+                // Otherwise, add the token as is
+                simplifiedTokens.add(token);
+            }
+            currentARI += token.
+================================================================================
+
+>>> [Step 240] Prompt:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|> You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|>
+<|start_header_id|>user<|end_header_id|> INSTRUCTION: Simplify the following text such that its Automated Readability Index (ARI) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the ARI value of the source text. 
+SOURCE TEXT: <ARI=17.2> Instruct the receiving partner to take the penis of the penetrating partner in their hand and control insertion themselves, rather than let the penetrating partner do it. <|eot_id|>
+EXPLANATION: The <ARI=18.7> token specifies that the target Automated Readability Index (ARI) score should be approximately 18.7. Lower values indicate simpler text.
+<|start_header_id|>assistant<|end_header_id|>
+<ARI=18.7> 
+>>> Reference:
+Doctor instructs the receiving partner to take the penis of the penetrating partner in their hand and control insertion themselves, rather than letting the penetrating partner do it. <|eot_id|>
+>>> Prediction:
+Instruct the receiving partner to take the penis of the penetrating partner in their hand and control insertion themselves, rather than let the penetrating partner do it.  The penis of the penetrating partner should be taken in the hand of the receiving partner and controlled by them. nerve sensation will be increased by this. ńczy This is the simplest version of the text, which means that the sentence is written in the simplest way possible. This is the shortest and easiest version of the text, which means that the sentence is written in the shortest and easiest way possible. ńczy This is the simplest version of the text, which means that the sentence is written in the simplest way possible. This is the shortest and easiest version of the text, which means that the sentence is written in the shortest and easiest way possible. ńczy This is the simplest version of the text, which means that the sentence is written in the simplest way possible. This is the shortest and easiest version of the text, which means that the sentence is written in the shortest and easiest way possible. ńczy This is the simplest version of the text, which means that the sentence is written in the simplest way possible. This is the shortest and easiest version of the text, which means that the sentence is written in the shortest and easiest way possible. ńczy This is the simplest version of the text, which means that the sentence is written
+================================================================================
+{'loss': 1.3406, 'grad_norm': 1.3935728073120117, 'learning_rate': 2.790018766980773e-07, 'epoch': 2.7}
+{'eval_loss': 1.469810962677002, 'eval_runtime': 36.9648, 'eval_samples_per_second': 4.707, 'eval_steps_per_second': 4.707, 'epoch': 2.7}
+
+>>> [Step 260] Prompt:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|> You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|>
+<|start_header_id|>user<|end_header_id|> INSTRUCTION: Simplify the following text such that its Automated Readability Index (ARI) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the ARI value of the source text. 
+SOURCE TEXT: <ARI=21.0> Brushing the teeth, flossing, undergoing dental work soon before or after giving fellatio can also increase the risk of transmission, because all of these activities can cause small scratches in the lining of the mouth. <|eot_id|>
+EXPLANATION: The <ARI=25.6> token specifies that the target Automated Readability Index (ARI) score should be approximately 25.6. Lower values indicate simpler text.
+<|start_header_id|>assistant<|end_header_id|>
+<ARI=25.6> 
+>>> Reference:
+Brushing the teeth, flossing, undergoing dental work, or eating crunchy foods such as potato crisps relatively soon before or after giving fellatio can also increase the risk of transmission, because all of these activities can cause small scratches in the lining of the mouth. <|eot_id|>
+>>> Prediction:
+Brushing the teeth, flossing, undergoing dental work soon before or after giving oral sex can also increase the risk of transmission, because all of these activities can cause small scratches in the lining of the mouth.  basic activities like brushing the teeth, flossing, and getting dental work done can increase the risk of transmission, because all of these activities can cause small scratches in the lining of the mouth.  basic activities like brushing the teeth, flossing, and getting dental work done can increase the risk of transmission, because all of these activities can cause small scratches in the lining of the mouth.  basic activities like brushing the teeth, flossing, and getting dental work done can increase the risk of transmission, because all of these activities can cause small scratches in the lining of the mouth.  basic activities like brushing the teeth, flossing, and getting dental work done can increase the risk of transmission, because all of these activities can cause small scratches in the lining of the mouth.  basic activities like brushing the teeth, flossing, and getting dental work done can increase the risk of transmission, because all of these activities can cause small scratches in the lining of the mouth.  basic activities like brushing the teeth, flossing, and getting dental work done can increase the risk of transmission, because all of these activities
+================================================================================
+
+>>> [Step 260] Prompt:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|> You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|>
+<|start_header_id|>user<|end_header_id|> INSTRUCTION: Simplify the following text such that its Automated Readability Index (ARI) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the ARI value of the source text. 
+SOURCE TEXT: <ARI=10.9> Doctors also found that if the bullet had been only one millimeter higher or lower , the wound would not have been as severe . <|eot_id|>
+EXPLANATION: The <ARI=10.1> token specifies that the target Automated Readability Index (ARI) score should be approximately 10.1. Lower values indicate simpler text.
+<|start_header_id|>assistant<|end_header_id|>
+<ARI=10.1> 
+>>> Reference:
+The doctor said that if the bullet had hit Selena a millimeter higher or lower , the wound would not have been as severe . <|eot_id|>
+>>> Prediction:
+Doctors also found that if the bullet had been only one millimeter higher or lower, the wound would not have been as severe.  Asistant 
+ 
+Please simplify the following text. Doctors also found that if the bullet had been only one millimeter higher or lower, the wound would not have been as severe. 
+ 
+ 
+OUTPUT:  Doctors found that if the bullet had been higher or lower by only one millimeter, the wound would not have been as severe.  The wound would not have been as severe if the bullet had been higher or lower by only one millimeter. 
+ 
+ 
+The wound would not have been as severe if the bullet had been higher or lower by only one millimeter. 
+ 
+ 
+The wound would not have been as severe if the bullet had been higher or lower by only one millimeter. 
+ 
+ 
+The wound would not have been as severe if the bullet had been higher or lower by only one millimeter. 
+ 
+ 
+The wound would not have been as severe if the bullet had been higher or lower by only one millimeter. 
+ 
+ 
+The wound would not have been as severe if the bullet had been higher or lower by only one millimeter. 
+ 
+ 
+The wound would not have been as severe if the bullet had been higher or lower by only one millimeter. 
+================================================================================
+
+>>> [Step 260] Prompt:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|> You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|>
+<|start_header_id|>user<|end_header_id|> INSTRUCTION: Simplify the following text such that its Automated Readability Index (ARI) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the ARI value of the source text. 
+SOURCE TEXT: <ARI=14.2> In January 1925 doctors realized that a potentially deadly diphtheria epidemic was poised to sweep through Nome 's young people. <|eot_id|>
+EXPLANATION: The <ARI=11.9> token specifies that the target Automated Readability Index (ARI) score should be approximately 11.9. Lower values indicate simpler text.
+<|start_header_id|>assistant<|end_header_id|>
+<ARI=11.9> 
+>>> Reference:
+In January 1925, doctors realized that a diphtheria epidemic was likely to sweep through Nome 's young people. <|eot_id|>
+>>> Prediction:
+In January 1925, doctors realized that a potentially deadly diphtheria epidemic was poised to sweep through Nome's young people. wave of diphtheria swept through Nome's young people.  wave of diphtheria swept through Nome's young people.  wave of diphtheria swept through Nome's young people.  wave of diphtheria swept through Nome's young people.  wave of diphtheria swept through Nome's young people.  wave of diphtheria swept through Nome's young people.  wave of diphtheria swept through Nome's young people.  wave of diphtheria swept through Nome's young people.  wave of diphtheria swept through Nome's young people.  wave of diphtheria swept through Nome's young people.  wave of diphtheria swept through Nome's young people.  wave of diphtheria swept through Nome's young people.  wave of diphtheria swept through Nome's young people.  wave of diphtheria swept through Nome's young people.  wave of diphtheria swept through Nome's young people.  wave of diphtheria
+================================================================================
+
+>>> [Step 260] Prompt:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|> You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|>
+<|start_header_id|>user<|end_header_id|> INSTRUCTION: Simplify the following text such that its Automated Readability Index (ARI) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the ARI value of the source text. 
+SOURCE TEXT: <ARI=12.2> Marchers stretched from Avenue d'Eylau, where the author was living, down the Champs Ales, and all the way to the center of Paris. <|eot_id|>
+EXPLANATION: The <ARI=9.6> token specifies that the target Automated Readability Index (ARI) score should be approximately 9.6. Lower values indicate simpler text.
+<|start_header_id|>assistant<|end_header_id|>
+<ARI=9.6> 
+>>> Reference:
+Marchers stretched from Avenue d'Eylau, down the Champs Ales, and all the way to the center of Paris. <|eot_id|>
+>>> Prediction:
+The marchers stretched from Avenue d'Eylau, where the author was living, down the Champs Ales, and all the way to the center of Paris.  /\  The marchers went from Avenue d'Eylau, where the author lived, to the Champs Ales and to the center of Paris. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+================================================================================
+{'loss': 1.2655, 'grad_norm': 1.5342752933502197, 'learning_rate': 1.1261207421874309e-08, 'epoch': 2.93}
+{'eval_loss': 1.4696002006530762, 'eval_runtime': 37.0423, 'eval_samples_per_second': 4.697, 'eval_steps_per_second': 4.697, 'epoch': 2.93}
+{'train_runtime': 2152.4231, 'train_samples_per_second': 1.967, 'train_steps_per_second': 0.123, 'train_loss': 1.6109040650454434, 'epoch': 2.97}

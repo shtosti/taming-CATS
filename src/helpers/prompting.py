@@ -101,3 +101,18 @@ def format_completion_with_special_tokens(completion, model_family="base"):
         return f"{completion.strip()}\n<|im_end|>"
     elif model_family == "base":
         return f"{completion.strip()} <|eot_id|>"
+
+
+def format_prompt_with_tokenizer(tokenizer, system_prompt, user_prompt, metric_name, target_metric_value):
+    messages = [
+        {"role": "system", "content": system_prompt},
+        {"role": "user", "content": user_prompt},
+    ]
+    formatted_prompt = tokenizer.apply_chat_template(
+        messages, tokenize=False, add_generation_prompt=True
+    )
+    formatted_prompt += f"<{metric_name}={target_metric_value}> "
+    return formatted_prompt
+
+def format_completion_with_tokenizer(completion, tokenizer):
+    return f"{completion.strip()} {tokenizer.eos_token}"

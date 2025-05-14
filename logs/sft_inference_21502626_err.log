@@ -1,0 +1,15 @@
+
+CondaError: Run 'conda init' before 'conda activate'
+
+[nltk_data] Downloading package punkt to /home/hhubar/nltk_data...
+[nltk_data]   Package punkt is already up-to-date!
+Traceback (most recent call last):
+  File "/scratch/hhubar/keep-it-simple/src/sft_inference.py", line 327, in <module>
+    main()
+  File "/scratch/hhubar/keep-it-simple/src/sft_inference.py", line 270, in main
+    model, tokenizer = load_and_prepare_model(
+                       ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/scratch/hhubar/keep-it-simple/src/sft_inference.py", line 26, in load_and_prepare_model
+    print(f"Model embed_tokens size: {model.get_input_embeddings().weight.shape[0]}")
+                                      ^^^^^
+UnboundLocalError: cannot access local variable 'model' where it is not associated with a value

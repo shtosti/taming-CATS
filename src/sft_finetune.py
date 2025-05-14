@@ -6,7 +6,8 @@ import random
 from datetime import datetime
 from dotenv import load_dotenv
 import wandb
-from peft import get_peft_model, LoraConfig
+# from peft import get_peft_model
+from peft import LoraConfig, PeftModelForCausalLM
 import bitsandbytes as bnb
 import torch
 torch.cuda.empty_cache()
@@ -89,7 +90,8 @@ def load_and_prepare_model(model_family, model_name, model_class, peft_enabled, 
             lora_dropout=0.1,
             bias="none"
         )
-        model = get_peft_model(model, peft_config)
+        # model = get_peft_model(model, peft_config)
+        model = PeftModelForCausalLM(model, peft_config)
 
     # --- debug ---
     print("--- DEBUG ---")

@@ -21,31 +21,36 @@ def load_json(file_path: str):
 def load_and_prepare_model(model_family, model_path, model_class, max_length, peft_path=None):
     # Load the tokenizer
     tokenizer = AutoTokenizer.from_pretrained(model_path)
+    print("---DEBUG: before reshaping:")
+    print(f"Tokenizer vocab size: {len(tokenizer)}")
+
     tokenizer.model_max_length = max_length
-    tokenizer.truncation_side = "right"
+    # tokenizer.truncation_side = "right"
     
-    if tokenizer.pad_token is None or tokenizer.pad_token_id is None:
-        tokenizer.add_special_tokens({
-            'pad_token': '[PAD]'
-        })
-    tokenizer.padding_side = "left"
+    # if tokenizer.pad_token is None or tokenizer.pad_token_id is None:
+    #     tokenizer.add_special_tokens({
+    #         'pad_token': '[PAD]'
+    #     })
+    # tokenizer.padding_side = "left"
     
-    if model_family == "qwen":
-        if tokenizer.eos_token is None or tokenizer.eos_token != "<|im_end|>":
-            tokenizer.add_special_tokens({
-                'eos_token': '<|im_end|>'
-            })
-    elif model_family == "base":
-        if tokenizer.eos_token is None or tokenizer.eos_token != "<|eot_id|>":
-            tokenizer.add_special_tokens({
-                'eos_token': '<|eot_id|>'
-            })
+    # if model_family == "qwen":
+    #     if tokenizer.eos_token is None or tokenizer.eos_token != "<|im_end|>":
+    #         tokenizer.add_special_tokens({
+    #             'eos_token': '<|im_end|>'
+    #         })
+    # elif model_family == "base":
+    #     if tokenizer.eos_token is None or tokenizer.eos_token != "<|eot_id|>":
+    #         tokenizer.add_special_tokens({
+    #             'eos_token': '<|eot_id|>'
+    #         })
 
     # Load the fine-tuned model
     if model_class == "llama":
         model = LlamaForCausalLM.from_pretrained(model_path, device_map="auto")
     else:
         model = AutoModelForCausalLM.from_pretrained(model_path, device_map="auto")
+
+    model.resize_token_embeddings(len(tokenizer)) # TODO make sure works without peft too, if not remove this line
 
     # load peft adapter, if any
     if peft_path is not None:
@@ -56,6 +61,12 @@ def load_and_prepare_model(model_family, model_path, model_class, max_length, pe
     model.config.use_cache = False  # use less memory
     model.resize_token_embeddings(len(tokenizer))  # resize after adding new tokens
     model.config.pad_token_id = tokenizer.pad_token_id
+
+    print("---DEBUG: after reshaping:")
+    print(f"Tokenizer vocab size: {len(tokenizer)}")
+    print(f"Model embed_tokens size: {model.get_input_embeddings().weight.shape[0]}")
+    print(f"Model config: {model.config}")
+    print(f"Tokenizer config: {tokenizer}")
 
     return model, tokenizer
 
