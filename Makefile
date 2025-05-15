@@ -18,7 +18,7 @@ finetune:
 infer:
 	sbatch ./slurm_sft_inference.sh
 
-infer-peft
+infer-peft:
 	sbatch ./slurm_sft_inference_peft.sh
 
 eval:
