@@ -81,16 +81,14 @@ def format_prompt_with_special_tokens(tokenizer, system_prompt, user_prompt, met
         formatted_prompt = (
             f"<|im_start|>system\n{system_prompt.strip()}\n<|im_end|>\n"
             f"<|im_start|>user\n{user_prompt.strip()}\n<|im_end|>\n"
-            f"<|im_start|>assistant\n"
-            f"{control_token}"
+            f"<|im_start|>assistant\n{control_token}"
         )
     elif model_family == "base":
         formatted_prompt = (
             f"{bos}"
             f"<|start_header_id|>system<|end_header_id|> {system_prompt}{eos}\n"
             f"<|start_header_id|>user<|end_header_id|> {user_prompt}{eos}\n"
-            f"<|start_header_id|>assistant<|end_header_id|>\n"
-            f"{control_token}"
+            f"<|start_header_id|>assistant<|end_header_id|> {control_token}"
         )
         
     else:
@@ -115,10 +113,9 @@ def format_prompt_with_tokenizer(tokenizer, system_prompt, user_prompt, metric_n
         {"role": "assistant", "content": control_token}
     ]
     formatted_prompt = tokenizer.apply_chat_template(
-        messages, tokenize=True, add_generation_prompt=False
+        messages, tokenize=False, continue_final_message=True
     )
-    print("--- DEBUG (printing helper):")
-    print(f"Formatted prompt: {formatted_prompt}")
+
     return formatted_prompt
 
 def format_completion_with_tokenizer(tokenizer, completion):
