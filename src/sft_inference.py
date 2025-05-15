@@ -4,11 +4,12 @@ import torch
 from tqdm import tqdm
 import json
 from transformers import AutoModelForCausalLM, AutoTokenizer, LlamaForCausalLM
-from datasets import load_dataset
-from peft import PeftModel, PeftConfig
+# from datasets import load_dataset
+# from peft import PeftModel, PeftConfig
+from peft import PeftModelForCausalLM
 
 from helpers.prompting import select_random_system_prompt, select_random_user_prompt, select_control_token_explanation, select_random_control_token_examples
-from helpers.prompting import create_user_prompt, format_prompt_with_special_tokens, format_completion_with_special_tokens
+from helpers.prompting import create_user_prompt, format_prompt_with_special_tokens, format_completion_with_special_tokens, format_prompt_with_tokenizer, format_completion_with_tokenizer
 from helpers.hugging_face import load_dataset_from_hf, get_model_short_name
 from classes.Metrics import Metrics
 
@@ -43,18 +44,27 @@ def load_and_prepare_model(model_family, model_path, model_class, max_length, pe
 
     # Load the fine-tuned model
     if model_class == "llama":
-        model = LlamaForCausalLM.from_pretrained(model_path, device_map="auto")
+        model = LlamaForCausalLM.from_pretrained(
+            model_path, 
+            device_map="auto",
+            torch_dtype=torch.float16
+            )
     else:
-        model = AutoModelForCausalLM.from_pretrained(model_path, device_map="auto")
+        model = AutoModelForCausalLM.from_pretrained(
+            model_path, 
+            device_map="auto",
+            torch_dtype=torch.float16
+            )
 
     # model.resize_token_embeddings(len(tokenizer)) # TODO make sure works without peft too, if not remove this line
 
     # load peft adapter, if any
-    if peft_path is not None:
+    if peft_path:
         # peft_config = PeftConfig.from_pretrained(peft_path)
-        model = PeftModel.from_pretrained(model, peft_path)
+        # model = PeftModel.from_pretrained(model, peft_path)
+        model = PeftModelForCausalLM.from_pretrained(model, peft_path)
 
-    model.gradient_checkpointing_enable()  # for batching imitation
+    # model.gradient_checkpointing_enable()  # for batching imitation
     model.config.use_cache = False  # use less memory
     # model.resize_token_embeddings(len(tokenizer))  # resize after adding new tokens
     model.config.pad_token_id = tokenizer.pad_token_id
@@ -117,24 +127,40 @@ def load_and_prepare_test_set(dataset_name, tokenizer, max_length, control_token
         )
         
         # Format the prompt with special tokens
-        formatted_prompt = format_prompt_with_special_tokens(
+        # formatted_prompt = format_prompt_with_special_tokens(
+        formatted_prompt = format_prompt_with_tokenizer(
             tokenizer=tokenizer,
             system_prompt=system_prompt,
             user_prompt=user_prompt,
             metric_name=metric_key_mapped,
             target_metric_value=target_metric_value,
-            model_family=model_family
+            # model_family=model_family
         )
         
         # Format the completion
-        formatted_completion = format_completion_with_special_tokens(
+        # formatted_completion = format_completion_with_special_tokens(
+        formatted_completion = format_completion_with_tokenizer(
             tokenizer=tokenizer,
             completion=reference_simplification, 
-            model_family=model_family
+            # model_family=model_family
             )
         # Encode the prompt and completion using the tokenizer
-        input_ids = tokenizer.encode(formatted_prompt, truncation=True, max_length=max_length, padding="max_length", return_tensors="pt")
-        completion_ids = tokenizer.encode(formatted_completion, truncation=True, max_length=max_length, padding="max_length", return_tensors="pt")
+        input_ids = tokenizer.encode(
+            formatted_prompt, 
+            truncation=True, 
+            max_length=max_length, 
+            # padding="max_length", 
+            padding=True,
+            return_tensors="pt"
+            )
+        completion_ids = tokenizer.encode(
+            formatted_completion, 
+            truncation=True, 
+            max_length=max_length, 
+            # padding="max_length", 
+            padding=True,
+            return_tensors="pt"
+            )
         return {
             "prompt": formatted_prompt,
             "completion": formatted_completion,
@@ -160,6 +186,7 @@ def run_inference(args, metric_mapping, model, tokenizer, test_dataset, batch_si
         input_ids = torch.stack([torch.tensor(item["input_ids"]) for item in batch]).to(device)
         
         with torch.no_grad():
+            torch.cuda.empty_cache()
             # Ensure attention mask is provided if it's not None
             attention_mask = torch.stack([torch.tensor(item["attention_mask"]) for item in batch]).to(device) if "attention_mask" in batch[0] else None
             
