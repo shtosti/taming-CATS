@@ -1,0 +1,22 @@
+
+CondaError: Run 'conda init' before 'conda activate'
+
+[nltk_data] Downloading package punkt to /home/hhubar/nltk_data...
+[nltk_data]   Package punkt is already up-to-date!
+Fetching 4 files:   0%|          | 0/4 [00:00<?, ?it/s]Fetching 4 files: 100%|██████████| 4/4 [00:00<00:00, 193.33it/s]
+Traceback (most recent call last):
+  File "/scratch/hhubar/keep-it-simple/src/sft_inference.py", line 353, in <module>
+    main()
+  File "/scratch/hhubar/keep-it-simple/src/sft_inference.py", line 296, in main
+    model, tokenizer = load_and_prepare_model(
+                       ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/scratch/hhubar/keep-it-simple/src/sft_inference.py", line 47, in load_and_prepare_model
+    model = LlamaForCausalLM.from_pretrained(
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/transformers/modeling_utils.py", line 279, in _wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/transformers/modeling_utils.py", line 4343, in from_pretrained
+    model = cls(config, *model_args, **model_kwargs)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: LlamaForCausalLM.__init__() got an unexpected keyword argument 'bf16'
