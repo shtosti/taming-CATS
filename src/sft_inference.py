@@ -4,7 +4,6 @@ import torch
 from tqdm import tqdm
 import json
 from transformers import AutoModelForCausalLM, AutoTokenizer, LlamaForCausalLM
-# from datasets import load_dataset
 # from peft import PeftModel, PeftConfig
 # from peft import LoraConfig, PeftModelForCausalLM, get_peft_config
 
@@ -18,70 +17,6 @@ def load_json(file_path: str):
     """Load JSON from a file."""
     with open(file_path, "r", encoding="utf-8") as file:
         return json.load(file)
-
-# def load_and_prepare_model(model_family, model_path, model_class, max_length, peft_path=None):
-#     # Load the tokenizer
-#     tokenizer = AutoTokenizer.from_pretrained(model_path)
-
-#     tokenizer.model_max_length = max_length
-#     # tokenizer.truncation_side = "right"
-    
-#     if tokenizer.pad_token is None:
-#         tokenizer.add_special_tokens({
-#             'pad_token': '[PAD]'
-#         })
-#     if model_family == "qwen":
-#         if tokenizer.eos_token is None:
-#             tokenizer.add_special_tokens({
-#                 'eos_token': '<|im_end|>'
-#             })
-#     elif model_family == "base":
-#         if tokenizer.eos_token is None:
-#             tokenizer.add_special_tokens({
-#                 'eos_token': '<|eot_id|>'
-#             })
-
-#     if peft_path:
-#         # Load base model first
-#         if model_class == "llama":
-#             base_model = LlamaForCausalLM.from_pretrained(
-#                 model_path,
-#                 device_map="auto",
-#                 torch_dtype=torch.float16
-#             )
-#         else:
-#             base_model = AutoModelForCausalLM.from_pretrained(
-#                 model_path,
-#                 device_map="auto",
-#                 torch_dtype=torch.float16
-#             )
-#         # Then load PEFT adapter on top
-#         # model = PeftModelForCausalLM.from_pretrained(base_model, peft_path)
-#         base_model.resize_token_embeddings(len(tokenizer))
-#         model = PeftModel.from_pretrained(base_model, peft_path)
-#     else:
-#         # original loading without PEFT
-#         if model_class == "llama":
-#             model = LlamaForCausalLM.from_pretrained(
-#                 model_path,
-#                 device_map="auto",
-#                 torch_dtype=torch.float16
-#             )
-#         else:
-#             model = AutoModelForCausalLM.from_pretrained(
-#                 model_path,
-#                 device_map="auto",
-#                 torch_dtype=torch.float16
-#             )
-
-
-#     # model.resize_token_embeddings(len(tokenizer)) # TODO make sure works without peft too, if not remove this line
-
-#     # model.gradient_checkpointing_enable()  # for batching imitation
-#     model.config.use_cache = False  # use less memory
-#     model.config.pad_token_id = tokenizer.pad_token_id
-
-#     return model, tokenizer
 
 def setup_tokenizer(model_source, model_family, max_length):
     tokenizer = AutoTokenizer.from_pretrained(model_source)
@@ -127,7 +62,7 @@ def load_and_prepare_model(model_name, model_family, model_path, model_class, ma
             base_model = AutoModelForCausalLM.from_pretrained(
                 model_name,
                 device_map="auto",
-                torch_dtype=torch.float16
+                # torch_dtype=torch.float16
             )
 
         base_model.resize_token_embeddings(len(tokenizer))
@@ -137,7 +72,7 @@ def load_and_prepare_model(model_name, model_family, model_path, model_class, ma
         model = model_class.from_pretrained(
             model_path,
             device_map="auto",
-            torch_dtype=torch.float16
+            # torch_dtype=torch.float16
             )
         model.resize_token_embeddings(len(tokenizer))
 
@@ -220,30 +155,33 @@ def load_and_prepare_test_set(dataset_name, tokenizer, max_length, control_token
             completion=reference_simplification, 
             # model_family=model_family
             )
-        # Encode the prompt and completion using the tokenizer
-        input_ids = tokenizer.encode(
-            formatted_prompt, 
-            truncation=True, 
-            max_length=max_length, 
-            # padding="max_length", 
-            padding=True,
+
+        encoded = tokenizer(
+            formatted_prompt,
+            truncation=True,
+            max_length=max_length,
+            padding="max_length",  # or "longest" for dynamic padding
             return_tensors="pt"
-            )
-        completion_ids = tokenizer.encode(
-            formatted_completion, 
-            truncation=True, 
-            max_length=max_length, 
-            # padding="max_length", 
-            padding=True,
+        )
+        input_ids = encoded["input_ids"]
+        # attention_mask = encoded["attention_mask"]
+
+        encoded_completion = tokenizer(
+            formatted_completion,
+            truncation=True,
+            max_length=max_length,
+            padding="max_length",  # or "longest"
             return_tensors="pt"
-            )
+        )
+        completion_ids = encoded_completion["input_ids"]
+
         return {
             "prompt": formatted_prompt,
             "completion": formatted_completion,
             "input_ids": input_ids.squeeze(0),  # Remove batch dimension
-            "completion_ids": completion_ids.squeeze(0),  # Remove batch dimension
+            "completion_ids": completion_ids.squeeze(0),  # Remove batch dimension,
+            # "attention_mask": attention_mask.squeeze(0),  # Remove batch dimension
         }
-
 
     test_dataset = test_dataset.map(process_instance, batched=False) # batching enabled
     
@@ -287,6 +225,7 @@ def run_inference(args, metric_mapping, model, tokenizer, test_dataset, batch_si
             decoded_preds = tokenizer.batch_decode(
                 generated_only_ids,
                 skip_special_tokens=True,
+                # skip_special_tokens=False,
                 clean_up_tokenization_spaces=True
             )
             print("\n--- Processing batch:")
@@ -330,7 +269,7 @@ def run_inference(args, metric_mapping, model, tokenizer, test_dataset, batch_si
                 
                 predictions.append(prediction_dict)
 
-                print(f"{pred.strip()[:50]}...")
+                print(f"{pred.strip()[:100]}...")
 
     return predictions
 
