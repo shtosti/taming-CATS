@@ -2,10 +2,10 @@
 
 
 # ========== inference =========
-MODEL_PATH="models/Llama-3.2-1B-Instruct-Med-EASi-ARI-base-token_explanation-20250505-1427-3kmdipyx"
+MODEL_PATH="models/Llama-3.2-1B-Instruct-Med-EASi-WORD_COMPRESSION-base-token_explanation-20250505-1433-job7wghr"
 MODEL_NAME="meta-llama/Llama-3.2-1B-Instruct"
 USER_PROMPT_ID="token_explanation"
-METRIC_NAME="ARI"
+METRIC_NAME="WORD_COMPRESSION"
 DATASET_NAME="Med-EASi"
 # "llama", "mistral", "qwen", "base" (for prompt template)
 MODEL_FAMILY="base"
@@ -25,8 +25,8 @@ ARGS=(
   --model_class "$MODEL_CLASS"
   --model_family "$MODEL_FAMILY"
   --max_length 512
-  --batch_size 2
-  --slice_test -1
+  --batch_size 4
+  --slice_test 5
   --output_file "$OUTPUT_FILE"
   --control_tokens "data/prompts/control_tokens.json"
   --system_prompts "data/prompts/system_prompts.json"
