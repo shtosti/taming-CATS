@@ -112,10 +112,12 @@ def format_prompt_with_tokenizer(tokenizer, system_prompt, user_prompt, metric_n
         {"role": "user", "content": user_prompt},
         {"role": "assistant", "content": control_token}
     ]
+
     formatted_prompt = tokenizer.apply_chat_template(
         messages, 
         tokenize=False, 
-        continue_final_message=True
+        # continue_final_message=True,
+        # add_generation_prompt=True
     )
 
     return formatted_prompt
