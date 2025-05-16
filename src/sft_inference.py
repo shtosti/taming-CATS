@@ -110,11 +110,11 @@ def load_and_prepare_test_set(dataset_name, tokenizer, max_length, control_token
 
         if compression_metric:
             if args.metric_name == "WORD_COMPRESSION":
-                target_metric_value = row["target_metrics"]["word_count"] / row["source_metrics"]["word_count"]
+                target_metric_value = round(row["target_metrics"]["word_count"] / row["source_metrics"]["word_count"], 1)
             if args.metric_name == "CHAR_COMPRESSION":
-                target_metric_value = row["target_metrics"]["char_count"] / row["source_metrics"]["char_count"]
+                target_metric_value = round(row["target_metrics"]["char_count"] / row["source_metrics"]["char_count"], 1)
             if args.metric_name == "SENTENCE_COMPRESSION":
-                target_metric_value = row["target_metrics"]["sent_count"] / row["source_metrics"]["sent_count"]
+                target_metric_value = round(row["target_metrics"]["sent_count"] / row["source_metrics"]["sent_count"], 1)
 
         reference_simplification = row["simplification_text"]
         
