@@ -1,0 +1,96 @@
+
+CondaError: Run 'conda init' before 'conda activate'
+
+wandb: Using wandb-core as the SDK backend.  Please refer to https://wandb.me/wandb-core for more information.
+wandb: Appending key for api.wandb.ai to your netrc file: /home/hhubar/.netrc
+wandb: Currently logged in as: hanna-hubarava (shtosti) to https://api.wandb.ai. Use `wandb login --relogin` to force relogin
+wandb: Tracking run with wandb version 0.19.9
+wandb: Run data is saved locally in /scratch/hhubar/keep-it-simple/wandb/run-20250515_163617-4t9aqk4w
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run hardy-sun-51
+wandb: ⭐️ View project at https://wandb.ai/shtosti/ATS_with_control_tokens
+wandb: 🚀 View run at https://wandb.ai/shtosti/ATS_with_control_tokens/runs/4t9aqk4w
+Loading checkpoint shards:   0%|          | 0/4 [00:00<?, ?it/s]Loading checkpoint shards:  25%|██▌       | 1/4 [00:10<00:32, 10.86s/it]Loading checkpoint shards:  50%|█████     | 2/4 [00:20<00:19,  9.85s/it]Loading checkpoint shards:  75%|███████▌  | 3/4 [00:28<00:09,  9.18s/it]Loading checkpoint shards: 100%|██████████| 4/4 [00:30<00:00,  6.33s/it]Loading checkpoint shards: 100%|██████████| 4/4 [00:30<00:00,  7.59s/it]
+Some parameters are on the meta device because they were offloaded to the cpu.
+The token has not been saved to the git credentials helper. Pass `add_to_git_credential=True` in this function directly or `--add-to-git-credential` if using via `huggingface-cli` if you want to set the git credential as well.
+Token is valid (permission: write).
+The token `mine` has been saved to /home/hhubar/data/.cache/huggingface/stored_tokens
+Your token has been saved to /home/hhubar/data/.cache/huggingface/token
+Login successful.
+Note: Environment variable`HF_TOKEN` is set and is the current active token independently from the token you've just configured.
+The token has not been saved to the git credentials helper. Pass `add_to_git_credential=True` in this function directly or `--add-to-git-credential` if using via `huggingface-cli` if you want to set the git credential as well.
+Token is valid (permission: write).
+The token `mine` has been saved to /home/hhubar/data/.cache/huggingface/stored_tokens
+Your token has been saved to /home/hhubar/data/.cache/huggingface/token
+Login successful.
+Note: Environment variable`HF_TOKEN` is set and is the current active token independently from the token you've just configured.
+Map:   0%|          | 0/1384 [00:00<?, ? examples/s]Map:  30%|██▉       | 413/1384 [00:00<00:00, 4058.70 examples/s]Map:  61%|██████    | 845/1384 [00:00<00:00, 4204.95 examples/s]Map: 100%|██████████| 1384/1384 [00:00<00:00, 3392.79 examples/s]Map: 100%|██████████| 1384/1384 [00:00<00:00, 3290.61 examples/s]
+Map:   0%|          | 0/172 [00:00<?, ? examples/s]Map: 100%|██████████| 172/172 [00:00<00:00, 2952.85 examples/s]
+Map:   0%|          | 0/1384 [00:00<?, ? examples/s]Map:   8%|▊         | 114/1384 [00:00<00:01, 1110.21 examples/s]Map:  17%|█▋        | 231/1384 [00:00<00:01, 1138.15 examples/s]Map:  25%|██▌       | 346/1384 [00:00<00:00, 1143.01 examples/s]Map:  37%|███▋      | 511/1384 [00:00<00:00, 1117.30 examples/s]Map:  48%|████▊     | 658/1384 [00:00<00:00, 1057.72 examples/s]Map:  55%|█████▌    | 768/1384 [00:00<00:00, 1067.23 examples/s]Map:  67%|██████▋   | 927/1384 [00:00<00:00, 1062.05 examples/s]Map:  76%|███████▌  | 1054/1384 [00:01<00:00, 638.35 examples/s]Map:  84%|████████▍ | 1167/1384 [00:01<00:00, 725.15 examples/s]Map:  92%|█████████▏| 1275/1384 [00:01<00:00, 795.13 examples/s]Map: 100%|██████████| 1384/1384 [00:01<00:00, 684.23 examples/s]Map: 100%|██████████| 1384/1384 [00:01<00:00, 829.41 examples/s]
+Map:   0%|          | 0/172 [00:00<?, ? examples/s]Map:  64%|██████▍   | 110/172 [00:00<00:00, 1066.95 examples/s]Map: 100%|██████████| 172/172 [00:00<00:00, 769.47 examples/s] 
+/scratch/hhubar/keep-it-simple/src/sft_finetune.py:280: FutureWarning: `tokenizer` is deprecated and will be removed in version 5.0.0 for `Trainer.__init__`. Use `processing_class` instead.
+  trainer = Trainer(
+Traceback (most recent call last):
+  File "/scratch/hhubar/keep-it-simple/src/sft_finetune.py", line 419, in <module>
+    main()
+  File "/scratch/hhubar/keep-it-simple/src/sft_finetune.py", line 405, in main
+    train_model(
+  File "/scratch/hhubar/keep-it-simple/src/sft_finetune.py", line 280, in train_model
+    trainer = Trainer(
+              ^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/transformers/utils/deprecation.py", line 172, in wrapped_func
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/transformers/trainer.py", line 614, in __init__
+    self._move_model_to_device(model, args.device)
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/transformers/trainer.py", line 901, in _move_model_to_device
+    model = model.to(device)
+            ^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1340, in to
+    return self._apply(convert)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/torch/nn/modules/module.py", line 900, in _apply
+    module._apply(fn)
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/torch/nn/modules/module.py", line 900, in _apply
+    module._apply(fn)
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/torch/nn/modules/module.py", line 900, in _apply
+    module._apply(fn)
+  [Previous line repeated 5 more times]
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/torch/nn/modules/module.py", line 927, in _apply
+    param_applied = fn(param)
+                    ^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1333, in convert
+    raise NotImplementedError(
+NotImplementedError: Cannot copy out of meta tensor; no data! Please use torch.nn.Module.to_empty() instead of torch.nn.Module.to() when moving module from meta to a different device.
+Traceback (most recent call last):
+  File "/scratch/hhubar/keep-it-simple/src/sft_finetune.py", line 419, in <module>
+    main()
+  File "/scratch/hhubar/keep-it-simple/src/sft_finetune.py", line 405, in main
+    train_model(
+  File "/scratch/hhubar/keep-it-simple/src/sft_finetune.py", line 280, in train_model
+    trainer = Trainer(
+              ^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/transformers/utils/deprecation.py", line 172, in wrapped_func
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/transformers/trainer.py", line 614, in __init__
+    self._move_model_to_device(model, args.device)
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/transformers/trainer.py", line 901, in _move_model_to_device
+    model = model.to(device)
+            ^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1340, in to
+    return self._apply(convert)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/torch/nn/modules/module.py", line 900, in _apply
+    module._apply(fn)
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/torch/nn/modules/module.py", line 900, in _apply
+    module._apply(fn)
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/torch/nn/modules/module.py", line 900, in _apply
+    module._apply(fn)
+  [Previous line repeated 5 more times]
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/torch/nn/modules/module.py", line 927, in _apply
+    param_applied = fn(param)
+                    ^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1333, in convert
+    raise NotImplementedError(
+NotImplementedError: Cannot copy out of meta tensor; no data! Please use torch.nn.Module.to_empty() instead of torch.nn.Module.to() when moving module from meta to a different device.

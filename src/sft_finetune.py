@@ -6,7 +6,7 @@ import random
 from datetime import datetime
 from dotenv import load_dotenv
 import wandb
-# from peft import get_peft_model
+from peft import get_peft_model
 from peft import LoraConfig, PeftModelForCausalLM
 import bitsandbytes as bnb
 import torch
@@ -64,7 +64,7 @@ def load_and_prepare_model(model_family, model_name, model_class, peft_enabled, 
                 'eos_token': '<|im_end|>'
             })
     elif model_family == "base":
-        if tokenizer.eos_token:
+        if tokenizer.eos_token is None:
             tokenizer.add_special_tokens({
                 'eos_token': '<|eot_id|>'
             })
@@ -79,8 +79,12 @@ def load_and_prepare_model(model_family, model_name, model_class, peft_enabled, 
 
     model.gradient_checkpointing_enable() # batching imitation
     model.config.use_cache = False # use less memory
-    model.resize_token_embeddings(len(tokenizer)) # resize after adding new tokens
     model.config.pad_token_id = tokenizer.pad_token_id
+
+    print("Model embedding size BEFORE resizing:", model.get_input_embeddings().weight.size(0))
+    model.resize_token_embeddings(len(tokenizer), mean_resizing=False) # resize after adding new tokens
+    print("Model embedding size AFTER resizing:", model.get_input_embeddings().weight.size(0))
+
 
     if peft_enabled:
         print("Using PEFT for fine-tuning...")
@@ -90,8 +94,8 @@ def load_and_prepare_model(model_family, model_name, model_class, peft_enabled, 
             lora_dropout=0.1,
             bias="none"
         )
-        # model = get_peft_model(model, peft_config)
-        model = PeftModelForCausalLM(model, peft_config)
+        model = get_peft_model(model, peft_config)
+        # model = PeftModelForCausalLM(model, peft_config)
 
     # --- debug ---
     print("--- DEBUG ---")

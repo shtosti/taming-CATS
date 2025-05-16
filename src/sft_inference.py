@@ -6,7 +6,7 @@ import json
 from transformers import AutoModelForCausalLM, AutoTokenizer, LlamaForCausalLM
 # from datasets import load_dataset
 # from peft import PeftModel, PeftConfig
-from peft import PeftModelForCausalLM
+# from peft import LoraConfig, PeftModelForCausalLM, get_peft_config
 
 from helpers.prompting import select_random_system_prompt, select_random_user_prompt, select_control_token_explanation, select_random_control_token_examples
 from helpers.prompting import create_user_prompt, format_prompt_with_special_tokens, format_completion_with_special_tokens, format_prompt_with_tokenizer, format_completion_with_tokenizer
@@ -19,57 +19,133 @@ def load_json(file_path: str):
     with open(file_path, "r", encoding="utf-8") as file:
         return json.load(file)
 
-def load_and_prepare_model(model_family, model_path, model_class, max_length, peft_path=None):
-    # Load the tokenizer
-    tokenizer = AutoTokenizer.from_pretrained(model_path)
+# def load_and_prepare_model(model_family, model_path, model_class, max_length, peft_path=None):
+#     # Load the tokenizer
+#     tokenizer = AutoTokenizer.from_pretrained(model_path)
+
+#     tokenizer.model_max_length = max_length
+#     # tokenizer.truncation_side = "right"
+    
+#     if tokenizer.pad_token is None:
+#         tokenizer.add_special_tokens({
+#             'pad_token': '[PAD]'
+#         })
+#     if model_family == "qwen":
+#         if tokenizer.eos_token is None:
+#             tokenizer.add_special_tokens({
+#                 'eos_token': '<|im_end|>'
+#             })
+#     elif model_family == "base":
+#         if tokenizer.eos_token is None:
+#             tokenizer.add_special_tokens({
+#                 'eos_token': '<|eot_id|>'
+#             })
+
+#     if peft_path:
+#         # Load base model first
+#         if model_class == "llama":
+#             base_model = LlamaForCausalLM.from_pretrained(
+#                 model_path,
+#                 device_map="auto",
+#                 torch_dtype=torch.float16
+#             )
+#         else:
+#             base_model = AutoModelForCausalLM.from_pretrained(
+#                 model_path,
+#                 device_map="auto",
+#                 torch_dtype=torch.float16
+#             )
+#         # Then load PEFT adapter on top
+#         # model = PeftModelForCausalLM.from_pretrained(base_model, peft_path)
+#         base_model.resize_token_embeddings(len(tokenizer))
+#         model = PeftModel.from_pretrained(base_model, peft_path)
+#     else:
+#         # original loading without PEFT
+#         if model_class == "llama":
+#             model = LlamaForCausalLM.from_pretrained(
+#                 model_path,
+#                 device_map="auto",
+#                 torch_dtype=torch.float16
+#             )
+#         else:
+#             model = AutoModelForCausalLM.from_pretrained(
+#                 model_path,
+#                 device_map="auto",
+#                 torch_dtype=torch.float16
+#             )
+
+
+#     # model.resize_token_embeddings(len(tokenizer)) # TODO make sure works without peft too, if not remove this line
+
+#     # model.gradient_checkpointing_enable()  # for batching imitation
+#     model.config.use_cache = False  # use less memory
+#     model.config.pad_token_id = tokenizer.pad_token_id
+
+#     return model, tokenizer
+
+def setup_tokenizer(model_source, model_family, max_length):
+    tokenizer = AutoTokenizer.from_pretrained(model_source)
     tokenizer.model_max_length = max_length
-    # tokenizer.truncation_side = "right"
-    
-    # if tokenizer.pad_token is None or tokenizer.pad_token_id is None:
-    #     tokenizer.add_special_tokens({
-    #         'pad_token': '[PAD]'
-    #     })
-    # tokenizer.padding_side = "left"
-    
-    # if model_family == "qwen":
-    #     if tokenizer.eos_token is None or tokenizer.eos_token != "<|im_end|>":
-    #         tokenizer.add_special_tokens({
-    #             'eos_token': '<|im_end|>'
-    #         })
-    # elif model_family == "base":
-    #     if tokenizer.eos_token is None or tokenizer.eos_token != "<|eot_id|>":
-    #         tokenizer.add_special_tokens({
-    #             'eos_token': '<|eot_id|>'
-    #         })
+    tokenizer.padding_side = "right"
+    tokenizer.truncation_side = "right"
 
-    # Load the fine-tuned model
-    if model_class == "llama":
-        model = LlamaForCausalLM.from_pretrained(
-            model_path, 
+    if tokenizer.pad_token is None:
+        tokenizer.add_special_tokens({'pad_token': '[PAD]'})
+    if tokenizer.eos_token is None:
+        if model_family == "qwen":
+            tokenizer.add_special_tokens({'eos_token': '<|im_end|>'})
+        elif model_family == "base":
+            tokenizer.add_special_tokens({'eos_token': '<|eot_id|>'})
+
+    return tokenizer
+
+def load_and_prepare_model(model_name, model_family, model_path, model_class, max_length, peft_path=None):
+
+    tokenizer = setup_tokenizer(model_path, model_family, max_length)
+
+    if peft_path is not None:
+        base_model_class = LlamaForCausalLM if model_class == "llama" else AutoModelForCausalLM
+        base_model = base_model_class.from_pretrained(
+            model_name,
             device_map="auto",
             torch_dtype=torch.float16
+        )
+        base_model.resize_token_embeddings(len(tokenizer))
+        # from peft import PeftModel
+        # model = PeftModel.from_pretrained(base_model, peft_path)
+        from peft import PeftModelForCausalLM
+        model = PeftModelForCausalLM.from_pretrained(base_model, peft_path)
+        model.resize_token_embeddings(len(tokenizer))
+
+        if model_class == "llama":
+            base_model = LlamaForCausalLM.from_pretrained(
+                model_name,
+                device_map="auto",
+                torch_dtype=torch.float16
             )
+        else:
+            base_model = AutoModelForCausalLM.from_pretrained(
+                model_name,
+                device_map="auto",
+                torch_dtype=torch.float16
+            )
+
+        base_model.resize_token_embeddings(len(tokenizer))
+
     else:
-        model = AutoModelForCausalLM.from_pretrained(
-            model_path, 
+        model_class = LlamaForCausalLM if model_class == "llama" else AutoModelForCausalLM
+        model = model_class.from_pretrained(
+            model_path,
             device_map="auto",
             torch_dtype=torch.float16
             )
+        model.resize_token_embeddings(len(tokenizer))
 
-    # model.resize_token_embeddings(len(tokenizer)) # TODO make sure works without peft too, if not remove this line
-
-    # load peft adapter, if any
-    if peft_path:
-        # peft_config = PeftConfig.from_pretrained(peft_path)
-        # model = PeftModel.from_pretrained(model, peft_path)
-        model = PeftModelForCausalLM.from_pretrained(model, peft_path)
-
-    # model.gradient_checkpointing_enable()  # for batching imitation
-    model.config.use_cache = False  # use less memory
-    # model.resize_token_embeddings(len(tokenizer))  # resize after adding new tokens
+    model.config.use_cache = False
     model.config.pad_token_id = tokenizer.pad_token_id
 
     return model, tokenizer
+
 
 def is_source_metric(args):
     if args.metric_name in ["FRE", "FKGL", "ARI", "DALE-CHALL", "Dale-Chall"]:
@@ -183,13 +259,14 @@ def run_inference(args, metric_mapping, model, tokenizer, test_dataset, batch_si
         batch = [dict(zip(batch.keys(), values)) for values in zip(*batch.values())]
 
         # Ensure we're working with a list of dictionaries
-        input_ids = torch.stack([torch.tensor(item["input_ids"]) for item in batch]).to(device)
+        input_ids = torch.stack([torch.tensor(item["input_ids"]) for item in batch]).to(device) # TODO  bring back
         
         with torch.no_grad():
             torch.cuda.empty_cache()
             # Ensure attention mask is provided if it's not None
             attention_mask = torch.stack([torch.tensor(item["attention_mask"]) for item in batch]).to(device) if "attention_mask" in batch[0] else None
-            
+
+
             # Generate with the max_new_tokens to limit the number of tokens generated beyond the input length
             outputs = model.generate(
                 input_ids,
@@ -264,6 +341,7 @@ def save_predictions_as_json(predictions, output_file):
 def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument("--model_path", type=str, required=True, help="The path to the model dir.")
+    parser.add_argument("--model_name", type=str, required=True)
     parser.add_argument("--dataset_name", type=str, required=True, help="The name of the dataset on Hugging Face.")
     parser.add_argument("--model_class", type=str, required=True, choices=["llama", "auto"], help="Model class to use.")
     parser.add_argument("--model_family", type=str, default="llama", choices=["llama", "mistral", "qwen", "base"], help="Model family to use.")
@@ -292,6 +370,7 @@ def main():
 
     # Load the model and tokenizer
     model, tokenizer = load_and_prepare_model(
+        args.model_name,
         args.model_family, 
         args.model_path, 
         args.model_class, 

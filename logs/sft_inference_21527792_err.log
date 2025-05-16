@@ -1,0 +1,31 @@
+
+CondaError: Run 'conda init' before 'conda activate'
+
+[nltk_data] Downloading package punkt to /home/hhubar/nltk_data...
+[nltk_data]   Package punkt is already up-to-date!
+We will use 90% of the memory on device 0 for storing the model, and 10% for the buffer to avoid OOM. You can set `max_memory` in to a higher value to use more memory (at your own risk).
+Traceback (most recent call last):
+  File "/scratch/hhubar/keep-it-simple/src/sft_inference.py", line 412, in <module>
+    main()
+  File "/scratch/hhubar/keep-it-simple/src/sft_inference.py", line 354, in main
+    model, tokenizer = load_and_prepare_model(
+                       ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/scratch/hhubar/keep-it-simple/src/sft_inference.py", line 102, in load_and_prepare_model
+    base_model = LlamaForCausalLM.from_pretrained(
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/transformers/modeling_utils.py", line 279, in _wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/transformers/modeling_utils.py", line 4483, in from_pretrained
+    model.load_adapter(
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/transformers/integrations/peft.py", line 239, in load_adapter
+    incompatible_keys = set_peft_model_state_dict(
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/peft/utils/save_and_load.py", line 451, in set_peft_model_state_dict
+    load_result = model.load_state_dict(peft_model_state_dict, strict=False)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/torch/nn/modules/module.py", line 2584, in load_state_dict
+    raise RuntimeError(
+RuntimeError: Error(s) in loading state_dict for LlamaForCausalLM:
+	size mismatch for model.embed_tokens.weight: copying a param with shape torch.Size([128257, 2048]) from checkpoint, the shape in current model is torch.Size([128256, 2048]).
+	size mismatch for lm_head.weight: copying a param with shape torch.Size([128257, 2048]) from checkpoint, the shape in current model is torch.Size([128256, 2048]).

@@ -1,0 +1,28 @@
+
+CondaError: Run 'conda init' before 'conda activate'
+
+[nltk_data] Downloading package punkt to /home/hhubar/nltk_data...
+[nltk_data]   Package punkt is already up-to-date!
+Traceback (most recent call last):
+  File "/scratch/hhubar/keep-it-simple/src/sft_inference.py", line 414, in <module>
+    main()
+  File "/scratch/hhubar/keep-it-simple/src/sft_inference.py", line 356, in main
+    model, tokenizer = load_and_prepare_model(
+                       ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/scratch/hhubar/keep-it-simple/src/sft_inference.py", line 105, in load_and_prepare_model
+    model = PeftModel.from_pretrained(model_name, peft_path)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/peft/peft_model.py", line 565, in from_pretrained
+    model = cls(
+            ^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/peft/peft_model.py", line 176, in __init__
+    self.base_model = cls(model, {adapter_name: peft_config}, adapter_name)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/peft/tuners/lora/model.py", line 141, in __init__
+    super().__init__(model, config, adapter_name, low_cpu_mem_usage=low_cpu_mem_usage)
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/peft/tuners/tuners_utils.py", line 184, in __init__
+    self.inject_adapter(self.model, adapter_name, low_cpu_mem_usage=low_cpu_mem_usage)
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/peft/tuners/tuners_utils.py", line 440, in inject_adapter
+    key_list = [key for key, _ in model.named_modules()]
+                                  ^^^^^^^^^^^^^^^^^^^
+AttributeError: 'str' object has no attribute 'named_modules'

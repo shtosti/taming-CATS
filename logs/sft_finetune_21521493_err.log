@@ -1,0 +1,57 @@
+
+CondaError: Run 'conda init' before 'conda activate'
+
+wandb: Using wandb-core as the SDK backend.  Please refer to https://wandb.me/wandb-core for more information.
+wandb: Appending key for api.wandb.ai to your netrc file: /home/hhubar/.netrc
+wandb: Currently logged in as: hanna-hubarava (shtosti) to https://api.wandb.ai. Use `wandb login --relogin` to force relogin
+wandb: Tracking run with wandb version 0.19.9
+wandb: Run data is saved locally in /scratch/hhubar/keep-it-simple/wandb/run-20250515_171010-ejmb7ad2
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run blooming-bird-56
+wandb: ⭐️ View project at https://wandb.ai/shtosti/ATS_with_control_tokens
+wandb: 🚀 View run at https://wandb.ai/shtosti/ATS_with_control_tokens/runs/ejmb7ad2
+Loading checkpoint shards:   0%|          | 0/4 [00:00<?, ?it/s]Loading checkpoint shards:  25%|██▌       | 1/4 [00:10<00:32, 10.99s/it]Loading checkpoint shards:  50%|█████     | 2/4 [00:20<00:19, 10.00s/it]Loading checkpoint shards:  75%|███████▌  | 3/4 [00:28<00:09,  9.31s/it]Loading checkpoint shards: 100%|██████████| 4/4 [00:30<00:00,  6.38s/it]Loading checkpoint shards: 100%|██████████| 4/4 [00:30<00:00,  7.67s/it]
+Some parameters are on the meta device because they were offloaded to the cpu.
+The new embeddings will be initialized from a multivariate normal distribution that has old embeddings' mean and covariance. As described in this article: https://nlp.stanford.edu/~johnhew/vocab-expansion.html. To disable this, use `mean_resizing=False`
+Traceback (most recent call last):
+  File "/scratch/hhubar/keep-it-simple/src/sft_finetune.py", line 843, in <module>
+    main()
+  File "/scratch/hhubar/keep-it-simple/src/sft_finetune.py", line 808, in main
+    model, tokenizer = load_and_prepare_model(args.model_family, args.model_name, args.model_class, args.peft, args.max_length)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/scratch/hhubar/keep-it-simple/src/sft_finetune.py", line 508, in load_and_prepare_model
+    model.resize_token_embeddings(len(tokenizer)) # resize after adding new tokens
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/transformers/modeling_utils.py", line 2656, in resize_token_embeddings
+    model_embeds = self._resize_token_embeddings(new_num_tokens, pad_to_multiple_of, mean_resizing)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/transformers/modeling_utils.py", line 2679, in _resize_token_embeddings
+    new_embeddings = self._get_resized_embeddings(
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/transformers/modeling_utils.py", line 2830, in _get_resized_embeddings
+    self._init_added_embeddings_weights_with_mean(
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/transformers/modeling_utils.py", line 2994, in _init_added_embeddings_weights_with_mean
+    old_centered_embeddings = old_embeddings_weight - mean_embeddings
+                              ~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~
+torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 1.96 GiB. GPU 0 has a total capacity of 15.77 GiB of which 1.73 GiB is free. Including non-PyTorch memory, this process has 14.03 GiB memory in use. Of the allocated memory 13.66 GiB is allocated by PyTorch, and 9.59 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+Traceback (most recent call last):
+  File "/scratch/hhubar/keep-it-simple/src/sft_finetune.py", line 843, in <module>
+    main()
+  File "/scratch/hhubar/keep-it-simple/src/sft_finetune.py", line 808, in main
+    model, tokenizer = load_and_prepare_model(args.model_family, args.model_name, args.model_class, args.peft, args.max_length)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/scratch/hhubar/keep-it-simple/src/sft_finetune.py", line 508, in load_and_prepare_model
+    model.resize_token_embeddings(len(tokenizer)) # resize after adding new tokens
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/transformers/modeling_utils.py", line 2656, in resize_token_embeddings
+    model_embeds = self._resize_token_embeddings(new_num_tokens, pad_to_multiple_of, mean_resizing)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/transformers/modeling_utils.py", line 2679, in _resize_token_embeddings
+    new_embeddings = self._get_resized_embeddings(
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/transformers/modeling_utils.py", line 2830, in _get_resized_embeddings
+    self._init_added_embeddings_weights_with_mean(
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/transformers/modeling_utils.py", line 2994, in _init_added_embeddings_weights_with_mean
+    old_centered_embeddings = old_embeddings_weight - mean_embeddings
+                              ~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~
+torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 1.96 GiB. GPU 0 has a total capacity of 15.77 GiB of which 1.73 GiB is free. Including non-PyTorch memory, this process has 14.03 GiB memory in use. Of the allocated memory 13.66 GiB is allocated by PyTorch, and 9.59 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
