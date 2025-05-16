@@ -12,8 +12,11 @@ activate:
 clean: # Clean cache
 	rm -rf __pycache__ *.pyc */__pycache__ */*.pyc
 
-finetune:
+ft:
 	sbatch ./slurm_sft_finetune.sh
+
+ft-peft:
+	sbatch ./slurm_sft_finetune_peft.sh
 
 infer:
 	sbatch ./slurm_sft_inference.sh
