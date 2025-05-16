@@ -2,8 +2,9 @@
 
 
 # ========== inference =========
-USE_PEFT=false
+USE_PEFT=true
 MODEL_PATH="models/Meta-Llama-3-8B-Instruct-Med-EASi-FKGL-base-token_explanation-20250514-2147-u4v4gkmz"
+MODEL_NAME="meta-llama/Meta-Llama-3-8B-Instruct"
 USER_PROMPT_ID="token_explanation"
 METRIC_NAME="FKGL"
 DATASET_NAME="Med-EASi"
@@ -19,6 +20,7 @@ mkdir -p "$OUTPUT_DIR"  # Ensure the directory exists
 
 ARGS=(
   --model_path "$MODEL_PATH"
+  --model_name "$MODEL_NAME"
   --dataset_name "$DATASET_NAME"
   --model_class "$MODEL_CLASS"
   --model_family "$MODEL_FAMILY"

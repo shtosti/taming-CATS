@@ -2,14 +2,14 @@
 
 # *** TODO ***
 
-USE_PEFT=false 
+USE_PEFT=true 
 MODEL_CLASS="llama" # --- model class: "llama" for llama and mistral, "auto" for qwen
 MODEL_FAMILY="base" # --- model family: "llama", "mistral", "qwen", "base" (for prompt template)
 
 # --- model name
-MODEL_NAME="meta-llama/Llama-3.2-1B-Instruct"
+# MODEL_NAME="meta-llama/Llama-3.2-1B-Instruct"
 # MODEL_NAME="meta-llama/Meta-Llama-3-8B-Instruct"
-# MODEL_NAME="meta-llama/Llama-2-13b-chat-hf"
+MODEL_NAME="meta-llama/Llama-2-13b-chat-hf"
 # MODEL_NAME="Qwen/Qwen2.5-1.5B-Instruct"
 # MODEL_NAME="Qwen/Qwen2.5-14B-Instruct"
 # MODEL_NAME="ministral/Ministral-3b-instruct"
