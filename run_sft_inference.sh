@@ -2,16 +2,16 @@
 
 
 # ========== inference =========
-MODEL_PATH="models/Llama-3.2-1B-Instruct-Med-EASi-WORD_COMPRESSION-base-token_explanation-20250505-1433-job7wghr"
-MODEL_NAME="meta-llama/Llama-3.2-1B-Instruct"
+MODEL_PATH="models/Meta-Llama-3-8B-Instruct-Med-EASi-FKGL-base-token_explanation-20250514-2147-u4v4gkmz"
+MODEL_NAME="meta-llama/Meta-Llama-3-8B-Instruct"
 USER_PROMPT_ID="token_explanation"
-METRIC_NAME="WORD_COMPRESSION"
+METRIC_NAME="FKGL"
 DATASET_NAME="Med-EASi"
 # "llama", "mistral", "qwen", "base" (for prompt template)
 MODEL_FAMILY="base"
 # "llama" or "auto"
 MODEL_CLASS="llama"
-USE_PEFT=false
+USE_PEFT=true
 
 
 OUTPUT_DIR="output/$MODEL_PATH"

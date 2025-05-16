@@ -164,7 +164,7 @@ def load_and_prepare_test_set(dataset_name, tokenizer, max_length, control_token
             return_tensors="pt"
         )
         input_ids = encoded["input_ids"]
-        # attention_mask = encoded["attention_mask"]
+        attention_mask = encoded["attention_mask"]
 
         encoded_completion = tokenizer(
             formatted_completion,
@@ -180,7 +180,7 @@ def load_and_prepare_test_set(dataset_name, tokenizer, max_length, control_token
             "completion": formatted_completion,
             "input_ids": input_ids.squeeze(0),  # Remove batch dimension
             "completion_ids": completion_ids.squeeze(0),  # Remove batch dimension,
-            # "attention_mask": attention_mask.squeeze(0),  # Remove batch dimension
+            "attention_mask": attention_mask.squeeze(0),  # Remove batch dimension
         }
 
     test_dataset = test_dataset.map(process_instance, batched=False) # batching enabled

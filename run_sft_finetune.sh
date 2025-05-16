@@ -9,9 +9,9 @@ MODEL_CLASS="llama"
 MODEL_FAMILY="base"
 
 # --- model name
-MODEL_NAME="meta-llama/Llama-3.2-1B-Instruct"
+# MODEL_NAME="meta-llama/Llama-3.2-1B-Instruct"
 # MODEL_NAME="meta-llama/Meta-Llama-3-8B-Instruct"
-# MODEL_NAME="meta-llama/Llama-2-13b-chat-hf"
+MODEL_NAME="meta-llama/Llama-2-13b-chat-hf"
 # MODEL_NAME="Qwen/Qwen2.5-1.5B-Instruct"
 # MODEL_NAME="Qwen/Qwen2.5-14B-Instruct"
 # MODEL_NAME="ministral/Ministral-3b-instruct"
@@ -25,9 +25,9 @@ USE_PEFT=true
 
 
 # --- dataset settings ---
-DATASET_NAME="Med-EASi"
-SLICE_TRAIN="50" # -1 means no slicing
-SLICE_VAL="50" # -1 means no slicing
+DATASET_NAME="Med-EASi_hq"
+SLICE_TRAIN="-1" # -1 means no slicing
+SLICE_VAL="-1" # -1 means no slicing
 
 # --- prompting settings ---
 # "vanilla", "reasoning", "transformations"
