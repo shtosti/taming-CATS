@@ -113,7 +113,9 @@ def format_prompt_with_tokenizer(tokenizer, system_prompt, user_prompt, metric_n
         {"role": "assistant", "content": control_token}
     ]
     formatted_prompt = tokenizer.apply_chat_template(
-        messages, tokenize=False, continue_final_message=True
+        messages, 
+        tokenize=False, 
+        continue_final_message=True
     )
 
     return formatted_prompt
