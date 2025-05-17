@@ -50,7 +50,7 @@ def load_and_prepare_model(model_name, model_family, model_path, model_class, ma
         # model = PeftModel.from_pretrained(base_model, peft_path)
         from peft import PeftModelForCausalLM
         model = PeftModelForCausalLM.from_pretrained(base_model, peft_path)
-        model.resize_token_embeddings(len(tokenizer))
+        # model.resize_token_embeddings(len(tokenizer))
 
         if model_class == "llama":
             base_model = LlamaForCausalLM.from_pretrained(
@@ -65,7 +65,7 @@ def load_and_prepare_model(model_name, model_family, model_path, model_class, ma
                 # torch_dtype=torch.float16
             )
 
-        base_model.resize_token_embeddings(len(tokenizer))
+        # base_model.resize_token_embeddings(len(tokenizer))
 
     else:
         model_class = LlamaForCausalLM if model_class == "llama" else AutoModelForCausalLM
