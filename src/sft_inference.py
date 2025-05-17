@@ -210,9 +210,6 @@ def run_inference(args, metric_mapping, model, tokenizer, test_dataset, batch_si
                 max_length=max_length + max_new_tokens,
                 max_new_tokens=max_new_tokens,
                 do_sample=False,
-                # temperature=0.7,
-                # top_k=50,
-                # top_p=0.95,
                 pad_token_id=tokenizer.pad_token_id,
                 eos_token_id=tokenizer.eos_token_id
             )
