@@ -94,8 +94,8 @@ def load_and_prepare_model(model_family, model_name, model_class, peft_enabled, 
             lora_dropout=0.1,
             bias="none"
         )
-        model = get_peft_model(model, peft_config)
-        # model = PeftModelForCausalLM(model, peft_config)
+        # model = get_peft_model(model, peft_config)
+        model = PeftModelForCausalLM(model, peft_config)
 
     # --- debug ---
     print("--- DEBUG ---")
@@ -285,7 +285,10 @@ def train_model(model, tokenizer, train_dataset, val_dataset, args, output_dir, 
         eval_dataset=val_dataset,
         args=training_args,
         tokenizer=tokenizer,
-        compute_metrics=None, # TODO DEBUG!!!! remove if does not help the eval error
+        # compute_metrics=None,
+        # compute_metrics=lambda eval_pred: {},
+        # compute_metrics=lambda p: {},
+        # compute_metrics=lambda eval_pred: {"eval_loss": eval_pred.predictions.mean()},
         callbacks=[PredictionLoggerCallback(
                         tokenizer=tokenizer, 
                         val_dataset=val_dataset, 

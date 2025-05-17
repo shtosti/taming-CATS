@@ -1,0 +1,26 @@
+Fri May 16 17:58:57 2025       
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 560.35.05              Driver Version: 560.35.05      CUDA Version: 12.6     |
+|-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  Tesla V100-SXM2-16GB           Off |   00000000:15:00.0 Off |                    0 |
+| N/A   28C    P0             38W /  300W |       1MiB /  16384MiB |      0%      Default |
+|                                         |                        |                  N/A |
++-----------------------------------------+------------------------+----------------------+
+                                                                                         
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI        PID   Type   Process name                              GPU Memory |
+|        ID   ID                                                               Usage      |
+|=========================================================================================|
+|  No running processes found                                                             |
++-----------------------------------------------------------------------------------------+
+Loading from models/Llama-3.2-1B-Instruct-Med-EASi_hq-FKGL-base-token_explanation-20250516-1632-av5ug43l...
+Inference args:
+Namespace(model_path='models/Llama-3.2-1B-Instruct-Med-EASi_hq-FKGL-base-token_explanation-20250516-1632-av5ug43l', model_name=None, dataset_name='Med-EASi_hq', model_class='llama', model_family='base', max_length=1024, batch_size=4, slice_test=20, output_file='output/models/Llama-3.2-1B-Instruct-Med-EASi_hq-FKGL-base-token_explanation-20250516-1632-av5ug43l/output.json', device='cuda', peft_path=None, control_tokens='data/prompts/control_tokens.json', system_prompts='data/prompts/system_prompts.json', user_prompts='data/prompts/user_prompts.json', metric_mapping='data/metric_mapping.json', metric_name='FKGL', user_prompt_id='token_explanation')
+
+test:	 Inspect the dataset format:
+ {'global_id': ['medeasi_000942'], 'source_text': ['No cure for the common cold exists , but the symptoms can be treated .'], 'source_metrics': [{'FRE': 83.66, 'ARI': 5.4, 'FKGL': 4.8, 'Dale-Chall': 9.14, 'char_count': 70, 'alphanum_count': 54, 'word_count': 15, 'sentence_count': 1}], 'metadata': [{'dataset': 'medeasi', 'experiment_split': '', 'domain': 'medical', 'language': 'en', 'annotation': 'human', 'level': 'sentence'}], 'simplification_text': ['There is no cure for the common cold , but the symptoms can be treated .\n'], 'target_metrics': [{'FRE': 91.11, 'ARI': 4.7, 'FKGL': 4.0, 'Dale-Chall': 7.71, 'char_count': 73, 'alphanum_count': 55, 'word_count': 16, 'sentence_count': 1, 'char_compression_rate': 1.04, 'word_compression_rate': 1.07, 'sentence_compression_rate': 1.0, 'BLEU': 67.39047062564734, 'BERTScore': 0.976331353187561}], 'simplification_version': [1], 'grade_level': [-1], 'simplification_dimensions': [{'linguistic': {'lexical': False, 'syntactic': False}}]}

@@ -67,14 +67,14 @@ class PredictionLoggerCallback(TrainerCallback):
 
             with torch.no_grad():
                 output_ids = model.generate(
-                    input_ids=inputs["input_ids"], # TODO contains the prediction???
-                    attention_mask=inputs.get("attention_mask"), # TODO masking used for generation??
+                    input_ids=inputs["input_ids"],
+                    attention_mask=inputs.get("attention_mask"),
                     **self.gen_kwargs
                 )
 
             # Slice generated tokens to remove the prompt portion
             prompt_length = inputs["input_ids"].shape[1]
-            generated_only_ids = output_ids[:, prompt_length:] # TODO try removing up to the end of the prompt
+            generated_only_ids = output_ids[:, prompt_length:]
 
             decoded_preds = self.tokenizer.batch_decode(
                 # output_ids,

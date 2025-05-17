@@ -21,7 +21,7 @@ def load_json(file_path: str):
 def setup_tokenizer(model_source, model_family, max_length):
     tokenizer = AutoTokenizer.from_pretrained(model_source)
     tokenizer.model_max_length = max_length
-    tokenizer.padding_side = "right"
+    tokenizer.padding_side = "left"
     tokenizer.truncation_side = "right"
 
     if tokenizer.pad_token is None:
@@ -43,7 +43,7 @@ def load_and_prepare_model(model_name, model_family, model_path, model_class, ma
         base_model = base_model_class.from_pretrained(
             model_name,
             device_map="auto",
-            torch_dtype=torch.float16
+            # torch_dtype=torch.float16
         )
         base_model.resize_token_embeddings(len(tokenizer))
         # from peft import PeftModel
@@ -56,7 +56,7 @@ def load_and_prepare_model(model_name, model_family, model_path, model_class, ma
             base_model = LlamaForCausalLM.from_pretrained(
                 model_name,
                 device_map="auto",
-                torch_dtype=torch.float16
+                # torch_dtype=torch.float16
             )
         else:
             base_model = AutoModelForCausalLM.from_pretrained(
@@ -160,7 +160,7 @@ def load_and_prepare_test_set(dataset_name, tokenizer, max_length, control_token
             formatted_prompt,
             truncation=True,
             max_length=max_length,
-            padding="max_length",  # or "longest" for dynamic padding
+            padding="max_length",  # or "longest" for dynamic padding or True
             return_tensors="pt"
         )
         input_ids = encoded["input_ids"]
@@ -170,7 +170,7 @@ def load_and_prepare_test_set(dataset_name, tokenizer, max_length, control_token
             formatted_completion,
             truncation=True,
             max_length=max_length,
-            padding="max_length",  # or "longest"
+            padding="max_length",  # or "longest" or True
             return_tensors="pt"
         )
         completion_ids = encoded_completion["input_ids"]
@@ -198,12 +198,10 @@ def run_inference(args, metric_mapping, model, tokenizer, test_dataset, batch_si
 
         # Ensure we're working with a list of dictionaries
         input_ids = torch.stack([torch.tensor(item["input_ids"]) for item in batch]).to(device) # TODO  bring back
+        attention_mask = torch.stack([torch.tensor(item["attention_mask"]) for item in batch]).to(device) if "attention_mask" in batch[0] else None
         
         with torch.no_grad():
             torch.cuda.empty_cache()
-            # Ensure attention mask is provided if it's not None
-            attention_mask = torch.stack([torch.tensor(item["attention_mask"]) for item in batch]).to(device) if "attention_mask" in batch[0] else None
-
 
             # Generate with the max_new_tokens to limit the number of tokens generated beyond the input length
             outputs = model.generate(
@@ -225,7 +223,6 @@ def run_inference(args, metric_mapping, model, tokenizer, test_dataset, batch_si
             decoded_preds = tokenizer.batch_decode(
                 generated_only_ids,
                 skip_special_tokens=True,
-                # skip_special_tokens=False,
                 clean_up_tokenization_spaces=True
             )
             print("\n--- Processing batch:")
@@ -280,7 +277,7 @@ def save_predictions_as_json(predictions, output_file):
 def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument("--model_path", type=str, required=True, help="The path to the model dir.")
-    parser.add_argument("--model_name", type=str, required=True)
+    parser.add_argument("--model_name", type=str, required=False, help="The name of the model on Hugging Face.")
     parser.add_argument("--dataset_name", type=str, required=True, help="The name of the dataset on Hugging Face.")
     parser.add_argument("--model_class", type=str, required=True, choices=["llama", "auto"], help="Model class to use.")
     parser.add_argument("--model_family", type=str, default="llama", choices=["llama", "mistral", "qwen", "base"], help="Model family to use.")
