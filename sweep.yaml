@@ -1,0 +1,38 @@
+program: ./src/sft_finetune.py
+
+method: bayes  # can be grid, random, bayes
+
+metric:
+  name: eval_loss
+  goal: minimize
+
+parameters:
+  learning_rate:
+    min: 1e-6
+    max: 5e-5
+  batch_size:
+    values: [2, 4, 8]
+  weight_decay:
+    values: [0.0, 0.01, 0.1]
+  gradient_accumulation_steps:
+    values: [1, 4, 8]
+  epochs:
+    values: [2, 3, 5]
+  max_length:
+    values: [512, 768]
+
+command:
+  - ${program}
+  - --model_class=llama
+  - --model_family=base
+  - --model_name=your-model-name-here
+  - --dataset_name=your-dataset-name-here
+  - --metric_name=your-metric-name-here
+  - --control_tokens=your-control-tokens.json
+  - --system_prompts=your-system-prompts.json
+  - --user_prompts=your-user-prompts.json
+  - --metric_mapping=your-metric-mapping.json
+  - --user_prompt_id=token
+  - --wandb_project_name=thesis-SFT
+  - --wandb_entity=shtosti
+  - --peft
