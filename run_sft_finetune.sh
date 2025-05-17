@@ -36,6 +36,8 @@ GRADIENT_ACCUMULATION_STEPS=2
 LR=1e-5
 WEIGHT_DECAY=0.01
 LOGGING_STEPS=20
+WARMUP_STEPS=30
+MAX_GRAD_NORM=0.5
 LOG_EVERY=20
 
 # --- WANDB settings ---
@@ -64,6 +66,8 @@ python src/sft_finetune.py \
     --gradient_accumulation_steps "$GRADIENT_ACCUMULATION_STEPS" \
     --learning_rate "$LR" \
     --weight_decay "$WEIGHT_DECAY" \
+    --warmup_steps "$WARMUP_STEPS" \
+    --max_grad_norm "$MAX_GRAD_NORM" \
     --logging_steps "$LOGGING_STEPS" \
     --epochs "$EPOCHS" \
     --patience "$PATIENCE" \
