@@ -260,9 +260,9 @@ def train_model(model, tokenizer, train_dataset, val_dataset, args, output_dir, 
         gradient_accumulation_steps=args.gradient_accumulation_steps,
         num_train_epochs=args.epochs,
         weight_decay=args.weight_decay,
-        max_grad_norm=0.5, # clipping to stabilize
+        max_grad_norm=args.max_grad_norm, # clipping to stabilize
         lr_scheduler_type="cosine",
-        warmup_steps=30,
+        warmup_steps=args.warmup_steps,
         # fp16=True,
         bf16=True,
         fp16=False,
@@ -304,17 +304,22 @@ def train_model(model, tokenizer, train_dataset, val_dataset, args, output_dir, 
                         )
 
     trainer.train()
-    trainer.save_model(output_dir)
-    tokenizer.save_pretrained(output_dir)
-    # val_dataset.save_to_disk(f"{output_dir}/val_dataset")
+
+    results = trainer.evaluate()
+    print("Evaluation results:", results)
+    if "eval_loss" in results:
+        wandb.log({"eval_loss": results["eval_loss"]})
+
+    # trainer.save_model(output_dir)
+    # tokenizer.save_pretrained(output_dir)
+
     wandb.save(output_dir)
 
 def parse_args():
     parser = argparse.ArgumentParser()
-    # hyperparams
     parser.add_argument("--model_class", type=str, required=True, choices=["llama", "auto"], help="Model class to use.")
     parser.add_argument("--model_family", type=str, required=True, default="base", choices=["llama", "mistral", "qwen", "base"], help="Model type to choose from.")
-    parser.add_argument("--model_name", type=str, required=True)
+    parser.add_argument("--model_name", type=str, required=True, help="Model name on Hugging Face.")
     parser.add_argument("--dataset_name", type=str, required=True)
     parser.add_argument("--slice_train", type=int, default=-1)
     parser.add_argument("--slice_val", type=int, default=-1)
@@ -323,6 +328,8 @@ def parse_args():
     parser.add_argument("--gradient_accumulation_steps", type=int, default=4)
     parser.add_argument("--learning_rate", type=float, default=1e-5)
     parser.add_argument("--weight_decay", type=float, default=0.01)
+    parser.add_argument("--warmup_steps", type=int, default=30)
+    parser.add_argument("--max_grad_norm", type=float, default=1.0)
     parser.add_argument("--epochs", type=int, default=1)
     parser.add_argument("--max_length", type=int, default=512, help="Max length of output")
     parser.add_argument("--logging_steps", type=int, default=20)
@@ -333,14 +340,13 @@ def parse_args():
     parser.add_argument("--patience", type=int, default=3, help="patience period for early stopping")
     # for dynamic prompting
     parser.add_argument("--prompting_type", type=str, default="vanilla", choices=["vanilla", "reasoning", "transformations"])
-    parser.add_argument("--user_prompt_id", type=str, default="token", choices=["no_token", "token", "token_explanation", "token_explanation_examples"])
+    parser.add_argument("--user_prompt_id", type=str, default="token_explanation", choices=["no_token", "token", "token_explanation", "token_explanation_examples"])
     parser.add_argument("--metric_name", type=str, required=True)
     # Paths to external JSON files for control tokens, system prompts, and user prompts
     parser.add_argument("--control_tokens", type=str, required=True)
     parser.add_argument("--system_prompts", type=str, required=True)
     parser.add_argument("--user_prompts", type=str, required=True)
     parser.add_argument("--metric_mapping", type=str, required=True)
-    
     # peft flag
     parser.add_argument("--peft", action="store_true", help="Enable PEFT for large models.")
 
