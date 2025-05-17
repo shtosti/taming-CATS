@@ -3,9 +3,9 @@
 
 # ========== inference =========
 USE_PEFT=false
-MODEL_PATH="models/Llama-3.2-1B-Instruct-Med-EASi_hq-FKGL-base-token_explanation-20250516-1632-av5ug43l"
+MODEL_PATH="models/Llama-3.2-1B-Instruct-Med-EASi_hq-ARI-base-token_explanation-20250517-1018-w8s135mh"
 USER_PROMPT_ID="token_explanation"
-METRIC_NAME="FKGL"
+METRIC_NAME="ARI"
 DATASET_NAME="Med-EASi_hq"
 # "llama", "mistral", "qwen", "base" (for prompt template)
 MODEL_FAMILY="base"
@@ -24,7 +24,7 @@ ARGS=(
   --model_family "$MODEL_FAMILY"
   --max_length 512
   --batch_size 4
-  --slice_test 20
+  --slice_test 10
   --output_file "$OUTPUT_FILE"
   --control_tokens "data/prompts/control_tokens.json"
   --system_prompts "data/prompts/system_prompts.json"

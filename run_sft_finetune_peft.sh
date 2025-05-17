@@ -24,7 +24,7 @@ SLICE_VAL="-1" # -1 means no slicing
 # --- prompting settings ---
 PROMPTING_TYPE="vanilla" # "vanilla", "reasoning", "transformations"
 USER_PROMPT_ID="token_explanation" # "token", "token_explanation", "token_explanation_examples"
-METRIC_NAME="FKGL"
+METRIC_NAME="ARI"
 
 # --- hyperparameters ---
 EPOCHS=3

@@ -1,0 +1,44 @@
+Sat May 17 11:14:48 2025       
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 560.35.05              Driver Version: 560.35.05      CUDA Version: 12.6     |
+|-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  NVIDIA A100-SXM4-80GB          Off |   00000000:88:00.0 Off |                    0 |
+| N/A   25C    P0             58W /  400W |       1MiB /  81920MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+                                                                                         
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI        PID   Type   Process name                              GPU Memory |
+|        ID   ID                                                               Usage      |
+|=========================================================================================|
+|  No running processes found                                                             |
++-----------------------------------------------------------------------------------------+
+Using PEFT...
+Loading from models/Llama-2-13b-chat-hf-Med-EASi_hq-ARI-base-token_explanation-20250517-1047-hi67ije9...
+Inference args:
+Namespace(model_path='models/Llama-2-13b-chat-hf-Med-EASi_hq-ARI-base-token_explanation-20250517-1047-hi67ije9', model_name='meta-llama/Llama-2-13b-chat-hf', dataset_name='Med-EASi', model_class='llama', model_family='base', max_length=512, batch_size=4, slice_test=10, output_file='output/models/Llama-2-13b-chat-hf-Med-EASi_hq-ARI-base-token_explanation-20250517-1047-hi67ije9/output.json', device='cuda', peft_path='models/Llama-2-13b-chat-hf-Med-EASi_hq-ARI-base-token_explanation-20250517-1047-hi67ije9', control_tokens='data/prompts/control_tokens.json', system_prompts='data/prompts/system_prompts.json', user_prompts='data/prompts/user_prompts.json', metric_mapping='data/metric_mapping.json', metric_name='ARI', user_prompt_id='token_explanation')
+
+test:	 Inspect the dataset format:
+ {'global_id': ['medeasi_001354'], 'source_text': ['Malthus was not the first to outline the problems he perceived.'], 'source_metrics': [{'FRE': 85.69, 'ARI': 6.8, 'FKGL': 4.0, 'Dale-Chall': 8.49, 'char_count': 63, 'alphanum_count': 52, 'word_count': 12, 'sentence_count': 1}], 'metadata': [{'dataset': 'medeasi', 'experiment_split': '', 'domain': 'medical', 'language': 'en', 'annotation': 'human', 'level': 'sentence'}], 'simplification_text': ['Malthus said this would not work, and it would only lead to increased numbers of the poor.'], 'target_metrics': [{'FRE': 88.06, 'ARI': 7.6, 'FKGL': 5.2, 'Dale-Chall': 7.27, 'char_count': 90, 'alphanum_count': 72, 'word_count': 19, 'sentence_count': 1, 'char_compression_rate': 1.43, 'word_compression_rate': 1.58, 'sentence_compression_rate': 1.0, 'BLEU': 3.0272532566104675, 'BERTScore': 0.9067994952201843}], 'simplification_version': [1], 'grade_level': [-1], 'simplification_dimensions': [{'linguistic': {'lexical': False, 'syntactic': False}}]}
+
+--- Processing batch:
+The problems he perceived were outlined by others before him....
+The disease Joubert syndrome is one such disease....
+The common cold has no cure, but symptoms can be treated....
+The town has high crime rates, suicide, drug use, and disease....
+
+--- Processing batch:
+The sudden death of Seidl at the age of 47 from food poisoning in 1898 was widely mourned....
+The prevalence of schizophrenia is around 0.3-0.7% of the population, which is approximately 24 mill...
+The glans penis is the expanded cap of the corpus spongiosum....
+The pain creates a withdrawal reflex, while the itch leads to a scratch reflex....
+
+--- Processing batch:
+The syndrome was first described by John Hilton Edwards in 1960....
+The fish use electric fields to find food....
+Predictions saved to output/models/Llama-2-13b-chat-hf-Med-EASi_hq-ARI-base-token_explanation-20250517-1047-hi67ije9/output.json
