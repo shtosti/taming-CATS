@@ -110,7 +110,7 @@ def format_prompt_with_tokenizer(tokenizer, system_prompt, user_prompt, metric_n
     messages = [
         {"role": "system", "content": system_prompt},
         {"role": "user", "content": user_prompt},
-        {"role": "assistant", "content": control_token}
+        {"role": "assistant", "content": control_token} # maybe switch back to assistant?
     ]
 
     formatted_prompt = tokenizer.apply_chat_template(
