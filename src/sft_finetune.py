@@ -47,7 +47,7 @@ def print_trainable_params(model):
     trainable = sum(p.numel() for p in model.parameters() if p.requires_grad)
     print(f"Trainable params: {trainable:,} / {total:,} ({100 * trainable / total:.2f}%)")
 
-def load_and_prepare_model(model_family, model_name, model_class, peft_enabled, max_length):
+def load_and_prepare_model(args, model_family, model_name, model_class, peft_enabled, max_length):
     # --- tokenizer ---
     tokenizer = AutoTokenizer.from_pretrained(model_name)
     tokenizer.model_max_length = max_length
@@ -85,13 +85,12 @@ def load_and_prepare_model(model_family, model_name, model_class, peft_enabled, 
     model.resize_token_embeddings(len(tokenizer), mean_resizing=False) # resize after adding new tokens
     print("Model embedding size AFTER resizing:", model.get_input_embeddings().weight.size(0))
 
-
     if peft_enabled:
         print("Using PEFT for fine-tuning...")
         peft_config = LoraConfig(
-            r=8,
-            lora_alpha=32,
-            lora_dropout=0.1,
+            r=args.lora_r,
+            lora_alpha=args.lora_r * 2, # lora_alpha = r * 2
+            lora_dropout=args.lora_dropout,
             bias="none"
         )
         # model = get_peft_model(model, peft_config)
@@ -347,8 +346,10 @@ def parse_args():
     parser.add_argument("--system_prompts", type=str, required=True)
     parser.add_argument("--user_prompts", type=str, required=True)
     parser.add_argument("--metric_mapping", type=str, required=True)
-    # peft flag
+    # peft
     parser.add_argument("--peft", action="store_true", help="Enable PEFT for large models.")
+    parser.add_argument("--lora_r", type=int, default=8, help="LoRA rank.")
+    parser.add_argument("--lora_dropout", type=float, default=0.1, help="LoRA dropout.")
 
     return parser.parse_args()
 
@@ -392,7 +393,7 @@ def main():
 
     source_based_metric = is_source_metric(args)
 
-    model, tokenizer = load_and_prepare_model(args.model_family, args.model_name, args.model_class, args.peft, args.max_length)
+    model, tokenizer = load_and_prepare_model(args, args.model_family, args.model_name, args.model_class, args.peft, args.max_length)
     train_dataset, val_dataset = load_and_prepare_dataset(args.dataset_name, tokenizer, args, source_based_metric=source_based_metric)
 
     print("First 10 input_ids:", train_dataset[0]["input_ids"][:10])
