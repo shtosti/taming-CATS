@@ -267,17 +267,81 @@ def run_inference(args, metric_mapping, model, tokenizer, test_dataset, batch_si
 
     return predictions
 
+def run_inference_with_vllm(args, metric_mapping, llm, tokenizer, test_dataset, max_new_tokens, source_based_metric=False, compression_metric=False):
+    sampling_params = SamplingParams(
+        temperature=0.0,
+        max_tokens=max_new_tokens,
+        top_p=1.0,
+        top_k=-1,
+        do_sample=False,
+        stop=tokenizer.eos_token or None,
+    )
+
+    prompts = [item["prompt"] for item in test_dataset]
+    outputs = llm.generate(prompts, sampling_params)
+    predictions = []
+
+    print("\n--- Running vLLM generation")
+    for item, output in zip(test_dataset, outputs):
+        pred = output.outputs[0].text.strip()
+        prediction_metrics = Metrics(input_text=pred, reference_text=item["simplification_text"], source_text=item["source_text"])
+        computed_prediction_metrics = prediction_metrics.compute_metrics()
+        source_metrics = Metrics(input_text=item["source_text"])
+        computed_source_metrics = source_metrics.compute_metrics()
+        reference_metrics = Metrics(input_text=item["simplification_text"], source_text=item["source_text"])
+        computed_reference_metrics = reference_metrics.compute_metrics()
+
+        # Compute compression
+        prediction_char_compression = round(computed_prediction_metrics["char_count"] / computed_source_metrics["char_count"], 1)
+        prediction_word_compression = round(computed_prediction_metrics["word_count"] / computed_source_metrics["word_count"], 1)
+        prediction_sent_compression = round(computed_prediction_metrics["sent_count"] / computed_source_metrics["sent_count"], 1)
+        computed_prediction_metrics["char_compression_rate"] = prediction_char_compression
+        computed_prediction_metrics["word_compression_rate"] = prediction_word_compression
+        computed_prediction_metrics["sentence_compression_rate"] = prediction_sent_compression
+
+        reference_char_compression = round(computed_reference_metrics["char_count"] / computed_source_metrics["char_count"], 1)
+        reference_word_compression = round(computed_reference_metrics["word_count"] / computed_source_metrics["word_count"], 1)
+        reference_sent_compression = round(computed_reference_metrics["sent_count"] / computed_source_metrics["sent_count"], 1)
+        computed_reference_metrics["char_compression_rate"] = reference_char_compression
+        computed_reference_metrics["word_compression_rate"] = reference_word_compression
+        computed_reference_metrics["sentence_compression_rate"] = reference_sent_compression
+
+        prediction_dict = {
+            "global_id": item["global_id"],
+            "control_token": f"{args.metric_name}={computed_reference_metrics[metric_mapping[args.metric_name]]}",
+            "metric_name": args.metric_name,
+            "reference_metric_value": computed_reference_metrics[metric_mapping[args.metric_name]],
+            "source_text": item["source_text"],
+            "reference_simplification": item["simplification_text"],
+            "prediction": pred,
+            "prompt": item["prompt"],
+            "source_metrics": computed_source_metrics,
+            "prediction_metrics": computed_prediction_metrics,
+            "reference_metrics": computed_reference_metrics,
+        }
+        if source_based_metric:
+            prediction_dict["source_metric_value"] = item["source_metrics"][metric_mapping[args.metric_name]]
+
+        predictions.append(prediction_dict)
+
+        print(pred[:100] + "...")
+
+    return predictions
+
 def save_predictions_as_json(predictions, output_file):
     with open(output_file, "w", encoding="utf-8") as f:
         json.dump([p for p in predictions], f, indent=2, ensure_ascii=False)
 
 def parse_args():
     parser = argparse.ArgumentParser()
+
+    parser.add_argument("--use_vllm", action="store_true", help="Use vLLM for fast inference.")
+
     parser.add_argument("--model_path", type=str, required=True, help="The path to the model dir.")
     parser.add_argument("--model_name", type=str, required=False, help="The name of the model on Hugging Face.")
     parser.add_argument("--dataset_name", type=str, required=True, help="The name of the dataset on Hugging Face.")
     parser.add_argument("--model_class", type=str, required=True, choices=["llama", "auto"], help="Model class to use.")
-    parser.add_argument("--model_family", type=str, default="llama", choices=["llama", "mistral", "qwen", "base"], help="Model family to use.")
+    parser.add_argument("--model_family", type=str, default="base", choices=["llama", "mistral", "qwen", "base"], help="Model family to use.")
     parser.add_argument("--max_length", type=int, default=512, help="Max length for tokenization.")
     parser.add_argument("--batch_size", type=int, default=4, help="Batch size for inference.")
     parser.add_argument("--slice_test", type=int, default=-1, help="Slice the test set for dev. -1 means no slicing.")
@@ -292,7 +356,7 @@ def parse_args():
     parser.add_argument("--user_prompts", type=str, required=True, help="Path to the user prompts JSON file.")
     parser.add_argument("--metric_mapping", type=str, required=True, help="Path to the metric mapping JSON file.")
     parser.add_argument("--metric_name", type=str, required=True, help="Metric name to use.")
-    parser.add_argument("--user_prompt_id", type=str, required=True, choices=["no_token", "token", "token_explanation", "token_explanation_examples"], help="The user prompt ID to use.")
+    parser.add_argument("--user_prompt_id", type=str, default="token_explanation", choices=["no_token", "token", "token_explanation", "token_explanation_examples"], help="The user prompt ID to use.")
     
     return parser.parse_args()
 
@@ -301,16 +365,23 @@ def main():
     print(f"Loading from {args.model_path}...")
     print(f"Inference args:\n{args}\n")
 
-    # Load the model and tokenizer
-    model, tokenizer = load_and_prepare_model(
-        args.model_name,
-        args.model_family, 
-        args.model_path, 
-        args.model_class, 
-        args.max_length,
-        peft_path=args.peft_path
-        )
-    model.to(args.device)
+    if args.use_vllm:
+        from vllm import LLM, SamplingParams
+        print("Using vLLM for inference...")
+        # Initialize vLLM
+        llm = LLM(model=args.model_path, device=args.device)
+        tokenizer = setup_tokenizer(args.model_path, args.model_family, args.max_length)
+        model = None
+    else:
+        model, tokenizer = load_and_prepare_model(
+            args.model_name,
+            args.model_family, 
+            args.model_path, 
+            args.model_class, 
+            args.max_length,
+            peft_path=args.peft_path
+            )
+        model.to(args.device)
 
     # Load and prepare the dynamic prompting information (control tokens, system prompts, etc.)
     control_tokens = load_json(args.control_tokens)
@@ -340,19 +411,31 @@ def main():
         compression_metric=compression_metric
     )
 
-    predictions = run_inference(
-        args, 
-        metric_mapping, 
-        model, 
-        tokenizer, 
-        test_dataset, 
-        batch_size=args.batch_size,
-        device=args.device,
-        max_length=args.max_length, 
-        max_new_tokens=args.max_length - 1,
-        source_based_metric=source_based_metric,
-        compression_metric=compression_metric
+    if args.use_vllm:
+        predictions = run_inference_with_vllm(
+            args,
+            metric_mapping,
+            llm,
+            tokenizer,
+            test_dataset,
+            max_new_tokens=args.max_length - 1,
+            source_based_metric=source_based_metric,
+            compression_metric=compression_metric
         )
+    else:
+        predictions = run_inference(
+            args, 
+            metric_mapping, 
+            model, 
+            tokenizer, 
+            test_dataset, 
+            batch_size=args.batch_size,
+            device=args.device,
+            max_length=args.max_length, 
+            max_new_tokens=args.max_length - 1,
+            source_based_metric=source_based_metric,
+            compression_metric=compression_metric
+            )
 
     # Save the predictions to a file
     save_predictions_as_json(predictions, args.output_file)
