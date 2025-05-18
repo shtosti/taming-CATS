@@ -287,7 +287,7 @@ def train_model(model, tokenizer, train_dataset, val_dataset, args, output_dir, 
         callbacks=[PredictionLoggerCallback(
                         tokenizer=tokenizer, 
                         val_dataset=val_dataset, 
-                        log_every=args.log_every,
+                        log_every=args.generate_every,
                         num_samples=4,
                         max_length=args.max_length,
                         gen_kwargs=None
@@ -313,24 +313,24 @@ def train_model(model, tokenizer, train_dataset, val_dataset, args, output_dir, 
 def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument("--model_class", type=str, required=True, choices=["llama", "auto"], help="Model class to use.")
-    parser.add_argument("--model_family", type=str, required=True, default="base", choices=["llama", "mistral", "qwen", "base"], help="Model type to choose from.")
+    parser.add_argument("--model_family", type=str, default="base", choices=["llama", "mistral", "qwen", "base"], help="Model type to choose from.")
     parser.add_argument("--model_name", type=str, required=True, help="Model name on Hugging Face.")
     parser.add_argument("--dataset_name", type=str, required=True)
     parser.add_argument("--slice_train", type=int, default=-1)
     parser.add_argument("--slice_val", type=int, default=-1)
     parser.add_argument("--batch_size", type=int, default=4)
-    parser.add_argument("--eval_batch_size", type=int, default=1)
+    parser.add_argument("--eval_batch_size", type=int, default=4)
     parser.add_argument("--gradient_accumulation_steps", type=int, default=4)
     parser.add_argument("--learning_rate", type=float, default=1e-5)
     parser.add_argument("--weight_decay", type=float, default=0.01)
     parser.add_argument("--warmup_steps", type=int, default=30)
     parser.add_argument("--max_grad_norm", type=float, default=1.0)
-    parser.add_argument("--epochs", type=int, default=1)
+    parser.add_argument("--epochs", type=int, default=3)
     parser.add_argument("--max_length", type=int, default=512, help="Max length of output")
     parser.add_argument("--logging_steps", type=int, default=20)
     parser.add_argument("--wandb_project_name", type=str, default="thesis-SFT")
     parser.add_argument("--wandb_entity", type=str, default="shtosti")
-    parser.add_argument("--log_every", type=int, default=20)
+    parser.add_argument("--generate_every", type=int, default=20)
     parser.add_argument("--seed", type=int, default=42, help="Seed for determenism")
     parser.add_argument("--patience", type=int, default=3, help="patience period for early stopping")
     # for dynamic prompting
