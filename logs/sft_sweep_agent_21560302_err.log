@@ -1,0 +1,105 @@
+
+CondaError: Run 'conda init' before 'conda activate'
+
+wandb: Starting wandb agent 🕵️
+2025-05-18 10:04:31,404 - wandb.wandb_agent - INFO - Running runs: []
+2025-05-18 10:04:31,770 - wandb.wandb_agent - INFO - Agent received command: run
+2025-05-18 10:04:31,791 - wandb.wandb_agent - INFO - Agent starting run with config:
+	learning_rate: 1e-06
+	max_grad_norm: 0.5
+	weight_decay: 0
+2025-05-18 10:04:31,793 - wandb.wandb_agent - INFO - About to run command: /usr/bin/env python src/sft_finetune.py --model_class=auto --model_family=base --model_name=Qwen/Qwen2.5-1.5B-Instruct --dataset_name=Med-EASi_hq --metric_name=FKGL --epochs=3 --max_length=512 --batch_size=4 --warmup_steps=30 --gradient_accumulation_steps=4 --user_prompt_id=token_explanation --wandb_project_name=thesis-SFT --wandb_entity=shtosti --control_tokens=data/prompts/control_tokens.json --system_prompts=data/prompts/system_prompts.json --user_prompts=data/prompts/user_prompts.json --metric_mapping=data/metric_mapping.json --learning_rate=1e-06 --max_grad_norm=0.5 --weight_decay=0
+2025-05-18 10:04:36,801 - wandb.wandb_agent - INFO - Running runs: ['ghqf8grq']
+wandb: Appending key for api.wandb.ai to your netrc file: /home/hhubar/.netrc
+wandb: Currently logged in as: hanna-hubarava (shtosti) to https://api.wandb.ai. Use `wandb login --relogin` to force relogin
+wandb: WARNING Ignoring project 'thesis-SFT' when running a sweep.
+wandb: WARNING Ignoring entity 'shtosti' when running a sweep.
+wandb: Tracking run with wandb version 0.19.9
+wandb: Run data is saved locally in /scratch/hhubar/keep-it-simple/wandb/run-20250518_100501-ghqf8grq
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run hardy-sweep-1
+wandb: ⭐️ View project at https://wandb.ai/shtosti/keep-it-simple-src
+wandb: 🧹 View sweep at https://wandb.ai/shtosti/keep-it-simple-src/sweeps/bcxv90zt
+wandb: 🚀 View run at https://wandb.ai/shtosti/keep-it-simple-src/runs/ghqf8grq
+wandb: WARNING Config item 'learning_rate' was locked by 'sweep' (ignored update).
+wandb: WARNING Config item 'weight_decay' was locked by 'sweep' (ignored update).
+wandb: WARNING Config item 'max_grad_norm' was locked by 'sweep' (ignored update).
+Sliding Window Attention is enabled but not implemented for `sdpa`; unexpected results may be encountered.
+Map:   0%|          | 0/667 [00:00<?, ? examples/s]Map:  67%|██████▋   | 448/667 [00:00<00:00, 4407.47 examples/s]Map: 100%|██████████| 667/667 [00:00<00:00, 3567.55 examples/s]
+Map:   0%|          | 0/87 [00:00<?, ? examples/s]Map: 100%|██████████| 87/87 [00:00<00:00, 2221.72 examples/s]
+Map:   0%|          | 0/667 [00:00<?, ? examples/s]Map:  17%|█▋        | 112/667 [00:00<00:00, 1098.39 examples/s]Map:  37%|███▋      | 245/667 [00:00<00:00, 1224.96 examples/s]Map:  56%|█████▌    | 375/667 [00:00<00:00, 1256.30 examples/s]Map:  75%|███████▌  | 502/667 [00:00<00:00, 1259.23 examples/s]Map: 100%|██████████| 667/667 [00:00<00:00, 804.19 examples/s] Map: 100%|██████████| 667/667 [00:00<00:00, 922.85 examples/s]
+Map:   0%|          | 0/87 [00:00<?, ? examples/s]Map: 100%|██████████| 87/87 [00:00<00:00, 856.42 examples/s]
+/scratch/hhubar/keep-it-simple/src/sft_finetune.py:281: FutureWarning: `tokenizer` is deprecated and will be removed in version 5.0.0 for `Trainer.__init__`. Use `processing_class` instead.
+  trainer = Trainer(
+wandb: WARNING The `run_name` is currently set to the same value as `TrainingArguments.output_dir`. If this was not intended, please specify a different run name by setting the `TrainingArguments.run_name` parameter.
+wandb: WARNING Config item 'learning_rate' was locked by 'sweep' (ignored update).
+wandb: WARNING Config item 'weight_decay' was locked by 'sweep' (ignored update).
+wandb: WARNING Config item 'max_grad_norm' was locked by 'sweep' (ignored update).
+  0%|          | 0/123 [00:00<?, ?it/s]  1%|          | 1/123 [00:01<03:59,  1.96s/it]  2%|▏         | 2/123 [00:03<02:55,  1.45s/it]  2%|▏         | 3/123 [00:04<02:37,  1.31s/it]  3%|▎         | 4/123 [00:05<02:28,  1.25s/it]  4%|▍         | 5/123 [00:06<02:22,  1.21s/it]  5%|▍         | 6/123 [00:07<02:18,  1.19s/it]  6%|▌         | 7/123 [00:08<02:16,  1.17s/it]  7%|▋         | 8/123 [00:09<02:13,  1.16s/it]  7%|▋         | 9/123 [00:11<02:11,  1.16s/it]  8%|▊         | 10/123 [00:12<02:10,  1.15s/it]  9%|▉         | 11/123 [00:13<02:08,  1.15s/it] 10%|▉         | 12/123 [00:14<02:07,  1.15s/it] 11%|█         | 13/123 [00:15<02:06,  1.15s/it] 11%|█▏        | 14/123 [00:16<02:05,  1.15s/it] 12%|█▏        | 15/123 [00:17<02:04,  1.15s/it] 13%|█▎        | 16/123 [00:19<02:06,  1.18s/it] 14%|█▍        | 17/123 [00:20<02:03,  1.17s/it] 15%|█▍        | 18/123 [00:21<02:02,  1.17s/it] 15%|█▌        | 19/123 [00:22<02:01,  1.17s/it] 16%|█▋        | 20/123 [00:33<07:07,  4.15s/it]                                                 16%|█▋        | 20/123 [00:34<07:07,  4.15s/it]
+  0%|          | 0/87 [00:00<?, ?it/s][A
+  5%|▍         | 4/87 [00:00<00:02, 39.31it/s][A
+  9%|▉         | 8/87 [00:00<00:04, 16.04it/s][A
+ 13%|█▎        | 11/87 [00:00<00:04, 16.37it/s][A
+ 16%|█▌        | 14/87 [00:01<00:05, 12.88it/s][A
+ 18%|█▊        | 16/87 [00:01<00:07, 10.13it/s][A
+ 21%|██        | 18/87 [00:01<00:06, 10.38it/s][A
+ 23%|██▎       | 20/87 [00:01<00:06,  9.67it/s][A
+ 25%|██▌       | 22/87 [00:01<00:06, 10.28it/s][A
+ 28%|██▊       | 24/87 [00:02<00:06,  9.13it/s][A
+ 29%|██▊       | 25/87 [00:02<00:07,  8.01it/s][A
+ 30%|██▉       | 26/87 [00:02<00:09,  6.59it/s][A
+ 31%|███       | 27/87 [00:02<00:10,  5.55it/s][A
+ 32%|███▏      | 28/87 [00:03<00:10,  5.37it/s][A
+ 33%|███▎      | 29/87 [00:03<00:10,  5.36it/s][A
+ 34%|███▍      | 30/87 [00:03<00:11,  4.94it/s][A
+ 36%|███▌      | 31/87 [00:03<00:11,  4.67it/s][A
+ 39%|███▉      | 34/87 [00:03<00:06,  8.13it/s][A
+ 40%|████      | 35/87 [00:04<00:07,  7.04it/s][A
+ 41%|████▏     | 36/87 [00:04<00:07,  6.85it/s][A
+ 43%|████▎     | 37/87 [00:04<00:09,  5.39it/s][A
+ 44%|████▎     | 38/87 [00:04<00:09,  5.14it/s][A
+ 45%|████▍     | 39/87 [00:05<00:09,  5.03it/s][A
+ 48%|████▊     | 42/87 [00:05<00:05,  8.63it/s][A
+ 51%|█████     | 44/87 [00:05<00:05,  8.36it/s][A
+ 52%|█████▏    | 45/87 [00:05<00:05,  7.46it/s][A
+ 53%|█████▎    | 46/87 [00:05<00:06,  6.65it/s][A
+ 54%|█████▍    | 47/87 [00:06<00:06,  6.20it/s][A
+ 55%|█████▌    | 48/87 [00:06<00:07,  5.49it/s][A
+ 56%|█████▋    | 49/87 [00:06<00:07,  5.11it/s][A
+ 60%|█████▉    | 52/87 [00:06<00:04,  8.73it/s][A
+ 62%|██████▏   | 54/87 [00:06<00:04,  8.18it/s][A
+ 63%|██████▎   | 55/87 [00:07<00:04,  6.78it/s][A
+ 64%|██████▍   | 56/87 [00:07<00:05,  5.95it/s][A
+ 66%|██████▌   | 57/87 [00:07<00:05,  5.79it/s][A
+ 67%|██████▋   | 58/87 [00:07<00:04,  5.82it/s][A
+ 68%|██████▊   | 59/87 [00:08<00:05,  5.29it/s][A
+ 69%|██████▉   | 60/87 [00:08<00:05,  4.70it/s][A
+ 70%|███████   | 61/87 [00:08<00:05,  4.86it/s][A
+ 71%|███████▏  | 62/87 [00:08<00:05,  4.75it/s][A
+ 72%|███████▏  | 63/87 [00:08<00:04,  5.26it/s][A
+ 74%|███████▎  | 64/87 [00:09<00:04,  4.88it/s][A
+ 75%|███████▍  | 65/87 [00:09<00:04,  5.07it/s][A
+ 76%|███████▌  | 66/87 [00:09<00:04,  4.86it/s][A
+ 77%|███████▋  | 67/87 [00:09<00:04,  4.51it/s][A
+ 78%|███████▊  | 68/87 [00:10<00:05,  3.76it/s][A
+ 79%|███████▉  | 69/87 [00:10<00:04,  3.85it/s][A
+ 80%|████████  | 70/87 [00:10<00:04,  4.03it/s][A
+ 83%|████████▎ | 72/87 [00:10<00:02,  6.20it/s][A
+ 84%|████████▍ | 73/87 [00:10<00:02,  5.46it/s][A
+ 85%|████████▌ | 74/87 [00:11<00:02,  5.90it/s][A
+ 86%|████████▌ | 75/87 [00:11<00:02,  4.66it/s][A
+ 87%|████████▋ | 76/87 [00:11<00:02,  4.86it/s][A
+ 89%|████████▊ | 77/87 [00:11<00:02,  4.67it/s][A
+ 90%|████████▉ | 78/87 [00:12<00:02,  3.75it/s][A
+ 91%|█████████ | 79/87 [00:12<00:02,  3.76it/s][A
+ 92%|█████████▏| 80/87 [00:12<00:01,  4.07it/s][A
+ 93%|█████████▎| 81/87 [00:12<00:01,  4.55it/s][A
+ 94%|█████████▍| 82/87 [00:13<00:01,  4.82it/s][A
+ 95%|█████████▌| 83/87 [00:13<00:00,  4.60it/s][A
+ 97%|█████████▋| 84/87 [00:13<00:00,  4.40it/s][A
+ 98%|█████████▊| 85/87 [00:13<00:00,  4.56it/s][A
+ 99%|█████████▉| 86/87 [00:13<00:00,  4.92it/s][A
+100%|██████████| 87/87 [00:14<00:00,  4.63it/s][A                                                
+                                               [A 16%|█▋        | 20/123 [00:48<07:07,  4.15s/it]
+100%|██████████| 87/87 [00:14<00:00,  4.63it/s][A
+                                               [A 17%|█▋        | 21/123 [01:09<23:15, 13.68s/it] 18%|█▊        | 22/123 [01:10<16:42,  9.93s/it] 19%|█▊        | 23/123 [01:12<12:09,  7.29s/it] 20%|█▉        | 24/123 [01:13<08:59,  5.45s/it] 20%|██        | 25/123 [01:14<06:47,  4.16s/it] 21%|██        | 26/123 [01:15<05:15,  3.26s/it] 22%|██▏       | 27/123 [01:16<04:11,  2.62s/it] 23%|██▎       | 28/123 [01:17<03:28,  2.19s/it] 24%|██▎       | 29/123 [01:18<02:57,  1.89s/it] 24%|██▍       | 30/123 [01:20<02:34,  1.67s/it] 25%|██▌       | 31/123 [01:21<02:18,  1.51s/it] 26%|██▌       | 32/123 [01:22<02:07,  1.40s/it] 27%|██▋       | 33/123 [01:23<02:00,  1.33s/it] 28%|██▊       | 34/123 [01:24<01:53,  1.28s/it] 28%|██▊       | 35/123 [01:25<01:49,  1.24s/it] 29%|██▉       | 36/123 [01:27<01:46,  1.22s/it]slurmstepd: error: *** JOB 21560302 ON u20-chaiam0-614 CANCELLED AT 2025-05-18T10:06:48 ***

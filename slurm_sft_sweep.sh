@@ -7,11 +7,11 @@
 #SBATCH --gpus=A100:1
 #SBATCH --cpus-per-task=2
 #SBATCH --mem=80000
-#SBATCH --time=04:00:00  # increase to let agent run longer
+#SBATCH --time=04:00:00
 
 # Environment setup
 conda activate sft
 module load gpu
 nvidia-smi
 
-wandb agent shtosti/keep-it-simple-src/58tp9nzq
+wandb agent shtosti/keep-it-simple-src/n048lz73

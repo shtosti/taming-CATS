@@ -24,7 +24,7 @@ SLICE_VAL="-1" # -1 means no slicing
 # --- prompting settings ---
 PROMPTING_TYPE="vanilla" # "vanilla", "reasoning", "transformations"
 USER_PROMPT_ID="token_explanation" # "token", "token_explanation", "token_explanation_examples"
-METRIC_NAME="ARI"
+METRIC_NAME="FKGL"
 
 # --- hyperparameters ---
 EPOCHS=3
@@ -78,4 +78,6 @@ python src/sft_finetune.py \
     --user_prompts "data/prompts/user_prompts.json"\
     --metric_mapping "data/metric_mapping.json"\
     --log_every "$LOG_EVERY"\
+    --lora_r 8\
+    --lora_dropout 0.1 \
     $PEFT_FLAG
