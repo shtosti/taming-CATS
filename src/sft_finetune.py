@@ -284,10 +284,6 @@ def train_model(model, tokenizer, train_dataset, val_dataset, args, output_dir, 
         eval_dataset=val_dataset,
         args=training_args,
         tokenizer=tokenizer,
-        # compute_metrics=None,
-        # compute_metrics=lambda eval_pred: {},
-        # compute_metrics=lambda p: {},
-        # compute_metrics=lambda eval_pred: {"eval_loss": eval_pred.predictions.mean()},
         callbacks=[PredictionLoggerCallback(
                         tokenizer=tokenizer, 
                         val_dataset=val_dataset, 
@@ -309,8 +305,8 @@ def train_model(model, tokenizer, train_dataset, val_dataset, args, output_dir, 
     if "eval_loss" in results:
         wandb.log({"eval_loss": results["eval_loss"]})
 
-    # trainer.save_model(output_dir)
-    # tokenizer.save_pretrained(output_dir)
+    trainer.save_model(output_dir)
+    tokenizer.save_pretrained(output_dir)
 
     wandb.save(output_dir)
 
@@ -375,9 +371,9 @@ def main():
     wandb.config.update(vars(args))
     wandb_run_id = wandb.run.id
 
-    timestamp = datetime.now().strftime("%Y%m%d-%H%M")
+    timestamp = datetime.now().strftime("%Y%m%d-%H%M%S")
     short_model = get_model_short_name(args.model_name)
-    output_dir = f"./models/{short_model}-{args.dataset_name}-{args.metric_name}-{args.model_family}-{args.user_prompt_id}-{timestamp}-{wandb_run_id}"
+    output_dir = f"./models/{short_model}-{args.dataset_name}-{args.metric_name}-{args.user_prompt_id}-{timestamp}"
     os.makedirs(output_dir, exist_ok=True)
     print("Saving to:", output_dir)
 
