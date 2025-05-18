@@ -1,4 +1,4 @@
-method: grid  # or "random", "grid"
+method: grid  # "bayesian", "random", "grid"
 
 metric:
   name: eval_loss
@@ -8,23 +8,22 @@ parameters:
   weight_decay:
     values: [0.0, 0.01, 0.1]
   learning_rate:
-    values: [1e-6, 5e-6, 1e-5]
+    values: [1e-6, 5e-6, 1e-5, 5e-5]
   max_grad_norm:
     values: [0.5, 1.0, 2.0]
-  batch_size:
-    values: [2, 4, 8]
 
 command:
   - ${env}
   - python
   - src/sft_finetune.py
-  - --model_class=llama
+  - --model_class=auto
   - --model_family=base
-  - --model_name=meta-llama/Llama-3.2-1B-Instruct
+  - --model_name=Qwen/Qwen2.5-1.5B-Instruct
   - --dataset_name=Med-EASi_hq
   - --metric_name=FKGL
   - --epochs=3
   - --max_length=512
+  - --batch_size=4
   - --warmup_steps=30
   - --gradient_accumulation_steps=4
   - --user_prompt_id=token_explanation
