@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#SBATCH --job-name=sft_finetune
+#SBATCH --job-name=sft_finetune_hq
 
 #SBATCH --account=iict-sp1.ebling.cl.uzh
 #SBATCH --output=logs/%x_%j_out.log
@@ -15,4 +15,4 @@ module load gpu
 nvidia-smi
 
 # Run the script
-bash ./run_sft_finetune.sh
+bash ./run_sft_finetune_hq.sh
