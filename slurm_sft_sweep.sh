@@ -14,4 +14,4 @@ conda activate sft
 module load gpu
 nvidia-smi
 
-wandb agent shtosti/keep-it-simple-src/lrho093o --count 50
+wandb agent shtosti/keep-it-simple-src/58tp9nzq
