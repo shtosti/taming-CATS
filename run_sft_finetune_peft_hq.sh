@@ -14,7 +14,7 @@ MODEL_NAME="meta-llama/Meta-Llama-3-8B-Instruct"
 # MODEL_NAME="mistralai/Mistral-7B-Instruct-v0.1"
 
 DATASETS=("Med-EASi_hq" "SimPA_hq" "WikiLarge_ori_splitwise_hq" "WikiLarge_ori_global_hq")
-METRICS=("ARI" "FKGL" "DALE-CHALL", "CHAR_COMPRESSION", "WORD_COMPRESSION")
+METRICS=("ARI" "FKGL" "DALE-CHALL" "CHAR_COMPRESSION" "WORD_COMPRESSION")
 
 for DATASET_NAME in "${DATASETS[@]}"; do
     for METRIC_NAME in "${METRICS[@]}"; do
