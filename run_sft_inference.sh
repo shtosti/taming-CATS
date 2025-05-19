@@ -3,9 +3,9 @@
 
 # ========== inference =========
 USE_PEFT=false
-MODEL_PATH="models/Llama-3.2-1B-Instruct-Med-EASi_hq-ARI-token_explanation-20250518-220417"
-METRIC_NAME="ARI"
-DATASET_NAME="Med-EASi"
+MODEL_PATH="models/Llama-3.2-1B-Instruct-Med-EASi_hq-FKGL-token_explanation-20250518-221233"
+METRIC_NAME="FKGL"
+DATASET_NAME="Med-EASi_hq"
 MODEL_CLASS="llama" # "llama" or "auto"
 
 
@@ -21,7 +21,7 @@ ARGS=(
   --model_family "base"
   --max_length 512
   --batch_size 4
-  --slice_test 5
+  --slice_test -1
   --output_file "$OUTPUT_FILE"
   --control_tokens "data/prompts/control_tokens.json"
   --system_prompts "data/prompts/system_prompts.json"
