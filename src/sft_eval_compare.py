@@ -159,10 +159,11 @@ def main():
     parser.add_argument("--control_attr", type=str, required=True, help="Metric key to compare")
     parser.add_argument("--save_dir", type=str, required=True, help="Directory to save the plots")
     parser.add_argument("--color_map_path", type=str, default="data/colormap/color_map.json", help="Path to color and hatch map JSON")
+    parser.add_argument("--user_prompt_id", type=str, required=True, help="User prompt ID")
     args = parser.parse_args()
 
     os.makedirs(args.save_dir, exist_ok=True)
-    output_prefix = f"{args.control_attr}_{args.dataset}"
+    output_prefix = f"{args.control_attr}_{args.dataset}_{args.user_prompt_id}"
 
     all_results = load_results(args.summary_file)
     plot_comparison_metrics(all_results, args.dataset, args.control_attr, args.save_dir, output_prefix, args.color_map_path)
