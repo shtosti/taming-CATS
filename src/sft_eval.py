@@ -5,6 +5,7 @@ import numpy as np
 from sklearn.metrics import mean_squared_error, mean_absolute_error
 from helpers.utils import get_correlation_data
 import pandas as pd
+import scipy.stats as stats
 
 def load_json(file_path: str):
     """Load JSON from a file."""
@@ -28,7 +29,7 @@ def extract_metric_values(predictions, metric_key, use_source=False):
 
     for item in predictions:
         if use_source:
-            print(f"Source metrics: {item['source_metrics']}")
+            # print(f"Source metrics: {item['source_metrics']}")
             source_val = item["source_metrics"].get(metric_key)
         reference_val = item["reference_metrics"].get(metric_key)
         prediction_val = item["prediction_metrics"].get(metric_key)
@@ -55,6 +56,57 @@ def compute_per_sample_losses(reference_vals, prediction_vals):
         mae.append(mean_absolute_error([ref], [pred]))
         real_errors.append(pred - ref)
     return mse, mae, real_errors
+
+def compute_mean_metrics(predictions):
+    """Compute mean and 95% confidence intervals for all comparison metrics."""
+
+    def bootstrap_ci(data, n_bootstraps=1000, ci=0.95):
+        boot_means = [
+            np.mean(np.random.choice(data, size=len(data), replace=True))
+            for _ in range(n_bootstraps)
+        ]
+        lower = np.percentile(boot_means, (1 - ci) / 2 * 100)
+        upper = np.percentile(boot_means, (1 + ci) / 2 * 100)
+        return np.mean(data), lower, upper
+
+    BLEU_to_source, BLEU_to_ref = [], []
+    BERTScore_to_source, BERTScore_to_ref = [], []
+    COMET, SARI = [], []
+
+    for item in predictions:
+        BLEU_to_source.append(item["prediction_metrics"].get("BLEU"))
+        BLEU_to_ref.append(item["prediction_metrics"].get("BLEU_ref"))
+        BERTScore_to_source.append(item["prediction_metrics"].get("BERTScore"))
+        BERTScore_to_ref.append(item["prediction_metrics"].get("BERTScore_ref"))
+        COMET.append(item["prediction_metrics"].get("COMET"))
+        SARI.append(item["prediction_metrics"].get("SARI"))
+
+    metrics = {
+        "BLEU_to_source": BLEU_to_source,
+        "BLEU_to_ref": BLEU_to_ref,
+        "BERTScore_to_source": BERTScore_to_source,
+        "BERTScore_to_ref": BERTScore_to_ref,
+        "COMET": COMET,
+        "SARI": SARI,
+    }
+
+    results = {}
+    for name, values in metrics.items():
+        if not values:
+            continue
+        mean, lower, upper = bootstrap_ci(values)
+        delta_lower = mean - lower
+        delta_upper = upper - mean
+        results[name] = {
+            "mean": mean,
+            "ci_lower": lower,
+            "ci_upper": upper,
+            "ci_range_minus": delta_lower,
+            "ci_range_plus": delta_upper,
+            "formatted": f"{name}: {mean:.2f} (+{delta_upper:.2f} -{delta_lower:.2f})"
+        }
+
+    return results
 
 def plot_metric_scatter(source_vals, reference_vals, prediction_vals, metric_key, output_dir, use_source=False):
 
@@ -282,6 +334,11 @@ def parse_args():
     parser.add_argument("--metric_key", type=str, required=True, help="Metric to visualize")
     parser.add_argument("--output_dir", type=str, default=".", help="Directory to save plots")
     parser.add_argument("--metric_mapping", type=str, required=True)
+    # TODO add
+    parser.add_argument("--model_name", type=str, required=True, help="Name of the evaluated model")
+    parser.add_argument("--dataset", type=str, required=True, help="Dataset name")
+    parser.add_argument("--user_prompt_id", type=str, required=True, help="User prompt ID")
+    parser.add_argument("--summary_file", type=str, default="output/models/all_results.json", help="Path to save overall summary results")
 
     return parser.parse_args()
 
@@ -347,7 +404,43 @@ def main():
     plot_error_std_vs_reference(reference_vals, per_sample_real_loss, metric_key_mapped, args.output_dir)
 
     print(f"\nAll plots saved to {args.output_dir}")
+
+    mean_metrics = compute_mean_metrics(predictions)
+    try:
+        with open(args.summary_file, "r", encoding="utf-8") as f:
+            all_results = json.load(f)
+    except FileNotFoundError:
+        all_results = {}
+
+    # nest by model -> dataset -> metric
+    model = args.model_name
+    dataset = args.dataset
+    metric = args.metric_key
+
+    if model not in all_results:
+        all_results[model] = {}
+    if dataset not in all_results[model]:
+        all_results[model][dataset] = {}
+
+    all_results[model][dataset][metric] = {
+        "losses": {
+            "MSE": mse,
+            "MAE": mae,
+            "std_error": std_error,
+            "var_error": var_error
+        },
+        "mean_metrics": mean_metrics
+    }
+
+    # Write back to the summary file
+    with open(args.summary_file, "w", encoding="utf-8") as f:
+        json.dump(all_results, f, indent=4)
+
+    print(f"Saved evaluation summary to {args.summary_file}")
+
+
     print("\n--- Evaluation complete.")
+
 
 
 if __name__ == "__main__":
