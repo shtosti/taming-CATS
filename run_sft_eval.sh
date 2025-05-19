@@ -1,15 +1,19 @@
 #!/bin/bash
 
-INPUT_DIR="output/models/Llama-3.2-1B-Instruct-Med-EASi_hq-FKGL-base-token_explanation-20250516-1632-av5ug43l"
-INPUT_FILE="$INPUT_DIR/output.json"
+# TODO
+INPUT_DIR="output/models/Qwen2.5-14B-Instruct-Med-EASi-FKGL-token_explanation-20250518-225258"
+MODEL_NAME="Qwen2.5-14B-Instruct"
+DATASET="Med-EASi"
 METRIC_NAME="FKGL"
+USER_PROMPT_ID="token_explanation"
 
-
-
-OUTPUT_DIR=$INPUT_DIR
 
 python src/sft_eval.py \
-  --input_file "$INPUT_FILE" \
+  --input_file "$INPUT_DIR/output.json" \
   --metric_key "$METRIC_NAME" \
-  --output_dir "$OUTPUT_DIR" \
-  --metric_mapping "data/metric_mapping.json"
+  --output_dir "$INPUT_DIR" \
+  --metric_mapping "data/metric_mapping.json"\
+  --model_name "$MODEL_NAME"\
+  --dataset "$DATASET"\
+  --user_prompt_id="$USER_PROMPT_ID"\
+  --summary_file="output/models/all_results.json"
