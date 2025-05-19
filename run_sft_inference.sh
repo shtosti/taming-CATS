@@ -3,10 +3,10 @@
 
 # ========== inference =========
 USE_PEFT=false
-MODEL_PATH="models/Qwen2.5-1.5B-Instruct-Med-EASi-FKGL-token_explanation-20250518-181847"
+MODEL_PATH="models/Llama-3.2-1B-Instruct-NoFluff_hq-FKGL-token_explanation-20250519-200531"
 METRIC_NAME="FKGL"
-DATASET_NAME="Med-EASi"
-MODEL_CLASS="auto" # "llama" or "auto"
+DATASET_NAME="NoFluff_hq"
+MODEL_CLASS="llama" # "llama" or "auto"
 
 
 OUTPUT_DIR="output/$MODEL_PATH"

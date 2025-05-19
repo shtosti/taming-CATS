@@ -339,7 +339,6 @@ def parse_args():
     parser.add_argument("--dataset", type=str, required=True, help="Dataset name")
     parser.add_argument("--user_prompt_id", type=str, required=True, help="User prompt ID")
     parser.add_argument("--summary_file", type=str, default="output/models/all_results.json", help="Path to save overall summary results")
-    parser.add_
 
     return parser.parse_args()
 
