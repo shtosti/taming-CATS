@@ -3,82 +3,154 @@ import argparse
 import matplotlib.pyplot as plt
 import numpy as np
 import os
+import matplotlib.patches as mpatches
+from matplotlib.patches import Rectangle
 
 def load_results(file_path):
     with open(file_path, "r", encoding="utf-8") as f:
         return json.load(f)
 
-def plot_comparison_metrics(results, dataset, control_attr, save_dir, output_prefix):
-    sari = []
-    comet = []
-    BLEU_to_source = []
-    BLEU_to_ref = []
-    BERTScore_to_source = []
-    BERTScore_to_ref = []
+def load_color_map(color_map_path):
+    with open(color_map_path, "r", encoding="utf-8") as f:
+        return json.load(f)
+
+def get_model_color(model_name, model_styles):
+    return model_styles.get(model_name, {}).get("color", "gray")
+
+def get_model_hatch(model_name, model_styles):
+    hatch = model_styles.get(model_name, {}).get("hatches", "solid")
+    return "" if hatch == "solid" else hatch
+
+def plot_comparison_metrics(results, dataset, control_attr, save_dir, output_prefix, color_map_path):
+    color_map = load_color_map(color_map_path)
+    model_styles = color_map.get("models", {})
+
+    losses = {
+        "MSE": [],
+        "MAE": [],
+        "std_error": [],
+        "var_error": []
+    }
+
+    metrics = {
+        "SARI": [],
+        "COMET": [],
+        "BLEU_to_source": [],
+        "BLEU_to_ref": [],
+        "BERTScore_to_source": [],
+        "BERTScore_to_ref": []
+    }
+
+    errors = {metric: {"lower": [], "upper": []} for metric in metrics}
     models = []
-    for model in results.keys():
-        models.append(model)
-        model_data = results[model]
+
+    for model, model_data in results.items():
         if dataset in model_data and control_attr in model_data[dataset]:
-            mean_metrics = model_data[dataset][control_attr]["mean_metrics"]
-            sari.append(mean_metrics["SARI"]["mean"])
-            comet.append(mean_metrics["COMET"]["mean"])
-            BLEU_to_source.append(mean_metrics["BLEU_to_source"]["mean"])
-            BLEU_to_ref.append(mean_metrics["BLEU_to_ref"]["mean"])
-            BERTScore_to_source.append(mean_metrics["BERTScore_to_source"]["mean"])
-            BERTScore_to_ref.append(mean_metrics["BERTScore_to_ref"]["mean"])
+            entry = model_data[dataset][control_attr]
+            mean_metrics = entry.get("mean_metrics", {})
+            losses_data = entry.get("losses", {})
 
-    print(models)
-    print(sari)
-    print(comet)
+            try:
+                for metric in metrics:
+                    mean = mean_metrics[metric]["mean"]
+                    ci_low = mean_metrics[metric]["ci_lower"]
+                    ci_up = mean_metrics[metric]["ci_upper"]
 
-    # create a plot with subplots, one for each metric
-    plt.figure(figsize=(10, 4))
+                    metrics[metric].append(mean)
+                    errors[metric]["lower"].append(mean - ci_low)
+                    errors[metric]["upper"].append(ci_up - mean)
 
-    plt.subplot(1, 6, 1)
-    plt.grid(True, axis='y', linestyle='--', alpha=0.7)
-    plt.bar(models, sari, color='blue')
-    plt.ylabel('SARI')
-    plt.xticks(rotation=90)
+                for loss in losses:
+                    losses[loss].append(losses_data.get(loss, np.nan))
 
-    plt.subplot(1, 6, 2)
-    plt.grid(True, axis='y', linestyle='--', alpha=0.7)
-    plt.bar(models, comet, color='orange')
-    plt.ylabel('COMET')
-    plt.xticks(rotation=90)
+                models.append(model)
+            except KeyError:
+                continue
 
-    plt.subplot(1, 6, 3)
-    plt.grid(True, axis='y', linestyle='--', alpha=0.7)
-    plt.bar(models, BLEU_to_source, color='green')
-    plt.ylabel('BLEU to Source')
-    plt.xticks(rotation=90)
+    if not models:
+        print(f"No valid data for {dataset}/{control_attr}")
+        return
 
-    plt.subplot(1, 6, 4)
-    plt.grid(True, axis='y', linestyle='--', alpha=0.7)
-    plt.bar(models, BLEU_to_ref, color='red')
-    plt.ylabel('BLEU to Reference')
-    plt.xticks(rotation=90)
-    
-    plt.subplot(1, 6, 5)
-    plt.grid(True, axis='y', linestyle='--', alpha=0.7)
-    plt.bar(models, BERTScore_to_source, color='purple')
-    plt.ylabel('BERTScore to Source')
-    plt.xticks(rotation=90)
+    total_metrics = list(metrics.keys())
+    total_losses = list(losses.keys())
+    total_items = total_metrics + total_losses
+    total_plots = len(total_items)
 
-    plt.subplot(1, 6, 6)
-    plt.grid(True, axis='y', linestyle='--', alpha=0.7)
-    plt.bar(models, BERTScore_to_ref, color='pink')
-    plt.ylabel('BERTScore to Reference')
-    plt.xticks(rotation=90)
+    ncols = 2
+    nrows = (total_plots + ncols - 1) // ncols
 
-    plt.suptitle(f"{control_attr} on {dataset}", fontsize=16)
+    fig, axes = plt.subplots(nrows, ncols, figsize=(10, 4 * nrows), sharex=False)
+    fig.suptitle(f"{control_attr} on {dataset}", fontsize=18)
+    axes = axes.flatten()
 
+    # Plot metrics with error bars
+    for i, metric in enumerate(total_metrics):
+        means = metrics[metric]
+        lower = errors[metric]["lower"]
+        upper = errors[metric]["upper"]
+        yerr = [lower, upper]
 
-    plt.tight_layout()
-    plt.savefig(os.path.join(save_dir, f"{output_prefix}_metrics.png"))
+        ax = axes[i]
+        for j, model in enumerate(models):
+            color = get_model_color(model, model_styles)
+            hatch = get_model_hatch(model, model_styles)
+            ax.bar(j, means[j], yerr=[[lower[j]], [upper[j]]],
+                   color=color, edgecolor='black', hatch=hatch,
+                   capsize=10)
+        ax.set_title(metric)
+        # ax.set_xticks(np.arange(len(models)))
+        # ax.set_xticklabels(models, rotation=90)
+        ax.set_xticks([])
+        ax.set_xticklabels([])
+        ax.grid(True, axis='y', linestyle='--', alpha=0.7)
+
+    # Plot loss values
+    for j, loss in enumerate(total_losses, start=len(total_metrics)):
+        values = losses[loss]
+        ax = axes[j]
+        for k, model in enumerate(models):
+            color = get_model_color(model, model_styles)
+            hatch = get_model_hatch(model, model_styles)
+            ax.bar(k, values[k], color=color, edgecolor='black', hatch=hatch)
+        ax.set_title(loss)
+        # ax.set_xticks(np.arange(len(models)))
+        # ax.set_xticklabels(models, rotation=90)
+        ax.set_xticks([])
+        ax.set_xticklabels([])
+        ax.grid(True, axis='y', linestyle='--', alpha=0.7)
+
+    for ax in axes[total_plots:]:
+        ax.set_visible(False)
+
+    # Add legend
+    legend_handles = []
+    seen = set()
+    for model in models:
+        color = get_model_color(model, model_styles)
+        hatch = get_model_hatch(model, model_styles)
+        key = (color, hatch)
+        if key not in seen:
+            seen.add(key)
+            label = model
+            rect = Rectangle((0, 0), 1, 1, facecolor=color, edgecolor='black', hatch=hatch, label=label, linewidth=1)
+            legend_handles.append(rect)
+
+    fig.legend(
+        handles=legend_handles,
+        loc='lower center',
+        ncol=4,
+        bbox_to_anchor=(0.5, 0.01),
+        frameon=True,
+        handlelength=2.5,
+        handleheight=2,
+        fontsize=10
+    )
+
+    plt.tight_layout(rect=[0, 0.04, 1, 0.96])
+    plot_path = os.path.join(save_dir, f"{output_prefix}_metrics_losses.png")
+    plt.savefig(plot_path, dpi=400)
     plt.close()
-
-
+    print(f"Saved plot to {plot_path}")
 
 def main():
     parser = argparse.ArgumentParser()
@@ -86,16 +158,14 @@ def main():
     parser.add_argument("--dataset", type=str, required=True, help="Dataset name to compare")
     parser.add_argument("--control_attr", type=str, required=True, help="Metric key to compare")
     parser.add_argument("--save_dir", type=str, required=True, help="Directory to save the plots")
+    parser.add_argument("--color_map_path", type=str, default="data/colormap/color_map.json", help="Path to color and hatch map JSON")
     args = parser.parse_args()
 
     os.makedirs(args.save_dir, exist_ok=True)
     output_prefix = f"{args.control_attr}_{args.dataset}"
 
     all_results = load_results(args.summary_file)
-
-    plot_comparison_metrics(all_results, args.dataset, args.control_attr, args.save_dir, output_prefix)
-    print(f"Plots saved in {args.save_dir}")
-
+    plot_comparison_metrics(all_results, args.dataset, args.control_attr, args.save_dir, output_prefix, args.color_map_path)
 
 if __name__ == "__main__":
     main()
