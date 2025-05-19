@@ -14,7 +14,7 @@ OUTPUT_FILE="$OUTPUT_DIR/output.json"
 mkdir -p "$OUTPUT_DIR"  # Ensure the directory exists
 
 ARGS=(
-  --use_vllm
+  # --use_vllm
   --model_path "$MODEL_PATH"
   --dataset_name "$DATASET_NAME"
   --model_class "$MODEL_CLASS"
