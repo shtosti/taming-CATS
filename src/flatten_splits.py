@@ -1,5 +1,13 @@
 import json
 import os
+import re
+
+def clean_text(text):
+    if not isinstance(text, str):
+        return text
+    text = re.sub(r'\n+', ' ', text)
+    text = re.sub(r'\s+', ' ', text)
+    return text.strip()
 
 def log_stats(logfile_path, message):
     with open(logfile_path, "a", encoding="utf-8") as log_file:
@@ -20,10 +28,10 @@ def flatten_jsonl(input_file, output_file, log_file_path=None):
                     total_flattened += 1
                     flattened_data.append({
                         "global_id": example["global_id"],
-                        "source_text": example.get("source_text", ""),
+                        "source_text": clean_text(example.get("source_text", "")),
                         "source_metrics": example.get("source_metrics", {}),
                         "metadata": example["metadata"],
-                        "simplification_text": simplification.get("simplification_text", ""),
+                        "simplification_text": clean_text(simplification.get("simplification_text", "")),
                         "target_metrics": simplification.get("target_metrics", {}),
                         "simplification_version": simplification.get("simplification_version", ""),
                         "grade_level": simplification.get("grade_level", ""),

@@ -229,6 +229,9 @@ def load_and_prepare_dataset(dataset_name, tokenizer, args, source_based_metric=
     train_dataset = load_dataset_from_hf(dataset_name, split="train", slice=args.slice_train)
     val_dataset = load_dataset_from_hf(dataset_name, split="validation", slice=args.slice_val)
 
+    train_dataset = train_dataset.shuffle(seed=args.seed)
+    val_dataset = val_dataset.shuffle(seed=args.seed)
+
     train_dataset = train_dataset.map(process_instance)
     val_dataset = val_dataset.map(process_instance)
 
