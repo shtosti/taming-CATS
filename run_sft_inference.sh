@@ -3,9 +3,9 @@
 
 # ========== inference =========
 USE_PEFT=false
-MODEL_PATH="models/Qwen2.5-1.5B-Instruct-Med-EASi-CHAR_COMPRESSION-token_explanation-20250518-184009"
-METRIC_NAME="CHAR_COMPRESSION"
-DATASET_NAME="Med-EASi"
+MODEL_PATH="models/Ministral-3b-instruct-NoFluff_hq-FKGL-token_explanation-20250520-185136"
+METRIC_NAME="FKGL"
+DATASET_NAME="NoFluff_hq"
 MODEL_CLASS="auto" # "llama" or "auto"
 
 

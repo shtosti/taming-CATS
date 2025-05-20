@@ -3,11 +3,11 @@
 
 # ========== inference =========
 USE_PEFT=true
-MODEL_PATH="models/Llama-2-13b-chat-hf-Med-EASi_hq-FKGL-token_explanation-20250519-192205"
-MODEL_NAME="meta-llama/Llama-2-13b-chat-hf"
-METRIC_NAME="FKGL"
-DATASET_NAME="Med-EASi_hq"
-MODEL_CLASS="llama" # "llama" or "auto"
+MODEL_PATH="models/Qwen2.5-7B-Instruct-Med-EASi-CHAR_COMPRESSION-token_explanation-20250519-010313"
+MODEL_NAME="Qwen/Qwen2.5-7B-Instruct"
+METRIC_NAME="CHAR_COMPRESSION"
+DATASET_NAME="Med-EASi"
+MODEL_CLASS="auto" # "llama" or "auto"
 
 
 OUTPUT_DIR="output/$MODEL_PATH"
