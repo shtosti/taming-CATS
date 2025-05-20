@@ -1,8 +1,8 @@
 #!/bin/bash
 
 # TODO
-INPUT_DIR="output/models/Meta-Llama-3-8B-Instruct-Med-EASi-CHAR_COMPRESSION-token_explanation-20250518-223705"
-MODEL_NAME="Meta-Llama-3-8B-Instruct"
+INPUT_DIR="output/models/Ministral-3b-instruct-Med-EASi-CHAR_COMPRESSION-token_explanation-20250518-200504"
+MODEL_NAME="Ministral-3b-instruct"
 DATASET="Med-EASi"
 METRIC_NAME="CHAR_COMPRESSION"
 USER_PROMPT_ID="token_explanation"
