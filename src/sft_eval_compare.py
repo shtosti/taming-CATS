@@ -184,7 +184,7 @@ def plot_comparison_metrics(results, dataset, control_attr, save_dir, output_pre
 
     plt.tight_layout(rect=[0, 0.04, 1, 0.96])
     plot_path = os.path.join(save_dir, f"{output_prefix}_metrics_losses.png")
-    plt.savefig(plot_path, dpi=400)
+    plt.savefig(plot_path, dpi=300)
     plt.close()
     print(f"Saved plot to {plot_path}")
 
