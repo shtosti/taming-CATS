@@ -1,0 +1,1484 @@
+Mon May 19 20:04:26 2025       
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 560.35.05              Driver Version: 560.35.05      CUDA Version: 12.6     |
+|-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  NVIDIA A100-SXM4-80GB          Off |   00000000:07:00.0 Off |                    0 |
+| N/A   28C    P0             62W /  400W |       1MiB /  81920MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+                                                                                         
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI        PID   Type   Process name                              GPU Memory |
+|        ID   ID                                                               Usage      |
+|=========================================================================================|
+|  No running processes found                                                             |
++-----------------------------------------------------------------------------------------+
+*** Finetuning meta-llama/Meta-Llama-3-8B-Instruct with NoFluff, and FKGL ***
+torch.cuda.is_bf16_supported: True
+Transformers version: 4.51.0
+Python path: /home/hhubar/data/conda/envs/sft/bin/python
+Using PEFT...
+
+Run arguments:
+Namespace(model_class='llama', model_family='base', model_name='meta-llama/Meta-Llama-3-8B-Instruct', dataset_name='NoFluff,', slice_train=-1, slice_val=-1, batch_size=4, eval_batch_size=4, gradient_accumulation_steps=4, learning_rate=0.0001, weight_decay=0.01, warmup_steps=30, max_grad_norm=1.0, epochs=3, max_length=512, logging_steps=10, wandb_project_name='ATS_with_control_tokens', wandb_entity='shtosti', generate_every=20, seed=42, patience=4, prompting_type='vanilla', user_prompt_id='token_explanation', metric_name='FKGL', control_tokens='data/prompts/control_tokens.json', system_prompts='data/prompts/system_prompts.json', user_prompts='data/prompts/user_prompts.json', metric_mapping='data/metric_mapping.json', peft=True, lora_r=16, lora_dropout=0.1)
+
+Saving to: ./models/Meta-Llama-3-8B-Instruct-NoFluff,-FKGL-token_explanation-20250519-200511
+
+*** Finetuning Meta-Llama-3-8B-Instruct with NoFluff, ***
+
+CUDA available: True
+Number of GPUs: 1
+GPU name: NVIDIA A100-SXM4-80GB
+Model embedding size BEFORE resizing: 128256
+Model embedding size AFTER resizing: 128257
+Using PEFT for fine-tuning...
+--- DEBUG ---
+trainable params:
+Trainable params: 6,815,744 / 8,037,085,184 (0.08%)
+--- tokenizer pad_token_id: 128256
+--- tokenizer eos_token_id: 128009
+--- special tokens:
+[1;34mwandb[0m: 
+[1;34mwandb[0m: 🚀 View run [33mswept-pine-331[0m at: [34mhttps://wandb.ai/shtosti/ATS_with_control_tokens/runs/5f5e0wbl[0m
+[1;34mwandb[0m: Find logs at: [1;35m../../../../scratch/hhubar/keep-it-simple/wandb/run-20250519_200510-5f5e0wbl/logs[0m
+*** Finetuning meta-llama/Meta-Llama-3-8B-Instruct with NoFluff_hq and FKGL ***
+torch.cuda.is_bf16_supported: True
+Transformers version: 4.51.0
+Python path: /home/hhubar/data/conda/envs/sft/bin/python
+Using PEFT...
+
+Run arguments:
+Namespace(model_class='llama', model_family='base', model_name='meta-llama/Meta-Llama-3-8B-Instruct', dataset_name='NoFluff_hq', slice_train=-1, slice_val=-1, batch_size=4, eval_batch_size=4, gradient_accumulation_steps=4, learning_rate=0.0001, weight_decay=0.01, warmup_steps=30, max_grad_norm=1.0, epochs=3, max_length=512, logging_steps=10, wandb_project_name='ATS_with_control_tokens', wandb_entity='shtosti', generate_every=20, seed=42, patience=4, prompting_type='vanilla', user_prompt_id='token_explanation', metric_name='FKGL', control_tokens='data/prompts/control_tokens.json', system_prompts='data/prompts/system_prompts.json', user_prompts='data/prompts/user_prompts.json', metric_mapping='data/metric_mapping.json', peft=True, lora_r=16, lora_dropout=0.1)
+
+Saving to: ./models/Meta-Llama-3-8B-Instruct-NoFluff_hq-FKGL-token_explanation-20250519-200538
+
+*** Finetuning Meta-Llama-3-8B-Instruct with NoFluff_hq ***
+
+CUDA available: True
+Number of GPUs: 1
+GPU name: NVIDIA A100-SXM4-80GB
+Model embedding size BEFORE resizing: 128256
+Model embedding size AFTER resizing: 128257
+Using PEFT for fine-tuning...
+--- DEBUG ---
+trainable params:
+Trainable params: 6,815,744 / 8,037,085,184 (0.08%)
+--- tokenizer pad_token_id: 128256
+--- tokenizer eos_token_id: 128009
+--- special tokens:
+train:	 Inspect the dataset format:
+ {'global_id': ['simpa_syntactic_000237'], 'source_text': ['We have fiver weather stations across Sheffield that provides us with up-to-the-minute weather forecasts, helping us to decide when we need to grit the city ’ s roads.'], 'source_metrics': [{'FRE': 60.99, 'ARI': 16.5, 'FKGL': 11.5, 'Dale-Chall': 10.82, 'char_count': 167, 'alphanum_count': 134, 'word_count': 30, 'sentence_count': 1}], 'metadata': [{'dataset': 'simpa_syntactic', 'experiment_split': '', 'domain': 'public_administration', 'language': 'en', 'annotation': 'human', 'level': 'sentence'}], 'simplification_text': ["There are five weather stations across Sheffield that provide us with up to date weather forecast. This helps us to decide when we need to grit the city's roads."], 'target_metrics': [{'FRE': 82.14, 'ARI': 7.4, 'FKGL': 5.4, 'Dale-Chall': 8.71, 'char_count': 161, 'alphanum_count': 130, 'word_count': 32, 'sentence_count': 2, 'char_compression_rate': 0.96, 'word_compression_rate': 1.07, 'sentence_compression_rate': 2.0, 'BLEU': 40.97162239151507, 'BERTScore': 0.9536137580871582}], 'simplification_version': [1], 'grade_level': [-1], 'simplification_dimensions': [{'linguistic': {'lexical': False, 'syntactic': True}}]}
+validation:	 Inspect the dataset format:
+ {'global_id': ['wikilarge_ori_297501'], 'source_text': ['He settled in London , devoting himself chiefly to practical teaching .\n'], 'source_metrics': [{'FRE': 35.95, 'ARI': 11.8, 'FKGL': 10.7, 'Dale-Chall': 13.61, 'char_count': 72, 'alphanum_count': 58, 'word_count': 12, 'sentence_count': 1}], 'metadata': [{'dataset': 'wikilarge_ori', 'experiment_split': '', 'domain': 'general', 'language': 'en', 'annotation': 'automatic', 'level': 'sentence'}], 'simplification_text': ['He teaches in London .\n'], 'target_metrics': [{'FRE': 75.88, 'ARI': 1.8, 'FKGL': 3.7, 'Dale-Chall': 11.73, 'char_count': 23, 'alphanum_count': 17, 'word_count': 5, 'sentence_count': 1, 'char_compression_rate': 0.32, 'word_compression_rate': 0.42, 'sentence_compression_rate': 1.0, 'BLEU': 6.265199648711645, 'BERTScore': 0.9069358110427856}], 'simplification_version': [1], 'grade_level': [-1], 'simplification_dimensions': [{'linguistic': {'lexical': False, 'syntactic': False}}]}
+
+
+ *** Before tokenization ***
+>>> train:
+
+Showing 1 example(s):
+
+Example 1 (index 456)
+--- Prompt:
+ <|begin_of_text|><|start_header_id|>system<|end_header_id|>
+
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|><|start_header_id|>user<|end_header_id|>
+
+INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=19.3> Following extensive consultation and Sheffield Cabinet endorsement in December 2004, this Action Plan provides a 10-year vision of the area and will be used by the City Council to guide future development in the area.
+EXPLANATION: The <FKGL=17.7> token specifies that the target Flesch-Kincaid Grade Level should be approximately 17.7. Lower values indicate simpler text.<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+<FKGL=17.7><|eot_id|>
+--- Completion:
+ After discussions with local people and Sheffield Cabinet support in December 2004, this Action Plan provides a 10-year plan for the area and will be used by the City Council to guide any changes in the area. <|eot_id|>
+==================================================
+
+
+ *** After tokenization ***
+>>> train:
+
+Showing 1 example(s):
+
+Example 1 (index 102)
+--- Prompt:
+ <|begin_of_text|><|start_header_id|>system<|end_header_id|>
+
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|><|start_header_id|>user<|end_header_id|>
+
+INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=9.9> The Wilhelm scream originates from a series of sound effects recorded for the 1951 movie Distant Drums.
+EXPLANATION: The <FKGL=8.3> token specifies that the target Flesch-Kincaid Grade Level should be approximately 8.3. Lower values indicate simpler text.<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+<FKGL=8.3><|eot_id|>
+--- Completion:
+ The Wilhelm scream is a movie and television sound effect first used in 1951 for the movie Distant Drums. <|eot_id|>
+--- input_ids:
+ [128000, 128000, 128006, 9125, 128007, 271, 2675, 527, 264, 11190, 6335, 304, 1495, 15858, 2461, 13, 1472, 7068, 264, 44899, 2373, 315, 279, 1495, 1988, 555, 279, 1217, 13, 1472, 40821, 279, 1495, 4184, 311, 279, 11470, 2728, 555, 279, 1217, 13, 3277, 4691, 311, 40821, 264, 1495, 11, 7068, 1193, 279, 11472, 15858, 2461, 11, 2085, 904, 5217, 6170, 11, 8554, 477, 41941, 13, 128009, 128006, 882, 128007, 271, 691, 58555, 25, 62342, 1463, 279, 2768, 1495, 1778, 430, 1202, 435, 645, 331, 16222, 258, 936, 307, 24749, 9580, 320, 28096, 3910, 8, 5573, 374, 13489, 6273, 311, 430, 5300, 304, 279, 2585, 4037, 22033, 2954, 311, 701, 8066, 15858, 2461, 13, 578, 2585, 4037, 706, 279, 2768, 3645, 25, 366, 45975, 37078, 28, 24771, 14611, 578, 2585, 4037, 22033, 2954, 311, 279, 2592, 1495, 15151, 279, 85346, 3910, 907, 315, 279, 2592, 1495, 13, 720, 44098, 16139, 25, 366, 28096, 3910, 28, 24, 13, 24, 29, 578, 93537, 46789, 99970, 505, 264, 4101, 315, 5222, 6372, 12715, 369, 279, 220, 6280, 16, 5818, 423, 11451, 2999, 6370, 627, 3337, 95179, 3579, 25, 578, 366, 28096, 3910, 28, 23, 13, 18, 29, 4037, 30202, 430, 279, 2218, 435, 645, 331, 16222, 258, 936, 307, 24749, 9580, 1288, 387, 13489, 220, 23, 13, 18, 13, 28636, 2819, 13519, 35388, 1495, 13, 128009, 128006, 78191, 128007, 271, 27, 28096, 3910, 28, 23, 13, 18, 29, 128009, 128000, 791, 93537, 46789, 374, 264, 5818, 323, 12707, 5222, 2515, 1176, 1511, 304, 220, 6280, 16, 369, 279, 5818, 423, 11451, 2999, 6370, 13, 220, 128009, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256]
+--- labels:
+ [-100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, 128000, 791, 93537, 46789, 374, 264, 5818, 323, 12707, 5222, 2515, 1176, 1511, 304, 220, 6280, 16, 369, 279, 5818, 423, 11451, 2999, 6370, 13, 220, 128009, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100]
+==================================================
+********** DEBUG **********
+Train dataset columns: ['global_id', 'source_text', 'source_metrics', 'metadata', 'simplification_text', 'target_metrics', 'simplification_version', 'grade_level', 'simplification_dimensions', 'prompt', 'completion', 'system_prompt_id', 'user_prompt_id', 'metric_name', 'source_metric_value', 'target_metric_value', 'input_ids', 'labels', 'attention_mask']
+Validation dataset columns: ['global_id', 'source_text', 'source_metrics', 'metadata', 'simplification_text', 'target_metrics', 'simplification_version', 'grade_level', 'simplification_dimensions', 'prompt', 'completion', 'system_prompt_id', 'user_prompt_id', 'metric_name', 'source_metric_value', 'target_metric_value', 'input_ids', 'labels', 'attention_mask']
+First 10 input_ids: [128000, 128000, 128006, 9125, 128007, 271, 2675, 527, 264, 11190]
+First 10 labels: [-100, -100, -100, -100, -100, -100, -100, -100, -100, -100]
+
+--- DEBUG: Explore first instance of the val set:
+ {'global_id': 'wikilarge_ori_297501', 'source_text': 'He settled in London , devoting himself chiefly to practical teaching .\n', 'source_metrics': {'FRE': 35.95, 'ARI': 11.8, 'FKGL': 10.7, 'Dale-Chall': 13.61, 'char_count': 72, 'alphanum_count': 58, 'word_count': 12, 'sentence_count': 1}, 'metadata': {'dataset': 'wikilarge_ori', 'experiment_split': '', 'domain': 'general', 'language': 'en', 'annotation': 'automatic', 'level': 'sentence'}, 'simplification_text': 'He teaches in London .\n', 'target_metrics': {'FRE': 75.88, 'ARI': 1.8, 'FKGL': 3.7, 'Dale-Chall': 11.73, 'char_count': 23, 'alphanum_count': 17, 'word_count': 5, 'sentence_count': 1, 'char_compression_rate': 0.32, 'word_compression_rate': 0.42, 'sentence_compression_rate': 1.0, 'BLEU': 6.265199648711645, 'BERTScore': 0.9069358110427856}, 'simplification_version': 1, 'grade_level': -1, 'simplification_dimensions': {'linguistic': {'lexical': False, 'syntactic': False}}, 'prompt': '<|begin_of_text|><|start_header_id|>system<|end_header_id|>\n\nYou are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|><|start_header_id|>user<|end_header_id|>\n\nINSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. \nSOURCE TEXT: <FKGL=10.7> He settled in London , devoting himself chiefly to practical teaching .\n\nEXPLANATION: The <FKGL=3.7> token specifies that the target Flesch-Kincaid Grade Level should be approximately 3.7. Lower values indicate simpler text.<|eot_id|><|start_header_id|>assistant<|end_header_id|>\n\n<FKGL=3.7><|eot_id|>', 'completion': 'He teaches in London . <|eot_id|>', 'system_prompt_id': 'sys_prompt_6', 'user_prompt_id': 'token_explanation', 'metric_name': 'FKGL', 'source_metric_value': 10.7, 'target_metric_value': 3.7, 'input_ids': [128000, 128000, 128006, 9125, 128007, 271, 2675, 527, 264, 11190, 6335, 304, 1495, 15858, 2461, 13, 1472, 7068, 264, 44899, 2373, 315, 279, 1495, 1988, 555, 279, 1217, 13, 1472, 40821, 279, 1495, 4184, 311, 279, 11470, 2728, 555, 279, 1217, 13, 3277, 4691, 311, 40821, 264, 1495, 11, 7068, 1193, 279, 11472, 15858, 2461, 11, 2085, 904, 5217, 6170, 11, 8554, 477, 41941, 13, 128009, 128006, 882, 128007, 271, 691, 58555, 25, 62342, 1463, 279, 2768, 1495, 1778, 430, 1202, 435, 645, 331, 16222, 258, 936, 307, 24749, 9580, 320, 28096, 3910, 8, 5573, 374, 13489, 6273, 311, 430, 5300, 304, 279, 2585, 4037, 22033, 2954, 311, 701, 8066, 15858, 2461, 13, 578, 2585, 4037, 706, 279, 2768, 3645, 25, 366, 45975, 37078, 28, 24771, 14611, 578, 2585, 4037, 22033, 2954, 311, 279, 2592, 1495, 15151, 279, 85346, 3910, 907, 315, 279, 2592, 1495, 13, 720, 44098, 16139, 25, 366, 28096, 3910, 28, 605, 13, 22, 29, 1283, 23183, 304, 7295, 1174, 3567, 11780, 5678, 89382, 311, 15325, 12917, 6905, 3337, 95179, 3579, 25, 578, 366, 28096, 3910, 28, 18, 13, 22, 29, 4037, 30202, 430, 279, 2218, 435, 645, 331, 16222, 258, 936, 307, 24749, 9580, 1288, 387, 13489, 220, 18, 13, 22, 13, 28636, 2819, 13519, 35388, 1495, 13, 128009, 128006, 78191, 128007, 271, 27, 28096, 3910, 28, 18, 13, 22, 29, 128009, 128000, 1548, 33992, 304, 7295, 662, 220, 128009, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256], 'labels': [-100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, 128000, 1548, 33992, 304, 7295, 662, 220, 128009, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100], 'attention_mask': [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]}
+type of input_ids: <class 'list'>
+type of labels: <class 'list'>
+
+--- DEBUG: Tokenized fields ---
+--- Tokenizer vocab size: 128000
+--- input_ids: [128000, 128000, 128006, 9125, 128007, 271, 2675, 527, 264, 11190, 6335, 304, 1495, 15858, 2461, 13, 1472, 7068, 264, 44899, 2373, 315, 279, 1495, 1988, 555, 279, 1217, 13, 1472, 40821, 279, 1495, 4184, 311, 279, 11470, 2728, 555, 279, 1217, 13, 3277, 4691, 311, 40821, 264, 1495, 11, 7068, 1193, 279, 11472, 15858, 2461, 11, 2085, 904, 5217, 6170, 11, 8554, 477, 41941, 13, 128009, 128006, 882, 128007, 271, 691, 58555, 25, 62342, 1463, 279, 2768, 1495, 1778, 430, 1202, 435, 645, 331, 16222, 258, 936, 307, 24749, 9580, 320, 28096, 3910, 8, 5573, 374, 13489, 6273, 311, 430, 5300, 304, 279, 2585, 4037, 22033, 2954, 311, 701, 8066, 15858, 2461, 13, 578, 2585, 4037, 706, 279, 2768, 3645, 25, 366, 45975, 37078, 28, 24771, 14611, 578, 2585, 4037, 22033, 2954, 311, 279, 2592, 1495, 15151, 279, 85346, 3910, 907, 315, 279, 2592, 1495, 13, 720, 44098, 16139, 25, 366, 28096, 3910, 28, 806, 13, 20, 29, 1226, 617, 282, 1553, 9282, 17789, 4028, 61125, 430, 5825, 603, 449, 709, 4791, 10826, 24401, 9282, 51165, 11, 10695, 603, 311, 10491, 994, 584, 1205, 311, 42018, 279, 3363, 18217, 274, 19795, 627, 3337, 95179, 3579, 25, 578, 366, 28096, 3910, 28, 20, 13, 19, 29, 4037, 30202, 430, 279, 2218, 435, 645, 331, 16222, 258, 936, 307, 24749, 9580, 1288, 387, 13489, 220, 20, 13, 19, 13, 28636, 2819, 13519, 35388, 1495, 13, 128009, 128006, 78191, 128007, 271, 27, 28096, 3910, 28, 20, 13, 19, 29, 128009, 128000, 3947, 527, 4330, 9282, 17789, 4028, 61125, 430, 3493, 603, 449, 709, 311, 2457, 9282, 18057, 13, 1115, 8779, 603, 311, 10491, 994, 584, 1205, 311, 42018, 279, 3363, 596, 19795, 13, 220, 128009, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256, 128256]
+--- labels: [-100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, 128000, 3947, 527, 4330, 9282, 17789, 4028, 61125, 430, 3493, 603, 449, 709, 311, 2457, 9282, 18057, 13, 1115, 8779, 603, 311, 10491, 994, 584, 1205, 311, 42018, 279, 3363, 596, 19795, 13, 220, 128009, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100]
+--- decoded input_ids:
+ <|begin_of_text|><|begin_of_text|><|start_header_id|>system<|end_header_id|>
+
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|><|start_header_id|>user<|end_header_id|>
+
+INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=11.5> We have fiver weather stations across Sheffield that provides us with up-to-the-minute weather forecasts, helping us to decide when we need to grit the city ’ s roads.
+EXPLANATION: The <FKGL=5.4> token specifies that the target Flesch-Kincaid Grade Level should be approximately 5.4. Lower values indicate simpler text.<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+<FKGL=5.4><|eot_id|><|begin_of_text|>There are five weather stations across Sheffield that provide us with up to date weather forecast. This helps us to decide when we need to grit the city's roads. <|eot_id|>[PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD]
+--- decoded labels:
+ There are five weather stations across Sheffield that provide us with up to date weather forecast. This helps us to decide when we need to grit the city's roads. 
+{'loss': 2.7939, 'grad_norm': 5.237854957580566, 'learning_rate': 3e-05, 'epoch': 0.08}
+{'eval_loss': 2.609973907470703, 'eval_runtime': 21.3742, 'eval_samples_per_second': 12.96, 'eval_steps_per_second': 3.275, 'epoch': 0.08}
+
+>>> [Step 20] Prompt:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|>
+
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|><|start_header_id|>user<|end_header_id|>
+
+INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=15.8> The Sheffield Town Trust distributes about £400,000 per year to groups and organisations ‘ for charitable and public purposes ’ for the benefit of Sheffield and its inhabitants.
+EXPLANATION: The <FKGL=10.1> token specifies that the target Flesch-Kincaid Grade Level should be approximately 10.1. Lower values indicate simpler text.<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+<FKGL=10.1><|eot_id|>
+>>> Reference:
+The Sheffield Town Trust distributes about £400,000 per year to groups and organisations ‘for charitable and public purposes’. This is done for the benefit of Sheffield and its residents. <|eot_id|>
+>>> Prediction:
+system
+
+INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=15.8> The Sheffield Town Trust distributes about £400,000 per year to groups and organisations ‘ for charitable and public purposes ’ for the benefit of Sheffield and its inhabitants.
+EXPLANATION: The <FKGL=10.1> token specifies that the target Flesch-Kincaid Grade Level should be approximately 10.1. Lower values indicate simpler text.
+================================================================================
+
+>>> [Step 20] Prompt:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|>
+
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|><|start_header_id|>user<|end_header_id|>
+
+INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=17.8> An International Standard Serial Number -LRB- ISSN -RRB- is a unique eight-digit number used to identify a print or electronic periodical publication .
+
+EXPLANATION: The <FKGL=17.4> token specifies that the target Flesch-Kincaid Grade Level should be approximately 17.4. Lower values indicate simpler text.<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+<FKGL=17.4><|eot_id|>
+>>> Reference:
+An International Standard Serial Number -LRB- ISSN -RRB- is an eight-digit number used to identify a print or electronic periodical publication . <|eot_id|>
+>>> Prediction:
+assistant
+
+An International Standard Serial Number -LRB- ISSN -RRB- is a unique eight-digit number used to identify a print or electronic periodical publication.
+================================================================================
+
+>>> [Step 20] Prompt:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|>
+
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|><|start_header_id|>user<|end_header_id|>
+
+INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=12.7> Food waste continues in the post-harvest stage, but the amounts of post-harvest loss involved are relatively unknown and difficult to estimate.
+EXPLANATION: The <FKGL=7.2> token specifies that the target Flesch-Kincaid Grade Level should be approximately 7.2. Lower values indicate simpler text.<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+<FKGL=7.2><|eot_id|>
+>>> Reference:
+Large amounts of food waste can occur at any stage in the process of producing food. <|eot_id|>
+>>> Prediction:
+system
+
+INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text.
+SOURCE TEXT: <FKGL=12.7> Food waste continues in the post-harvest stage, but the amounts of post-harvest loss involved are relatively unknown and difficult to estimate.
+EXPLANATION: The <FKGL=7.2> token specifies that the target Flesch-Kincaid Grade Level should be approximately 7.2. Lower values indicate simpler text.
+================================================================================
+
+>>> [Step 20] Prompt:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|>
+
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|><|start_header_id|>user<|end_header_id|>
+
+INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=6.8> For most superscalar designs , the instruction width is 32 bits or fewer .
+
+EXPLANATION: The <FKGL=5.6> token specifies that the target Flesch-Kincaid Grade Level should be approximately 5.6. Lower values indicate simpler text.<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+<FKGL=5.6><|eot_id|>
+>>> Reference:
+For most superscalar designs , the instruction width is 32 bits or less . <|eot_id|>
+>>> Prediction:
+assistant
+
+For most superscalar designs, the instruction width is 32 bits or fewer 
+================================================================================
+{'loss': 2.1675, 'grad_norm': 2.849667549133301, 'learning_rate': 6.333333333333333e-05, 'epoch': 0.16}
+{'eval_loss': 1.6803418397903442, 'eval_runtime': 21.3295, 'eval_samples_per_second': 12.987, 'eval_steps_per_second': 3.282, 'epoch': 0.16}
+{'loss': 1.5494, 'grad_norm': 2.6115946769714355, 'learning_rate': 9.666666666666667e-05, 'epoch': 0.23}
+{'eval_loss': 1.1066938638687134, 'eval_runtime': 21.516, 'eval_samples_per_second': 12.874, 'eval_steps_per_second': 3.253, 'epoch': 0.23}
+
+>>> [Step 40] Prompt:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|>
+
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|><|start_header_id|>user<|end_header_id|>
+
+INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=19.7> We believe high quality Urban Design is of critical importance to the city, supporting Sheffield’s transformation, promoting sustainable development and delivering high quality places.
+EXPLANATION: The <FKGL=19.0> token specifies that the target Flesch-Kincaid Grade Level should be approximately 19.0. Lower values indicate simpler text.<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+<FKGL=19.0><|eot_id|>
+>>> Reference:
+We believe high quality Urban Design is vital to the city, supporting Sheffield’s transformation, promoting sustainable development and delivering high quality places. <|eot_id|>
+>>> Prediction:
+We believe high quality Urban Design is of critical importance to the city, supporting Sheffield’s transformation, promoting sustainable development and delivering high quality places. 
+================================================================================
+
+>>> [Step 40] Prompt:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|>
+
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|><|start_header_id|>user<|end_header_id|>
+
+INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=17.0> After graduating from Starfleet Academy 's medical school , Beverly married Lieutenant Jack Crusher , who served under Captain Jean-Luc Picard on the USS Stargazer .
+
+EXPLANATION: The <FKGL=10.0> token specifies that the target Flesch-Kincaid Grade Level should be approximately 10.0. Lower values indicate simpler text.<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+<FKGL=10.0><|eot_id|>
+>>> Reference:
+After joining Starfleet , she married Lieutenant Jack Crusher . <|eot_id|>
+>>> Prediction:
+After graduating from Starfleet Academy's medical school, Beverly married Lieutenant Jack Crusher, who served under Captain Jean-Luc Picard on the USS Stargazer. 
+================================================================================
+
+>>> [Step 40] Prompt:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|>
+
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|><|start_header_id|>user<|end_header_id|>
+
+INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=11.9> His next work , Saturday , follows an especially eventful day in the life of a successful neurosurgeon .
+
+EXPLANATION: The <FKGL=8.4> token specifies that the target Flesch-Kincaid Grade Level should be approximately 8.4. Lower values indicate simpler text.<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+<FKGL=8.4><|eot_id|>
+>>> Reference:
+His next work at Saturday will be a successful neurosurgeon . <|eot_id|>
+>>> Prediction:
+His next work, Saturday, follows a busy day in the life of a successful neurosurgeon. 
+================================================================================
+
+>>> [Step 40] Prompt:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|>
+
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|><|start_header_id|>user<|end_header_id|>
+
+INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=12.3> If we are likely to spend £50,000 or more with a supplier, then we will comply with the formal tendering process, led by a procurement professional.
+EXPLANATION: The <FKGL=11.1> token specifies that the target Flesch-Kincaid Grade Level should be approximately 11.1. Lower values indicate simpler text.<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+<FKGL=11.1><|eot_id|>
+>>> Reference:
+If we are likely to spend £50,000 or more with a supplier, then we will obey with the formal tendering process, led by an aquired professional. <|eot_id|>
+>>> Prediction:
+If we are likely to spend £50,000 or more with a supplier, then we will comply with the formal tendering process, led by a procurement professional. 
+================================================================================
+{'loss': 0.9755, 'grad_norm': 1.6272908449172974, 'learning_rate': 9.98406003515375e-05, 'epoch': 0.31}
+{'eval_loss': 0.8995004892349243, 'eval_runtime': 21.3867, 'eval_samples_per_second': 12.952, 'eval_steps_per_second': 3.273, 'epoch': 0.31}
+{'loss': 0.8754, 'grad_norm': 0.9308267831802368, 'learning_rate': 9.929089390846387e-05, 'epoch': 0.39}
+{'eval_loss': 0.8584388494491577, 'eval_runtime': 21.3326, 'eval_samples_per_second': 12.985, 'eval_steps_per_second': 3.281, 'epoch': 0.39}
+
+>>> [Step 60] Prompt:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|>
+
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|><|start_header_id|>user<|end_header_id|>
+
+INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=14.2> We are committed to open government, and part of this process is compliance to the Government ’ s Transparency Code for Local Authorities.
+EXPLANATION: The <FKGL=10.7> token specifies that the target Flesch-Kincaid Grade Level should be approximately 10.7. Lower values indicate simpler text.<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+<FKGL=10.7><|eot_id|>
+>>> Reference:
+We are committed to open government. Abiding by the Government's Transparency Code for Local Authorities is part of this process. <|eot_id|>
+>>> Prediction:
+We are committed to open government. We will do this by following the Government ’ s Transparency Code for Local Authorities. 
+================================================================================
+
+>>> [Step 60] Prompt:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|>
+
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|><|start_header_id|>user<|end_header_id|>
+
+INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=16.6> One side of the armed conflicts is composed mainly of the Sudanese military and the Janjaweed , a Sudanese militia group recruited mostly from the Afro-Arab Abbala tribes of the northern Rizeigat region in Sudan .
+
+EXPLANATION: The <FKGL=15.0> token specifies that the target Flesch-Kincaid Grade Level should be approximately 15.0. Lower values indicate simpler text.<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+<FKGL=15.0><|eot_id|>
+>>> Reference:
+One side of the armed conflicts is made of Sudanese military and the Janjaweed , a Sudanese militia recruited from the Afro-Arab Abbala tribes of the northern Rizeigat region in Sudan . <|eot_id|>
+>>> Prediction:
+One side of the armed conflicts is composed mainly of the Sudanese military and the Janjaweed, a Sudanese militia group recruited from the northern Rizeigat region in Sudan. 
+================================================================================
+
+>>> [Step 60] Prompt:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|>
+
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|><|start_header_id|>user<|end_header_id|>
+
+INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=17.0> Benign paroxysmal vertigo of childhood is an uncommon neurological disorder which presents with recurrent episodes of dizziness.
+EXPLANATION: The <FKGL=10.7> token specifies that the target Flesch-Kincaid Grade Level should be approximately 10.7. Lower values indicate simpler text.<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+<FKGL=10.7><|eot_id|>
+>>> Reference:
+Benign paroxysmal vertigo of childhood (BPVC for short) is a medical problem that happens in children. <|eot_id|>
+>>> Prediction:
+Benign paroxysmal vertigo of childhood is a rare neurological disorder which presents with recurrent episodes of dizziness. 
+================================================================================
+
+>>> [Step 60] Prompt:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|>
+
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|><|start_header_id|>user<|end_header_id|>
+
+INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=14.2> However, we’ll contact you on an annual basis to offer support or an opportunity to meet to discuss the education being offered to your child.
+EXPLANATION: The <FKGL=11.9> token specifies that the target Flesch-Kincaid Grade Level should be approximately 11.9. Lower values indicate simpler text.<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+<FKGL=11.9><|eot_id|>
+>>> Reference:
+However, we’ll contact you on an yearly basis to offer support or a chance to meet to discuss the education being offered to your child. <|eot_id|>
+>>> Prediction:
+However, we will contact you once a year to offer support or an opportunity to meet to discuss the education being offered to your child. 
+================================================================================
+{'loss': 0.8851, 'grad_norm': 0.9339672327041626, 'learning_rate': 9.835323826310521e-05, 'epoch': 0.47}
+{'eval_loss': 0.835127055644989, 'eval_runtime': 21.2974, 'eval_samples_per_second': 13.006, 'eval_steps_per_second': 3.287, 'epoch': 0.47}
+{'loss': 0.915, 'grad_norm': 1.3086978197097778, 'learning_rate': 9.703501333355168e-05, 'epoch': 0.54}
+{'eval_loss': 0.819958508014679, 'eval_runtime': 21.3892, 'eval_samples_per_second': 12.95, 'eval_steps_per_second': 3.273, 'epoch': 0.54}
+
+>>> [Step 80] Prompt:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|>
+
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|><|start_header_id|>user<|end_header_id|>
+
+INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=16.5> It is in the interest of the candidate to ascertain that the car they intend to use is insured for the purpose of taking the Taxi/Private Hire test as they will be required to sign a document to that effect.
+EXPLANATION: The <FKGL=13.0> token specifies that the target Flesch-Kincaid Grade Level should be approximately 13.0. Lower values indicate simpler text.<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+<FKGL=13.0><|eot_id|>
+>>> Reference:
+The candidate is advised to check that the car they intend to use is insured to take the Taxi/Private Hire test because they will need to sign a document confirming this. <|eot_id|>
+>>> Prediction:
+It is in the interest of the candidate to check that the car they intend to use is insured for the purpose of taking the Taxi/Private Hire test as they will be required to sign a document to that effect. 
+================================================================================
+
+>>> [Step 80] Prompt:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|>
+
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|><|start_header_id|>user<|end_header_id|>
+
+INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=17.0> Northern Arizona University , Flagstaff and 38 statewide locations
+
+EXPLANATION: The <FKGL=2.9> token specifies that the target Flesch-Kincaid Grade Level should be approximately 2.9. Lower values indicate simpler text.<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+<FKGL=2.9><|eot_id|>
+>>> Reference:
+Cochise College <|eot_id|>
+>>> Prediction:
+Northern Arizona University, Flagstaff and 38 other places 
+================================================================================
+
+>>> [Step 80] Prompt:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|>
+
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|><|start_header_id|>user<|end_header_id|>
+
+INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=10.7> Sedimentary rock is one of the three main rock types -LRB- the others being igneous and metamorphic rock -RRB- .
+
+EXPLANATION: The <FKGL=6.4> token specifies that the target Flesch-Kincaid Grade Level should be approximately 6.4. Lower values indicate simpler text.<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+<FKGL=6.4><|eot_id|>
+>>> Reference:
+Other types of rock are igneous rock and metamorphic rock -RRB- . <|eot_id|>
+>>> Prediction:
+Sedimentary rock is one of the three main types of rock -LRB- the other two being igneous and metamorphic rock -RRB-. 
+================================================================================
+
+>>> [Step 80] Prompt:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|>
+
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|><|start_header_id|>user<|end_header_id|>
+
+INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=20.9> The Emergency Planning Shared Service is here to provide general assistance to business and voluntary organisations in relation to business continuity management in the event of disruption and / or incidents.
+EXPLANATION: The <FKGL=13.5> token specifies that the target Flesch-Kincaid Grade Level should be approximately 13.5. Lower values indicate simpler text.<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+<FKGL=13.5><|eot_id|>
+>>> Reference:
+The Emergency Planning Shared Service is here to provide general assistance to business and voluntary organisations.  The Service can help with managing continuity of businesses in case of disruption and/or in case of incidents <|eot_id|>
+>>> Prediction:
+The Emergency Planning Shared Service is here to provide general assistance to business and voluntary organisations in relation to business continuity management in the event of disruption and / or incidents. 
+================================================================================
+{'loss': 0.8973, 'grad_norm': 1.0948799848556519, 'learning_rate': 9.534659434876141e-05, 'epoch': 0.62}
+{'eval_loss': 0.809995710849762, 'eval_runtime': 21.5275, 'eval_samples_per_second': 12.867, 'eval_steps_per_second': 3.252, 'epoch': 0.62}
+{'loss': 0.9253, 'grad_norm': 0.9522402286529541, 'learning_rate': 9.330127018922194e-05, 'epoch': 0.7}
+{'eval_loss': 0.8083301782608032, 'eval_runtime': 21.3429, 'eval_samples_per_second': 12.979, 'eval_steps_per_second': 3.28, 'epoch': 0.7}
+
+>>> [Step 100] Prompt:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|>
+
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|><|start_header_id|>user<|end_header_id|>
+
+INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=24.9> Pituitary adenomas are generally divided into three categories dependent upon their biological functioning: benign adenoma, invasive adenoma, and carcinomas.
+EXPLANATION: The <FKGL=16.2> token specifies that the target Flesch-Kincaid Grade Level should be approximately 16.2. Lower values indicate simpler text.<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+<FKGL=16.2><|eot_id|>
+>>> Reference:
+Pituitary tumors are generally divided into three kinds dependant upon their biological functioning: benign adenoma, invasive adenoma or carcinomas, with carcinomas accounting for 0.1 % to 0.2 %, appoximately 35 % being invasive adenomas and most being benign adenomas. <|eot_id|>
+>>> Prediction:
+Pituitary adenomas are divided into three groups. These are: benign adenoma, invasive adenoma, and carcinomas. 
+================================================================================
+
+>>> [Step 100] Prompt:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|>
+
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|><|start_header_id|>user<|end_header_id|>
+
+INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=22.0> In a qualifying club there is technically no sale by retail of alcohol (except to guests) as the member owns part of the alcohol stock and the money passing across the bar is merely a mechanism to preserve equity between members where one may consume more than another.
+EXPLANATION: The <FKGL=20.8> token specifies that the target Flesch-Kincaid Grade Level should be approximately 20.8. Lower values indicate simpler text.<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+<FKGL=20.8><|eot_id|>
+>>> Reference:
+In a qualifying club there is technically no sale by shops of alcohol (except to guests) as the member owns part of the alcohol stock and the money passing across the bar is merely a way to preserve equity between members where one may drink more than another. <|eot_id|>
+>>> Prediction:
+In a qualifying club there is technically no sale by retail of alcohol (except to guests) as the member owns part of the alcohol stock and the money passing across the bar is merely a mechanism to keep the equity between members where one may drink more than another. 
+================================================================================
+
+>>> [Step 100] Prompt:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|>
+
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|><|start_header_id|>user<|end_header_id|>
+
+INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=17.0> If you are unable to make payment immediately, call our staff to discuss any financial problems that you may have and in many cases we are able to agree alternative payment arrangements.
+EXPLANATION: The <FKGL=14.2> token specifies that the target Flesch-Kincaid Grade Level should be approximately 14.2. Lower values indicate simpler text.<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+<FKGL=14.2><|eot_id|>
+>>> Reference:
+If you are unable to pay now, call our staff to discuss any financial problems that you may have and in many cases we are able to agree other payment methods. <|eot_id|>
+>>> Prediction:
+If you are unable to make payment immediately, call our staff to discuss any financial problems that you may have. In many cases, we are able to agree alternative payment arrangements. 
+================================================================================
+
+>>> [Step 100] Prompt:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|>
+
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|><|start_header_id|>user<|end_header_id|>
+
+INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=13.8> After the prodrome, maculopapular lesions develop on the oropharyngeal mucosa, face, and arms, spreading shortly thereafter to the trunk and legs.
+EXPLANATION: The <FKGL=5.0> token specifies that the target Flesch-Kincaid Grade Level should be approximately 5.0. Lower values indicate simpler text.<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+<FKGL=5.0><|eot_id|>
+>>> Reference:
+After 2 or 3 days, a rash of flat, red spots develops in the mouth and on the face. Shortly thereafter, It spreads to the trunk and legs, then the hands and feet. <|eot_id|>
+>>> Prediction:
+The rash is usually on the face, arms, and legs, and may spread to the rest of the body. 
+================================================================================
+{'loss': 0.9212, 'grad_norm': 1.3982765674591064, 'learning_rate': 9.091513879540845e-05, 'epoch': 0.78}
+{'eval_loss': 0.8029561638832092, 'eval_runtime': 21.6586, 'eval_samples_per_second': 12.789, 'eval_steps_per_second': 3.232, 'epoch': 0.78}
+{'loss': 0.8648, 'grad_norm': 1.1766717433929443, 'learning_rate': 8.820698046723796e-05, 'epoch': 0.85}
+{'eval_loss': 0.7945365905761719, 'eval_runtime': 21.293, 'eval_samples_per_second': 13.009, 'eval_steps_per_second': 3.287, 'epoch': 0.85}
+
+>>> [Step 120] Prompt:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|>
+
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|><|start_header_id|>user<|end_header_id|>
+
+INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=9.6> Listing of towns located in Queensland , Australia .
+
+EXPLANATION: The <FKGL=4.1> token specifies that the target Flesch-Kincaid Grade Level should be approximately 4.1. Lower values indicate simpler text.<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+<FKGL=4.1><|eot_id|>
+>>> Reference:
+This page is for towns in Queensland , Australia . <|eot_id|>
+>>> Prediction:
+These towns are located in Queensland, Australia. 
+================================================================================
+
+>>> [Step 120] Prompt:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|>
+
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|><|start_header_id|>user<|end_header_id|>
+
+INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=9.9> The Northern Hemisphere species of swan have pure white plumage but the Southern Hemisphere species are mixed black and white .
+
+EXPLANATION: The <FKGL=4.1> token specifies that the target Flesch-Kincaid Grade Level should be approximately 4.1. Lower values indicate simpler text.<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+<FKGL=4.1><|eot_id|>
+>>> Reference:
+These swan are found in the Northern Hemisphere . <|eot_id|>
+>>> Prediction:
+The Northern Hemisphere species of swan have pure white feathers but the Southern Hemisphere species are black and white. 
+================================================================================
+
+>>> [Step 120] Prompt:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|>
+
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|><|start_header_id|>user<|end_header_id|>
+
+INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=10.7> In 1941 she married Benny Kornegay , a convicted drug dealer and local dockworker .
+
+EXPLANATION: The <FKGL=8.4> token specifies that the target Flesch-Kincaid Grade Level should be approximately 8.4. Lower values indicate simpler text.<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+<FKGL=8.4><|eot_id|>
+>>> Reference:
+In 1941 she married Benny Kornegay , a convicted drug dealer . <|eot_id|>
+>>> Prediction:
+In 1941 she married Benny Kornegay, a convicted drug dealer and local dockworker. 
+================================================================================
+
+>>> [Step 120] Prompt:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|>
+
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|><|start_header_id|>user<|end_header_id|>
+
+INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=14.2> We are committed to open government, and part of this process is compliance to the Government ’ s Transparency Code for Local Authorities.
+EXPLANATION: The <FKGL=10.7> token specifies that the target Flesch-Kincaid Grade Level should be approximately 10.7. Lower values indicate simpler text.<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+<FKGL=10.7><|eot_id|>
+>>> Reference:
+We are committed to open government. Abiding by the Government's Transparency Code for Local Authorities is part of this process. <|eot_id|>
+>>> Prediction:
+We are committed to open government. This is part of our process of compliance to the Government’s Transparency Code for Local Authorities. 
+================================================================================
+{'loss': 0.9223, 'grad_norm': 1.2673001289367676, 'learning_rate': 8.519811005172916e-05, 'epoch': 0.93}
+{'eval_loss': 0.7836577892303467, 'eval_runtime': 21.2973, 'eval_samples_per_second': 13.006, 'eval_steps_per_second': 3.287, 'epoch': 0.93}
+{'loss': 0.8414, 'grad_norm': 1.2803480625152588, 'learning_rate': 8.191220918224101e-05, 'epoch': 1.02}
+{'eval_loss': 0.780718207359314, 'eval_runtime': 21.2894, 'eval_samples_per_second': 13.011, 'eval_steps_per_second': 3.288, 'epoch': 1.02}
+
+>>> [Step 140] Prompt:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|>
+
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|><|start_header_id|>user<|end_header_id|>
+
+INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=12.7> This is important in ecological niches where the animal can not depend on vision: for example in caves, in murky water and at night.
+EXPLANATION: The <FKGL=10.3> token specifies that the target Flesch-Kincaid Grade Level should be approximately 10.3. Lower values indicate simpler text.<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+<FKGL=10.3><|eot_id|>
+>>> Reference:
+This is important in ecological niches where the animal can not see. <|eot_id|>
+>>> Prediction:
+This is important in ecological niches where the animal can not depend on sight: for example in caves, in murky water and at night. 
+================================================================================
+
+>>> [Step 140] Prompt:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|>
+
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|><|start_header_id|>user<|end_header_id|>
+
+INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=9.6> Listing of towns located in Queensland , Australia .
+
+EXPLANATION: The <FKGL=4.1> token specifies that the target Flesch-Kincaid Grade Level should be approximately 4.1. Lower values indicate simpler text.<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+<FKGL=4.1><|eot_id|>
+>>> Reference:
+This page is for towns in Queensland , Australia . <|eot_id|>
+>>> Prediction:
+Listing of towns in Queensland, Australia. 
+================================================================================
+
+>>> [Step 140] Prompt:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|>
+
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|><|start_header_id|>user<|end_header_id|>
+
+INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=11.1> For the coupling of aryl halides with aryl Grignard reagents, nickel chloride in tetrahydrofuran ( THF ) is also a good catalyst.
+EXPLANATION: The <FKGL=9.5> token specifies that the target Flesch-Kincaid Grade Level should be approximately 9.5. Lower values indicate simpler text.<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+<FKGL=9.5><|eot_id|>
+>>> Reference:
+For the coupling of aryl halides with aryl Grignards, nickel chloride in tetrahydrofuran ( THF ) is also a good catalyst. <|eot_id|>
+>>> Prediction:
+For the coupling of aryl halides with aryl Grignard reagents, nickel chloride in tetrahydrofuran ( THF ) is also a good catalyst. 
+================================================================================
+
+>>> [Step 140] Prompt:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|>
+
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|><|start_header_id|>user<|end_header_id|>
+
+INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=18.6> Undernutrition and vitamin A deficiency may predispose to mortality.
+EXPLANATION: The <FKGL=13.1> token specifies that the target Flesch-Kincaid Grade Level should be approximately 13.1. Lower values indicate simpler text.<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+<FKGL=13.1><|eot_id|>
+>>> Reference:
+Undernutrition and vitamin A deficiency may increase the risk of death in people infected with measles. <|eot_id|>
+>>> Prediction:
+Undernutrition and vitamin A deficiency may cause death. 
+================================================================================
+{'loss': 0.7617, 'grad_norm': 1.2967653274536133, 'learning_rate': 7.83751398896686e-05, 'epoch': 1.09}
+{'eval_loss': 0.7781208157539368, 'eval_runtime': 21.3109, 'eval_samples_per_second': 12.998, 'eval_steps_per_second': 3.285, 'epoch': 1.09}
+{'loss': 0.8013, 'grad_norm': 1.0386872291564941, 'learning_rate': 7.461474105258911e-05, 'epoch': 1.17}
+{'eval_loss': 0.7794321775436401, 'eval_runtime': 21.2993, 'eval_samples_per_second': 13.005, 'eval_steps_per_second': 3.286, 'epoch': 1.17}
+
+>>> [Step 160] Prompt:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|>
+
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|><|start_header_id|>user<|end_header_id|>
+
+INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=12.3> The British Rail Class EF1 -LRB- Electric Freight 1 -RRB- was a class of electrically powered locomotives used by British Rail in England .
+
+EXPLANATION: The <FKGL=5.6> token specifies that the target Flesch-Kincaid Grade Level should be approximately 5.6. Lower values indicate simpler text.<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+<FKGL=5.6><|eot_id|>
+>>> Reference:
+North Eastern Railway <|eot_id|>
+>>> Prediction:
+The British Rail Class EF1 -LRB- Electric Freight 1 -RRB- was a class of electric locomotives used by British Rail in England. 
+================================================================================
+
+>>> [Step 160] Prompt:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|>
+
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|><|start_header_id|>user<|end_header_id|>
+
+INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=11.9> His next work , Saturday , follows an especially eventful day in the life of a successful neurosurgeon .
+
+EXPLANATION: The <FKGL=8.4> token specifies that the target Flesch-Kincaid Grade Level should be approximately 8.4. Lower values indicate simpler text.<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+<FKGL=8.4><|eot_id|>
+>>> Reference:
+His next work at Saturday will be a successful neurosurgeon . <|eot_id|>
+>>> Prediction:
+His next work, Saturday, is about a day in the life of a successful neurosurgeon. 
+================================================================================
+
+>>> [Step 160] Prompt:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|>
+
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|><|start_header_id|>user<|end_header_id|>
+
+INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=14.2> However, we’ll contact you on an annual basis to offer support or an opportunity to meet to discuss the education being offered to your child.
+EXPLANATION: The <FKGL=11.9> token specifies that the target Flesch-Kincaid Grade Level should be approximately 11.9. Lower values indicate simpler text.<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+<FKGL=11.9><|eot_id|>
+>>> Reference:
+However, we’ll contact you on an yearly basis to offer support or a chance to meet to discuss the education being offered to your child. <|eot_id|>
+>>> Prediction:
+However, we’ll contact you on an annual basis to offer support or an opportunity to meet to discuss the education being given to your child. 
+================================================================================
+
+>>> [Step 160] Prompt:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|>
+
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|><|start_header_id|>user<|end_header_id|>
+
+INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=9.5> The next closest lifespan among muroids is 7 years , 8 months among the better studied Canyon mouse , Peromyscus crinitus .
+
+EXPLANATION: The <FKGL=8.3> token specifies that the target Flesch-Kincaid Grade Level should be approximately 8.3. Lower values indicate simpler text.<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+<FKGL=8.3><|eot_id|>
+>>> Reference:
+The species which lives the second longest in the muroids lives 7 years , 8 months , which is the Canyon Mouse , Peromyscus crinitus . <|eot_id|>
+>>> Prediction:
+The next closest lifespan among muroids is 7 years, 8 months among the better studied Canyon mouse, Peromyscus crinitus. 
+================================================================================
+{'loss': 0.7336, 'grad_norm': 1.1248435974121094, 'learning_rate': 7.066060928841892e-05, 'epoch': 1.25}
+{'eval_loss': 0.7785322666168213, 'eval_runtime': 21.3288, 'eval_samples_per_second': 12.987, 'eval_steps_per_second': 3.282, 'epoch': 1.25}
+{'loss': 0.7878, 'grad_norm': 4.007746696472168, 'learning_rate': 6.65438660101007e-05, 'epoch': 1.33}
+{'eval_loss': 0.7766016721725464, 'eval_runtime': 21.2958, 'eval_samples_per_second': 13.007, 'eval_steps_per_second': 3.287, 'epoch': 1.33}
+
+>>> [Step 180] Prompt:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|>
+
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|><|start_header_id|>user<|end_header_id|>
+
+INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=11.5> The key distinguishing feature of cheletropic reactions is that on one of the reagents , both new bonds are being made to the same atom .
+EXPLANATION: The <FKGL=9.5> token specifies that the target Flesch-Kincaid Grade Level should be approximately 9.5. Lower values indicate simpler text.<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+<FKGL=9.5><|eot_id|>
+>>> Reference:
+What sets cheletropic reactions apart is that on one of the reagents , both new bonds are being made to the same atom . <|eot_id|>
+>>> Prediction:
+The key distinguishing feature of cheletropic reactions is that one of the reagents, both new bonds are being made to the same atom. 
+================================================================================
+
+>>> [Step 180] Prompt:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|>
+
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|><|start_header_id|>user<|end_header_id|>
+
+INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=12.7> Worldwide, 0.05-2 % of the population is estimated to have anaphylaxis at some point in life, and rates appear to be increasing.
+EXPLANATION: The <FKGL=4.6> token specifies that the target Flesch-Kincaid Grade Level should be approximately 4.6. Lower values indicate simpler text.<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+<FKGL=4.6><|eot_id|>
+>>> Reference:
+Worldwide, about 0.05-2 % of people have anaphylaxis at some point in their lives. <|eot_id|>
+>>> Prediction:
+Anaphylaxis is estimated to affect 0.05-2 % of the population at some point in life. 
+================================================================================
+
+>>> [Step 180] Prompt:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|>
+
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|><|start_header_id|>user<|end_header_id|>
+
+INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=14.2> It is one of the seven Millennium Prize Problems selected by the Clay Mathematics Institute, each of which carries a US $ 1,000,000 prize for the first correct solution.
+EXPLANATION: The <FKGL=13.4> token specifies that the target Flesch-Kincaid Grade Level should be approximately 13.4. Lower values indicate simpler text.<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+<FKGL=13.4><|eot_id|>
+>>> Reference:
+It is one of the seven Millennium Prize Problems selected by the Clay Mathematics Institute to carry a US $ 1,000,000 prize for the first correct solution. <|eot_id|>
+>>> Prediction:
+It is one of the seven Millennium Prize Problems chosen by the Clay Mathematics Institute. Each of the problems carries a US $ 1,000,000 prize for the first correct solution. 
+================================================================================
+
+>>> [Step 180] Prompt:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|>
+
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|><|start_header_id|>user<|end_header_id|>
+
+INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=15.4> The state is a political and geopolitical entity ; the nation is a cultural and\/or ethnic entity .
+
+EXPLANATION: The <FKGL=12.3> token specifies that the target Flesch-Kincaid Grade Level should be approximately 12.3. Lower values indicate simpler text.<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+<FKGL=12.3><|eot_id|>
+>>> Reference:
+The state is a political entity ; the nation is a cultural and\/or ethnic entity . <|eot_id|>
+>>> Prediction:
+The state is a political entity ; the nation is a cultural and\/or ethnic entity. 
+================================================================================
+{'loss': 0.7845, 'grad_norm': 1.0739789009094238, 'learning_rate': 6.229691248172599e-05, 'epoch': 1.4}
+{'eval_loss': 0.771040678024292, 'eval_runtime': 21.326, 'eval_samples_per_second': 12.989, 'eval_steps_per_second': 3.282, 'epoch': 1.4}
+{'loss': 0.7426, 'grad_norm': 1.1732213497161865, 'learning_rate': 5.7953174800953604e-05, 'epoch': 1.48}
+{'eval_loss': 0.7713737487792969, 'eval_runtime': 21.8263, 'eval_samples_per_second': 12.691, 'eval_steps_per_second': 3.207, 'epoch': 1.48}
+
+>>> [Step 200] Prompt:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|>
+
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|><|start_header_id|>user<|end_header_id|>
+
+INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=18.9> Early history At the time of the Domesday Book in 1086 parts of the county were considered to either form part of Yorkshire or be within the separate kingdom of Scotland , having historically been associated with the Kingdom of Strathclyde .
+
+EXPLANATION: The <FKGL=7.6> token specifies that the target Flesch-Kincaid Grade Level should be approximately 7.6. Lower values indicate simpler text.<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+<FKGL=7.6><|eot_id|>
+>>> Reference:
+Early history At the time of the Domesday Book in 1086 the county was said to form part of Yorkshire . <|eot_id|>
+>>> Prediction:
+The county was once part of the Kingdom of Strathclyde. 
+================================================================================
+
+>>> [Step 200] Prompt:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|>
+
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|><|start_header_id|>user<|end_header_id|>
+
+INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=12.3> History Basses-Pyrénées was one of the original 83 Departments of France created during the French Revolution , on March 4 , 1790 .
+
+EXPLANATION: The <FKGL=11.1> token specifies that the target Flesch-Kincaid Grade Level should be approximately 11.1. Lower values indicate simpler text.<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+<FKGL=11.1><|eot_id|>
+>>> Reference:
+It is one of the 83 original French departments created during the French revolution . <|eot_id|>
+>>> Prediction:
+History Basses-Pyrénées was one of the original 83 departments of France created during the French Revolution, on March 4, 1790. 
+================================================================================
+
+>>> [Step 200] Prompt:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|>
+
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|><|start_header_id|>user<|end_header_id|>
+
+INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=10.3> Such burns may cause cosmetic deformities and impair growth of the teeth, mandible, and maxilla.
+EXPLANATION: The <FKGL=5.6> token specifies that the target Flesch-Kincaid Grade Level should be approximately 5.6. Lower values indicate simpler text.<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+<FKGL=5.6><|eot_id|>
+>>> Reference:
+These burns may cause facial deformities and growth problems of the teeth, jaw, and face. <|eot_id|>
+>>> Prediction:
+Such burns may cause cosmetic problems and affect the growth of the teeth, jawbone, and upper jawbone. 
+================================================================================
+
+>>> [Step 200] Prompt:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|>
+
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|><|start_header_id|>user<|end_header_id|>
+
+INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=12.7> Regional lymph node spread occurs frequently, and metastases in the lungs, bone marrow, and lymph nodes can occur and usually do not cause symptoms.
+EXPLANATION: The <FKGL=6.0> token specifies that the target Flesch-Kincaid Grade Level should be approximately 6.0. Lower values indicate simpler text.<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+<FKGL=6.0><|eot_id|>
+>>> Reference:
+Limb cancers frequently spread, especially to the lungs, bone marrow, and lymph nodes. Usually, this spread does not cause symptoms. <|eot_id|>
+>>> Prediction:
+The cancer can spread to lymph nodes in the neck, armpits, or groin. It can also spread to the lungs, bone marrow, or other parts of the body. 
+================================================================================
+{'loss': 0.791, 'grad_norm': 1.2462146282196045, 'learning_rate': 5.354684081536693e-05, 'epoch': 1.56}
+{'eval_loss': 0.7662529945373535, 'eval_runtime': 21.4037, 'eval_samples_per_second': 12.942, 'eval_steps_per_second': 3.27, 'epoch': 1.56}
+{'loss': 0.7917, 'grad_norm': 1.3029595613479614, 'learning_rate': 4.911259104339771e-05, 'epoch': 1.64}
+{'eval_loss': 0.7661738395690918, 'eval_runtime': 21.3155, 'eval_samples_per_second': 12.995, 'eval_steps_per_second': 3.284, 'epoch': 1.64}
+
+>>> [Step 220] Prompt:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|>
+
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|><|start_header_id|>user<|end_header_id|>
+
+INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=14.7> Similar improvements have been reported for other cognitions such as semantic and episodic memory.
+EXPLANATION: The <FKGL=11.9> token specifies that the target Flesch-Kincaid Grade Level should be approximately 11.9. Lower values indicate simpler text.<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+<FKGL=11.9><|eot_id|>
+>>> Reference:
+A similar effect has been found with increases in semantic and episodic memory. <|eot_id|>
+>>> Prediction:
+Similar improvements have been reported for other cognitive abilities such as semantic and episodic memory. 
+================================================================================
+
+>>> [Step 220] Prompt:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|>
+
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|><|start_header_id|>user<|end_header_id|>
+
+INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=18.1> The Peace Gardens form the central part of a spectacular walk, taking visitors from Sheffield Railway Station through a series of exciting new developments each with their own distinctive lighting, public art and water features.
+EXPLANATION: The <FKGL=16.6> token specifies that the target Flesch-Kincaid Grade Level should be approximately 16.6. Lower values indicate simpler text.<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+<FKGL=16.6><|eot_id|>
+>>> Reference:
+The Peace Gardens are the middle of an amazing walk, taking visitors from Sheffield Railway Station through a number of exciting new developments, which have their own different lighting, public art and water features. <|eot_id|>
+>>> Prediction:
+The Peace Gardens form the central part of a walk, taking visitors from Sheffield Railway Station through a series of exciting new developments each with their own distinctive lighting, public art and water features. 
+================================================================================
+
+>>> [Step 220] Prompt:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|>
+
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|><|start_header_id|>user<|end_header_id|>
+
+INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=18.9> In addition we also send out a monthly ‘ Developments in Adult Social Care Bulletin ’ containing brief details of news, research reports, journal articles and government policy relating to adult social care.
+EXPLANATION: The <FKGL=11.9> token specifies that the target Flesch-Kincaid Grade Level should be approximately 11.9. Lower values indicate simpler text.<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+<FKGL=11.9><|eot_id|>
+>>> Reference:
+In addition we also send out a monthly ‘Developments in Adult Social Care Bulletin’. It has brief details of news, research reports, journal articles and government policy relating to adult social care. <|eot_id|>
+>>> Prediction:
+We also send out a monthly ‘ Developments in Adult Social Care Bulletin ’. 
+================================================================================
+
+>>> [Step 220] Prompt:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|>
+
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|><|start_header_id|>user<|end_header_id|>
+
+INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=13.5> Its development would not have been possible without the personal interest and generosity of the J G Graves Charitable Trust.
+EXPLANATION: The <FKGL=9.9> token specifies that the target Flesch-Kincaid Grade Level should be approximately 9.9. Lower values indicate simpler text.<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+<FKGL=9.9><|eot_id|>
+>>> Reference:
+Its build would not have been possible without the personal interest and kindness of the J G Graves Charitable Trust. <|eot_id|>
+>>> Prediction:
+Its development would not have been possible without the help and generosity of the J G Graves Charitable Trust. 
+================================================================================
+{'loss': 0.821, 'grad_norm': 1.696845531463623, 'learning_rate': 4.4685325717631736e-05, 'epoch': 1.71}
+{'eval_loss': 0.7660996913909912, 'eval_runtime': 21.414, 'eval_samples_per_second': 12.935, 'eval_steps_per_second': 3.269, 'epoch': 1.71}
+{'loss': 0.8327, 'grad_norm': 1.415582299232483, 'learning_rate': 4.0299890098831096e-05, 'epoch': 1.79}
+{'eval_loss': 0.7665920853614807, 'eval_runtime': 21.4839, 'eval_samples_per_second': 12.893, 'eval_steps_per_second': 3.258, 'epoch': 1.79}
+
+>>> [Step 240] Prompt:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|>
+
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|><|start_header_id|>user<|end_header_id|>
+
+INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=16.9> The rest of the central nervous system is generally ladder-like, consisting of a pair of nerve cords that run through the bottom part of the body and have in each segment paired ganglia linked by a transverse connection.
+EXPLANATION: The <FKGL=12.3> token specifies that the target Flesch-Kincaid Grade Level should be approximately 12.3. Lower values indicate simpler text.<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+<FKGL=12.3><|eot_id|>
+>>> Reference:
+The rest of the central nervous system is usually ladder-like, with a pair of nerve cords that run along the bottom part of the body cavity. <|eot_id|>
+>>> Prediction:
+The rest of the central nervous system is generally ladder-like, consisting of a pair of nerve cords that run through the bottom part of the body. 
+================================================================================
+
+>>> [Step 240] Prompt:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|>
+
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|><|start_header_id|>user<|end_header_id|>
+
+INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=16.2> Scar formation, the accumulation of excess fibrous connective tissue ( the process called fibrosis ), leads to thickening of the walls, and causes reduced oxygen supply in the blood.
+EXPLANATION: The <FKGL=15.0> token specifies that the target Flesch-Kincaid Grade Level should be approximately 15.0. Lower values indicate simpler text.<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+<FKGL=15.0><|eot_id|>
+>>> Reference:
+Scar formation, the addition of extra fibrous connective tissue ( the process called fibrosis ), leads to thickening of the walls, and causes low oxygen supply in the blood. <|eot_id|>
+>>> Prediction:
+Scar formation, the accumulation of excess fibrous connective tissue ( the process called fibrosis ), causes thickening of the walls and reduced oxygen supply in the blood. 
+================================================================================
+
+>>> [Step 240] Prompt:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|>
+
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|><|start_header_id|>user<|end_header_id|>
+
+INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=17.0> When term limits are found in presidential and semi-presidential systems they act as a method of curbing the potential for monopoly, where a leader effectively becomes `` president for life ''.
+EXPLANATION: The <FKGL=10.7> token specifies that the target Flesch-Kincaid Grade Level should be approximately 10.7. Lower values indicate simpler text.<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+<FKGL=10.7><|eot_id|>
+>>> Reference:
+When term limits are found in presidential systems, they act as a method to reduce the potential for monopoly. <|eot_id|>
+>>> Prediction:
+When term limits are found in presidential and semi-presidential systems they act as a way of stopping a leader from becoming `` president for life ''. 
+================================================================================
+
+>>> [Step 240] Prompt:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|>
+
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|><|start_header_id|>user<|end_header_id|>
+
+INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=16.2> Symptoms of primary coccidioidomycosis, in decreasing order of frequency, include fever, cough, chest pain, chills, sputum production, sore throat, and hemoptysis.
+EXPLANATION: The <FKGL=3.3> token specifies that the target Flesch-Kincaid Grade Level should be approximately 3.3. Lower values indicate simpler text.<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+<FKGL=3.3><|eot_id|>
+>>> Reference:
+They include a cough, fever, chills, chest pain, and sometimes shortness of breath. The cough may produce sputum. <|eot_id|>
+>>> Prediction:
+Symptoms of primary coccidioidomycosis, in decreasing order of frequency, include fever, cough, chest pain, chills, and hemoptysis. 
+================================================================================
+{'loss': 0.8096, 'grad_norm': 1.1902804374694824, 'learning_rate': 3.599080022261777e-05, 'epoch': 1.87}
+{'eval_loss': 0.7637361288070679, 'eval_runtime': 21.4616, 'eval_samples_per_second': 12.907, 'eval_steps_per_second': 3.262, 'epoch': 1.87}
+{'loss': 0.8465, 'grad_norm': 1.153694987297058, 'learning_rate': 3.179197123735889e-05, 'epoch': 1.95}
+{'eval_loss': 0.7633053660392761, 'eval_runtime': 21.382, 'eval_samples_per_second': 12.955, 'eval_steps_per_second': 3.274, 'epoch': 1.95}
+
+>>> [Step 260] Prompt:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|>
+
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|><|start_header_id|>user<|end_header_id|>
+
+INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=13.4> In addition, most student areas of the city are subject to further controls to stop new development unless there is less than 20% HMOs within 200m of the house.
+EXPLANATION: The <FKGL=11.1> token specifies that the target Flesch-Kincaid Grade Level should be approximately 11.1. Lower values indicate simpler text.<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+<FKGL=11.1><|eot_id|>
+>>> Reference:
+Also, most student areas of the city face more controls to stop new constructions unless there is less than 20% HMOs within 200m of the house. <|eot_id|>
+>>> Prediction:
+In addition, most student areas of the city are subject to further controls to stop new development unless there are less than 20% HMOs within 200m of the house. 
+================================================================================
+
+>>> [Step 260] Prompt:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|>
+
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|><|start_header_id|>user<|end_header_id|>
+
+INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=18.1> The Peace Gardens form the central part of a spectacular walk, taking visitors from Sheffield Railway Station through a series of exciting new developments each with their own distinctive lighting, public art and water features.
+EXPLANATION: The <FKGL=16.6> token specifies that the target Flesch-Kincaid Grade Level should be approximately 16.6. Lower values indicate simpler text.<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+<FKGL=16.6><|eot_id|>
+>>> Reference:
+The Peace Gardens are the middle of an amazing walk, taking visitors from Sheffield Railway Station through a number of exciting new developments, which have their own different lighting, public art and water features. <|eot_id|>
+>>> Prediction:
+The Peace Gardens form the central part of a walk, taking visitors from Sheffield Railway Station through a series of new developments each with their own lighting, public art and water features. 
+================================================================================
+
+>>> [Step 260] Prompt:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|>
+
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|><|start_header_id|>user<|end_header_id|>
+
+INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=17.0> Northern Arizona University , Flagstaff and 38 statewide locations
+
+EXPLANATION: The <FKGL=2.9> token specifies that the target Flesch-Kincaid Grade Level should be approximately 2.9. Lower values indicate simpler text.<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+<FKGL=2.9><|eot_id|>
+>>> Reference:
+Cochise College <|eot_id|>
+>>> Prediction:
+Northern Arizona University, Flagstaff 
+================================================================================
+
+>>> [Step 260] Prompt:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|>
+
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|><|start_header_id|>user<|end_header_id|>
+
+INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=13.1> John of England impounds the revenue of all prelates appointed by bishops who had deserted him at his excommunication .
+
+EXPLANATION: The <FKGL=6.4> token specifies that the target Flesch-Kincaid Grade Level should be approximately 6.4. Lower values indicate simpler text.<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+<FKGL=6.4><|eot_id|>
+>>> Reference:
+Robert de Brus , 5th Lord of Annandale , 5th Lord of Annandale <|eot_id|>
+>>> Prediction:
+John of England takes the money of all prelates appointed by bishops who had deserted him at his excommunication. 
+================================================================================
+{'loss': 0.8301, 'grad_norm': 1.302056074142456, 'learning_rate': 2.7736450471398434e-05, 'epoch': 2.03}
+{'eval_loss': 0.76370769739151, 'eval_runtime': 21.6299, 'eval_samples_per_second': 12.806, 'eval_steps_per_second': 3.236, 'epoch': 2.03}
+{'loss': 0.7021, 'grad_norm': 1.4940361976623535, 'learning_rate': 2.3856157330558625e-05, 'epoch': 2.11}
+{'eval_loss': 0.7628207206726074, 'eval_runtime': 21.5088, 'eval_samples_per_second': 12.878, 'eval_steps_per_second': 3.254, 'epoch': 2.11}
+
+>>> [Step 280] Prompt:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|>
+
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|><|start_header_id|>user<|end_header_id|>
+
+INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=9.5> The next closest lifespan among muroids is 7 years , 8 months among the better studied Canyon mouse , Peromyscus crinitus .
+
+EXPLANATION: The <FKGL=8.3> token specifies that the target Flesch-Kincaid Grade Level should be approximately 8.3. Lower values indicate simpler text.<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+<FKGL=8.3><|eot_id|>
+>>> Reference:
+The species which lives the second longest in the muroids lives 7 years , 8 months , which is the Canyon Mouse , Peromyscus crinitus . <|eot_id|>
+>>> Prediction:
+The next closest lifespan among muroids is 7 years, 8 months among the better studied Canyon mouse. 
+================================================================================
+
+>>> [Step 280] Prompt:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|>
+
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|><|start_header_id|>user<|end_header_id|>
+
+INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=9.6> Listing of towns located in Queensland , Australia .
+
+EXPLANATION: The <FKGL=4.1> token specifies that the target Flesch-Kincaid Grade Level should be approximately 4.1. Lower values indicate simpler text.<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+<FKGL=4.1><|eot_id|>
+>>> Reference:
+This page is for towns in Queensland , Australia . <|eot_id|>
+>>> Prediction:
+Queensland is a state in Australia. 
+================================================================================
+
+>>> [Step 280] Prompt:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|>
+
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|><|start_header_id|>user<|end_header_id|>
+
+INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=16.6> The planning system does not exist to protect the private interests of one person against the activities of another, although private interests may coincide with the public interest in some cases.
+EXPLANATION: The <FKGL=8.4> token specifies that the target Flesch-Kincaid Grade Level should be approximately 8.4. Lower values indicate simpler text.<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+<FKGL=8.4><|eot_id|>
+>>> Reference:
+The planning system does not exist to protect one person's private interests against someone else's actions.  It is there to do what is best for the public.  However, there may be cases where what is best for an individual person overlaps with what is best for the public. <|eot_id|>
+>>> Prediction:
+The planning system does not exist to protect the private interests of one person against the activities of another. 
+================================================================================
+
+>>> [Step 280] Prompt:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|>
+
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|><|start_header_id|>user<|end_header_id|>
+
+INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=12.7> According to associate producer Dave Gordon , '' This is the biggest production ever filmed in Canada .
+
+EXPLANATION: The <FKGL=12.3> token specifies that the target Flesch-Kincaid Grade Level should be approximately 12.3. Lower values indicate simpler text.<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+<FKGL=12.3><|eot_id|>
+>>> Reference:
+Associate producer Dave Gordon said , '' This is the biggest production ever filmed in Canada . <|eot_id|>
+>>> Prediction:
+This is the biggest production ever filmed in Canada. 
+================================================================================
+{'loss': 0.739, 'grad_norm': 1.0269365310668945, 'learning_rate': 2.0181632073074926e-05, 'epoch': 2.19}
+{'eval_loss': 0.762895941734314, 'eval_runtime': 21.4753, 'eval_samples_per_second': 12.899, 'eval_steps_per_second': 3.26, 'epoch': 2.19}
+{'loss': 0.7387, 'grad_norm': 1.5864533185958862, 'learning_rate': 1.6741795439258218e-05, 'epoch': 2.26}
+{'eval_loss': 0.762997031211853, 'eval_runtime': 21.375, 'eval_samples_per_second': 12.959, 'eval_steps_per_second': 3.275, 'epoch': 2.26}
+
+>>> [Step 300] Prompt:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|>
+
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|><|start_header_id|>user<|end_header_id|>
+
+INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=8.8> Characters Several of the topics in the novel include selective mutism , death and grief .
+EXPLANATION: The <FKGL=5.6> token specifies that the target Flesch-Kincaid Grade Level should be approximately 5.6. Lower values indicate simpler text.<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+<FKGL=5.6><|eot_id|>
+>>> Reference:
+Some of topics in the novel include selective mutism , death and grief . <|eot_id|>
+>>> Prediction:
+Characters Several of the topics in the novel include selective mutism, death and grief. 
+================================================================================
+
+>>> [Step 300] Prompt:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|>
+
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|><|start_header_id|>user<|end_header_id|>
+
+INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=11.1> A forced marriage is defined as ‘a marriage conducted without the valid consent of one or both parties, where duress is a factor’.
+EXPLANATION: The <FKGL=9.5> token specifies that the target Flesch-Kincaid Grade Level should be approximately 9.5. Lower values indicate simpler text.<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+<FKGL=9.5><|eot_id|>
+>>> Reference:
+A forced marriage is defined as ‘a marriage performed without the permission of one or both people, where force is a factor <|eot_id|>
+>>> Prediction:
+A forced marriage is a marriage where one or both people are forced to get married. 
+================================================================================
+
+>>> [Step 300] Prompt:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|>
+
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|><|start_header_id|>user<|end_header_id|>
+
+INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=10.7> Biarritz is located in the PyrÃ nÃ es-Atlantiques department in the Aquitaine region .
+
+EXPLANATION: The <FKGL=7.6> token specifies that the target Flesch-Kincaid Grade Level should be approximately 7.6. Lower values indicate simpler text.<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+<FKGL=7.6><|eot_id|>
+>>> Reference:
+Biarritz is a commune of the PyrÃ nÃ es-Atlantiques dÃ partement in the southwestern part of France . <|eot_id|>
+>>> Prediction:
+It is located in the Pyrenees-Atlantiques department in the region of Aquitaine in the southwest of France. 
+================================================================================
+
+>>> [Step 300] Prompt:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|>
+
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|><|start_header_id|>user<|end_header_id|>
+
+INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=8.0> It is named for the Umatilla River , which enters the Columbia River on the side of the city .
+
+EXPLANATION: The <FKGL=4.4> token specifies that the target Flesch-Kincaid Grade Level should be approximately 4.4. Lower values indicate simpler text.<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+<FKGL=4.4><|eot_id|>
+>>> Reference:
+Umatilla is a city in the state of Oregon . <|eot_id|>
+>>> Prediction:
+It is named for the Umatilla River, which is in the city. 
+================================================================================
+{'loss': 0.7665, 'grad_norm': 1.2852922677993774, 'learning_rate': 1.3563721027744308e-05, 'epoch': 2.34}
+{'eval_loss': 0.7624275088310242, 'eval_runtime': 21.3573, 'eval_samples_per_second': 12.97, 'eval_steps_per_second': 3.278, 'epoch': 2.34}
+{'loss': 0.7258, 'grad_norm': 1.2212624549865723, 'learning_rate': 1.0672422209867878e-05, 'epoch': 2.42}
+{'eval_loss': 0.7615340948104858, 'eval_runtime': 21.4236, 'eval_samples_per_second': 12.93, 'eval_steps_per_second': 3.267, 'epoch': 2.42}
+
+>>> [Step 320] Prompt:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|>
+
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|><|start_header_id|>user<|end_header_id|>
+
+INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=18.1> These enable the individual radio to be ‘stunned’ from the system remotely and removed from service until such time that the crime reduction manager feels sure it is safe to put the equipment back live on the system.
+EXPLANATION: The <FKGL=16.5> token specifies that the target Flesch-Kincaid Grade Level should be approximately 16.5. Lower values indicate simpler text.<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+<FKGL=16.5><|eot_id|>
+>>> Reference:
+These allow the individual radio to be ‘stunned’ from the system remotely and stopped from working until such time that the crime reduction manager feels sure it is safe to put them back live on the system. <|eot_id|>
+>>> Prediction:
+These enable the individual radio to be ‘stunned’ from the system remotely and removed from service until such time that the crime reduction manager feels sure it is safe to put the equipment back on the system. 
+================================================================================
+
+>>> [Step 320] Prompt:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|>
+
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|><|start_header_id|>user<|end_header_id|>
+
+INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=13.8> Sheffield’s 5 Levels of need reflect a whole family approach to providing support for children, young people and families  which is flexible and responsive.
+EXPLANATION: The <FKGL=13.0> token specifies that the target Flesch-Kincaid Grade Level should be approximately 13.0. Lower values indicate simpler text.<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+<FKGL=13.0><|eot_id|>
+>>> Reference:
+Sheffield’s 5 Levels of need, reflect a family approach to providing support for children, young people and families which is dynamic and fast to respond. <|eot_id|>
+>>> Prediction:
+Sheffield’s 5 Levels of need reflect a whole family approach to providing support for children, young people and families which is flexible and responsive. 
+================================================================================
+
+>>> [Step 320] Prompt:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|>
+
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|><|start_header_id|>user<|end_header_id|>
+
+INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=18.5> Requests for information like this generally come from the Police, HM Revenue and Customs, UK Visas and Immigration and other organisations with the power to investigate crime and/or collect tax.
+EXPLANATION: The <FKGL=17.4> token specifies that the target Flesch-Kincaid Grade Level should be approximately 17.4. Lower values indicate simpler text.<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+<FKGL=17.4><|eot_id|>
+>>> Reference:
+Requests for information like this mostly come from the Police, HM Revenue and Customs, UK Visas and Immigration and other organisations with the power to investigate crime and/or collect tax. <|eot_id|>
+>>> Prediction:
+Requests for information like this generally come from the Police, HM Revenue and Customs, UK Visas and Immigration and other organisations with the power to investigate crime and/or collect tax. 
+================================================================================
+
+>>> [Step 320] Prompt:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|>
+
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|><|start_header_id|>user<|end_header_id|>
+
+INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=15.8> Visible light (commonly referred to simply as light) is electromagnetic radiation that is visible to the human eye, and is responsible for the sense of sight.
+EXPLANATION: The <FKGL=9.2> token specifies that the target Flesch-Kincaid Grade Level should be approximately 9.2. Lower values indicate simpler text.<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+<FKGL=9.2><|eot_id|>
+>>> Reference:
+Light is electromagnetic radiation that is in the form of a wave. <|eot_id|>
+>>> Prediction:
+Light is a form of electromagnetic radiation. 
+================================================================================
+{'loss': 0.8575, 'grad_norm': 1.5067793130874634, 'learning_rate': 8.090655259273428e-06, 'epoch': 2.5}
+{'eval_loss': 0.762115478515625, 'eval_runtime': 21.525, 'eval_samples_per_second': 12.869, 'eval_steps_per_second': 3.252, 'epoch': 2.5}
+{'loss': 0.6615, 'grad_norm': 1.4087193012237549, 'learning_rate': 5.838740246252794e-06, 'epoch': 2.57}
+{'eval_loss': 0.7622973918914795, 'eval_runtime': 21.3707, 'eval_samples_per_second': 12.962, 'eval_steps_per_second': 3.276, 'epoch': 2.57}
+
+>>> [Step 340] Prompt:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|>
+
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|><|start_header_id|>user<|end_header_id|>
+
+INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=6.8> For most superscalar designs , the instruction width is 32 bits or fewer .
+
+EXPLANATION: The <FKGL=5.6> token specifies that the target Flesch-Kincaid Grade Level should be approximately 5.6. Lower values indicate simpler text.<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+<FKGL=5.6><|eot_id|>
+>>> Reference:
+For most superscalar designs , the instruction width is 32 bits or less . <|eot_id|>
+>>> Prediction:
+For most superscalar designs, the instruction width is 32 bits or less. 
+================================================================================
+
+>>> [Step 340] Prompt:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|>
+
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|><|start_header_id|>user<|end_header_id|>
+
+INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=8.8> Characters Several of the topics in the novel include selective mutism , death and grief .
+EXPLANATION: The <FKGL=5.6> token specifies that the target Flesch-Kincaid Grade Level should be approximately 5.6. Lower values indicate simpler text.<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+<FKGL=5.6><|eot_id|>
+>>> Reference:
+Some of topics in the novel include selective mutism , death and grief . <|eot_id|>
+>>> Prediction:
+Death and grief are other topics. 
+================================================================================
+
+>>> [Step 340] Prompt:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|>
+
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|><|start_header_id|>user<|end_header_id|>
+
+INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=11.9> Often, individuals have had one or more major depressive episodes.
+EXPLANATION: The <FKGL=7.2> token specifies that the target Flesch-Kincaid Grade Level should be approximately 7.2. Lower values indicate simpler text.<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+<FKGL=7.2><|eot_id|>
+>>> Reference:
+They have also had at least one major depressive episode. <|eot_id|>
+>>> Prediction:
+People often have had one or more major depressive episodes. 
+================================================================================
+
+>>> [Step 340] Prompt:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|>
+
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|><|start_header_id|>user<|end_header_id|>
+
+INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=9.5> The next closest lifespan among muroids is 7 years , 8 months among the better studied Canyon mouse , Peromyscus crinitus .
+
+EXPLANATION: The <FKGL=8.3> token specifies that the target Flesch-Kincaid Grade Level should be approximately 8.3. Lower values indicate simpler text.<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+<FKGL=8.3><|eot_id|>
+>>> Reference:
+The species which lives the second longest in the muroids lives 7 years , 8 months , which is the Canyon Mouse , Peromyscus crinitus . <|eot_id|>
+>>> Prediction:
+The next closest lifespan among muroids is 7 years, 8 months among the Canyon mouse, Peromyscus crinitus. 
+================================================================================
+{'loss': 0.7776, 'grad_norm': 1.4746110439300537, 'learning_rate': 3.9344011064793516e-06, 'epoch': 2.65}
+{'eval_loss': 0.7617126107215881, 'eval_runtime': 21.4847, 'eval_samples_per_second': 12.893, 'eval_steps_per_second': 3.258, 'epoch': 2.65}
+{'loss': 0.7924, 'grad_norm': 1.232469916343689, 'learning_rate': 2.3926261428945383e-06, 'epoch': 2.73}
+{'eval_loss': 0.7614572048187256, 'eval_runtime': 21.3486, 'eval_samples_per_second': 12.975, 'eval_steps_per_second': 3.279, 'epoch': 2.73}
+
+>>> [Step 360] Prompt:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|>
+
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|><|start_header_id|>user<|end_header_id|>
+
+INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=9.1> Leon Osman -LRB- born 17 May 1981 -RRB- is an English football player who plays for Everton in the Premier League .
+
+EXPLANATION: The <FKGL=4.2> token specifies that the target Flesch-Kincaid Grade Level should be approximately 4.2. Lower values indicate simpler text.<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+<FKGL=4.2><|eot_id|>
+>>> Reference:
+Leon Osman -LRB- born 17 May 1981 -RRB- is an English football player . He plays for Everton . <|eot_id|>
+>>> Prediction:
+Leon Osman -LRB- born 17 May 1981 -RRB- is an English football player. He plays for Everton in the Premier League. 
+================================================================================
+
+>>> [Step 360] Prompt:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|>
+
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|><|start_header_id|>user<|end_header_id|>
+
+INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=17.0> If you are unable to make payment immediately, call our staff to discuss any financial problems that you may have and in many cases we are able to agree alternative payment arrangements.
+EXPLANATION: The <FKGL=14.2> token specifies that the target Flesch-Kincaid Grade Level should be approximately 14.2. Lower values indicate simpler text.<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+<FKGL=14.2><|eot_id|>
+>>> Reference:
+If you are unable to pay now, call our staff to discuss any financial problems that you may have and in many cases we are able to agree other payment methods. <|eot_id|>
+>>> Prediction:
+If you are unable to make payment immediately, call our staff to discuss any financial problems that you may have. In many cases we are able to agree alternative payment arrangements. 
+================================================================================
+
+>>> [Step 360] Prompt:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|>
+
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|><|start_header_id|>user<|end_header_id|>
+
+INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=11.1> A forced marriage is defined as ‘a marriage conducted without the valid consent of one or both parties, where duress is a factor’.
+EXPLANATION: The <FKGL=7.9> token specifies that the target Flesch-Kincaid Grade Level should be approximately 7.9. Lower values indicate simpler text.<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+<FKGL=7.9><|eot_id|>
+>>> Reference:
+A forced marriage means  ‘a marriage performed without the true consent of one or both parties, where force is a factor’. <|eot_id|>
+>>> Prediction:
+A forced marriage is a marriage that is done without the consent of one or both parties. 
+================================================================================
+
+>>> [Step 360] Prompt:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|>
+
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|><|start_header_id|>user<|end_header_id|>
+
+INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=13.4> You can choose not to see each other before your ceremony, and can ‘ make an entrance ’ to the Arundel, Norfolk or Hallam room escorted by a relative or friend.
+EXPLANATION: The <FKGL=6.6> token specifies that the target Flesch-Kincaid Grade Level should be approximately 6.6. Lower values indicate simpler text.<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+<FKGL=6.6><|eot_id|>
+>>> Reference:
+You can choose not to see each other before your ceremony. You can also ‘make an entrance’ with a relative or friend to the Arundel, Norfolk or Hallam room. <|eot_id|>
+>>> Prediction:
+You can choose not to see each other before your ceremony. You can also make an entrance to the Arundel, Norfolk or Hallam room with a relative or friend. 
+================================================================================
+{'loss': 0.734, 'grad_norm': 1.1419336795806885, 'learning_rate': 1.2255500586818014e-06, 'epoch': 2.81}
+{'eval_loss': 0.7617006301879883, 'eval_runtime': 21.5659, 'eval_samples_per_second': 12.844, 'eval_steps_per_second': 3.246, 'epoch': 2.81}
+{'loss': 0.7537, 'grad_norm': 1.4589260816574097, 'learning_rate': 4.423584497996458e-07, 'epoch': 2.89}
+{'eval_loss': 0.7615875601768494, 'eval_runtime': 21.3512, 'eval_samples_per_second': 12.974, 'eval_steps_per_second': 3.279, 'epoch': 2.89}
+
+>>> [Step 380] Prompt:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|>
+
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|><|start_header_id|>user<|end_header_id|>
+
+INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=18.1> In addition, we also use the EIA process to assess the impact on other issues such as financial exclusion and poverty, voluntary, community and faith sector, carers, cohesion and health and wellbeing.
+EXPLANATION: The <FKGL=17.4> token specifies that the target Flesch-Kincaid Grade Level should be approximately 17.4. Lower values indicate simpler text.<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+<FKGL=17.4><|eot_id|>
+>>> Reference:
+We also use the EIA process to assess the impact on other issues such as financial exclusion and poverty, voluntary, community and faith sector, carers, cohesion and health and wellbeing. <|eot_id|>
+>>> Prediction:
+In addition, we also use the EIA process to assess the impact on other issues such as financial exclusion and poverty, voluntary, community and faith sector, carers, cohesion and health and wellbeing. 
+================================================================================
+
+>>> [Step 380] Prompt:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|>
+
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|><|start_header_id|>user<|end_header_id|>
+
+INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=16.6> One side of the armed conflicts is composed mainly of the Sudanese military and the Janjaweed , a Sudanese militia group recruited mostly from the Afro-Arab Abbala tribes of the northern Rizeigat region in Sudan .
+
+EXPLANATION: The <FKGL=15.0> token specifies that the target Flesch-Kincaid Grade Level should be approximately 15.0. Lower values indicate simpler text.<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+<FKGL=15.0><|eot_id|>
+>>> Reference:
+One side of the armed conflicts is made of Sudanese military and the Janjaweed , a Sudanese militia recruited from the Afro-Arab Abbala tribes of the northern Rizeigat region in Sudan . <|eot_id|>
+>>> Prediction:
+One side of the armed conflicts is the Sudanese military and the Janjaweed, a Sudanese militia group recruited mostly from the Afro-Arab Abbala tribes of the northern Rizeigat region in Sudan. 
+================================================================================
+
+>>> [Step 380] Prompt:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|>
+
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|><|start_header_id|>user<|end_header_id|>
+
+INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=22.5> Dependent personality disorder (DPD), formerly known as asthenic personality disorder, is a personality disorder that is characterized by a pervasive psychological dependence on other people.
+EXPLANATION: The <FKGL=19.4> token specifies that the target Flesch-Kincaid Grade Level should be approximately 19.4. Lower values indicate simpler text.<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+<FKGL=19.4><|eot_id|>
+>>> Reference:
+A dependent personality disorder (DPD) is a personality disorder that involves a psychological dependence on other people. <|eot_id|>
+>>> Prediction:
+Dependent personality disorder (DPD), formerly known as asthenic personality disorder, is a personality disorder that is characterized by a strong need to be taken care of by others. 
+================================================================================
+
+>>> [Step 380] Prompt:
+<|begin_of_text|><|start_header_id|>system<|end_header_id|>
+
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.<|eot_id|><|start_header_id|>user<|end_header_id|>
+
+INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=8.0> The pain is paroxysmal, lasting seconds up to 2 min, but attacks may recur rapidly.
+EXPLANATION: The <FKGL=5.6> token specifies that the target Flesch-Kincaid Grade Level should be approximately 5.6. Lower values indicate simpler text.<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+<FKGL=5.6><|eot_id|>
+>>> Reference:
+The pain usually lasts seconds but may last up to 2 minutes. <|eot_id|>
+>>> Prediction:
+The pain is paroxysmal, lasting seconds up to 2 min. Attacks may recur rapidly. 
+================================================================================
+{'loss': 0.7237, 'grad_norm': 1.296794056892395, 'learning_rate': 4.921550877550751e-08, 'epoch': 2.96}
+{'eval_loss': 0.7615298628807068, 'eval_runtime': 21.3398, 'eval_samples_per_second': 12.98, 'eval_steps_per_second': 3.28, 'epoch': 2.96}
+{'train_runtime': 2667.232, 'train_samples_per_second': 2.314, 'train_steps_per_second': 0.144, 'train_loss': 0.9147473561267058, 'epoch': 2.99}
+Evaluation results: {'eval_loss': 0.7614572048187256, 'eval_runtime': 21.3792, 'eval_samples_per_second': 12.957, 'eval_steps_per_second': 3.274, 'epoch': 2.994174757281553}
