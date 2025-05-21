@@ -1,6 +1,8 @@
 import json
 import os
 import re
+import numpy as np
+import argparse
 
 def clean_text(text):
     if not isinstance(text, str):
@@ -14,7 +16,7 @@ def log_stats(logfile_path, message):
         log_file.write(message + "\n")
     print(message)
 
-def flatten_jsonl(input_file, output_file, log_file_path=None):
+def flatten_jsonl(input_file, output_file, keep_fraction=1.0, seed=42, log_file_path=None):
     flattened_data = []
     total_examples = 0
     total_flattened = 0
@@ -42,7 +44,11 @@ def flatten_jsonl(input_file, output_file, log_file_path=None):
                 # If 'simplifications' is missing or not a list, handle it here
                 print(f"Warning: 'simplifications' missing or not a list in example: {example}")
     
-    # Save the flattened data to a new file
+
+    sample_size = max(1, int(keep_fraction * len(flattened_data)))
+    np.random.seed(seed)
+    flattened_data = list(np.random.choice(flattened_data, size=sample_size, replace=False))
+
     with open(output_file, 'w', encoding='utf-8') as f:
         for entry in flattened_data:
             f.write(json.dumps(entry, ensure_ascii=False) + "\n")
@@ -53,29 +59,28 @@ def flatten_jsonl(input_file, output_file, log_file_path=None):
     log_stats(log_file_path, "-" * 50)
 
 def main():
-    datasets = [
-                "newsela", 
-                "simpa", 
-                "medeasi",
-                "wikilarge_ori_splitwise",
-                "wikilarge_ori_global"
-                ]
-    for dataset in datasets:
-        print(f"{5*"*"} Processing {dataset}... {5*"*"}")
-        input_dir = f"./data/splits_new/{dataset}"
-        output_dir = f"./data/splits_flattened/{dataset}"
-        os.makedirs(output_dir, exist_ok=True)
+    parser = argparse.ArgumentParser(description="Flatten JSONL files and sample a fraction of the data.")
+    parser.add_argument("--keep_fraction", type=float, default=1.0, help="Fraction of data to keep after flattening.")
+    parser.add_argument("--seed", type=int, default=42, help="Random seed for reproducibility.")
+    parser.add_argument("--dataset", type=str, required=True, help="Dataset to process.")
+    args = parser.parse_args()
 
-        log_file_path = os.path.join(output_dir, "log.txt")
-        open(log_file_path, "w").close()
 
-        for split in ["train", "val", "test"]:
-            input_jsonl = f'{input_dir}/{split}.jsonl'
-            output_jsonl = f'{output_dir}/{split}.jsonl'
+    print(f"{5*"*"} Processing {args.dataset}... {5*"*"}")
+    input_dir = f"./data/splits_new/{args.dataset}"
+    output_dir = f"./data/splits_flattened/{args.dataset}_{args.keep_fraction}"
+    os.makedirs(output_dir, exist_ok=True)
 
-            flatten_jsonl(input_jsonl, output_jsonl, log_file_path=log_file_path)
+    log_file_path = os.path.join(output_dir, "log.txt")
+    open(log_file_path, "w").close()
 
-    log_stats(log_file_path, f"Flattening completed for dataset: {dataset}")
+    for split in ["train", "val", "test"]:
+        input_jsonl = f'{input_dir}/{split}.jsonl'
+        output_jsonl = f'{output_dir}/{split}.jsonl'
+
+        flatten_jsonl(input_jsonl, output_jsonl, args.keep_fraction, seed=args.seed, log_file_path=log_file_path)
+
+    log_stats(log_file_path, f"Flattening completed for dataset: {args.dataset}")
 
 if __name__=="__main__":
     main()

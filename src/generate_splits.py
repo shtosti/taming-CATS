@@ -101,10 +101,10 @@ def generate_splits(data, metric_values, strat_metric, num_bins=25, seed=None):
 def main():
     DATASETS = [
         # "medeasi",
-        # "newsela",
+        "newsela",
         # "simpa",
         # "wikilarge_ori_splitwise",
-        "wikilarge_ori_global"
+        # "wikilarge_ori_global"
     ]
     DATA_DIR = "./../data"
 
@@ -112,11 +112,12 @@ def main():
     STRAT_METRIC = "FKGL"
     NUM_BINS = 25
     SEED = 42
+    MAX_SAMPLES = 3000
     
     for dataset_name in DATASETS:
         print(f"Processing {dataset_name}...")
 
-        SPLIT_SAVE_DIR = f"./../data/splits_new/{dataset_name}"
+        SPLIT_SAVE_DIR = f"./../data/splits_new/{dataset_name}_{MAX_SAMPLES}"
         os.makedirs(SPLIT_SAVE_DIR, exist_ok=True)
 
         LOG_FILE_PATH = os.path.join(SPLIT_SAVE_DIR, "log.txt")
@@ -140,7 +141,11 @@ def main():
             after = len(data)
             log_stats(LOG_FILE_PATH, f"Removed {before - after} items based on {name} (new size: {after})")
 
-        # Extract metric values
+        if len(data) > MAX_SAMPLES:
+            np.random.seed(SEED)
+            data = list(np.random.choice(data, size=MAX_SAMPLES, replace=False))
+            log_stats(LOG_FILE_PATH, f"Randomly sampled {MAX_SAMPLES} items from filtered data")
+
         full_metric_values = extract_metrics(data, [
                                                 "char_count", 
                                                 "word_count", 
