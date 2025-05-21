@@ -2,7 +2,7 @@
 
 # *** TODO ***
 
-MAX_LENGTH=4096
+MAX_LENGTH=8192
 
 # --- model name
 MODEL_NAME="meta-llama/Llama-3.2-1B-Instruct"

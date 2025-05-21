@@ -3,9 +3,9 @@
 
 # ========== inference =========
 USE_PEFT=false
-MODEL_PATH="models/Ministral-3b-instruct-NoFluff_hq-FKGL-token_explanation-20250520-185136"
+MODEL_PATH="models/Llama-3.2-1B-Instruct-Newsela-FKGL-token_explanation-20250521-000403"
 METRIC_NAME="FKGL"
-DATASET_NAME="NoFluff_hq"
+DATASET_NAME="Newsela"
 MODEL_CLASS="auto" # "llama" or "auto"
 
 
@@ -19,9 +19,9 @@ ARGS=(
   --dataset_name "$DATASET_NAME"
   --model_class "$MODEL_CLASS"
   --model_family "base"
-  --max_length 512
+  --max_length 8192
   --batch_size 4
-  --slice_test -1
+  --slice_test 5
   --output_file "$OUTPUT_FILE"
   --control_tokens "data/prompts/control_tokens.json"
   --system_prompts "data/prompts/system_prompts.json"
