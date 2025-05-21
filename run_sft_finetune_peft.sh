@@ -2,8 +2,8 @@
 
 # *** TODO ***
 # MAX_LENGTH=512
-MAX_LENGTH=4096
-MODEL_CLASS="auto" # --- model class: "llama" for llama and mistral, "auto" for qwen
+MAX_LENGTH=8192
+MODEL_CLASS="llama" # --- model class: "llama" for llama and mistral, "auto" for qwen
 
 # --- model name
 MODEL_NAME="meta-llama/Meta-Llama-3-8B-Instruct"

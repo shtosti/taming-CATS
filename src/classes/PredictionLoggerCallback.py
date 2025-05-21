@@ -20,7 +20,7 @@ class PredictionLoggerCallback(TrainerCallback):
         self.tokenizer.padding_side = 'left'
 
         self.gen_kwargs = gen_kwargs or {
-            "max_new_tokens": 300,
+            "max_new_tokens": 1500,
             "do_sample": True,
             "pad_token_id": self.tokenizer.pad_token_id,
             "eos_token_id": self.tokenizer.eos_token_id,
