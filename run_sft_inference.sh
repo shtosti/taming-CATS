@@ -3,9 +3,9 @@
 
 # ========== inference =========
 USE_PEFT=false
-MODEL_PATH="models/Llama-3.2-1B-Instruct-Newsela-FKGL-token_explanation-20250521-000403"
+MODEL_PATH="meta-llama/Meta-Llama-3-8B-Instruct"
 METRIC_NAME="FKGL"
-DATASET_NAME="Newsela"
+DATASET_NAME="Med-EASi"
 MODEL_CLASS="auto" # "llama" or "auto"
 
 
@@ -19,9 +19,9 @@ ARGS=(
   --dataset_name "$DATASET_NAME"
   --model_class "$MODEL_CLASS"
   --model_family "base"
-  --max_length 8192
+  --max_length 512
   --batch_size 4
-  --slice_test 5
+  --slice_test -1
   --output_file "$OUTPUT_FILE"
   --control_tokens "data/prompts/control_tokens.json"
   --system_prompts "data/prompts/system_prompts.json"

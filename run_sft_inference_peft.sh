@@ -3,8 +3,8 @@
 
 # ========== inference =========
 USE_PEFT=true
-MODEL_PATH="models/Qwen2.5-7B-Instruct-Med-EASi-CHAR_COMPRESSION-token_explanation-20250519-010313"
-MODEL_NAME="Qwen/Qwen2.5-7B-Instruct"
+MODEL_PATH="meta-llama/Meta-Llama-3-8B-Instruct"
+MODEL_NAME="meta-llama/Meta-Llama-3-8B-Instruct"
 METRIC_NAME="CHAR_COMPRESSION"
 DATASET_NAME="Med-EASi"
 MODEL_CLASS="auto" # "llama" or "auto"
