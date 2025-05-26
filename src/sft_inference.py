@@ -3,6 +3,8 @@ import argparse
 import torch
 from tqdm import tqdm
 import json
+import random
+import numpy as np
 from transformers import AutoModelForCausalLM, AutoTokenizer, LlamaForCausalLM
 # from peft import PeftModel, PeftConfig
 # from peft import LoraConfig, PeftModelForCausalLM, get_peft_config
@@ -12,6 +14,11 @@ from helpers.prompting import create_user_prompt, format_prompt_with_special_tok
 from helpers.hugging_face import load_dataset_from_hf, get_model_short_name
 from classes.Metrics import Metrics
 
+def set_seed(seed:int):
+    random.seed(seed)
+    np.random.seed(seed)
+    torch.manual_seed(seed)
+    torch.cuda.manual_seed_all(seed)
 
 def load_json(file_path: str):
     """Load JSON from a file."""
@@ -106,15 +113,12 @@ def load_and_prepare_test_set(dataset_name, tokenizer, max_length, control_token
             target_metric_value = row["target_metrics"][metric_key_mapped]
         else:
             source_metric_value = None
-            target_metric_value = None
-
-        if compression_metric:
             if args.metric_name == "WORD_COMPRESSION":
-                target_metric_value = round(row["target_metrics"]["word_count"] / row["source_metrics"]["word_count"], 1)
-            if args.metric_name == "CHAR_COMPRESSION":
-                target_metric_value = round(row["target_metrics"]["char_count"] / row["source_metrics"]["char_count"], 1)
-            if args.metric_name == "SENTENCE_COMPRESSION":
-                target_metric_value = round(row["target_metrics"]["sent_count"] / row["source_metrics"]["sent_count"], 1)
+                target_metric_value = row["target_metrics"]["word_compression_rate"]
+            elif args.metric_name == "CHAR_COMPRESSION":
+                target_metric_value = row["target_metrics"]["char_compression_rate"]
+            elif args.metric_name == "SENTENCE_COMPRESSION":
+                target_metric_value = row["target_metrics"]["sentence_compression_rate"]
 
         reference_simplification = row["simplification_text"]
         
@@ -128,7 +132,7 @@ def load_and_prepare_test_set(dataset_name, tokenizer, max_length, control_token
         # Create the user prompt dynamically
         _, user_prompt = create_user_prompt(
             user_prompts=user_prompts,
-            metric_name=metric_key_mapped,
+            metric_name=args.metric_name,
             source_metric_value=source_metric_value,
             target_metric_value=target_metric_value,
             user_prompt_id=user_prompt_id,
@@ -143,7 +147,7 @@ def load_and_prepare_test_set(dataset_name, tokenizer, max_length, control_token
             tokenizer=tokenizer,
             system_prompt=system_prompt,
             user_prompt=user_prompt,
-            metric_name=metric_key_mapped,
+            metric_name=args.metric_name,
             target_metric_value=target_metric_value,
             # model_family=model_family
         )
@@ -337,6 +341,7 @@ def parse_args():
 
     parser.add_argument("--use_vllm", action="store_true", help="Use vLLM for fast inference.")
 
+    parser.add_argument("--seed", type=int, default=42, help="Random seed for reproducibility.")
     parser.add_argument("--model_path", type=str, required=True, help="The path to the model dir.")
     parser.add_argument("--model_name", type=str, required=False, help="The name of the model on Hugging Face.")
     parser.add_argument("--dataset_name", type=str, required=True, help="The name of the dataset on Hugging Face.")
@@ -364,6 +369,8 @@ def main():
     args = parse_args()
     print(f"Loading from {args.model_path}...")
     print(f"Inference args:\n{args}\n")
+    set_seed(args.seed)
+
 
     if args.use_vllm:
         from vllm import LLM, SamplingParams
