@@ -7,7 +7,7 @@
 #SBATCH --error=logs/%x_%j_err.log 
 #SBATCH --cpus-per-task=1
 #SBATCH --mem=2000
-#SBATCH --time=00:20:00              # Max runtime (hh:mm:ss)
+#SBATCH --time=00:03:00              # Max runtime (hh:mm:ss)
 
 conda activate sft
 

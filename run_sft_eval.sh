@@ -1,5 +1,8 @@
 #!/bin/bash
 
+echo "Script started: $(date)"
+python -c "print('Hello from Python')"
+
 # TODO
 INPUT_DIR="output/models/Llama-3.2-1B-Instruct-Newsela_s-FKGL-token_explanation-20250521-113051"
 MODEL_NAME="Llama-3.2-1B-Instruct"
