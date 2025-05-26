@@ -16,36 +16,45 @@ MODEL_NAME="Qwen/Qwen2.5-7B-Instruct"
 
 METRIC_NAME="FKGL"
 DATASET_NAME="WikiLarge_ori_splitwise_hq"
-MODEL_CLASS="auto" # "llama" or "auto"
 
 
 OUTPUT_DIR="output/$MODEL_PATH"
-OUTPUT_FILE="$OUTPUT_DIR/output.json"
-mkdir -p "$OUTPUT_DIR"  # Ensure the directory exists
+mkdir -p "$OUTPUT_DIR"
 
-ARGS=(
-  --model_path "$MODEL_PATH"
-  --model_name "$MODEL_NAME"
-  --dataset_name "$DATASET_NAME"
-  --model_class "$MODEL_CLASS"
-  --model_family "base"
-  --max_length 512
-  --batch_size 4
-  --slice_test -1
-  --output_file "$OUTPUT_FILE"
-  --control_tokens "data/prompts/control_tokens.json"
-  --system_prompts "data/prompts/system_prompts.json"
-  --user_prompts "data/prompts/user_prompts.json"
-  --metric_mapping "data/metric_mapping.json"
-  --metric_name "$METRIC_NAME"
-  --user_prompt_id "token_explanation"
-)
+SEEDS=(37 15 96 2 28)
+i=1
+for SEED in "${SEEDS[@]}"; do
+  echo "Running inference $i with seed $SEED..."
 
-if [ "$USE_PEFT" = true ]; then
-  echo "Using PEFT..."
-  ARGS+=( --peft_path "$MODEL_PATH" )
-fi
+  OUTPUT_FILE="$OUTPUT_DIR/output_$i.json"
 
-python src/sft_inference.py "${ARGS[@]}"
+  ARGS=(
+    --seed 42
+    --model_path "$MODEL_PATH"
+    --model_name "$MODEL_NAME"
+    --dataset_name "$DATASET_NAME"
+    --model_class "auto"
+    --model_family "base"
+    --max_length 512
+    --batch_size 4
+    --slice_test -1
+    --output_file "$OUTPUT_FILE"
+    --control_tokens "data/prompts/control_tokens.json"
+    --system_prompts "data/prompts/system_prompts.json"
+    --user_prompts "data/prompts/user_prompts.json"
+    --metric_mapping "data/metric_mapping.json"
+    --metric_name "$METRIC_NAME"
+    --user_prompt_id "token_explanation"
+  )
 
+  if [ "$USE_PEFT" = true ]; then
+    echo "Using PEFT..."
+    ARGS+=( --peft_path "$MODEL_PATH" )
+  fi
 
+  python src/sft_inference.py "${ARGS[@]}"
+
+  ((i++))
+  echo "Inference $i completed."
+
+done

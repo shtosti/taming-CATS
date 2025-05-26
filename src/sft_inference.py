@@ -102,9 +102,9 @@ def is_compression_metric(args):
 def load_and_prepare_test_set(dataset_name, tokenizer, max_length, control_tokens, system_prompts, user_prompts, metric_mapping, args, user_prompt_id, model_family, slice_test=None, source_based_metric=False, compression_metric=False):
     test_dataset = load_dataset_from_hf(dataset_name, split="test", slice=slice_test)
     
-    system_id, system_prompt = select_random_system_prompt(system_prompts)
-    
     def process_instance(row):
+
+        system_id, system_prompt = select_random_system_prompt(system_prompts)
 
         metric_key_mapped = metric_mapping[args.metric_name]
 

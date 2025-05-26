@@ -1,18 +1,26 @@
 #!/bin/bash
 
 echo "Script started: $(date)"
-python -c "print('Hello from Python')"
 
 # TODO
-INPUT_DIR="output/models/Llama-3.2-1B-Instruct-Newsela_s-FKGL-token_explanation-20250521-113051"
+INPUT_DIR="output/models/Llama-3.2-1B-Instruct-Med-EASi-FKGL-token_explanation-20250518-220009"
 MODEL_NAME="Llama-3.2-1B-Instruct"
-DATASET="Newsela_s"
+DATASET="Med-EASi"
 METRIC_NAME="FKGL"
 USER_PROMPT_ID="token_explanation"
 
 
+
+INPUT_FILES=(
+  "$INPUT_DIR/output_1.json"
+  "$INPUT_DIR/output_2.json"
+  "$INPUT_DIR/output_3.json"
+  "$INPUT_DIR/output_4.json"
+  "$INPUT_DIR/output_5.json"
+)
+
 python src/sft_eval.py \
-  --input_file "$INPUT_DIR/output.json" \
+  --input_files "${INPUT_FILES[@]}" \
   --metric_key "$METRIC_NAME" \
   --output_dir "$INPUT_DIR" \
   --metric_mapping "data/metric_mapping.json"\
@@ -20,3 +28,5 @@ python src/sft_eval.py \
   --dataset "$DATASET"\
   --user_prompt_id="$USER_PROMPT_ID"\
   --summary_file="output/models/all_results.json"
+
+echo "Script completed: $(date)"
