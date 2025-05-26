@@ -6,6 +6,7 @@ from sklearn.metrics import mean_squared_error, mean_absolute_error
 from helpers.utils import get_correlation_data
 import pandas as pd
 import scipy.stats as stats
+from collections import defaultdict
 
 def load_json(file_path: str):
     """Load JSON from a file."""
@@ -20,6 +21,29 @@ def is_source_metric(args):
 def load_predictions(file_path):
     with open(file_path, "r", encoding="utf-8") as f:
         return json.load(f)
+
+def average_predictions_across_runs(json_files):
+    """Loads multiple JSON files and averages prediction metrics per sample."""
+    all_runs = [load_json(file) for file in json_files]
+
+    assert all(len(run) == len(all_runs[0]) for run in all_runs), "All files must have the same number of samples"
+
+    averaged_predictions = []
+    for i in range(len(all_runs[0])):
+        averaged_item = {
+            "source_metrics": all_runs[0][i]["source_metrics"],
+            "reference_metrics": all_runs[0][i]["reference_metrics"],
+            "prediction_metrics": defaultdict(list)
+        }
+        for run in all_runs:
+            for key, val in run[i]["prediction_metrics"].items():
+                averaged_item["prediction_metrics"][key].append(val)
+        averaged_item["prediction_metrics"] = {
+            key: np.mean(vals) for key, vals in averaged_item["prediction_metrics"].items()
+        }
+        averaged_predictions.append(averaged_item)
+
+    return averaged_predictions
 
 def extract_metric_values(predictions, metric_key, use_source=False):
 
@@ -330,7 +354,8 @@ def plot_error_std_vs_reference(reference_vals, real_errors, metric_key, output_
 
 def parse_args():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--input_file", type=str, required=True, help="Path to JSON file with predictions")
+    # parser.add_argument("--input_file", type=str, required=True, help="Path to JSON file with predictions")
+    parser.add_argument("--input_files", type=str, nargs='+', required=True, help="Path to JSON file(s) with predictions")
     parser.add_argument("--metric_key", type=str, required=True, help="Metric to visualize")
     parser.add_argument("--output_dir", type=str, default=".", help="Directory to save plots")
     parser.add_argument("--metric_mapping", type=str, required=True)
@@ -347,14 +372,17 @@ def main():
     print("--- Running evaluation...")
 
     args = parse_args()
-    print("Input file:\t", args.input_file)
+    print("Input files:\t", args.input_files)
     print("Metric:\t", args.metric_key)
-    use_source = is_source_metric(args) # source vals used
 
+    use_source = is_source_metric(args) # source vals used
     metric_mapping = load_json(args.metric_mapping)
     metric_key_mapped = metric_mapping[args.metric_key]
 
-    predictions = load_predictions(args.input_file) 
+    # predictions = load_predictions(args.input_file) 
+    predictions = average_predictions_across_runs(args.input_files)
+    with open(f"{args.output_dir}/output_averaged.json", "w", encoding="utf-8") as f:
+        json.dump(predictions, f, indent=4)
 
     source_vals, reference_vals, prediction_vals = extract_metric_values(predictions, metric_key_mapped, use_source=use_source)
 
@@ -392,9 +420,9 @@ def main():
                 "real_loss": per_sample_real_loss[i]
             }
 
-    with open(args.input_file, "w", encoding="utf-8") as f:
+    with open(f"{args.output_dir}/output_averaged.json", "w", encoding="utf-8") as f:
         json.dump(predictions, f, indent=4)
-    print(f"Updated input file with per-sample losses: {args.input_file}")
+    print(f"Updated averaged predictions file with per-sample losses: {args.output_dir}/output_averaged.json")
 
     plot_metric_scatter(source_vals, reference_vals, prediction_vals, metric_key_mapped, args.output_dir, use_source=use_source)
     plot_metric_lines(source_vals, reference_vals, prediction_vals, metric_key_mapped, args.output_dir, use_source=use_source)
