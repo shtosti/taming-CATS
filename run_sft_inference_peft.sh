@@ -3,10 +3,19 @@
 
 # ========== inference =========
 USE_PEFT=true
-MODEL_PATH="meta-llama/Meta-Llama-3-8B-Instruct"
-MODEL_NAME="meta-llama/Meta-Llama-3-8B-Instruct"
-METRIC_NAME="CHAR_COMPRESSION"
-DATASET_NAME="Med-EASi"
+MODEL_PATH="models/Qwen2.5-7B-Instruct-WikiLarge_ori_splitwise_hq-FKGL-token_explanation-20250519-022012"
+
+# MODEL_NAME="meta-llama/Llama-3.2-1B-Instruct"
+# MODEL_NAME="meta-llama/Meta-Llama-3-8B-Instruct"
+# MODEL_NAME="meta-llama/Llama-2-13b-chat-hf"
+# MODEL_NAME="Qwen/Qwen2.5-1.5B-Instruct"
+MODEL_NAME="Qwen/Qwen2.5-7B-Instruct"
+# MODEL_NAME="Qwen/Qwen2.5-14B-Instruct"
+# MODEL_NAME="ministral/Ministral-3b-instruct"
+# MODEL_NAME="mistralai/Mistral-7B-Instruct-v0.1"
+
+METRIC_NAME="FKGL"
+DATASET_NAME="WikiLarge_ori_splitwise_hq"
 MODEL_CLASS="auto" # "llama" or "auto"
 
 

@@ -2,7 +2,7 @@
 
 # *** TODO ***
 # MAX_LENGTH=512
-MAX_LENGTH=8192
+MAX_LENGTH=4096
 MODEL_CLASS="llama" # --- model class: "llama" for llama and mistral, "auto" for qwen
 
 # --- model name
@@ -13,7 +13,7 @@ MODEL_NAME="meta-llama/Meta-Llama-3-8B-Instruct"
 # MODEL_NAME="mistralai/Mistral-7B-Instruct-v0.1"
 
 # DATASETS=("Med-EASi" "SimPA" "WikiLarge_ori_splitwise" "WikiLarge_ori_global")
-DATASETS=("Newsela")
+DATASETS=("Newsela_s")
 # METRICS=("ARI" "FKGL" "DALE-CHALL" "CHAR_COMPRESSION" "WORD_COMPRESSION")
 METRICS=("FKGL")
 
@@ -38,7 +38,7 @@ for DATASET_NAME in "${DATASETS[@]}"; do
             --weight_decay "0.01" \
             --logging_steps "10" \
             --epochs "3" \
-            --patience "4" \
+            --patience "3" \
             --max_length "$MAX_LENGTH"\
             --wandb_project_name "ATS_with_control_tokens" \
             --wandb_entity "shtosti"\

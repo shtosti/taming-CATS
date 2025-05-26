@@ -1,10 +1,10 @@
 #!/bin/bash
 
 # TODO
-INPUT_DIR="output/models/Qwen2.5-7B-Instruct-Med-EASi-CHAR_COMPRESSION-token_explanation-20250519-010313"
-MODEL_NAME="Qwen2.5-7B-Instruct"
-DATASET="Med-EASi"
-METRIC_NAME="CHAR_COMPRESSION"
+INPUT_DIR="output/models/Llama-3.2-1B-Instruct-Newsela_s-FKGL-token_explanation-20250521-113051"
+MODEL_NAME="Llama-3.2-1B-Instruct"
+DATASET="Newsela_s"
+METRIC_NAME="FKGL"
 USER_PROMPT_ID="token_explanation"
 
 

@@ -2,7 +2,7 @@
 
 # *** TODO ***
 
-MAX_LENGTH=8192
+MAX_LENGTH=4096
 
 # --- model name
 MODEL_NAME="meta-llama/Llama-3.2-1B-Instruct"
@@ -10,7 +10,7 @@ MODEL_NAME="meta-llama/Llama-3.2-1B-Instruct"
 # MODEL_NAME="ministral/Ministral-3b-instruct"
 
 # DATASETS=("Med-EASi" "SimPA" "WikiLarge_ori_splitwise" "WikiLarge_ori_global")
-DATASETS=("Newsela")
+DATASETS=("Newsela_s")
 # METRICS=("ARI" "FKGL" "DALE-CHALL" "CHAR_COMPRESSION" "WORD_COMPRESSION")
 METRICS=("FKGL")
 
