@@ -176,10 +176,10 @@ def load_and_prepare_dataset(dataset_name, tokenizer, args, source_based_metric=
     system_prompts = load_json(args.system_prompts)
     user_prompts = load_json(args.user_prompts)
     metric_mapping = load_json(args.metric_mapping)
-
-    system_id, system_prompt = select_random_system_prompt(system_prompts)
     
     def process_instance(row):
+        system_id, system_prompt = select_random_system_prompt(system_prompts)
+
         metric_key_in_dataset = metric_mapping[args.metric_name]
         source_metric_value = row["source_metrics"][metric_key_in_dataset] if source_based_metric else None
         target_metric_value = row["target_metrics"][metric_key_in_dataset]
@@ -374,9 +374,10 @@ def main():
     wandb.config.update(vars(args))
     wandb_run_id = wandb.run.id
 
-    timestamp = datetime.now().strftime("%Y%m%d-%H%M%S")
+    timestamp = datetime.now().strftime("%Y%m%d")
     short_model = get_model_short_name(args.model_name)
-    output_dir = f"./models/{short_model}-{args.dataset_name}-{args.metric_name}-{args.user_prompt_id}-{timestamp}"
+    # output_dir = f"./models/{short_model}-{args.dataset_name}-{args.metric_name}-{args.user_prompt_id}-{timestamp}"
+    output_dir = f"./models/{args.metric_name}-{args.dataset_name}-{args.user_prompt_id}-{short_model}-{timestamp}"
     os.makedirs(output_dir, exist_ok=True)
     print("Saving to:", output_dir)
 
