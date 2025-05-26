@@ -1,14 +1,17 @@
 import random
 
-random.seed(42)
 
-def select_random_system_prompt(system_prompts):
+def select_random_system_prompt(system_prompts, seed=None):
     """Randomly selects a system prompt from the list and returns its ID and text."""
+    if seed is not None:
+        random.seed(seed)
     selected_prompt = random.choice(system_prompts["system_prompts"])  # Seed set for reproducibility
     return selected_prompt["id"], selected_prompt["prompt"]
 
-def select_random_user_prompt(user_prompts, metric_name, source_metric_value, target_metric_value, user_prompt_id):
+def select_random_user_prompt(user_prompts, metric_name, source_metric_value, target_metric_value, user_prompt_id, seed=None):
     """Randomly selects a user prompt from the list and returns its ID and text."""
+    if seed is not None:
+        random.seed(seed)
     selected_prompts = user_prompts.get(metric_name)
     if selected_prompts:
         selected_prompt = random.choice(selected_prompts[user_prompt_id])
@@ -24,8 +27,10 @@ def select_control_token_explanation(control_tokens, metric_name, target_metric_
         return control_token["explanation"].replace("{TARGET_VALUE}", str(target_metric_value))
     return None
 
-def select_random_control_token_examples(control_tokens, metric_name, num_examples=3):
+def select_random_control_token_examples(control_tokens, metric_name, num_examples=2, seed=None):
     """Selects a random set of control token examples based on the metric name and value."""
+    if seed is not None:
+        random.seed(seed)
     control_token = control_tokens.get(metric_name)
     if control_token and "examples" in control_token:
         # examples = random.sample(control_token["examples"], num_examples)
