@@ -8,7 +8,7 @@
 #SBATCH --gpus=A100:1
 #SBATCH --cpus-per-task=2
 #SBATCH --mem=16000
-#SBATCH --time=00:20:00              # Max runtime (hh:mm:ss)
+#SBATCH --time=01:40:00              # Max runtime (hh:mm:ss)
 
 conda activate sft
 module load gpu

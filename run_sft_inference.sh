@@ -1,14 +1,17 @@
 #!/bin/bash
 
-
-# ========== inference =========
-USE_PEFT=false
-MODEL_PATH="models/Llama-3.2-1B-Instruct-Med-EASi-CHAR_COMPRESSION-token_explanation-20250518-221639"
+# =========================================================================
+# TODO
+MODEL_DIR="Llama-3.2-1B-Instruct-Med-EASi-CHAR_COMPRESSION-token_explanation-20250518-221639"
 METRIC_NAME="CHAR_COMPRESSION"
 DATASET_NAME="Med-EASi"
+# =========================================================================
 
 
-OUTPUT_DIR="output/$MODEL_PATH"
+USE_PEFT=false
+MODELS_DIR="models"
+MODEL_PATH="$MODELS_DIR/$MODEL_DIR"
+OUTPUT_DIR="sft_inference/$MODEL_DIR"
 mkdir -p "$OUTPUT_DIR"
 
 SEEDS=(37 15 96 2 28)
