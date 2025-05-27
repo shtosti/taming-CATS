@@ -11,12 +11,16 @@ USER_PROMPT_ID="token_explanation"
 
 
 
+# INPUT_FILES=(
+#   "$INPUT_DIR/output_1.json"
+#   "$INPUT_DIR/output_2.json"
+#   "$INPUT_DIR/output_3.json"
+#   "$INPUT_DIR/output_4.json"
+#   "$INPUT_DIR/output_5.json"
+# )
+
 INPUT_FILES=(
-  "$INPUT_DIR/output_1.json"
-  "$INPUT_DIR/output_2.json"
-  "$INPUT_DIR/output_3.json"
-  "$INPUT_DIR/output_4.json"
-  "$INPUT_DIR/output_5.json"
+  "$INPUT_DIR/output.json"
 )
 
 python src/sft_eval.py \
