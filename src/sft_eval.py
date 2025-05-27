@@ -1,6 +1,7 @@
 import json
 import argparse
 import matplotlib.pyplot as plt
+import seaborn as sns
 import numpy as np
 from sklearn.metrics import mean_squared_error, mean_absolute_error
 from helpers.utils import get_correlation_data
@@ -164,27 +165,6 @@ def plot_metric_scatter(source_vals, reference_vals, prediction_vals, metric_key
     plt.savefig(f"{output_dir}/{metric_key}_scatter_plot.png", bbox_inches='tight', dpi=400)
     print(f"Scatter plot saved as {metric_key}_scatter.png")
 
-def plot_metric_lines(source_vals, reference_vals, prediction_vals, metric_key, output_dir, use_source=False):
-
-    x = list(range(len(prediction_vals)))
-
-    plt.figure(figsize=(6, 5))
-
-    if use_source:
-        plt.plot(x, source_vals, color="orchid", label="Source", alpha=0.7)
-
-    plt.plot(x, reference_vals, color="darkorange", label="Reference", alpha=0.7)
-    plt.plot(x, prediction_vals, color="seagreen", label="Prediction", alpha=0.7)
-
-    # plt.title(f"{metric_key}")
-    plt.xlabel("idx")
-    plt.ylabel(metric_key)
-    plt.legend()
-    plt.grid(True)
-    plt.tight_layout()
-    plt.savefig(f"{output_dir}/{metric_key}_line.png", bbox_inches='tight', dpi=400)
-    print(f"Line plot saved as {metric_key}_line.png")
-
 def polyfit_plot(ax, x, y, color):
     x_np = np.array(x, dtype=np.float32)
     y_np = np.array(y, dtype=np.float32)
@@ -315,19 +295,6 @@ def plot_errors_vs_metrics(predictions, metric_key_mapped, metric_key, output_di
     fig_sq.savefig(f"{output_dir}/{metric_key_mapped}_sq_error_vs_metrics.png", bbox_inches='tight', dpi=400)
     print(f"Error-vs-metrics plots saved.")
 
-def plot_error_distribution(real_errors, metric_key, output_dir):
-    plt.figure(figsize=(6, 4))
-    # real_errors = cap_outliers(real_errors, lower_pct=1, upper_pct=99)
-    plt.hist(real_errors, bins=20, color="skyblue", edgecolor="black")
-    plt.axvline(0, color='black', linestyle='--')
-    plt.xlabel("Error (prediction - reference)")
-    plt.ylabel("Frequency")
-    plt.title(f"{metric_key} Error Distribution")
-    plt.tight_layout()
-    plt.grid(True)
-    plt.savefig(f"{output_dir}/{metric_key}_real_error_hist.png", bbox_inches='tight', dpi=400)
-    print(f"Real error distribution plot saved as {metric_key}_real_error_hist.png")
-
 def plot_error_std_vs_reference(reference_vals, real_errors, metric_key, output_dir, num_bins=10):
     import pandas as pd
 
@@ -340,7 +307,7 @@ def plot_error_std_vs_reference(reference_vals, real_errors, metric_key, output_
     std_by_bin = df.groupby("bin")["error"].std()
     bin_labels = [f"{interval.left:.1f}–{interval.right:.1f}" for interval in std_by_bin.index]
 
-    plt.figure(figsize=(8, 4))
+    plt.figure(figsize=(5, 4))
     plt.bar(bin_labels, std_by_bin.values, color="skyblue", edgecolor="black")
     plt.xticks(rotation=45, ha="right")
     plt.ylabel("error std")
@@ -350,6 +317,19 @@ def plot_error_std_vs_reference(reference_vals, real_errors, metric_key, output_
     plt.grid(True, axis='y', linestyle="--", alpha=0.5)
     plt.savefig(f"{output_dir}/{metric_key}_error_std_by_ref_bin.png", bbox_inches='tight', dpi=400)
     print(f"STD of error by reference bin saved as {metric_key}_error_std_by_ref_bin.png")
+
+def plot_error_std_binned(reference_vals, real_errors, metric_key, output_dir, num_bins=25):
+    mean_error = np.mean(real_errors)
+
+    plt.figure(figsize=(5, 4))
+    sns.histplot(real_errors, bins=num_bins, kde=True, color="skyblue", edgecolor="black")
+    plt.axvline(mean_error, color='black', linestyle='--', label=f'Mean Error: {mean_error:.2f}')
+    plt.xlabel("Standard deviation of errors")
+    plt.ylabel("Count by bin")
+    plt.grid(True)
+    plt.legend()
+    plt.tight_layout()
+    plt.savefig(f"{output_dir}/{metric_key}_error_std_binned.png", bbox_inches='tight', dpi=400)
 
 
 def parse_args():
@@ -425,11 +405,12 @@ def main():
     print(f"Updated averaged predictions file with per-sample losses: {args.output_dir}/output_averaged.json")
 
     plot_metric_scatter(source_vals, reference_vals, prediction_vals, metric_key_mapped, args.output_dir, use_source=use_source)
-    plot_metric_lines(source_vals, reference_vals, prediction_vals, metric_key_mapped, args.output_dir, use_source=use_source)
     plot_ctrl_attr_vs_metrics(predictions, metric_key_mapped, args.output_dir)
     plot_errors_vs_metrics(predictions, metric_key_mapped, args.metric_key, args.output_dir)
-    plot_error_distribution(per_sample_real_loss, metric_key_mapped, args.output_dir)
     plot_error_std_vs_reference(reference_vals, per_sample_real_loss, metric_key_mapped, args.output_dir)
+    plot_error_std_binned(reference_vals, per_sample_real_loss, metric_key_mapped, args.output_dir)
+    print(f"Plots saved to {args.output_dir}")
+
 
     print(f"\nAll plots saved to {args.output_dir}")
 
