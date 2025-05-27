@@ -2,8 +2,8 @@
 
 # =========================================================================
 # TODO
-MODEL_DIR="Llama-3.2-1B-Instruct-Med-EASi-CHAR_COMPRESSION-token_explanation-20250518-221639"
-METRIC_NAME="CHAR_COMPRESSION"
+MODEL_DIR="FKGL-Med-EASi-Llama-3.2-1B-Instruct-token_explanation-20250518"
+METRIC_NAME="FKGL"
 DATASET_NAME="Med-EASi"
 # =========================================================================
 
