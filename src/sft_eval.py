@@ -322,11 +322,19 @@ def plot_error_std_binned(reference_vals, real_errors, metric_key, output_dir, n
     mean_error = np.mean(real_errors)
 
     plt.figure(figsize=(5, 4))
-    sns.histplot(real_errors, bins=num_bins, kde=True, color="skyblue", edgecolor="black")
+    sns.histplot(
+        real_errors, 
+        bins=num_bins, 
+        kde=True, 
+        line_kws={"color":"royalblue", "linewidth": 1},
+        color="skyblue", 
+        edgecolor="black"
+        )
     plt.axvline(mean_error, color='black', linestyle='--', label=f'Mean Error: {mean_error:.2f}')
     plt.xlabel("Standard deviation of errors")
     plt.ylabel("Count by bin")
-    plt.grid(True)
+    # horizontal grid
+    plt.grid(axis='y', linestyle="--", alpha=0.5)
     plt.legend()
     plt.tight_layout()
     plt.savefig(f"{output_dir}/{metric_key}_error_std_binned.png", bbox_inches='tight', dpi=400)
