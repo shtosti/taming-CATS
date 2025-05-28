@@ -2,17 +2,19 @@
 
 # *** TODO ***
 
-MAX_LENGTH=4096
+MAX_LENGTH=512
 
 # --- model name
-MODEL_NAME="meta-llama/Llama-3.2-1B-Instruct"
-# MODEL_NAME="Qwen/Qwen2.5-1.5B-Instruct"
+# MODEL_NAME="meta-llama/Llama-3.2-1B-Instruct"
+# MODEL_NAME="meta-llama/Llama-3.2-3B-Instruct"
+MODEL_NAME="Qwen/Qwen3-1.7B"
+# MODEL_NAME="Qwen/Qwen3-4B"
 # MODEL_NAME="ministral/Ministral-3b-instruct"
 
-# DATASETS=("Med-EASi" "SimPA" "WikiLarge_ori_splitwise" "WikiLarge_ori_global")
-DATASETS=("Newsela_s")
+DATASETS=("Med-EASi" "SimPA" "WikiLarge_ori_splitwise")
+# DATASETS=("Newsela_s")
 # METRICS=("ARI" "FKGL" "DALE-CHALL" "CHAR_COMPRESSION" "WORD_COMPRESSION")
-METRICS=("FKGL")
+METRICS=("FKGL" "CHAR_COMPRESSION")
 
 for DATASET_NAME in "${DATASETS[@]}"; do
     for METRIC_NAME in "${METRICS[@]}"; do

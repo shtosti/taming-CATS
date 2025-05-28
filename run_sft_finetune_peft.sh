@@ -1,21 +1,20 @@
 #!/bin/bash
 
 # *** TODO ***
-# MAX_LENGTH=512
-MAX_LENGTH=4096
-MODEL_CLASS="llama" # --- model class: "llama" for llama and mistral, "auto" for qwen
+MAX_LENGTH=512
+# MAX_LENGTH=4096
 
 # --- model name
-MODEL_NAME="meta-llama/Meta-Llama-3-8B-Instruct"
-# MODEL_NAME="meta-llama/Llama-2-13b-chat-hf"
-# MODEL_NAME="Qwen/Qwen2.5-7B-Instruct"
-# MODEL_NAME="Qwen/Qwen2.5-14B-Instruct"
+# MODEL_NAME="meta-llama/Llama-3.1-8B-Instruct"
+# MODEL_NAME="meta-llama/Llama-4-Scout-17B-16E-Instruct"
+MODEL_NAME="Qwen/Qwen3-8B"
+# MODEL_NAME="Qwen/Qwen3-14B"
 # MODEL_NAME="mistralai/Mistral-7B-Instruct-v0.1"
 
 # DATASETS=("Med-EASi" "SimPA" "WikiLarge_ori_splitwise" "WikiLarge_ori_global")
-DATASETS=("Newsela_s")
+DATASETS=("Med-EASi" "SimPA" "WikiLarge_ori_splitwise")
 # METRICS=("ARI" "FKGL" "DALE-CHALL" "CHAR_COMPRESSION" "WORD_COMPRESSION")
-METRICS=("FKGL")
+METRICS=("FKGL" "CHAR_COMPRESSION")
 
 for DATASET_NAME in "${DATASETS[@]}"; do
     for METRIC_NAME in "${METRICS[@]}"; do
@@ -25,7 +24,7 @@ for DATASET_NAME in "${DATASETS[@]}"; do
         PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True \
         TORCH_USE_CUDA_DSA=1 \
         python src/sft_finetune.py \
-            --model_class "$MODEL_CLASS" \
+            --model_class "auto" \
             --model_family "base" \
             --model_name "$MODEL_NAME" \
             --dataset_name "$DATASET_NAME" \

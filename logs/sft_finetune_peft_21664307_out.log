@@ -1,0 +1,152 @@
+Tue May 27 23:38:42 2025       
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 560.35.05              Driver Version: 560.35.05      CUDA Version: 12.6     |
+|-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  NVIDIA A100-SXM4-80GB          Off |   00000000:48:00.0 Off |                    0 |
+| N/A   29C    P0             59W /  400W |       1MiB /  81920MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+                                                                                         
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI        PID   Type   Process name                              GPU Memory |
+|        ID   ID                                                               Usage      |
+|=========================================================================================|
+|  No running processes found                                                             |
++-----------------------------------------------------------------------------------------+
+*** Finetuning Qwen/Qwen3-8B with Med-EASi and FKGL ***
+torch.cuda.is_bf16_supported: True
+Transformers version: 4.51.0
+Python path: /home/hhubar/data/conda/envs/sft/bin/python
+Using PEFT...
+
+Run arguments:
+Namespace(model_class='auto', model_family='base', model_name='Qwen/Qwen3-8B', dataset_name='Med-EASi', slice_train=-1, slice_val=-1, batch_size=4, eval_batch_size=4, gradient_accumulation_steps=4, learning_rate=0.0001, weight_decay=0.01, warmup_steps=30, max_grad_norm=1.0, epochs=3, max_length=512, logging_steps=10, wandb_project_name='ATS_with_control_tokens', wandb_entity='shtosti', generate_every=20, seed=42, patience=3, prompting_type='vanilla', user_prompt_id='token_explanation', metric_name='FKGL', control_tokens='data/prompts/control_tokens.json', system_prompts='data/prompts/system_prompts.json', user_prompts='data/prompts/user_prompts.json', metric_mapping='data/metric_mapping.json', peft=True, lora_r=16, lora_dropout=0.1)
+
+Saving to: ./models/FKGL-Med-EASi-token_explanation-Qwen3-8B-20250527
+
+*** Finetuning Qwen3-8B with Med-EASi ***
+
+CUDA available: True
+Number of GPUs: 1
+GPU name: NVIDIA A100-SXM4-80GB
+Model embedding size BEFORE resizing: 151936
+Model embedding size AFTER resizing: 151669
+Using PEFT for fine-tuning...
+[1;34mwandb[0m: 
+[1;34mwandb[0m: 🚀 View run [33msuper-sponge-359[0m at: [34mhttps://wandb.ai/shtosti/ATS_with_control_tokens/runs/kdzf62kg[0m
+[1;34mwandb[0m: Find logs at: [1;35m../../../../scratch/hhubar/keep-it-simple/wandb/run-20250527_233856-kdzf62kg/logs[0m
+*** Finetuning Qwen/Qwen3-8B with Med-EASi and CHAR_COMPRESSION ***
+torch.cuda.is_bf16_supported: True
+Transformers version: 4.51.0
+Python path: /home/hhubar/data/conda/envs/sft/bin/python
+Using PEFT...
+
+Run arguments:
+Namespace(model_class='auto', model_family='base', model_name='Qwen/Qwen3-8B', dataset_name='Med-EASi', slice_train=-1, slice_val=-1, batch_size=4, eval_batch_size=4, gradient_accumulation_steps=4, learning_rate=0.0001, weight_decay=0.01, warmup_steps=30, max_grad_norm=1.0, epochs=3, max_length=512, logging_steps=10, wandb_project_name='ATS_with_control_tokens', wandb_entity='shtosti', generate_every=20, seed=42, patience=3, prompting_type='vanilla', user_prompt_id='token_explanation', metric_name='CHAR_COMPRESSION', control_tokens='data/prompts/control_tokens.json', system_prompts='data/prompts/system_prompts.json', user_prompts='data/prompts/user_prompts.json', metric_mapping='data/metric_mapping.json', peft=True, lora_r=16, lora_dropout=0.1)
+
+Saving to: ./models/CHAR_COMPRESSION-Med-EASi-token_explanation-Qwen3-8B-20250527
+
+*** Finetuning Qwen3-8B with Med-EASi ***
+
+CUDA available: True
+Number of GPUs: 1
+GPU name: NVIDIA A100-SXM4-80GB
+Model embedding size BEFORE resizing: 151936
+Model embedding size AFTER resizing: 151669
+Using PEFT for fine-tuning...
+[1;34mwandb[0m: 
+[1;34mwandb[0m: 🚀 View run [33mvibrant-shadow-360[0m at: [34mhttps://wandb.ai/shtosti/ATS_with_control_tokens/runs/e683fzjf[0m
+[1;34mwandb[0m: Find logs at: [1;35m../../../../scratch/hhubar/keep-it-simple/wandb/run-20250527_234036-e683fzjf/logs[0m
+*** Finetuning Qwen/Qwen3-8B with SimPA and FKGL ***
+torch.cuda.is_bf16_supported: True
+Transformers version: 4.51.0
+Python path: /home/hhubar/data/conda/envs/sft/bin/python
+Using PEFT...
+
+Run arguments:
+Namespace(model_class='auto', model_family='base', model_name='Qwen/Qwen3-8B', dataset_name='SimPA', slice_train=-1, slice_val=-1, batch_size=4, eval_batch_size=4, gradient_accumulation_steps=4, learning_rate=0.0001, weight_decay=0.01, warmup_steps=30, max_grad_norm=1.0, epochs=3, max_length=512, logging_steps=10, wandb_project_name='ATS_with_control_tokens', wandb_entity='shtosti', generate_every=20, seed=42, patience=3, prompting_type='vanilla', user_prompt_id='token_explanation', metric_name='FKGL', control_tokens='data/prompts/control_tokens.json', system_prompts='data/prompts/system_prompts.json', user_prompts='data/prompts/user_prompts.json', metric_mapping='data/metric_mapping.json', peft=True, lora_r=16, lora_dropout=0.1)
+
+Saving to: ./models/FKGL-SimPA-token_explanation-Qwen3-8B-20250527
+
+*** Finetuning Qwen3-8B with SimPA ***
+
+CUDA available: True
+Number of GPUs: 1
+GPU name: NVIDIA A100-SXM4-80GB
+Model embedding size BEFORE resizing: 151936
+Model embedding size AFTER resizing: 151669
+Using PEFT for fine-tuning...
+[1;34mwandb[0m: 
+[1;34mwandb[0m: 🚀 View run [33mruby-energy-361[0m at: [34mhttps://wandb.ai/shtosti/ATS_with_control_tokens/runs/03r7vmv4[0m
+[1;34mwandb[0m: Find logs at: [1;35m../../../../scratch/hhubar/keep-it-simple/wandb/run-20250527_234100-03r7vmv4/logs[0m
+*** Finetuning Qwen/Qwen3-8B with SimPA and CHAR_COMPRESSION ***
+torch.cuda.is_bf16_supported: True
+Transformers version: 4.51.0
+Python path: /home/hhubar/data/conda/envs/sft/bin/python
+Using PEFT...
+
+Run arguments:
+Namespace(model_class='auto', model_family='base', model_name='Qwen/Qwen3-8B', dataset_name='SimPA', slice_train=-1, slice_val=-1, batch_size=4, eval_batch_size=4, gradient_accumulation_steps=4, learning_rate=0.0001, weight_decay=0.01, warmup_steps=30, max_grad_norm=1.0, epochs=3, max_length=512, logging_steps=10, wandb_project_name='ATS_with_control_tokens', wandb_entity='shtosti', generate_every=20, seed=42, patience=3, prompting_type='vanilla', user_prompt_id='token_explanation', metric_name='CHAR_COMPRESSION', control_tokens='data/prompts/control_tokens.json', system_prompts='data/prompts/system_prompts.json', user_prompts='data/prompts/user_prompts.json', metric_mapping='data/metric_mapping.json', peft=True, lora_r=16, lora_dropout=0.1)
+
+Saving to: ./models/CHAR_COMPRESSION-SimPA-token_explanation-Qwen3-8B-20250527
+
+*** Finetuning Qwen3-8B with SimPA ***
+
+CUDA available: True
+Number of GPUs: 1
+GPU name: NVIDIA A100-SXM4-80GB
+Model embedding size BEFORE resizing: 151936
+Model embedding size AFTER resizing: 151669
+Using PEFT for fine-tuning...
+[1;34mwandb[0m: 
+[1;34mwandb[0m: 🚀 View run [33mfancy-meadow-362[0m at: [34mhttps://wandb.ai/shtosti/ATS_with_control_tokens/runs/eo4zq8hd[0m
+[1;34mwandb[0m: Find logs at: [1;35m../../../../scratch/hhubar/keep-it-simple/wandb/run-20250527_234128-eo4zq8hd/logs[0m
+*** Finetuning Qwen/Qwen3-8B with WikiLarge_ori_splitwise and FKGL ***
+torch.cuda.is_bf16_supported: True
+Transformers version: 4.51.0
+Python path: /home/hhubar/data/conda/envs/sft/bin/python
+Using PEFT...
+
+Run arguments:
+Namespace(model_class='auto', model_family='base', model_name='Qwen/Qwen3-8B', dataset_name='WikiLarge_ori_splitwise', slice_train=-1, slice_val=-1, batch_size=4, eval_batch_size=4, gradient_accumulation_steps=4, learning_rate=0.0001, weight_decay=0.01, warmup_steps=30, max_grad_norm=1.0, epochs=3, max_length=512, logging_steps=10, wandb_project_name='ATS_with_control_tokens', wandb_entity='shtosti', generate_every=20, seed=42, patience=3, prompting_type='vanilla', user_prompt_id='token_explanation', metric_name='FKGL', control_tokens='data/prompts/control_tokens.json', system_prompts='data/prompts/system_prompts.json', user_prompts='data/prompts/user_prompts.json', metric_mapping='data/metric_mapping.json', peft=True, lora_r=16, lora_dropout=0.1)
+
+Saving to: ./models/FKGL-WikiLarge_ori_splitwise-token_explanation-Qwen3-8B-20250527
+
+*** Finetuning Qwen3-8B with WikiLarge_ori_splitwise ***
+
+CUDA available: True
+Number of GPUs: 1
+GPU name: NVIDIA A100-SXM4-80GB
+Model embedding size BEFORE resizing: 151936
+Model embedding size AFTER resizing: 151669
+Using PEFT for fine-tuning...
+[1;34mwandb[0m: 
+[1;34mwandb[0m: 🚀 View run [33micy-plasma-363[0m at: [34mhttps://wandb.ai/shtosti/ATS_with_control_tokens/runs/5z8smvon[0m
+[1;34mwandb[0m: Find logs at: [1;35m../../../../scratch/hhubar/keep-it-simple/wandb/run-20250527_234154-5z8smvon/logs[0m
+*** Finetuning Qwen/Qwen3-8B with WikiLarge_ori_splitwise and CHAR_COMPRESSION ***
+torch.cuda.is_bf16_supported: True
+Transformers version: 4.51.0
+Python path: /home/hhubar/data/conda/envs/sft/bin/python
+Using PEFT...
+
+Run arguments:
+Namespace(model_class='auto', model_family='base', model_name='Qwen/Qwen3-8B', dataset_name='WikiLarge_ori_splitwise', slice_train=-1, slice_val=-1, batch_size=4, eval_batch_size=4, gradient_accumulation_steps=4, learning_rate=0.0001, weight_decay=0.01, warmup_steps=30, max_grad_norm=1.0, epochs=3, max_length=512, logging_steps=10, wandb_project_name='ATS_with_control_tokens', wandb_entity='shtosti', generate_every=20, seed=42, patience=3, prompting_type='vanilla', user_prompt_id='token_explanation', metric_name='CHAR_COMPRESSION', control_tokens='data/prompts/control_tokens.json', system_prompts='data/prompts/system_prompts.json', user_prompts='data/prompts/user_prompts.json', metric_mapping='data/metric_mapping.json', peft=True, lora_r=16, lora_dropout=0.1)
+
+Saving to: ./models/CHAR_COMPRESSION-WikiLarge_ori_splitwise-token_explanation-Qwen3-8B-20250527
+
+*** Finetuning Qwen3-8B with WikiLarge_ori_splitwise ***
+
+CUDA available: True
+Number of GPUs: 1
+GPU name: NVIDIA A100-SXM4-80GB
+Model embedding size BEFORE resizing: 151936
+Model embedding size AFTER resizing: 151669
+Using PEFT for fine-tuning...
+[1;34mwandb[0m: 
+[1;34mwandb[0m: 🚀 View run [33mvocal-firefly-364[0m at: [34mhttps://wandb.ai/shtosti/ATS_with_control_tokens/runs/camwbkvb[0m
+[1;34mwandb[0m: Find logs at: [1;35m../../../../scratch/hhubar/keep-it-simple/wandb/run-20250527_234222-camwbkvb/logs[0m

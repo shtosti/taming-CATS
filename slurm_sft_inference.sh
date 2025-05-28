@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#SBATCH --job-name=sft_inference
+#SBATCH --job-name=sft_inference_multi
 
 #SBATCH --account=iict-sp1.ebling.cl.uzh
 #SBATCH --output=logs/%x_%j_out.log
@@ -14,5 +14,5 @@ conda activate sft
 module load gpu
 nvidia-smi
 
-# Run the script
+# Run the inference script
 bash ./run_sft_inference.sh

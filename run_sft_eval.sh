@@ -3,10 +3,10 @@
 echo "Script started: $(date)"
 
 # TODO
-INPUT_DIR="output/models/Llama-3.2-1B-Instruct-Med-EASi-FKGL-token_explanation-20250518-220009"
-MODEL_NAME="Llama-3.2-1B-Instruct"
+INPUT_DIR="output/sft_inference/CHAR_COMPRESSION-Med-EASi-token_explanation-Llama-3.1-8B-Instruct-20250527"
+MODEL_NAME="Llama-3.1-8B-Instruct"
 DATASET="Med-EASi"
-METRIC_NAME="FKGL"
+METRIC_NAME="CHAR_COMPRESSION"
 USER_PROMPT_ID="token_explanation"
 
 
@@ -31,6 +31,6 @@ python src/sft_eval.py \
   --model_name "$MODEL_NAME"\
   --dataset "$DATASET"\
   --user_prompt_id="$USER_PROMPT_ID"\
-  --summary_file="output/models/all_results.json"
+  --summary_file="output/sft_results/all_results.json"
 
 echo "Script completed: $(date)"

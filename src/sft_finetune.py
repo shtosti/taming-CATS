@@ -3,6 +3,7 @@ import argparse
 import sys
 import json
 import random
+import shutil
 from datetime import datetime
 from dotenv import load_dotenv
 import wandb

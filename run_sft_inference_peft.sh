@@ -1,25 +1,27 @@
 #!/bin/bash
 
+echo "Script started: $(date)"
 
-# ========== inference =========
-USE_PEFT=true
-MODEL_PATH="models/Qwen2.5-7B-Instruct-WikiLarge_ori_splitwise_hq-FKGL-token_explanation-20250519-022012"
-
-# MODEL_NAME="meta-llama/Llama-3.2-1B-Instruct"
-# MODEL_NAME="meta-llama/Meta-Llama-3-8B-Instruct"
-# MODEL_NAME="meta-llama/Llama-2-13b-chat-hf"
-# MODEL_NAME="Qwen/Qwen2.5-1.5B-Instruct"
-MODEL_NAME="Qwen/Qwen2.5-7B-Instruct"
-# MODEL_NAME="Qwen/Qwen2.5-14B-Instruct"
-# MODEL_NAME="ministral/Ministral-3b-instruct"
-# MODEL_NAME="mistralai/Mistral-7B-Instruct-v0.1"
-
-METRIC_NAME="FKGL"
-DATASET_NAME="WikiLarge_ori_splitwise_hq"
+# =========================================================================
+# TODO
+MODEL_DIR="FKGL-Med-EASi-Mistral-7B-Instruct-v0.1-token_explanation-20250518"
+CTRL_ATTR="FKGL"
+DATASET="Med-EASi"
+MODEL_NAME="Llama-3.2-1B-Instruct"
 
 
-OUTPUT_DIR="output/$MODEL_PATH"
+# MODEL_NAME_HF="mistralai/Mistral-7B-Instruct-v0.1"
+MODEL_NAME_HF="meta-llama/Llama-3.1-8B-Instruct"
+
+USER_PROMPT_ID="token_explanation"
+# =========================================================================
+
+
+MODELS_DIR="models"
+MODEL_PATH="$MODELS_DIR/$MODEL_DIR"
+OUTPUT_DIR="output/sft_inference/$MODEL_DIR"
 mkdir -p "$OUTPUT_DIR"
+USE_PEFT=true
 
 SEEDS=(37 15 96 2 28)
 i=1
@@ -29,10 +31,10 @@ for SEED in "${SEEDS[@]}"; do
   OUTPUT_FILE="$OUTPUT_DIR/output_$i.json"
 
   ARGS=(
-    --seed 42
+    --seed "$SEED"
     --model_path "$MODEL_PATH"
-    --model_name "$MODEL_NAME"
-    --dataset_name "$DATASET_NAME"
+    --model_name "$MODEL_NAME_HF"
+    --dataset_name "$DATASET"
     --model_class "auto"
     --model_family "base"
     --max_length 512
@@ -43,8 +45,8 @@ for SEED in "${SEEDS[@]}"; do
     --system_prompts "data/prompts/system_prompts.json"
     --user_prompts "data/prompts/user_prompts.json"
     --metric_mapping "data/metric_mapping.json"
-    --metric_name "$METRIC_NAME"
-    --user_prompt_id "token_explanation"
+    --metric_name "$CTRL_ATTR"
+    --user_prompt_id "$USER_PROMPT_ID"
   )
 
   if [ "$USE_PEFT" = true ]; then
@@ -58,3 +60,34 @@ for SEED in "${SEEDS[@]}"; do
   echo "Inference $i completed."
 
 done
+
+
+# ==============================================================
+
+echo "Running evaluation script..."
+
+INPUT_DIR=$OUTPUT_DIR
+
+INPUT_FILES=(
+  "$INPUT_DIR/output_1.json"
+  "$INPUT_DIR/output_2.json"
+  "$INPUT_DIR/output_3.json"
+  "$INPUT_DIR/output_4.json"
+  "$INPUT_DIR/output_5.json"
+)
+
+# INPUT_FILES=(
+#   "$INPUT_DIR/output.json"
+# )
+
+python src/sft_eval.py \
+  --input_files "${INPUT_FILES[@]}" \
+  --metric_key "$CTRL_ATTR" \
+  --output_dir "$INPUT_DIR" \
+  --metric_mapping "data/metric_mapping.json"\
+  --model_name "$MODEL_NAME"\
+  --dataset "$DATASET"\
+  --user_prompt_id="$USER_PROMPT_ID"\
+  --summary_file="output/sft_results/all_results.json"
+
+echo "Script completed: $(date)"
