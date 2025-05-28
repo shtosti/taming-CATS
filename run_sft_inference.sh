@@ -4,8 +4,8 @@ echo "Script started: $(date)"
 
 # =========================================================================
 # TODO
-MODEL_DIR="DALE-CHALL-Med-EASi-token_explanation-Llama-3.2-1B-Instruct-20250518"
-METRIC_NAME="DALE-CHALL"
+MODEL_DIR="WORD_COMPRESSION-Med-EASi-token_explanation-Llama-3.2-1B-Instruct-20250518"
+METRIC_NAME="WORD_COMPRESSION"
 DATASET="Med-EASi"
 MODEL_NAME="Llama-3.2-1B-Instruct"
 
