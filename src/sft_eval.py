@@ -229,7 +229,7 @@ def plot_ctrl_attr_vs_metrics(predictions, metric_key, output_dir):
     plt.savefig(f"{output_dir}/{metric_key}_vs_metrics.png", bbox_inches='tight', dpi=400)
     print(f"Control attribute vs metrics plot saved as {metric_key}_ctrl_attr_vs_metrics.png")
 
-def cap_outliers(y_vals, lower_pct=0, upper_pct=100):
+def cap_outliers(y_vals, lower_pct=1, upper_pct=99):
     if len(y_vals) == 0:
         return y_vals
     y_np = np.array(y_vals, dtype=np.float32)

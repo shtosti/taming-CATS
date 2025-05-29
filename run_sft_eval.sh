@@ -3,10 +3,10 @@
 echo "Script started: $(date)"
 
 # TODO
-INPUT_DIR="output/sft_inference/CHAR_COMPRESSION-Med-EASi-token_explanation-Llama-3.1-8B-Instruct-20250527"
+INPUT_DIR="output/sft_inference/FKGL-SimPA-token_explanation-Llama-3.1-8B-Instruct-20250527"
 MODEL_NAME="Llama-3.1-8B-Instruct"
-DATASET="Med-EASi"
-METRIC_NAME="CHAR_COMPRESSION"
+DATASET="SimPA"
+METRIC_NAME="FKGL"
 USER_PROMPT_ID="token_explanation"
 
 

@@ -4,14 +4,14 @@ echo "Script started: $(date)"
 
 # =========================================================================
 # TODO
-MODEL_DIR="FKGL-Med-EASi-Mistral-7B-Instruct-v0.1-token_explanation-20250518"
+MODEL_DIR="FKGL-Med-EASi_hq-token_explanation-Mistral-7B-Instruct-v0.1-20250518"
 CTRL_ATTR="FKGL"
-DATASET="Med-EASi"
-MODEL_NAME="Llama-3.2-1B-Instruct"
+DATASET="Med-EASi_hq"
+MODEL_NAME="Mistral-7B-Instruct-v0.1"
 
 
-# MODEL_NAME_HF="mistralai/Mistral-7B-Instruct-v0.1"
-MODEL_NAME_HF="meta-llama/Llama-3.1-8B-Instruct"
+MODEL_NAME_HF="mistralai/Mistral-7B-Instruct-v0.1"
+# MODEL_NAME_HF="meta-llama/Llama-3.1-8B-Instruct"
 
 USER_PROMPT_ID="token_explanation"
 # =========================================================================
