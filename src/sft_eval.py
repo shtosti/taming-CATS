@@ -229,7 +229,7 @@ def plot_ctrl_attr_vs_metrics(predictions, metric_key, output_dir):
     plt.savefig(f"{output_dir}/{metric_key}_vs_metrics.png", bbox_inches='tight', dpi=400)
     print(f"Control attribute vs metrics plot saved as {metric_key}_ctrl_attr_vs_metrics.png")
 
-def cap_outliers(y_vals, lower_pct=1, upper_pct=99):
+def cap_outliers(y_vals, lower_pct=0, upper_pct=100):
     if len(y_vals) == 0:
         return y_vals
     y_np = np.array(y_vals, dtype=np.float32)
@@ -339,7 +339,6 @@ def plot_error_std_binned(reference_vals, real_errors, metric_key, output_dir, n
     plt.tight_layout()
     plt.savefig(f"{output_dir}/{metric_key}_error_std_binned.png", bbox_inches='tight', dpi=400)
 
-
 def parse_args():
     parser = argparse.ArgumentParser()
     # parser.add_argument("--input_file", type=str, required=True, help="Path to JSON file with predictions")
@@ -423,6 +422,10 @@ def main():
     print(f"\nAll plots saved to {args.output_dir}")
 
     mean_metrics = compute_mean_metrics(predictions)
+    print(f"\n--- Mean metrics:")
+    for name, values in mean_metrics.items():
+        print(f"{name}: {values['formatted']}")
+    print()
     try:
         with open(args.summary_file, "r", encoding="utf-8") as f:
             all_results = json.load(f)
