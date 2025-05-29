@@ -4,6 +4,7 @@ import sys
 import json
 import random
 import shutil
+import glob
 from datetime import datetime
 from dotenv import load_dotenv
 import wandb
@@ -426,6 +427,11 @@ def main():
                 )
 
     wandb.finish()
+
+    # Remove all checkpoint folders except the final output_dir
+    for ckpt in glob.glob(os.path.join(output_dir, "checkpoint-*")):
+        print(f"Removing checkpoint: {ckpt}")
+        shutil.rmtree(ckpt)
 
 
 if __name__ == "__main__":
