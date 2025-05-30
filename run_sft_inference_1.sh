@@ -4,10 +4,10 @@ echo "Script started: $(date)"
 
 # =========================================================================
 # TODO
-MODEL_DIR="FKGL-Newsela_s-token_explanation-Llama-3.2-1B-Instruct-20250521"
+MODEL_DIR="FKGL-SimPA-token_explanation-Qwen3-1.7B-20250528"
 METRIC_NAME="FKGL"
-DATASET="Newsela_s"
-MODEL_NAME="Llama-3.2-1B-Instruct"
+DATASET="SimPA"
+MODEL_NAME="Qwen3-1.7B"
 
 USER_PROMPT_ID="token_explanation"
 # =========================================================================
@@ -69,10 +69,6 @@ INPUT_FILES=(
   "$INPUT_DIR/output_4.json"
   "$INPUT_DIR/output_5.json"
 )
-
-# INPUT_FILES=(
-#   "$INPUT_DIR/output.json"
-# )
 
 python src/sft_eval.py \
   --input_files "${INPUT_FILES[@]}" \

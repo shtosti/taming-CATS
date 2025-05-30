@@ -3,9 +3,9 @@
 echo "Script started: $(date)"
 
 # TODO
-INPUT_DIR="output/sft_inference/FKGL-SimPA-token_explanation-Llama-3.1-8B-Instruct-20250527"
-MODEL_NAME="Llama-3.1-8B-Instruct"
-DATASET="SimPA"
+INPUT_DIR="output/sft_inference/FKGL-NoFluff_hq-token_explanation-Llama-3.2-1B-Instruct-20250529"
+MODEL_NAME="Llama-3.2-1B-Instruct"
+DATASET="NoFluff_hq"
 METRIC_NAME="FKGL"
 USER_PROMPT_ID="token_explanation"
 
@@ -19,9 +19,6 @@ INPUT_FILES=(
   "$INPUT_DIR/output_5.json"
 )
 
-# INPUT_FILES=(
-#   "$INPUT_DIR/output.json"
-# )
 
 python src/sft_eval.py \
   --input_files "${INPUT_FILES[@]}" \

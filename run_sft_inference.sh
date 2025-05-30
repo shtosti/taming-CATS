@@ -4,10 +4,10 @@ echo "Script started: $(date)"
 
 # =========================================================================
 # TODO
-MODEL_DIR="FKGL-Newsela_s-token_explanation-Llama-3.2-1B-Instruct-20250521"
+MODEL_DIR="FKGL-WikiLarge_ori_splitwise_hq-token_explanation-Qwen3-1.7B-20250529"
 METRIC_NAME="FKGL"
-DATASET="Newsela_s"
-MODEL_NAME="Llama-3.2-1B-Instruct"
+DATASET="WikiLarge_ori_splitwise_hq"
+MODEL_NAME="Qwen3-1.7B"
 
 USER_PROMPT_ID="token_explanation"
 # =========================================================================
@@ -20,13 +20,13 @@ OUTPUT_DIR="output/sft_inference/$MODEL_DIR"
 mkdir -p "$OUTPUT_DIR"
 
 SEEDS=(
-  # 37 
+  37 
   15 
   96 
   2 
   28
   )
-i=2
+i=1
 for SEED in "${SEEDS[@]}"; do
   echo "Running inference $i with seed $SEED..."
 
@@ -39,7 +39,7 @@ for SEED in "${SEEDS[@]}"; do
     --dataset_name "$DATASET"
     --model_class "auto"
     --model_family "base"
-    --max_length 4096
+    --max_length 512
     --batch_size 4
     --slice_test -1
     --output_file "$OUTPUT_FILE"

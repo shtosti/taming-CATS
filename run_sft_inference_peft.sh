@@ -4,9 +4,9 @@ echo "Script started: $(date)"
 
 # =========================================================================
 # TODO
-MODEL_DIR="FKGL-Med-EASi_hq-token_explanation-Mistral-7B-Instruct-v0.1-20250518"
+MODEL_DIR="FKGL-NoFluff_hq-token_explanation-Mistral-7B-Instruct-v0.1-20250529"
 CTRL_ATTR="FKGL"
-DATASET="Med-EASi_hq"
+DATASET="NoFluff_hq"
 MODEL_NAME="Mistral-7B-Instruct-v0.1"
 
 
@@ -76,9 +76,6 @@ INPUT_FILES=(
   "$INPUT_DIR/output_5.json"
 )
 
-# INPUT_FILES=(
-#   "$INPUT_DIR/output.json"
-# )
 
 python src/sft_eval.py \
   --input_files "${INPUT_FILES[@]}" \

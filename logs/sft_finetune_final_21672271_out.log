@@ -1,0 +1,1120 @@
+Thu May 29 23:19:58 2025       
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 560.35.05              Driver Version: 560.35.05      CUDA Version: 12.6     |
+|-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  NVIDIA A100-SXM4-80GB          Off |   00000000:48:00.0 Off |                    0 |
+| N/A   25C    P0             57W /  400W |       1MiB /  81920MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+                                                                                         
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI        PID   Type   Process name                              GPU Memory |
+|        ID   ID                                                               Usage      |
+|=========================================================================================|
+|  No running processes found                                                             |
++-----------------------------------------------------------------------------------------+
+*** Finetuning ministral/Ministral-3b-instruct with WikiLarge_ori_splitwise and CHAR_COMPRESSION ***
+torch.cuda.is_bf16_supported: True
+Transformers version: 4.51.0
+Python path: /home/hhubar/data/conda/envs/sft/bin/python
+Not using PEFT...
+
+Run arguments:
+Namespace(model_class='auto', model_family='base', model_name='ministral/Ministral-3b-instruct', dataset_name='WikiLarge_ori_splitwise', slice_train=-1, slice_val=-1, batch_size=4, eval_batch_size=4, gradient_accumulation_steps=4, learning_rate=5e-06, weight_decay=0.01, warmup_steps=30, max_grad_norm=0.5, epochs=3, max_length=512, logging_steps=10, wandb_project_name='ATS_with_control_tokens', wandb_entity='shtosti', generate_every=20, seed=42, patience=4, prompting_type='vanilla', user_prompt_id='token_explanation', metric_name='CHAR_COMPRESSION', control_tokens='data/prompts/control_tokens.json', system_prompts='data/prompts/system_prompts.json', user_prompts='data/prompts/user_prompts.json', metric_mapping='data/metric_mapping.json', peft=False, lora_r=8, lora_dropout=0.1)
+
+Saving to: ./models/CHAR_COMPRESSION-WikiLarge_ori_splitwise-token_explanation-Ministral-3b-instruct-20250529
+
+*** Finetuning Ministral-3b-instruct with WikiLarge_ori_splitwise ***
+
+CUDA available: True
+Number of GPUs: 1
+GPU name: NVIDIA A100-SXM4-80GB
+Model embedding size BEFORE resizing: 32000
+Model embedding size AFTER resizing: 32000
+--- DEBUG ---
+trainable params:
+Trainable params: 3,315,716,096 / 3,315,716,096 (100.00%)
+--- tokenizer pad_token_id: 2
+--- tokenizer eos_token_id: 2
+--- special tokens:
+<unk>: 0
+<s>: 1
+</s>: 2
+train:	 Inspect the dataset format:
+ {'global_id': ['wikilarge_ori_297118'], 'source_text': ['In 2003 , the poetry award was granted for the first time .\n'], 'source_metrics': [{'FRE': 77.23, 'ARI': 4.2, 'FKGL': 5.2, 'Dale-Chall': 9.92, 'char_count': 60, 'alphanum_count': 41, 'word_count': 13, 'sentence_count': 1}], 'metadata': [{'dataset': 'wikilarge_ori', 'experiment_split': '', 'domain': 'general', 'language': 'en', 'annotation': 'automatic', 'level': 'sentence'}], 'simplification_text': ['Udo Kawasser\n'], 'target_metrics': [{'FRE': 35.61, 'ARI': 5.5, 'FKGL': 8.8, 'Dale-Chall': 19.53, 'char_count': 13, 'alphanum_count': 11, 'word_count': 2, 'sentence_count': 1, 'char_compression_rate': 0.22, 'word_compression_rate': 0.15, 'sentence_compression_rate': 1.0, 'BLEU': 0.0, 'BERTScore': 0.7573259472846985}], 'simplification_version': [1], 'grade_level': [-1], 'simplification_dimensions': [{'linguistic': {'lexical': False, 'syntactic': False}}]}
+validation:	 Inspect the dataset format:
+ {'global_id': ['wikilarge_ori_097984'], 'source_text': ['Unstrut-Hainich is a Kreis -LRB- district -RRB- in the north of Thuringia , Germany .\n'], 'source_metrics': [{'FRE': 83.66, 'ARI': 10.8, 'FKGL': 4.8, 'Dale-Chall': 14.0, 'char_count': 86, 'alphanum_count': 64, 'word_count': 15, 'sentence_count': 1}], 'metadata': [{'dataset': 'wikilarge_ori', 'experiment_split': '', 'domain': 'general', 'language': 'en', 'annotation': 'automatic', 'level': 'sentence'}], 'simplification_text': ['Unstrut-Hainich is a Landkreis -LRB- district -RRB- in the north of Thuringia , Germany .\n'], 'target_metrics': [{'FRE': 75.2, 'ARI': 12.2, 'FKGL': 6.0, 'Dale-Chall': 14.0, 'char_count': 90, 'alphanum_count': 68, 'word_count': 15, 'sentence_count': 1, 'char_compression_rate': 1.05, 'word_compression_rate': 1.0, 'sentence_compression_rate': 1.0, 'BLEU': 80.03203203845001, 'BERTScore': 0.9842736721038818}], 'simplification_version': [1], 'grade_level': [-1], 'simplification_dimensions': [{'linguistic': {'lexical': False, 'syntactic': False}}]}
+
+
+ *** Before tokenization ***
+>>> train:
+
+Showing 1 example(s):
+
+Example 1 (index 105)
+--- Prompt:
+ <s>system
+You are a helpful text simplification assistant. You are not only an expert in simplifying texts for different readerships, but you are also very good at adapting texts according to the exact needs of the user. You output only the simplified text, no further notes or comments allowed.</s>
+<s>user
+INSTRUCTION: Simplify the following text such that the length of the output text (number of characters) relative to the source text is approximately equal to the ratio specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. 
+SOURCE TEXT: Two studied advantages of cetacean physiology let this Order -LRB- and other marine mammals -RRB- forage underwater for extended periods without breathing :
+
+EXPLANATION: The <CHAR_COMPRESSION=0.14> token specifies that the character-level compression rate should be around 0.14. Values less than 1 indicate text reduction. Values greater than 1 indicate text expansion.</s>
+<s>assistant
+<CHAR_COMPRESSION=0.14> </s>
+
+--- Completion:
+ Family Eschrichtiidae </s>
+==================================================
+
+
+ *** After tokenization ***
+>>> train:
+
+Showing 1 example(s):
+
+Example 1 (index 589)
+--- Prompt:
+ <s>system
+You are a helpful text simplification assistant. You are not only an expert in simplifying texts for different readerships, but you are also very good at adapting texts according to the exact needs of the user. You output only the simplified text, no further notes or comments allowed.</s>
+<s>user
+INSTRUCTION: Simplify the following text such that the length of the output text (number of characters) relative to the source text is approximately equal to the ratio specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. 
+SOURCE TEXT: Prospectors from California , Europe and China were also digging along the Peel River and up the mountain slopes .
+
+EXPLANATION: The <CHAR_COMPRESSION=1.0> token specifies that the character-level compression rate should be around 1.0. Values less than 1 indicate text reduction. Values greater than 1 indicate text expansion.</s>
+<s>assistant
+<CHAR_COMPRESSION=1.0> </s>
+
+--- Completion:
+ Prospectors from California , Europe and China were also digging along the Peel River and up the mountain slopes . </s>
+--- input_ids:
+ [1, 1, 1587, 13, 1976, 460, 264, 10865, 2245, 9878, 2500, 13892, 28723, 995, 460, 459, 865, 396, 7583, 297, 9878, 6219, 19337, 354, 1581, 1220, 4445, 28713, 28725, 562, 368, 460, 835, 1215, 1179, 438, 616, 377, 1157, 19337, 4771, 298, 272, 3459, 3208, 302, 272, 2188, 28723, 995, 3825, 865, 272, 9878, 1799, 2245, 28725, 708, 3629, 8321, 442, 7616, 4670, 28723, 2, 28705, 13, 1, 2188, 13, 775, 19199, 5324, 28747, 3563, 452, 1575, 272, 2296, 2245, 1259, 369, 272, 3575, 302, 272, 3825, 2245, 325, 4810, 302, 6128, 28731, 7986, 298, 272, 2832, 2245, 349, 10870, 6530, 298, 272, 10554, 6140, 297, 272, 2602, 6029, 710, 1693, 286, 298, 574, 7138, 9878, 2500, 28723, 415, 2602, 6029, 659, 272, 2296, 5032, 28747, 523, 1574, 2050, 1604, 28746, 10015, 13902, 28705, 13, 17426, 25775, 28747, 1133, 7002, 734, 477, 6247, 1200, 3401, 304, 5077, 654, 835, 27645, 2267, 272, 3242, 301, 6396, 304, 582, 272, 10660, 1135, 14336, 842, 13, 13, 2335, 3898, 1251, 4866, 28747, 415, 523, 12064, 28730, 9028, 896, 10946, 28746, 28740, 28723, 28734, 28767, 6029, 1229, 8961, 369, 272, 3233, 28733, 4404, 25242, 4338, 1023, 347, 1401, 28705, 28740, 28723, 28734, 28723, 3474, 1139, 2108, 821, 28705, 28740, 11634, 2245, 13388, 28723, 3474, 1139, 6517, 821, 28705, 28740, 11634, 2245, 11120, 28723, 2, 28705, 13, 1, 13892, 13, 28789, 12064, 28730, 9028, 896, 10946, 28746, 28740, 28723, 28734, 28767, 28705, 2, 28705, 13, 1, 1133, 7002, 734, 477, 6247, 1200, 3401, 304, 5077, 654, 835, 27645, 2267, 272, 3242, 301, 6396, 304, 582, 272, 10660, 1135, 14336, 842, 28705, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2]
+--- labels:
+ [-100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, 1, 1133, 7002, 734, 477, 6247, 1200, 3401, 304, 5077, 654, 835, 27645, 2267, 272, 3242, 301, 6396, 304, 582, 272, 10660, 1135, 14336, 842, 28705, 2, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100]
+==================================================
+********** DEBUG **********
+Train dataset columns: ['global_id', 'source_text', 'source_metrics', 'metadata', 'simplification_text', 'target_metrics', 'simplification_version', 'grade_level', 'simplification_dimensions', 'prompt', 'completion', 'system_prompt_id', 'user_prompt_id', 'metric_name', 'source_metric_value', 'target_metric_value', 'input_ids', 'labels', 'attention_mask']
+Validation dataset columns: ['global_id', 'source_text', 'source_metrics', 'metadata', 'simplification_text', 'target_metrics', 'simplification_version', 'grade_level', 'simplification_dimensions', 'prompt', 'completion', 'system_prompt_id', 'user_prompt_id', 'metric_name', 'source_metric_value', 'target_metric_value', 'input_ids', 'labels', 'attention_mask']
+First 10 input_ids: [1, 1, 1587, 13, 1976, 460, 264, 10865, 7583, 297]
+First 10 labels: [-100, -100, -100, -100, -100, -100, -100, -100, -100, -100]
+
+--- DEBUG: Explore first instance of the val set:
+ {'global_id': 'wikilarge_ori_171160', 'source_text': 'Okeechobee covers 730 square miles -LRB- 1,890 kmÂ -RRB- , approximately half the size of the state of Rhode Island , and is exceptionally shallow for a lake of its size , with an average depth of only 9 feet -LRB- 3 m -RRB- .\n', 'source_metrics': {'FRE': 46.78, 'ARI': 20.0, 'FKGL': 16.9, 'Dale-Chall': 12.6, 'char_count': 227, 'alphanum_count': 160, 'word_count': 45, 'sentence_count': 1}, 'metadata': {'dataset': 'wikilarge_ori', 'experiment_split': '', 'domain': 'general', 'language': 'en', 'annotation': 'automatic', 'level': 'sentence'}, 'simplification_text': 'Lake Okeechobee covers about 730 square miles -LRB- about half the size of Rhode Island -RRB- .\n', 'target_metrics': {'FRE': 72.16, 'ARI': 9.8, 'FKGL': 7.2, 'Dale-Chall': 11.34, 'char_count': 96, 'alphanum_count': 71, 'word_count': 17, 'sentence_count': 1, 'char_compression_rate': 0.42, 'word_compression_rate': 0.38, 'sentence_compression_rate': 1.0, 'BLEU': 7.6212533828165006, 'BERTScore': 0.90108722448349}, 'simplification_version': 1, 'grade_level': -1, 'simplification_dimensions': {'linguistic': {'lexical': False, 'syntactic': False}}, 'prompt': '<s>system\nYou are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.</s>\n<s>user\nINSTRUCTION: Simplify the following text such that the length of the output text (number of characters) relative to the source text is approximately equal to the ratio specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. \nSOURCE TEXT: Okeechobee covers 730 square miles -LRB- 1,890 kmÂ -RRB- , approximately half the size of the state of Rhode Island , and is exceptionally shallow for a lake of its size , with an average depth of only 9 feet -LRB- 3 m -RRB- .\n\nEXPLANATION: The <CHAR_COMPRESSION=0.42> token specifies that the character-level compression rate should be around 0.42. Values less than 1 indicate text reduction. Values greater than 1 indicate text expansion.</s>\n<s>assistant\n<CHAR_COMPRESSION=0.42> </s>\n', 'completion': 'Lake Okeechobee covers about 730 square miles -LRB- about half the size of Rhode Island -RRB- . </s>', 'system_prompt_id': 'sys_prompt_6', 'user_prompt_id': 'token_explanation', 'metric_name': 'CHAR_COMPRESSION', 'source_metric_value': None, 'target_metric_value': 0.42, 'input_ids': [1, 1, 1587, 13, 1976, 460, 264, 10865, 7583, 297, 2245, 9878, 2500, 28723, 995, 8270, 264, 9878, 1799, 2751, 302, 272, 2245, 2787, 486, 272, 2188, 28723, 995, 9878, 1575, 272, 2245, 4771, 298, 272, 11382, 2078, 486, 272, 2188, 28723, 1684, 2261, 298, 9878, 1575, 264, 2245, 28725, 8270, 865, 272, 11939, 9878, 2500, 28725, 1671, 707, 4870, 7616, 28725, 8321, 442, 10928, 697, 28723, 2, 28705, 13, 1, 2188, 13, 775, 19199, 5324, 28747, 3563, 452, 1575, 272, 2296, 2245, 1259, 369, 272, 3575, 302, 272, 3825, 2245, 325, 4810, 302, 6128, 28731, 7986, 298, 272, 2832, 2245, 349, 10870, 6530, 298, 272, 10554, 6140, 297, 272, 2602, 6029, 710, 1693, 286, 298, 574, 7138, 9878, 2500, 28723, 415, 2602, 6029, 659, 272, 2296, 5032, 28747, 523, 1574, 2050, 1604, 28746, 10015, 13902, 28705, 13, 17426, 25775, 28747, 451, 405, 5295, 598, 2443, 12784, 28705, 28787, 28770, 28734, 7930, 6052, 387, 28758, 24042, 28733, 28705, 28740, 28725, 28783, 28774, 28734, 3535, 29053, 387, 8274, 28760, 28733, 1200, 10870, 2795, 272, 1669, 302, 272, 1665, 302, 10282, 573, 7633, 1200, 304, 349, 5851, 578, 21660, 354, 264, 14411, 302, 871, 1669, 1200, 395, 396, 5151, 8478, 302, 865, 28705, 28774, 4051, 387, 28758, 24042, 28733, 28705, 28770, 290, 387, 8274, 28760, 28733, 842, 13, 13, 2335, 3898, 1251, 4866, 28747, 415, 523, 12064, 28730, 9028, 896, 10946, 28746, 28734, 28723, 28781, 28750, 28767, 6029, 1229, 8961, 369, 272, 3233, 28733, 4404, 25242, 4338, 1023, 347, 1401, 28705, 28734, 28723, 28781, 28750, 28723, 3474, 1139, 2108, 821, 28705, 28740, 11634, 2245, 13388, 28723, 3474, 1139, 6517, 821, 28705, 28740, 11634, 2245, 11120, 28723, 2, 28705, 13, 1, 13892, 13, 28789, 12064, 28730, 9028, 896, 10946, 28746, 28734, 28723, 28781, 28750, 28767, 28705, 2, 28705, 13, 1, 8703, 451, 405, 5295, 598, 2443, 12784, 684, 28705, 28787, 28770, 28734, 7930, 6052, 387, 28758, 24042, 28733, 684, 2795, 272, 1669, 302, 10282, 573, 7633, 387, 8274, 28760, 28733, 842, 28705, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2], 'labels': [-100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, 1, 8703, 451, 405, 5295, 598, 2443, 12784, 684, 28705, 28787, 28770, 28734, 7930, 6052, 387, 28758, 24042, 28733, 684, 2795, 272, 1669, 302, 10282, 573, 7633, 387, 8274, 28760, 28733, 842, 28705, 2, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100], 'attention_mask': [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]}
+type of input_ids: <class 'list'>
+type of labels: <class 'list'>
+
+--- DEBUG: Tokenized fields ---
+--- Tokenizer vocab size: 32000
+--- input_ids: [1, 1, 1587, 13, 1976, 460, 264, 10865, 7583, 297, 2245, 9878, 2500, 28723, 995, 8270, 264, 9878, 1799, 2751, 302, 272, 2245, 2787, 486, 272, 2188, 28723, 995, 9878, 1575, 272, 2245, 4771, 298, 272, 11382, 2078, 486, 272, 2188, 28723, 1684, 2261, 298, 9878, 1575, 264, 2245, 28725, 8270, 865, 272, 11939, 9878, 2500, 28725, 1671, 707, 4870, 7616, 28725, 8321, 442, 10928, 697, 28723, 2, 28705, 13, 1, 2188, 13, 775, 19199, 5324, 28747, 3563, 452, 1575, 272, 2296, 2245, 1259, 369, 272, 3575, 302, 272, 3825, 2245, 325, 4810, 302, 6128, 28731, 7986, 298, 272, 2832, 2245, 349, 10870, 6530, 298, 272, 10554, 6140, 297, 272, 2602, 6029, 710, 1693, 286, 298, 574, 7138, 9878, 2500, 28723, 415, 2602, 6029, 659, 272, 2296, 5032, 28747, 523, 1574, 2050, 1604, 28746, 10015, 13902, 28705, 13, 17426, 25775, 28747, 4258, 15008, 1200, 272, 2840, 403, 3336, 486, 8885, 16303, 9966, 477, 272, 9313, 302, 272, 3905, 356, 28705, 28781, 2246, 28705, 28750, 28734, 28734, 28734, 1996, 516, 2288, 296, 486, 9370, 842, 13, 13, 2335, 3898, 1251, 4866, 28747, 415, 523, 12064, 28730, 9028, 896, 10946, 28746, 28734, 28723, 28784, 28781, 28767, 6029, 1229, 8961, 369, 272, 3233, 28733, 4404, 25242, 4338, 1023, 347, 1401, 28705, 28734, 28723, 28784, 28781, 28723, 3474, 1139, 2108, 821, 28705, 28740, 11634, 2245, 13388, 28723, 3474, 1139, 6517, 821, 28705, 28740, 11634, 2245, 11120, 28723, 2, 28705, 13, 1, 13892, 13, 28789, 12064, 28730, 9028, 896, 10946, 28746, 28734, 28723, 28784, 28781, 28767, 28705, 2, 28705, 13, 1, 415, 907, 11401, 20671, 302, 4222, 349, 8885, 16303, 9966, 1200, 693, 403, 312, 28733, 28706, 2344, 297, 28705, 28750, 28734, 28734, 28781, 842, 28705, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2]
+--- labels: [-100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, 1, 415, 907, 11401, 20671, 302, 4222, 349, 8885, 16303, 9966, 1200, 693, 403, 312, 28733, 28706, 2344, 297, 28705, 28750, 28734, 28734, 28781, 842, 28705, 2, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100]
+--- decoded input_ids:
+ <s><s> system
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.</s> 
+<s> user
+INSTRUCTION: Simplify the following text such that the length of the output text (number of characters) relative to the source text is approximately equal to the ratio specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. 
+SOURCE TEXT: Previously , the position was held by Ken Livingstone from the creation of the role on 4 May 2000 until his succession by Johnson .
+
+EXPLANATION: The <CHAR_COMPRESSION=0.64> token specifies that the character-level compression rate should be around 0.64. Values less than 1 indicate text reduction. Values greater than 1 indicate text expansion.</s> 
+<s> assistant
+<CHAR_COMPRESSION=0.64> </s> 
+<s> The first elected Mayor of London is Ken Livingstone , who was re-elected in 2004 . </s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s>
+--- decoded labels:
+ The first elected Mayor of London is Ken Livingstone , who was re-elected in 2004 . 
+{'loss': 3.0214, 'grad_norm': 54.07162857055664, 'learning_rate': 1.5e-06, 'epoch': 0.11}
+{'eval_loss': 2.2499043941497803, 'eval_runtime': 5.2747, 'eval_samples_per_second': 34.694, 'eval_steps_per_second': 8.721, 'epoch': 0.11}
+
+>>> [Step 20] Prompt:
+<s>system
+You are a helpful assistant. You are an expert in controlled text simplification. When you receive a text, you simplify it by rewriting it in a manner that is easier to read. Your simplification is guided by the simplification criteria specified by the user. You generate only the simplification result, without any additional comments or explanations.</s>
+<s>user
+INSTRUCTION: Simplify the following text such that the length of the output text (number of characters) relative to the source text is approximately equal to the ratio specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. 
+SOURCE TEXT: Sedimentary rock is one of the three main rock types -LRB- the others being igneous and metamorphic rock -RRB- .
+
+EXPLANATION: The <CHAR_COMPRESSION=0.58> token specifies that the character-level compression rate should be around 0.58. Values less than 1 indicate text reduction. Values greater than 1 indicate text expansion.</s>
+<s>assistant
+<CHAR_COMPRESSION=0.58> </s>
+
+>>> Reference:
+Other types of rock are igneous rock and metamorphic rock -RRB- . </s>
+>>> Prediction:
+< < <|im_start|>user
+ < <CHAR_COMPREhensions=0.58>> <CHAR_COMPREhensions=0.58 #FFRRB-'sister '' : 0.58 
+================================================================================
+
+>>> [Step 20] Prompt:
+<s>system
+You are a helpful text simplification assistant. You are not only an expert in simplifying texts for different readerships, but you are also very good at adapting texts according to the exact needs of the user. You output only the simplified text, no further notes or comments allowed.</s>
+<s>user
+INSTRUCTION: Simplify the following text such that the length of the output text (number of characters) relative to the source text is approximately equal to the ratio specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. 
+SOURCE TEXT: Geography The town lies in the Limmat valley between Baden and Zürich .
+
+EXPLANATION: The <CHAR_COMPRESSION=1.07> token specifies that the character-level compression rate should be around 1.07. Values less than 1 indicate text reduction. Values greater than 1 indicate text expansion.</s>
+<s>assistant
+<CHAR_COMPRESSION=1.07> </s>
+
+>>> Reference:
+Geographically the town lies in the Limmat valley between Baden and Zurich . </s>
+>>> Prediction:
+< < <|im_start|>user
+ < <SCENT[0]<|im_end|>
+ <CRUBELLOW 
+================================================================================
+
+>>> [Step 20] Prompt:
+<s>system
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.</s>
+<s>user
+INSTRUCTION: Simplify the following text such that the length of the output text (number of characters) relative to the source text is approximately equal to the ratio specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. 
+SOURCE TEXT: Samael is shown as a recurring recruitable character in the Megami Tensei video game series .
+
+EXPLANATION: The <CHAR_COMPRESSION=0.94> token specifies that the character-level compression rate should be around 0.94. Values less than 1 indicate text reduction. Values greater than 1 indicate text expansion.</s>
+<s>assistant
+<CHAR_COMPRESSION=0.94> </s>
+
+>>> Reference:
+Popular culture Samael is shown as a character in the Megami Tensei video game series . </s>
+>>> Prediction:
+< <|im_start|>user
+ < <MLETIANAGNOUN, FOREIGN SPELLIE CHIP FOREIGN BY FAREGNOUN, LIST OF UNIDENTIFIED FACE OF BRAITE TENGE  BOSS 471, LIST LET WIBLE BRAITE FOR the Megamico MT SEI. 
+================================================================================
+
+>>> [Step 20] Prompt:
+<s>system
+You are a helpful assistant. You are very good at simplifying texts. When you receive a text for simplification, you simplify it according to the instructions given by the user. Generate only the simplification, without any comments or notes.</s>
+<s>user
+INSTRUCTION: Simplify the following text such that the length of the output text (number of characters) relative to the source text is approximately equal to the ratio specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. 
+SOURCE TEXT: He went on to play supporting roles starring alongside Viggo Mortensen and Ashley Judd in Philip Ridley 's The Passion of Darkly Noon -LRB- 1995 -RRB- and Jennifer Beals in The Twilight of the Golds -LRB- 1997 -RRB- .
+
+EXPLANATION: The <CHAR_COMPRESSION=0.95> token specifies that the character-level compression rate should be around 0.95. Values less than 1 indicate text reduction. Values greater than 1 indicate text expansion.</s>
+<s>assistant
+<CHAR_COMPRESSION=0.95> </s>
+
+>>> Reference:
+He then acted in smaller parts with Viggo Mortensen and Ashley Judd in Philip Ridley 's The Passion of Darkly Noon in -LRB- 1995 -RRB- , and Jennifer Beals in The Twilight of the Golds in -LRB- 1997 -RRB- . </s>
+>>> Prediction:
+< <SEGMENT 1 -LEB- 1994 -RRBR- BROOKLORY GLOWBACK 
+================================================================================
+{'loss': 2.1878, 'grad_norm': 52.596900939941406, 'learning_rate': 3.1666666666666667e-06, 'epoch': 0.22}
+{'eval_loss': 1.9766175746917725, 'eval_runtime': 5.2679, 'eval_samples_per_second': 34.738, 'eval_steps_per_second': 8.732, 'epoch': 0.22}
+{'loss': 1.9314, 'grad_norm': 48.07131576538086, 'learning_rate': 4.833333333333333e-06, 'epoch': 0.33}
+{'eval_loss': 1.8331170082092285, 'eval_runtime': 5.2726, 'eval_samples_per_second': 34.707, 'eval_steps_per_second': 8.724, 'epoch': 0.33}
+
+>>> [Step 40] Prompt:
+<s>system
+You are a helpful text simplification assistant. You are not only an expert in simplifying texts for different readerships, but you are also very good at adapting texts according to the exact needs of the user. You output only the simplified text, no further notes or comments allowed.</s>
+<s>user
+INSTRUCTION: Simplify the following text such that the length of the output text (number of characters) relative to the source text is approximately equal to the ratio specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. 
+SOURCE TEXT: Libby 's two and a half year prison sentence was later commuted by President Bush , though the other facet of his sentence -LRB- $ 250,000 fine -RRB- stood and was duly paid .
+
+EXPLANATION: The <CHAR_COMPRESSION=1.16> token specifies that the character-level compression rate should be around 1.16. Values less than 1 indicate text reduction. Values greater than 1 indicate text expansion.</s>
+<s>assistant
+<CHAR_COMPRESSION=1.16> </s>
+
+>>> Reference:
+Libby 's two and a half year prison sentence was later commuted by President Bush , though the other facet of his sentence -LRB- $ 250,000 fine -RRB- stands until Libby 's appeals were to be considered . </s>
+>>> Prediction:
+users
+What was the title of the following post-Lisa Brokerer 2007 movie 
+================================================================================
+
+>>> [Step 40] Prompt:
+<s>system
+You are a helpful assistant. You are an expert in controlled text simplification. When you receive a text, you simplify it by rewriting it in a manner that is easier to read. Your simplification is guided by the simplification criteria specified by the user. You generate only the simplification result, without any additional comments or explanations.</s>
+<s>user
+INSTRUCTION: Simplify the following text such that the length of the output text (number of characters) relative to the source text is approximately equal to the ratio specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. 
+SOURCE TEXT: On September 25 , 2008 , the United States Office of Thrift Supervision -LRB- OTS -RRB- seized Washington Mutual Bank from Washington Mutual , Inc. and placed it into the receivership of the Federal Deposit Insurance Corporation -LRB- FDIC -RRB- .
+
+EXPLANATION: The <CHAR_COMPRESSION=0.09> token specifies that the character-level compression rate should be around 0.09. Values less than 1 indicate text reduction. Values greater than 1 indicate text expansion.</s>
+<s>assistant
+<CHAR_COMPRESSION=0.09> </s>
+
+>>> Reference:
+September 26 , 2008 . </s>
+>>> Prediction:
+<CHAR_COMPRESIZE=100 
+================================================================================
+
+>>> [Step 40] Prompt:
+<s>system
+You are a helpful assistant. You are an expert in controlled text simplification. When you receive a text, you simplify it by rewriting it in a manner that is easier to read. Your simplification is guided by the simplification criteria specified by the user. You generate only the simplification result, without any additional comments or explanations.</s>
+<s>user
+INSTRUCTION: Simplify the following text such that the length of the output text (number of characters) relative to the source text is approximately equal to the ratio specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. 
+SOURCE TEXT: The older Soviet-era Russian version of its name , Alma-Ata , originates from a mistake -LRB- the name literally means '' Grandfather of apples '' -RRB- .
+
+EXPLANATION: The <CHAR_COMPRESSION=0.95> token specifies that the character-level compression rate should be around 0.95. Values less than 1 indicate text reduction. Values greater than 1 indicate text expansion.</s>
+<s>assistant
+<CHAR_COMPRESSION=0.95> </s>
+
+>>> Reference:
+The older Soviet-era Russian name for the city , Alma-Ata , comes from a mistake -LRB- the name literally means '' Grandfather of apples '' -RRB- . </s>
+>>> Prediction:
+You can look up some pictures of Alma-Ata in the '80s to get a picture of my original name 
+================================================================================
+
+>>> [Step 40] Prompt:
+<s>system
+You are an expert in text simplification. When you receive a text for simplification, you generate a simplified version of that text. You carefully study the simplification criteria specified by the user and adapt the text accordingly. Please generate only the simplified text, no other notes or explanations allowed.</s>
+<s>user
+INSTRUCTION: Simplify the following text such that the length of the output text (number of characters) relative to the source text is approximately equal to the ratio specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. 
+SOURCE TEXT: The state is a political and geopolitical entity ; the nation is a cultural and\/or ethnic entity .
+
+EXPLANATION: The <CHAR_COMPRESSION=0.83> token specifies that the character-level compression rate should be around 0.83. Values less than 1 indicate text reduction. Values greater than 1 indicate text expansion.</s>
+<s>assistant
+<CHAR_COMPRESSION=0.83> </s>
+
+>>> Reference:
+The state is a political entity ; the nation is a cultural and\/or ethnic entity . </s>
+>>> Prediction:
+user
+There have been 18 of the states of the state of Michigan have no official names called USA, but the State name is made out of the title "Winston State"? 
+================================================================================
+{'loss': 1.6644, 'grad_norm': 31.49639129638672, 'learning_rate': 4.983505224399188e-06, 'epoch': 0.43}
+{'eval_loss': 1.7782131433486938, 'eval_runtime': 5.2752, 'eval_samples_per_second': 34.691, 'eval_steps_per_second': 8.72, 'epoch': 0.43}
+{'loss': 1.7428, 'grad_norm': 34.73413848876953, 'learning_rate': 4.926765636074124e-06, 'epoch': 0.54}
+{'eval_loss': 1.722141981124878, 'eval_runtime': 5.2695, 'eval_samples_per_second': 34.728, 'eval_steps_per_second': 8.73, 'epoch': 0.54}
+
+>>> [Step 60] Prompt:
+<s>system
+You are an expert in text simplification. When you receive a text for simplification, you generate a simplified version of that text. You carefully study the simplification criteria specified by the user and adapt the text accordingly. Please generate only the simplified text, no other notes or explanations allowed.</s>
+<s>user
+INSTRUCTION: Simplify the following text such that the length of the output text (number of characters) relative to the source text is approximately equal to the ratio specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. 
+SOURCE TEXT: Northern Arizona University , Flagstaff and 38 statewide locations
+
+EXPLANATION: The <CHAR_COMPRESSION=0.24> token specifies that the character-level compression rate should be around 0.24. Values less than 1 indicate text reduction. Values greater than 1 indicate text expansion.</s>
+<s>assistant
+<CHAR_COMPRESSION=0.24> </s>
+
+>>> Reference:
+Cochise College </s>
+>>> Prediction:
+38 state locations in the Northern Arizona University. 
+================================================================================
+
+>>> [Step 60] Prompt:
+<s>system
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.</s>
+<s>user
+INSTRUCTION: Simplify the following text such that the length of the output text (number of characters) relative to the source text is approximately equal to the ratio specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. 
+SOURCE TEXT: Early history At the time of the Domesday Book in 1086 parts of the county were considered to either form part of Yorkshire or be within the separate kingdom of Scotland , having historically been associated with the Kingdom of Strathclyde .
+
+EXPLANATION: The <CHAR_COMPRESSION=0.43> token specifies that the character-level compression rate should be around 0.43. Values less than 1 indicate text reduction. Values greater than 1 indicate text expansion.</s>
+<s>assistant
+<CHAR_COMPRESSION=0.43> </s>
+
+>>> Reference:
+Early history At the time of the Domesday Book in 1086 the county was said to form part of Yorkshire . </s>
+>>> Prediction:
+The local church is called '' A part of Kingrange, '' or '' A part of Sneath cynchons'''. 
+================================================================================
+
+>>> [Step 60] Prompt:
+<s>system
+You are a helpful text simplification assistant. You are not only an expert in simplifying texts for different readerships, but you are also very good at adapting texts according to the exact needs of the user. You output only the simplified text, no further notes or comments allowed.</s>
+<s>user
+INSTRUCTION: Simplify the following text such that the length of the output text (number of characters) relative to the source text is approximately equal to the ratio specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. 
+SOURCE TEXT: This also marked the first time that all three New York NHL teams made the playoffs in the same season .
+
+EXPLANATION: The <CHAR_COMPRESSION=1.11> token specifies that the character-level compression rate should be around 1.11. Values less than 1 indicate text reduction. Values greater than 1 indicate text expansion.</s>
+<s>assistant
+<CHAR_COMPRESSION=1.11> </s>
+
+>>> Reference:
+This also marked the first time that all three New York City metro area teams made the playoffs in the same season . </s>
+>>> Prediction:
+This first first first see the first first match of 3 in the first 3 games from New York Cities, then the first first match of 5 in the first eight games from New york. 
+================================================================================
+
+>>> [Step 60] Prompt:
+<s>system
+You are a helpful text simplification assistant. You are not only an expert in simplifying texts for different readerships, but you are also very good at adapting texts according to the exact needs of the user. You output only the simplified text, no further notes or comments allowed.</s>
+<s>user
+INSTRUCTION: Simplify the following text such that the length of the output text (number of characters) relative to the source text is approximately equal to the ratio specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. 
+SOURCE TEXT: In this way , Chadwick prepared the way towards the fission of uranium 235 .
+
+EXPLANATION: The <CHAR_COMPRESSION=1.57> token specifies that the character-level compression rate should be around 1.57. Values less than 1 indicate text reduction. Values greater than 1 indicate text expansion.</s>
+<s>assistant
+<CHAR_COMPRESSION=1.57> </s>
+
+>>> Reference:
+In this way , Chadwick prepared the way towards the fission of uranium 235 and towards the creation of the atomic bomb . </s>
+>>> Prediction:
+In the part I : How much U235 is sold -LRB- Lu2.67 -RRB-, the same amount of U235 would be used to fuel a nuclear reactor. 
+================================================================================
+{'loss': 1.8324, 'grad_norm': 41.5620002746582, 'learning_rate': 4.830501487915175e-06, 'epoch': 0.65}
+{'eval_loss': 1.5342599153518677, 'eval_runtime': 5.2955, 'eval_samples_per_second': 34.558, 'eval_steps_per_second': 8.687, 'epoch': 0.65}
+{'loss': 1.4943, 'grad_norm': 32.913063049316406, 'learning_rate': 4.696280627277356e-06, 'epoch': 0.76}
+{'eval_loss': 1.4872843027114868, 'eval_runtime': 5.2707, 'eval_samples_per_second': 34.72, 'eval_steps_per_second': 8.727, 'epoch': 0.76}
+
+>>> [Step 80] Prompt:
+<s>system
+You are an expert in controlled text simplification. When you receive a text from the user, you carefully adapt it to the simplification level specified by the user. Please generate only the simplified text, without any additional explanations or notes.</s>
+<s>user
+INSTRUCTION: Simplify the following text such that the length of the output text (number of characters) relative to the source text is approximately equal to the ratio specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. 
+SOURCE TEXT: Brunstad has several fast food restaurants , a cafeteria-style restaurant , coffee bar , and its own grocery store .
+
+EXPLANATION: The <CHAR_COMPRESSION=0.97> token specifies that the character-level compression rate should be around 0.97. Values less than 1 indicate text reduction. Values greater than 1 indicate text expansion.</s>
+<s>assistant
+<CHAR_COMPRESSION=0.97> </s>
+
+>>> Reference:
+Brunstad has many fast food restaurants , a cafeteria-style restaurant , coffee bar , and its own grocery shop . </s>
+>>> Prediction:
+Brewed -LRB- and freshly brewed : 
+================================================================================
+
+>>> [Step 80] Prompt:
+<s>system
+You are an expert in controlled text simplification. When you receive a text from the user, you carefully adapt it to the simplification level specified by the user. Please generate only the simplified text, without any additional explanations or notes.</s>
+<s>user
+INSTRUCTION: Simplify the following text such that the length of the output text (number of characters) relative to the source text is approximately equal to the ratio specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. 
+SOURCE TEXT: Moreau is the recipient of a César Award for Best Actress , a BAFTA Award for Best Foreign Actress and a Cannes Film Festival Best Actress Award for individual performances , and several lifetime awards .
+
+EXPLANATION: The <CHAR_COMPRESSION=0.21> token specifies that the character-level compression rate should be around 0.21. Values less than 1 indicate text reduction. Values greater than 1 indicate text expansion.</s>
+<s>assistant
+<CHAR_COMPRESSION=0.21> </s>
+
+>>> Reference:
+She studied at the Conservatoire de Paris . </s>
+>>> Prediction:
+Mausel -LRB- in 1979) -RRB- -LB- nsp -RRB- and the film 'The Karate Kid': '' The Karate Kid '' 
+================================================================================
+
+>>> [Step 80] Prompt:
+<s>system
+You are a helpful assistant. You are very good at simplifying texts. When you receive a text for simplification, you simplify it according to the instructions given by the user. Generate only the simplification, without any comments or notes.</s>
+<s>user
+INSTRUCTION: Simplify the following text such that the length of the output text (number of characters) relative to the source text is approximately equal to the ratio specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. 
+SOURCE TEXT: Their participation is limited until they reach legal adulthood .
+
+EXPLANATION: The <CHAR_COMPRESSION=1.18> token specifies that the character-level compression rate should be around 1.18. Values less than 1 indicate text reduction. Values greater than 1 indicate text expansion.</s>
+<s>assistant
+<CHAR_COMPRESSION=1.18> </s>
+
+>>> Reference:
+They are not able to participate before they reach adulthood as per the law . </s>
+>>> Prediction:
+Pets : A Taste of the World is a book series by Mark Twain. K084-7101-4004-900-9000-3647945288 and K = 17 
+================================================================================
+
+>>> [Step 80] Prompt:
+<s>system
+You are a helpful assistant. You are an expert in controlled text simplification. When you receive a text, you simplify it by rewriting it in a manner that is easier to read. Your simplification is guided by the simplification criteria specified by the user. You generate only the simplification result, without any additional comments or explanations.</s>
+<s>user
+INSTRUCTION: Simplify the following text such that the length of the output text (number of characters) relative to the source text is approximately equal to the ratio specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. 
+SOURCE TEXT: As with a terrestrial mammal breathing out on a cold day , a small cloud of ` steam ' appears .
+
+EXPLANATION: The <CHAR_COMPRESSION=0.35> token specifies that the character-level compression rate should be around 0.35. Values less than 1 indicate text reduction. Values greater than 1 indicate text expansion.</s>
+<s>assistant
+<CHAR_COMPRESSION=0.35> </s>
+
+>>> Reference:
+Fin Whale , Balaenoptera physalus </s>
+>>> Prediction:
+A small cloud of steam can appear with a riddle : that is made for a person to solve : the riddle, '' riddle : riddle : i-carbon : i-carbon : i-carbon : i-carbon : i-carbon : ii-carbon : ii-carbon : i'- t ( i h - 1 g - 0 n - 0 n - 1 h - 1 g - 0 - 0 s - 0 0 0 - 0 0 - 0 0 / 0 1 - 0 - 0 = 1 -, '' riddle : riddle : i-carbon : i-carbon : i - d, a c with a cap cap - 0 n-L, that is made for a person to solve : riddle : i-carbon : i - d - 1 0 n-L, a c with a cap cap - 0 n-L, that is made to keep the car. 
+================================================================================
+{'loss': 1.4758, 'grad_norm': 38.67502975463867, 'learning_rate': 4.5262890998003374e-06, 'epoch': 0.87}
+{'eval_loss': 1.4938955307006836, 'eval_runtime': 5.3519, 'eval_samples_per_second': 34.194, 'eval_steps_per_second': 8.595, 'epoch': 0.87}
+{'loss': 1.4075, 'grad_norm': 29.731393814086914, 'learning_rate': 4.3232955454381126e-06, 'epoch': 0.98}
+{'eval_loss': 1.4826453924179077, 'eval_runtime': 5.2768, 'eval_samples_per_second': 34.68, 'eval_steps_per_second': 8.717, 'epoch': 0.98}
+
+>>> [Step 100] Prompt:
+<s>system
+You are a helpful assistant. You are very good at simplifying texts. When you receive a text for simplification, you simplify it according to the instructions given by the user. Generate only the simplification, without any comments or notes.</s>
+<s>user
+INSTRUCTION: Simplify the following text such that the length of the output text (number of characters) relative to the source text is approximately equal to the ratio specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. 
+SOURCE TEXT: The county was named for the Delaware Indians resettled in what was then Indian Territory in the 1830s .
+
+EXPLANATION: The <CHAR_COMPRESSION=0.24> token specifies that the character-level compression rate should be around 0.24. Values less than 1 indicate text reduction. Values greater than 1 indicate text expansion.</s>
+<s>assistant
+<CHAR_COMPRESSION=0.24> </s>
+
+>>> Reference:
+Its county seat is Jay . </s>
+>>> Prediction:
+The county was named after the Delaware Indians resettled in that area in the 1830s. 
+================================================================================
+
+>>> [Step 100] Prompt:
+<s>system
+You are a helpful assistant. You are very good at simplifying texts. When you receive a text for simplification, you simplify it according to the instructions given by the user. Generate only the simplification, without any comments or notes.</s>
+<s>user
+INSTRUCTION: Simplify the following text such that the length of the output text (number of characters) relative to the source text is approximately equal to the ratio specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. 
+SOURCE TEXT: For example , the English term uncle carries connotations other than '' brother of a parent '' depending on the writer .
+
+EXPLANATION: The <CHAR_COMPRESSION=0.17> token specifies that the character-level compression rate should be around 0.17. Values less than 1 indicate text reduction. Values greater than 1 indicate text expansion.</s>
+<s>assistant
+<CHAR_COMPRESSION=0.17> </s>
+
+>>> Reference:
+Examples of kinship </s>
+>>> Prediction:
+It is not meant to be a literal word - meaning it is not a biological entity. 
+================================================================================
+
+>>> [Step 100] Prompt:
+<s>system
+You are an expert in controlled text simplification. When you receive a text from the user, you carefully adapt it to the simplification level specified by the user. Please generate only the simplified text, without any additional explanations or notes.</s>
+<s>user
+INSTRUCTION: Simplify the following text such that the length of the output text (number of characters) relative to the source text is approximately equal to the ratio specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. 
+SOURCE TEXT: After Rukia is severely wounded while trying to protect Ichigo , she attempts to transfer half of her to Ichigo in order to let him face the hollow on equal footing .
+
+EXPLANATION: The <CHAR_COMPRESSION=1.01> token specifies that the character-level compression rate should be around 1.01. Values less than 1 indicate text reduction. Values greater than 1 indicate text expansion.</s>
+<s>assistant
+<CHAR_COMPRESSION=1.01> </s>
+
+>>> Reference:
+After Rukia is badly wounded while fighting to protect Ichigo , she decides to transfer half of her powers to Ichigo , hoping to give him a chance to fight the hollow . </s>
+>>> Prediction:
+For example, when Trigon is too weak for the entire attackers of the Hundred Acre Wood, Garf is asked to carry the other part of the great energy in his chest. 
+================================================================================
+
+>>> [Step 100] Prompt:
+<s>system
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.</s>
+<s>user
+INSTRUCTION: Simplify the following text such that the length of the output text (number of characters) relative to the source text is approximately equal to the ratio specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. 
+SOURCE TEXT: The story centers around the adventures of the lead character , Goku , around his 18th birthday , as he is asked to gather seven Dragon Balls to save the world from evil alien forces .
+
+EXPLANATION: The <CHAR_COMPRESSION=0.51> token specifies that the character-level compression rate should be around 0.51. Values less than 1 indicate text reduction. Values greater than 1 indicate text expansion.</s>
+<s>assistant
+<CHAR_COMPRESSION=0.51> </s>
+
+>>> Reference:
+The story follows the adventures of the lead character , Son Goku , around his 18th birthday . </s>
+>>> Prediction:
+The book is based on the Japanese Japanese plot storytelling style called Faku, while it also tells its own story -LRB- the entire book -RRB- that I wrote by writing for someone to read a few pages. 
+================================================================================
+{'loss': 0.8745, 'grad_norm': 20.628908157348633, 'learning_rate': 4.0906061058164e-06, 'epoch': 1.08}
+{'eval_loss': 1.528981328010559, 'eval_runtime': 5.2801, 'eval_samples_per_second': 34.659, 'eval_steps_per_second': 8.712, 'epoch': 1.08}
+{'loss': 0.6547, 'grad_norm': 32.242103576660156, 'learning_rate': 3.832010577338414e-06, 'epoch': 1.18}
+{'eval_loss': 1.566445231437683, 'eval_runtime': 5.2819, 'eval_samples_per_second': 34.647, 'eval_steps_per_second': 8.709, 'epoch': 1.18}
+
+>>> [Step 120] Prompt:
+<s>system
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.</s>
+<s>user
+INSTRUCTION: Simplify the following text such that the length of the output text (number of characters) relative to the source text is approximately equal to the ratio specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. 
+SOURCE TEXT: Samael is shown as a recurring recruitable character in the Megami Tensei video game series .
+
+EXPLANATION: The <CHAR_COMPRESSION=0.94> token specifies that the character-level compression rate should be around 0.94. Values less than 1 indicate text reduction. Values greater than 1 indicate text expansion.</s>
+<s>assistant
+<CHAR_COMPRESSION=0.94> </s>
+
+>>> Reference:
+Popular culture Samael is shown as a character in the Megami Tensei video game series . </s>
+>>> Prediction:
+Sameel, from the Megael -LRB- who was first introduced in Genji 1997 -RRB- comes from his family, from the Megael -LRB- who was born in 3113), who was born in 3113, the same who was born in 3114, the same guy -LRB- who was born in 3114 was also born with the same person who was born from the same family as the same person who was born from the same family with the same name as the same person who was born in the same family but with the opposite name -RRB- -LRB- who was born the same person in the same family as the same person from the same generation as the same person from the same generation as the same person from the same family like the sameperson from the same family as the same person from the same family as the same person from the same family as the same person from the same family as the same person from the same generations as the same person from the same generation as the same person from the same generation as the same person from the same family as the same person from the same family as the same person from the same family as the same person from the same generation as the same person from the same family as the same person from the same family as the same person from the same generation as the same person comes from the family of the same person Who was now known as the same person and was also born with the same person, who was created as the same person with the same number of ancestors. 
+================================================================================
+
+>>> [Step 120] Prompt:
+<s>system
+You are a helpful assistant. You are very good at simplifying texts. When you receive a text for simplification, you simplify it according to the instructions given by the user. Generate only the simplification, without any comments or notes.</s>
+<s>user
+INSTRUCTION: Simplify the following text such that the length of the output text (number of characters) relative to the source text is approximately equal to the ratio specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. 
+SOURCE TEXT: King Mangrai of the Lanna Kingdom -LRB- present day Northern Thailand , Shan State and Xishuangbanna Dai Autonomous Prefecture -RRB- founds the city of Chiang Rai as the kingdom 's capital .
+
+EXPLANATION: The <CHAR_COMPRESSION=0.66> token specifies that the character-level compression rate should be around 0.66. Values less than 1 indicate text reduction. Values greater than 1 indicate text expansion.</s>
+<s>assistant
+<CHAR_COMPRESSION=0.66> </s>
+
+>>> Reference:
+King Mengrai of the Lannathai kingdom in present day Thailand founds the city of Chiang Rai as the kingdom 's first capital . </s>
+>>> Prediction:
+King Manguru of the Lana Kingdom -LRB- born 6 August 1979 -RRB- is an old version of the leader Mangraya Manguru, who was from Themakraya : 
+================================================================================
+
+>>> [Step 120] Prompt:
+<s>system
+You are a helpful assistant. You are very good at simplifying texts. When you receive a text for simplification, you simplify it according to the instructions given by the user. Generate only the simplification, without any comments or notes.</s>
+<s>user
+INSTRUCTION: Simplify the following text such that the length of the output text (number of characters) relative to the source text is approximately equal to the ratio specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. 
+SOURCE TEXT: The posthumous name is commonly used when naming royalty of China , Korea , Vietnam , and Japan .
+
+EXPLANATION: The <CHAR_COMPRESSION=0.68> token specifies that the character-level compression rate should be around 0.68. Values less than 1 indicate text reduction. Values greater than 1 indicate text expansion.</s>
+<s>assistant
+<CHAR_COMPRESSION=0.68> </s>
+
+>>> Reference:
+His son , Ji Fa of Zhou , called his father the '' Civil King '' . </s>
+>>> Prediction:
+The posthumous name is commonly used when naming generalty of China, Korean Republic, Vietnam, and Japan. 
+================================================================================
+
+>>> [Step 120] Prompt:
+<s>system
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.</s>
+<s>user
+INSTRUCTION: Simplify the following text such that the length of the output text (number of characters) relative to the source text is approximately equal to the ratio specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. 
+SOURCE TEXT: Such dual-language recording is common to many subsequent treaties .
+
+EXPLANATION: The <CHAR_COMPRESSION=0.84> token specifies that the character-level compression rate should be around 0.84. Values less than 1 indicate text reduction. Values greater than 1 indicate text expansion.</s>
+<s>assistant
+<CHAR_COMPRESSION=0.84> </s>
+
+>>> Reference:
+Such dual-language recording is common to many treaties . </s>
+>>> Prediction:
+This is common to many subsequent treaties. 
+================================================================================
+{'loss': 0.4923, 'grad_norm': 26.95032501220703, 'learning_rate': 3.5517206870395852e-06, 'epoch': 1.29}
+{'eval_loss': 1.564097285270691, 'eval_runtime': 5.2723, 'eval_samples_per_second': 34.71, 'eval_steps_per_second': 8.725, 'epoch': 1.29}
+{'loss': 0.5306, 'grad_norm': 52.61629867553711, 'learning_rate': 3.2543014964879814e-06, 'epoch': 1.4}
+{'eval_loss': 1.5461989641189575, 'eval_runtime': 5.2674, 'eval_samples_per_second': 34.742, 'eval_steps_per_second': 8.733, 'epoch': 1.4}
+{'train_runtime': 1043.5861, 'train_samples_per_second': 4.234, 'train_steps_per_second': 0.264, 'train_loss': 1.4853810383723332, 'epoch': 1.4}
+Evaluation results: {'eval_loss': 1.4826453924179077, 'eval_runtime': 5.3261, 'eval_samples_per_second': 34.359, 'eval_steps_per_second': 8.637, 'epoch': 1.4010840108401084}
+Removing checkpoint: ./models/CHAR_COMPRESSION-WikiLarge_ori_splitwise-token_explanation-Ministral-3b-instruct-20250529/checkpoint-90
+*** Finetuning ministral/Ministral-3b-instruct with WikiLarge_ori_splitwise and WORD_COMPRESSION ***
+torch.cuda.is_bf16_supported: True
+Transformers version: 4.51.0
+Python path: /home/hhubar/data/conda/envs/sft/bin/python
+Not using PEFT...
+
+Run arguments:
+Namespace(model_class='auto', model_family='base', model_name='ministral/Ministral-3b-instruct', dataset_name='WikiLarge_ori_splitwise', slice_train=-1, slice_val=-1, batch_size=4, eval_batch_size=4, gradient_accumulation_steps=4, learning_rate=5e-06, weight_decay=0.01, warmup_steps=30, max_grad_norm=0.5, epochs=3, max_length=512, logging_steps=10, wandb_project_name='ATS_with_control_tokens', wandb_entity='shtosti', generate_every=20, seed=42, patience=4, prompting_type='vanilla', user_prompt_id='token_explanation', metric_name='WORD_COMPRESSION', control_tokens='data/prompts/control_tokens.json', system_prompts='data/prompts/system_prompts.json', user_prompts='data/prompts/user_prompts.json', metric_mapping='data/metric_mapping.json', peft=False, lora_r=8, lora_dropout=0.1)
+
+Saving to: ./models/WORD_COMPRESSION-WikiLarge_ori_splitwise-token_explanation-Ministral-3b-instruct-20250529
+
+*** Finetuning Ministral-3b-instruct with WikiLarge_ori_splitwise ***
+
+CUDA available: True
+Number of GPUs: 1
+GPU name: NVIDIA A100-SXM4-80GB
+Model embedding size BEFORE resizing: 32000
+Model embedding size AFTER resizing: 32000
+--- DEBUG ---
+trainable params:
+Trainable params: 3,315,716,096 / 3,315,716,096 (100.00%)
+--- tokenizer pad_token_id: 2
+--- tokenizer eos_token_id: 2
+--- special tokens:
+<unk>: 0
+<s>: 1
+</s>: 2
+train:	 Inspect the dataset format:
+ {'global_id': ['wikilarge_ori_297118'], 'source_text': ['In 2003 , the poetry award was granted for the first time .\n'], 'source_metrics': [{'FRE': 77.23, 'ARI': 4.2, 'FKGL': 5.2, 'Dale-Chall': 9.92, 'char_count': 60, 'alphanum_count': 41, 'word_count': 13, 'sentence_count': 1}], 'metadata': [{'dataset': 'wikilarge_ori', 'experiment_split': '', 'domain': 'general', 'language': 'en', 'annotation': 'automatic', 'level': 'sentence'}], 'simplification_text': ['Udo Kawasser\n'], 'target_metrics': [{'FRE': 35.61, 'ARI': 5.5, 'FKGL': 8.8, 'Dale-Chall': 19.53, 'char_count': 13, 'alphanum_count': 11, 'word_count': 2, 'sentence_count': 1, 'char_compression_rate': 0.22, 'word_compression_rate': 0.15, 'sentence_compression_rate': 1.0, 'BLEU': 0.0, 'BERTScore': 0.7573259472846985}], 'simplification_version': [1], 'grade_level': [-1], 'simplification_dimensions': [{'linguistic': {'lexical': False, 'syntactic': False}}]}
+validation:	 Inspect the dataset format:
+ {'global_id': ['wikilarge_ori_097984'], 'source_text': ['Unstrut-Hainich is a Kreis -LRB- district -RRB- in the north of Thuringia , Germany .\n'], 'source_metrics': [{'FRE': 83.66, 'ARI': 10.8, 'FKGL': 4.8, 'Dale-Chall': 14.0, 'char_count': 86, 'alphanum_count': 64, 'word_count': 15, 'sentence_count': 1}], 'metadata': [{'dataset': 'wikilarge_ori', 'experiment_split': '', 'domain': 'general', 'language': 'en', 'annotation': 'automatic', 'level': 'sentence'}], 'simplification_text': ['Unstrut-Hainich is a Landkreis -LRB- district -RRB- in the north of Thuringia , Germany .\n'], 'target_metrics': [{'FRE': 75.2, 'ARI': 12.2, 'FKGL': 6.0, 'Dale-Chall': 14.0, 'char_count': 90, 'alphanum_count': 68, 'word_count': 15, 'sentence_count': 1, 'char_compression_rate': 1.05, 'word_compression_rate': 1.0, 'sentence_compression_rate': 1.0, 'BLEU': 80.03203203845001, 'BERTScore': 0.9842736721038818}], 'simplification_version': [1], 'grade_level': [-1], 'simplification_dimensions': [{'linguistic': {'lexical': False, 'syntactic': False}}]}
+
+
+ *** Before tokenization ***
+>>> train:
+
+Showing 1 example(s):
+
+Example 1 (index 105)
+--- Prompt:
+ <s>system
+You are a helpful text simplification assistant. You are not only an expert in simplifying texts for different readerships, but you are also very good at adapting texts according to the exact needs of the user. You output only the simplified text, no further notes or comments allowed.</s>
+<s>user
+INSTRUCTION: Simplify the following text such that the length of the output text (number of words) relative to the source text is approximately equal to the ratio specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. 
+SOURCE TEXT: Two studied advantages of cetacean physiology let this Order -LRB- and other marine mammals -RRB- forage underwater for extended periods without breathing :
+
+EXPLANATION: The <WORD_COMPRESSION=0.09> token specifies that the word-level compression rate should be around 0.09. Values less than 1 indicate text reduction. Values greater than 1 indicate text expansion.</s>
+<s>assistant
+<WORD_COMPRESSION=0.09> </s>
+
+--- Completion:
+ Family Eschrichtiidae </s>
+==================================================
+
+
+ *** After tokenization ***
+>>> train:
+
+Showing 1 example(s):
+
+Example 1 (index 589)
+--- Prompt:
+ <s>system
+You are a helpful text simplification assistant. You are not only an expert in simplifying texts for different readerships, but you are also very good at adapting texts according to the exact needs of the user. You output only the simplified text, no further notes or comments allowed.</s>
+<s>user
+INSTRUCTION: Simplify the following text such that the length of the output text (number of words) relative to the source text is approximately equal to the ratio specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. 
+SOURCE TEXT: Prospectors from California , Europe and China were also digging along the Peel River and up the mountain slopes .
+
+EXPLANATION: The <WORD_COMPRESSION=1.0> token specifies that the word-level compression rate should be around 1.0. Values less than 1 indicate text reduction. Values greater than 1 indicate text expansion.</s>
+<s>assistant
+<WORD_COMPRESSION=1.0> </s>
+
+--- Completion:
+ Prospectors from California , Europe and China were also digging along the Peel River and up the mountain slopes . </s>
+--- input_ids:
+ [1, 1, 1587, 13, 1976, 460, 264, 10865, 2245, 9878, 2500, 13892, 28723, 995, 460, 459, 865, 396, 7583, 297, 9878, 6219, 19337, 354, 1581, 1220, 4445, 28713, 28725, 562, 368, 460, 835, 1215, 1179, 438, 616, 377, 1157, 19337, 4771, 298, 272, 3459, 3208, 302, 272, 2188, 28723, 995, 3825, 865, 272, 9878, 1799, 2245, 28725, 708, 3629, 8321, 442, 7616, 4670, 28723, 2, 28705, 13, 1, 2188, 13, 775, 19199, 5324, 28747, 3563, 452, 1575, 272, 2296, 2245, 1259, 369, 272, 3575, 302, 272, 3825, 2245, 325, 4810, 302, 3085, 28731, 7986, 298, 272, 2832, 2245, 349, 10870, 6530, 298, 272, 10554, 6140, 297, 272, 2602, 6029, 710, 1693, 286, 298, 574, 7138, 9878, 2500, 28723, 415, 2602, 6029, 659, 272, 2296, 5032, 28747, 523, 1574, 2050, 1604, 28746, 10015, 13902, 28705, 13, 17426, 25775, 28747, 1133, 7002, 734, 477, 6247, 1200, 3401, 304, 5077, 654, 835, 27645, 2267, 272, 3242, 301, 6396, 304, 582, 272, 10660, 1135, 14336, 842, 13, 13, 2335, 3898, 1251, 4866, 28747, 415, 523, 10993, 28730, 9028, 896, 10946, 28746, 28740, 28723, 28734, 28767, 6029, 1229, 8961, 369, 272, 1707, 28733, 4404, 25242, 4338, 1023, 347, 1401, 28705, 28740, 28723, 28734, 28723, 3474, 1139, 2108, 821, 28705, 28740, 11634, 2245, 13388, 28723, 3474, 1139, 6517, 821, 28705, 28740, 11634, 2245, 11120, 28723, 2, 28705, 13, 1, 13892, 13, 28789, 10993, 28730, 9028, 896, 10946, 28746, 28740, 28723, 28734, 28767, 28705, 2, 28705, 13, 1, 1133, 7002, 734, 477, 6247, 1200, 3401, 304, 5077, 654, 835, 27645, 2267, 272, 3242, 301, 6396, 304, 582, 272, 10660, 1135, 14336, 842, 28705, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2]
+--- labels:
+ [-100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, 1, 1133, 7002, 734, 477, 6247, 1200, 3401, 304, 5077, 654, 835, 27645, 2267, 272, 3242, 301, 6396, 304, 582, 272, 10660, 1135, 14336, 842, 28705, 2, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100]
+==================================================
+********** DEBUG **********
+Train dataset columns: ['global_id', 'source_text', 'source_metrics', 'metadata', 'simplification_text', 'target_metrics', 'simplification_version', 'grade_level', 'simplification_dimensions', 'prompt', 'completion', 'system_prompt_id', 'user_prompt_id', 'metric_name', 'source_metric_value', 'target_metric_value', 'input_ids', 'labels', 'attention_mask']
+Validation dataset columns: ['global_id', 'source_text', 'source_metrics', 'metadata', 'simplification_text', 'target_metrics', 'simplification_version', 'grade_level', 'simplification_dimensions', 'prompt', 'completion', 'system_prompt_id', 'user_prompt_id', 'metric_name', 'source_metric_value', 'target_metric_value', 'input_ids', 'labels', 'attention_mask']
+First 10 input_ids: [1, 1, 1587, 13, 1976, 460, 264, 10865, 7583, 297]
+First 10 labels: [-100, -100, -100, -100, -100, -100, -100, -100, -100, -100]
+
+--- DEBUG: Explore first instance of the val set:
+ {'global_id': 'wikilarge_ori_171160', 'source_text': 'Okeechobee covers 730 square miles -LRB- 1,890 kmÂ -RRB- , approximately half the size of the state of Rhode Island , and is exceptionally shallow for a lake of its size , with an average depth of only 9 feet -LRB- 3 m -RRB- .\n', 'source_metrics': {'FRE': 46.78, 'ARI': 20.0, 'FKGL': 16.9, 'Dale-Chall': 12.6, 'char_count': 227, 'alphanum_count': 160, 'word_count': 45, 'sentence_count': 1}, 'metadata': {'dataset': 'wikilarge_ori', 'experiment_split': '', 'domain': 'general', 'language': 'en', 'annotation': 'automatic', 'level': 'sentence'}, 'simplification_text': 'Lake Okeechobee covers about 730 square miles -LRB- about half the size of Rhode Island -RRB- .\n', 'target_metrics': {'FRE': 72.16, 'ARI': 9.8, 'FKGL': 7.2, 'Dale-Chall': 11.34, 'char_count': 96, 'alphanum_count': 71, 'word_count': 17, 'sentence_count': 1, 'char_compression_rate': 0.42, 'word_compression_rate': 0.38, 'sentence_compression_rate': 1.0, 'BLEU': 7.6212533828165006, 'BERTScore': 0.90108722448349}, 'simplification_version': 1, 'grade_level': -1, 'simplification_dimensions': {'linguistic': {'lexical': False, 'syntactic': False}}, 'prompt': '<s>system\nYou are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.</s>\n<s>user\nINSTRUCTION: Simplify the following text such that the length of the output text (number of words) relative to the source text is approximately equal to the ratio specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. \nSOURCE TEXT: Okeechobee covers 730 square miles -LRB- 1,890 kmÂ -RRB- , approximately half the size of the state of Rhode Island , and is exceptionally shallow for a lake of its size , with an average depth of only 9 feet -LRB- 3 m -RRB- .\n\nEXPLANATION: The <WORD_COMPRESSION=0.38> token specifies that the word-level compression rate should be around 0.38. Values less than 1 indicate text reduction. Values greater than 1 indicate text expansion.</s>\n<s>assistant\n<WORD_COMPRESSION=0.38> </s>\n', 'completion': 'Lake Okeechobee covers about 730 square miles -LRB- about half the size of Rhode Island -RRB- . </s>', 'system_prompt_id': 'sys_prompt_6', 'user_prompt_id': 'token_explanation', 'metric_name': 'WORD_COMPRESSION', 'source_metric_value': None, 'target_metric_value': 0.38, 'input_ids': [1, 1, 1587, 13, 1976, 460, 264, 10865, 7583, 297, 2245, 9878, 2500, 28723, 995, 8270, 264, 9878, 1799, 2751, 302, 272, 2245, 2787, 486, 272, 2188, 28723, 995, 9878, 1575, 272, 2245, 4771, 298, 272, 11382, 2078, 486, 272, 2188, 28723, 1684, 2261, 298, 9878, 1575, 264, 2245, 28725, 8270, 865, 272, 11939, 9878, 2500, 28725, 1671, 707, 4870, 7616, 28725, 8321, 442, 10928, 697, 28723, 2, 28705, 13, 1, 2188, 13, 775, 19199, 5324, 28747, 3563, 452, 1575, 272, 2296, 2245, 1259, 369, 272, 3575, 302, 272, 3825, 2245, 325, 4810, 302, 3085, 28731, 7986, 298, 272, 2832, 2245, 349, 10870, 6530, 298, 272, 10554, 6140, 297, 272, 2602, 6029, 710, 1693, 286, 298, 574, 7138, 9878, 2500, 28723, 415, 2602, 6029, 659, 272, 2296, 5032, 28747, 523, 1574, 2050, 1604, 28746, 10015, 13902, 28705, 13, 17426, 25775, 28747, 451, 405, 5295, 598, 2443, 12784, 28705, 28787, 28770, 28734, 7930, 6052, 387, 28758, 24042, 28733, 28705, 28740, 28725, 28783, 28774, 28734, 3535, 29053, 387, 8274, 28760, 28733, 1200, 10870, 2795, 272, 1669, 302, 272, 1665, 302, 10282, 573, 7633, 1200, 304, 349, 5851, 578, 21660, 354, 264, 14411, 302, 871, 1669, 1200, 395, 396, 5151, 8478, 302, 865, 28705, 28774, 4051, 387, 28758, 24042, 28733, 28705, 28770, 290, 387, 8274, 28760, 28733, 842, 13, 13, 2335, 3898, 1251, 4866, 28747, 415, 523, 10993, 28730, 9028, 896, 10946, 28746, 28734, 28723, 28770, 28783, 28767, 6029, 1229, 8961, 369, 272, 1707, 28733, 4404, 25242, 4338, 1023, 347, 1401, 28705, 28734, 28723, 28770, 28783, 28723, 3474, 1139, 2108, 821, 28705, 28740, 11634, 2245, 13388, 28723, 3474, 1139, 6517, 821, 28705, 28740, 11634, 2245, 11120, 28723, 2, 28705, 13, 1, 13892, 13, 28789, 10993, 28730, 9028, 896, 10946, 28746, 28734, 28723, 28770, 28783, 28767, 28705, 2, 28705, 13, 1, 8703, 451, 405, 5295, 598, 2443, 12784, 684, 28705, 28787, 28770, 28734, 7930, 6052, 387, 28758, 24042, 28733, 684, 2795, 272, 1669, 302, 10282, 573, 7633, 387, 8274, 28760, 28733, 842, 28705, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2], 'labels': [-100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, 1, 8703, 451, 405, 5295, 598, 2443, 12784, 684, 28705, 28787, 28770, 28734, 7930, 6052, 387, 28758, 24042, 28733, 684, 2795, 272, 1669, 302, 10282, 573, 7633, 387, 8274, 28760, 28733, 842, 28705, 2, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100], 'attention_mask': [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]}
+type of input_ids: <class 'list'>
+type of labels: <class 'list'>
+
+--- DEBUG: Tokenized fields ---
+--- Tokenizer vocab size: 32000
+--- input_ids: [1, 1, 1587, 13, 1976, 460, 264, 10865, 7583, 297, 2245, 9878, 2500, 28723, 995, 8270, 264, 9878, 1799, 2751, 302, 272, 2245, 2787, 486, 272, 2188, 28723, 995, 9878, 1575, 272, 2245, 4771, 298, 272, 11382, 2078, 486, 272, 2188, 28723, 1684, 2261, 298, 9878, 1575, 264, 2245, 28725, 8270, 865, 272, 11939, 9878, 2500, 28725, 1671, 707, 4870, 7616, 28725, 8321, 442, 10928, 697, 28723, 2, 28705, 13, 1, 2188, 13, 775, 19199, 5324, 28747, 3563, 452, 1575, 272, 2296, 2245, 1259, 369, 272, 3575, 302, 272, 3825, 2245, 325, 4810, 302, 3085, 28731, 7986, 298, 272, 2832, 2245, 349, 10870, 6530, 298, 272, 10554, 6140, 297, 272, 2602, 6029, 710, 1693, 286, 298, 574, 7138, 9878, 2500, 28723, 415, 2602, 6029, 659, 272, 2296, 5032, 28747, 523, 1574, 2050, 1604, 28746, 10015, 13902, 28705, 13, 17426, 25775, 28747, 4258, 15008, 1200, 272, 2840, 403, 3336, 486, 8885, 16303, 9966, 477, 272, 9313, 302, 272, 3905, 356, 28705, 28781, 2246, 28705, 28750, 28734, 28734, 28734, 1996, 516, 2288, 296, 486, 9370, 842, 13, 13, 2335, 3898, 1251, 4866, 28747, 415, 523, 10993, 28730, 9028, 896, 10946, 28746, 28734, 28723, 28784, 28781, 28767, 6029, 1229, 8961, 369, 272, 1707, 28733, 4404, 25242, 4338, 1023, 347, 1401, 28705, 28734, 28723, 28784, 28781, 28723, 3474, 1139, 2108, 821, 28705, 28740, 11634, 2245, 13388, 28723, 3474, 1139, 6517, 821, 28705, 28740, 11634, 2245, 11120, 28723, 2, 28705, 13, 1, 13892, 13, 28789, 10993, 28730, 9028, 896, 10946, 28746, 28734, 28723, 28784, 28781, 28767, 28705, 2, 28705, 13, 1, 415, 907, 11401, 20671, 302, 4222, 349, 8885, 16303, 9966, 1200, 693, 403, 312, 28733, 28706, 2344, 297, 28705, 28750, 28734, 28734, 28781, 842, 28705, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2]
+--- labels: [-100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, 1, 415, 907, 11401, 20671, 302, 4222, 349, 8885, 16303, 9966, 1200, 693, 403, 312, 28733, 28706, 2344, 297, 28705, 28750, 28734, 28734, 28781, 842, 28705, 2, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100]
+--- decoded input_ids:
+ <s><s> system
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.</s> 
+<s> user
+INSTRUCTION: Simplify the following text such that the length of the output text (number of words) relative to the source text is approximately equal to the ratio specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. 
+SOURCE TEXT: Previously , the position was held by Ken Livingstone from the creation of the role on 4 May 2000 until his succession by Johnson .
+
+EXPLANATION: The <WORD_COMPRESSION=0.64> token specifies that the word-level compression rate should be around 0.64. Values less than 1 indicate text reduction. Values greater than 1 indicate text expansion.</s> 
+<s> assistant
+<WORD_COMPRESSION=0.64> </s> 
+<s> The first elected Mayor of London is Ken Livingstone , who was re-elected in 2004 . </s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s>
+--- decoded labels:
+ The first elected Mayor of London is Ken Livingstone , who was re-elected in 2004 . 
+{'loss': 3.0235, 'grad_norm': 54.67494583129883, 'learning_rate': 1.5e-06, 'epoch': 0.11}
+{'eval_loss': 2.252469539642334, 'eval_runtime': 5.2887, 'eval_samples_per_second': 34.602, 'eval_steps_per_second': 8.698, 'epoch': 0.11}
+
+>>> [Step 20] Prompt:
+<s>system
+You are a helpful assistant. You are an expert in controlled text simplification. When you receive a text, you simplify it by rewriting it in a manner that is easier to read. Your simplification is guided by the simplification criteria specified by the user. You generate only the simplification result, without any additional comments or explanations.</s>
+<s>user
+INSTRUCTION: Simplify the following text such that the length of the output text (number of words) relative to the source text is approximately equal to the ratio specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. 
+SOURCE TEXT: Sedimentary rock is one of the three main rock types -LRB- the others being igneous and metamorphic rock -RRB- .
+
+EXPLANATION: The <WORD_COMPRESSION=0.6> token specifies that the word-level compression rate should be around 0.6. Values less than 1 indicate text reduction. Values greater than 1 indicate text expansion.</s>
+<s>assistant
+<WORD_COMPRESSION=0.6> </s>
+
+>>> Reference:
+Other types of rock are igneous rock and metamorphic rock -RRB- . </s>
+>>> Prediction:
+< < <|im_start|>user
+ < <LIORY BEGININPUT -LRB- PARENT -RRB- MAKE YLET -RRB- ECHROGNOUN -RRB- VECTOR -RRB- XELLA ECHROR -RRB- LBB -RRB- YELLA ECHROG NOUN -RRB- BOKLY BEIN -RRB- 5069 -RRB- 7227  ) BEIN -RRB- GAYLET -RRB- MAGCY -RRB- LBB -RRB- WELLA ECHROG NBKLY BEIN -RRB- BAYLET -RRB- IIT -RRB- LAGCY -RRB- ALBB -RRB- 1171 -RRB- KATHIE PIECHROG NOUN -RRB: PHECK GRU BOKLY BEIN -RRB- KAYLET -RRB- MCHRA CHP 5075 -RRB- LARGCY -RRB- LAGCY -RRB- 4728 -RRB- GAYLET -RRB- BOCKCHROG NBKYY BEIN -RRB- BAYLET -RRB- 1171 -RRB- KAYLET -RRB- AKCY -RRB- MCHRA CHP 5075-8 4771 -RRB- KAYLET -RRB- BAYLET -RRB- 1171 -RRB- HIBEKLY BEIN -RRB- BAYLET  -RRB- LAGCY 67 14 8 8 9 9 9 9 9 9 9 9 9 9 0 0 0 0 0 0 0 0 0   -RRB- 1075 -RRB- 1076 -RRB- 1076 -RRB- 1076 -RRB- 1077 -RRB- 1076 
+================================================================================
+
+>>> [Step 20] Prompt:
+<s>system
+You are a helpful text simplification assistant. You are not only an expert in simplifying texts for different readerships, but you are also very good at adapting texts according to the exact needs of the user. You output only the simplified text, no further notes or comments allowed.</s>
+<s>user
+INSTRUCTION: Simplify the following text such that the length of the output text (number of words) relative to the source text is approximately equal to the ratio specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. 
+SOURCE TEXT: Geography The town lies in the Limmat valley between Baden and Zürich .
+
+EXPLANATION: The <WORD_COMPRESSION=1.0> token specifies that the word-level compression rate should be around 1.0. Values less than 1 indicate text reduction. Values greater than 1 indicate text expansion.</s>
+<s>assistant
+<WORD_COMPRESSION=1.0> </s>
+
+>>> Reference:
+Geographically the town lies in the Limmat valley between Baden and Zurich . </s>
+>>> Prediction:
+< < <|im_start|>user
+ < <MAX_LENGTH=13 
+================================================================================
+
+>>> [Step 20] Prompt:
+<s>system
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.</s>
+<s>user
+INSTRUCTION: Simplify the following text such that the length of the output text (number of words) relative to the source text is approximately equal to the ratio specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. 
+SOURCE TEXT: Samael is shown as a recurring recruitable character in the Megami Tensei video game series .
+
+EXPLANATION: The <WORD_COMPRESSION=1.0> token specifies that the word-level compression rate should be around 1.0. Values less than 1 indicate text reduction. Values greater than 1 indicate text expansion.</s>
+<s>assistant
+<WORD_COMPRESSION=1.0> </s>
+
+>>> Reference:
+Popular culture Samael is shown as a character in the Megami Tensei video game series . </s>
+>>> Prediction:
+< <|im_start|>user
+ < <|im_start|>user
+ < <word+=1.0>> < <|im_end|>
+ <|im_start|>assistant
+================================================================================
+
+>>> [Step 20] Prompt:
+<s>system
+You are a helpful assistant. You are very good at simplifying texts. When you receive a text for simplification, you simplify it according to the instructions given by the user. Generate only the simplification, without any comments or notes.</s>
+<s>user
+INSTRUCTION: Simplify the following text such that the length of the output text (number of words) relative to the source text is approximately equal to the ratio specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. 
+SOURCE TEXT: He went on to play supporting roles starring alongside Viggo Mortensen and Ashley Judd in Philip Ridley 's The Passion of Darkly Noon -LRB- 1995 -RRB- and Jennifer Beals in The Twilight of the Golds -LRB- 1997 -RRB- .
+
+EXPLANATION: The <WORD_COMPRESSION=1.03> token specifies that the word-level compression rate should be around 1.03. Values less than 1 indicate text reduction. Values greater than 1 indicate text expansion.</s>
+<s>assistant
+<WORD_COMPRESSION=1.03> </s>
+
+>>> Reference:
+He then acted in smaller parts with Viggo Mortensen and Ashley Judd in Philip Ridley 's The Passion of Darkly Noon in -LRB- 1995 -RRB- , and Jennifer Beals in The Twilight of the Golds in -LRB- 1997 -RRB- . </s>
+>>> Prediction:
+< <SEGMENT 1 -LEB- 1994 -RRBR- BROOKLORY GLOWBACK 
+================================================================================
+{'loss': 2.1882, 'grad_norm': 52.48258590698242, 'learning_rate': 3.1666666666666667e-06, 'epoch': 0.22}
+{'eval_loss': 1.9749648571014404, 'eval_runtime': 5.3069, 'eval_samples_per_second': 34.483, 'eval_steps_per_second': 8.668, 'epoch': 0.22}
+{'loss': 1.93, 'grad_norm': 48.32315444946289, 'learning_rate': 4.833333333333333e-06, 'epoch': 0.33}
+{'eval_loss': 1.832358717918396, 'eval_runtime': 5.2814, 'eval_samples_per_second': 34.65, 'eval_steps_per_second': 8.71, 'epoch': 0.33}
+
+>>> [Step 40] Prompt:
+<s>system
+You are a helpful text simplification assistant. You are not only an expert in simplifying texts for different readerships, but you are also very good at adapting texts according to the exact needs of the user. You output only the simplified text, no further notes or comments allowed.</s>
+<s>user
+INSTRUCTION: Simplify the following text such that the length of the output text (number of words) relative to the source text is approximately equal to the ratio specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. 
+SOURCE TEXT: Libby 's two and a half year prison sentence was later commuted by President Bush , though the other facet of his sentence -LRB- $ 250,000 fine -RRB- stood and was duly paid .
+
+EXPLANATION: The <WORD_COMPRESSION=1.12> token specifies that the word-level compression rate should be around 1.12. Values less than 1 indicate text reduction. Values greater than 1 indicate text expansion.</s>
+<s>assistant
+<WORD_COMPRESSION=1.12> </s>
+
+>>> Reference:
+Libby 's two and a half year prison sentence was later commuted by President Bush , though the other facet of his sentence -LRB- $ 250,000 fine -RRB- stands until Libby 's appeals were to be considered . </s>
+>>> Prediction:
+Assistant :  $ 250,000 for the entire sentence 
+================================================================================
+
+>>> [Step 40] Prompt:
+<s>system
+You are a helpful assistant. You are an expert in controlled text simplification. When you receive a text, you simplify it by rewriting it in a manner that is easier to read. Your simplification is guided by the simplification criteria specified by the user. You generate only the simplification result, without any additional comments or explanations.</s>
+<s>user
+INSTRUCTION: Simplify the following text such that the length of the output text (number of words) relative to the source text is approximately equal to the ratio specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. 
+SOURCE TEXT: On September 25 , 2008 , the United States Office of Thrift Supervision -LRB- OTS -RRB- seized Washington Mutual Bank from Washington Mutual , Inc. and placed it into the receivership of the Federal Deposit Insurance Corporation -LRB- FDIC -RRB- .
+
+EXPLANATION: The <WORD_COMPRESSION=0.12> token specifies that the word-level compression rate should be around 0.12. Values less than 1 indicate text reduction. Values greater than 1 indicate text expansion.</s>
+<s>assistant
+<WORD_COMPRESSION=0.12> </s>
+
+>>> Reference:
+September 26 , 2008 . </s>
+>>> Prediction:
+users
+What 2009 American author and pop singer released the songs "Catcher in the Rye" and "Boosty" -A 1994 movie 
+================================================================================
+
+>>> [Step 40] Prompt:
+<s>system
+You are a helpful assistant. You are an expert in controlled text simplification. When you receive a text, you simplify it by rewriting it in a manner that is easier to read. Your simplification is guided by the simplification criteria specified by the user. You generate only the simplification result, without any additional comments or explanations.</s>
+<s>user
+INSTRUCTION: Simplify the following text such that the length of the output text (number of words) relative to the source text is approximately equal to the ratio specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. 
+SOURCE TEXT: The older Soviet-era Russian version of its name , Alma-Ata , originates from a mistake -LRB- the name literally means '' Grandfather of apples '' -RRB- .
+
+EXPLANATION: The <WORD_COMPRESSION=1.0> token specifies that the word-level compression rate should be around 1.0. Values less than 1 indicate text reduction. Values greater than 1 indicate text expansion.</s>
+<s>assistant
+<WORD_COMPRESSION=1.0> </s>
+
+>>> Reference:
+The older Soviet-era Russian name for the city , Alma-Ata , comes from a mistake -LRB- the name literally means '' Grandfather of apples '' -RRB- . </s>
+>>> Prediction:
+You take away my first letter, and then I get the fifth letter of my original name 
+================================================================================
+
+>>> [Step 40] Prompt:
+<s>system
+You are an expert in text simplification. When you receive a text for simplification, you generate a simplified version of that text. You carefully study the simplification criteria specified by the user and adapt the text accordingly. Please generate only the simplified text, no other notes or explanations allowed.</s>
+<s>user
+INSTRUCTION: Simplify the following text such that the length of the output text (number of words) relative to the source text is approximately equal to the ratio specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. 
+SOURCE TEXT: The state is a political and geopolitical entity ; the nation is a cultural and\/or ethnic entity .
+
+EXPLANATION: The <WORD_COMPRESSION=0.89> token specifies that the word-level compression rate should be around 0.89. Values less than 1 indicate text reduction. Values greater than 1 indicate text expansion.</s>
+<s>assistant
+<WORD_COMPRESSION=0.89> </s>
+
+>>> Reference:
+The state is a political entity ; the nation is a cultural and\/or ethnic entity . </s>
+>>> Prediction:
+< (0.90167 --  0.96127 3.64 and 3.74 - 11.6
+================================================================================
+{'loss': 1.6667, 'grad_norm': 31.826372146606445, 'learning_rate': 4.983505224399188e-06, 'epoch': 0.43}
+{'eval_loss': 1.778120517730713, 'eval_runtime': 5.3234, 'eval_samples_per_second': 34.377, 'eval_steps_per_second': 8.641, 'epoch': 0.43}
+{'loss': 1.7412, 'grad_norm': 37.47357940673828, 'learning_rate': 4.926765636074124e-06, 'epoch': 0.54}
+{'eval_loss': 1.750295877456665, 'eval_runtime': 5.2975, 'eval_samples_per_second': 34.545, 'eval_steps_per_second': 8.683, 'epoch': 0.54}
+
+>>> [Step 60] Prompt:
+<s>system
+You are an expert in text simplification. When you receive a text for simplification, you generate a simplified version of that text. You carefully study the simplification criteria specified by the user and adapt the text accordingly. Please generate only the simplified text, no other notes or explanations allowed.</s>
+<s>user
+INSTRUCTION: Simplify the following text such that the length of the output text (number of words) relative to the source text is approximately equal to the ratio specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. 
+SOURCE TEXT: Northern Arizona University , Flagstaff and 38 statewide locations
+
+EXPLANATION: The <WORD_COMPRESSION=0.22> token specifies that the word-level compression rate should be around 0.22. Values less than 1 indicate text reduction. Values greater than 1 indicate text expansion.</s>
+<s>assistant
+<WORD_COMPRESSION=0.22> </s>
+
+>>> Reference:
+Cochise College </s>
+>>> Prediction:
+More than 3,500 students and 27,000 of them are enrolled in UCLA University, which is named as '' ''. 
+================================================================================
+
+>>> [Step 60] Prompt:
+<s>system
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.</s>
+<s>user
+INSTRUCTION: Simplify the following text such that the length of the output text (number of words) relative to the source text is approximately equal to the ratio specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. 
+SOURCE TEXT: Early history At the time of the Domesday Book in 1086 parts of the county were considered to either form part of Yorkshire or be within the separate kingdom of Scotland , having historically been associated with the Kingdom of Strathclyde .
+
+EXPLANATION: The <WORD_COMPRESSION=0.5> token specifies that the word-level compression rate should be around 0.5. Values less than 1 indicate text reduction. Values greater than 1 indicate text expansion.</s>
+<s>assistant
+<WORD_COMPRESSION=0.5> </s>
+
+>>> Reference:
+Early history At the time of the Domesday Book in 1086 the county was said to form part of Yorkshire . </s>
+>>> Prediction:
+-LRB-2010 -RRB- 
+================================================================================
+
+>>> [Step 60] Prompt:
+<s>system
+You are a helpful text simplification assistant. You are not only an expert in simplifying texts for different readerships, but you are also very good at adapting texts according to the exact needs of the user. You output only the simplified text, no further notes or comments allowed.</s>
+<s>user
+INSTRUCTION: Simplify the following text such that the length of the output text (number of words) relative to the source text is approximately equal to the ratio specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. 
+SOURCE TEXT: This also marked the first time that all three New York NHL teams made the playoffs in the same season .
+
+EXPLANATION: The <WORD_COMPRESSION=1.1> token specifies that the word-level compression rate should be around 1.1. Values less than 1 indicate text reduction. Values greater than 1 indicate text expansion.</s>
+<s>assistant
+<WORD_COMPRESSION=1.1> </s>
+
+>>> Reference:
+This also marked the first time that all three New York City metro area teams made the playoffs in the same season . </s>
+>>> Prediction:
+the New York NHL matches the first first 99144990 in the 99144874700 and with the U.S. --LRB-0.0.9814492 -RRB-, in the 98246102 with the u 192016400. 
+================================================================================
+
+>>> [Step 60] Prompt:
+<s>system
+You are a helpful text simplification assistant. You are not only an expert in simplifying texts for different readerships, but you are also very good at adapting texts according to the exact needs of the user. You output only the simplified text, no further notes or comments allowed.</s>
+<s>user
+INSTRUCTION: Simplify the following text such that the length of the output text (number of words) relative to the source text is approximately equal to the ratio specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. 
+SOURCE TEXT: In this way , Chadwick prepared the way towards the fission of uranium 235 .
+
+EXPLANATION: The <WORD_COMPRESSION=1.53> token specifies that the word-level compression rate should be around 1.53. Values less than 1 indicate text reduction. Values greater than 1 indicate text expansion.</s>
+<s>assistant
+<WORD_COMPRESSION=1.53> </s>
+
+>>> Reference:
+In this way , Chadwick prepared the way towards the fission of uranium 235 and towards the creation of the atomic bomb . </s>
+>>> Prediction:
+Shardsharks -Tech -RRB- first used changus on.3919 1537 -2001 in Sphods. 1740 800 1135 0.514 = 10500 819 1150 0.626 0.0457 8011 100 0. 100 0. 0 0. 0 -S.2 0.  : 100 100 100 1000 0. 0 100 -LRB- 100 100 100 -RRB- 2001 5 0 0 0 -LRB- 100 100 100 -RRB- 2001 0 0 in 1500 0 1100 0 0 0.000 
+================================================================================
+{'loss': 1.8977, 'grad_norm': 77.43659210205078, 'learning_rate': 4.830501487915175e-06, 'epoch': 0.65}
+{'eval_loss': 1.6440082788467407, 'eval_runtime': 5.3075, 'eval_samples_per_second': 34.48, 'eval_steps_per_second': 8.667, 'epoch': 0.65}
+{'loss': 1.5259, 'grad_norm': 33.191001892089844, 'learning_rate': 4.696280627277356e-06, 'epoch': 0.76}
+{'eval_loss': 1.489177942276001, 'eval_runtime': 5.3139, 'eval_samples_per_second': 34.438, 'eval_steps_per_second': 8.657, 'epoch': 0.76}
+
+>>> [Step 80] Prompt:
+<s>system
+You are an expert in controlled text simplification. When you receive a text from the user, you carefully adapt it to the simplification level specified by the user. Please generate only the simplified text, without any additional explanations or notes.</s>
+<s>user
+INSTRUCTION: Simplify the following text such that the length of the output text (number of words) relative to the source text is approximately equal to the ratio specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. 
+SOURCE TEXT: Brunstad has several fast food restaurants , a cafeteria-style restaurant , coffee bar , and its own grocery store .
+
+EXPLANATION: The <WORD_COMPRESSION=1.0> token specifies that the word-level compression rate should be around 1.0. Values less than 1 indicate text reduction. Values greater than 1 indicate text expansion.</s>
+<s>assistant
+<WORD_COMPRESSION=1.0> </s>
+
+>>> Reference:
+Brunstad has many fast food restaurants , a cafeteria-style restaurant , coffee bar , and its own grocery shop . </s>
+>>> Prediction:
+It hosts many other restaurants and cafes, a coffee shop, an grocery store, a coffee shop, a pizza restaurant, and a coffee shop. 
+================================================================================
+
+>>> [Step 80] Prompt:
+<s>system
+You are an expert in controlled text simplification. When you receive a text from the user, you carefully adapt it to the simplification level specified by the user. Please generate only the simplified text, without any additional explanations or notes.</s>
+<s>user
+INSTRUCTION: Simplify the following text such that the length of the output text (number of words) relative to the source text is approximately equal to the ratio specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. 
+SOURCE TEXT: Moreau is the recipient of a César Award for Best Actress , a BAFTA Award for Best Foreign Actress and a Cannes Film Festival Best Actress Award for individual performances , and several lifetime awards .
+
+EXPLANATION: The <WORD_COMPRESSION=0.22> token specifies that the word-level compression rate should be around 0.22. Values less than 1 indicate text reduction. Values greater than 1 indicate text expansion.</s>
+<s>assistant
+<WORD_COMPRESSION=0.22> </s>
+
+>>> Reference:
+She studied at the Conservatoire de Paris . </s>
+>>> Prediction:
+In 2008, her first acting performance was for the 2004 film '' '' The Matrix ''. 
+================================================================================
+
+>>> [Step 80] Prompt:
+<s>system
+You are a helpful assistant. You are very good at simplifying texts. When you receive a text for simplification, you simplify it according to the instructions given by the user. Generate only the simplification, without any comments or notes.</s>
+<s>user
+INSTRUCTION: Simplify the following text such that the length of the output text (number of words) relative to the source text is approximately equal to the ratio specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. 
+SOURCE TEXT: Their participation is limited until they reach legal adulthood .
+
+EXPLANATION: The <WORD_COMPRESSION=1.5> token specifies that the word-level compression rate should be around 1.5. Values less than 1 indicate text reduction. Values greater than 1 indicate text expansion.</s>
+<s>assistant
+<WORD_COMPRESSION=1.5> </s>
+
+>>> Reference:
+They are not able to participate before they reach adulthood as per the law . </s>
+>>> Prediction:
+These are not legal individuals - young, aged or grown -, nor become. 
+================================================================================
+
+>>> [Step 80] Prompt:
+<s>system
+You are a helpful assistant. You are an expert in controlled text simplification. When you receive a text, you simplify it by rewriting it in a manner that is easier to read. Your simplification is guided by the simplification criteria specified by the user. You generate only the simplification result, without any additional comments or explanations.</s>
+<s>user
+INSTRUCTION: Simplify the following text such that the length of the output text (number of words) relative to the source text is approximately equal to the ratio specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. 
+SOURCE TEXT: As with a terrestrial mammal breathing out on a cold day , a small cloud of ` steam ' appears .
+
+EXPLANATION: The <WORD_COMPRESSION=0.24> token specifies that the word-level compression rate should be around 0.24. Values less than 1 indicate text reduction. Values greater than 1 indicate text expansion.</s>
+<s>assistant
+<WORD_COMPRESSION=0.24> </s>
+
+>>> Reference:
+Fin Whale , Balaenoptera physalus </s>
+>>> Prediction:
+As with a terrestrial mammal breathing out on a cold day, a small cloud of : 
+================================================================================
+{'loss': 1.4785, 'grad_norm': 38.800106048583984, 'learning_rate': 4.5262890998003374e-06, 'epoch': 0.87}
+{'eval_loss': 1.4882827997207642, 'eval_runtime': 5.3201, 'eval_samples_per_second': 34.398, 'eval_steps_per_second': 8.646, 'epoch': 0.87}
+{'loss': 1.4053, 'grad_norm': 30.015546798706055, 'learning_rate': 4.3232955454381126e-06, 'epoch': 0.98}
+{'eval_loss': 1.4801979064941406, 'eval_runtime': 5.2707, 'eval_samples_per_second': 34.72, 'eval_steps_per_second': 8.727, 'epoch': 0.98}
+
+>>> [Step 100] Prompt:
+<s>system
+You are a helpful assistant. You are very good at simplifying texts. When you receive a text for simplification, you simplify it according to the instructions given by the user. Generate only the simplification, without any comments or notes.</s>
+<s>user
+INSTRUCTION: Simplify the following text such that the length of the output text (number of words) relative to the source text is approximately equal to the ratio specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. 
+SOURCE TEXT: The county was named for the Delaware Indians resettled in what was then Indian Territory in the 1830s .
+
+EXPLANATION: The <WORD_COMPRESSION=0.32> token specifies that the word-level compression rate should be around 0.32. Values less than 1 indicate text reduction. Values greater than 1 indicate text expansion.</s>
+<s>assistant
+<WORD_COMPRESSION=0.32> </s>
+
+>>> Reference:
+Its county seat is Jay . </s>
+>>> Prediction:
+During the 1830s, the name was named after the Delaware Indians held a settlement in which they became one with the peoples of the 1898-1900 BC and started a state. 
+================================================================================
+
+>>> [Step 100] Prompt:
+<s>system
+You are a helpful assistant. You are very good at simplifying texts. When you receive a text for simplification, you simplify it according to the instructions given by the user. Generate only the simplification, without any comments or notes.</s>
+<s>user
+INSTRUCTION: Simplify the following text such that the length of the output text (number of words) relative to the source text is approximately equal to the ratio specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. 
+SOURCE TEXT: For example , the English term uncle carries connotations other than '' brother of a parent '' depending on the writer .
+
+EXPLANATION: The <WORD_COMPRESSION=0.14> token specifies that the word-level compression rate should be around 0.14. Values less than 1 indicate text reduction. Values greater than 1 indicate text expansion.</s>
+<s>assistant
+<WORD_COMPRESSION=0.14> </s>
+
+>>> Reference:
+Examples of kinship </s>
+>>> Prediction:
+He is often a family leader and the grandson of the other heir. 
+================================================================================
+
+>>> [Step 100] Prompt:
+<s>system
+You are an expert in controlled text simplification. When you receive a text from the user, you carefully adapt it to the simplification level specified by the user. Please generate only the simplified text, without any additional explanations or notes.</s>
+<s>user
+INSTRUCTION: Simplify the following text such that the length of the output text (number of words) relative to the source text is approximately equal to the ratio specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. 
+SOURCE TEXT: After Rukia is severely wounded while trying to protect Ichigo , she attempts to transfer half of her to Ichigo in order to let him face the hollow on equal footing .
+
+EXPLANATION: The <WORD_COMPRESSION=1.03> token specifies that the word-level compression rate should be around 1.03. Values less than 1 indicate text reduction. Values greater than 1 indicate text expansion.</s>
+<s>assistant
+<WORD_COMPRESSION=1.03> </s>
+
+>>> Reference:
+After Rukia is badly wounded while fighting to protect Ichigo , she decides to transfer half of her powers to Ichigo , hoping to give him a chance to fight the hollow . </s>
+>>> Prediction:
+As Rukia is very damaged, it is also worth a chance to transfer one portion of her toichi toichi to make heirs. 
+================================================================================
+
+>>> [Step 100] Prompt:
+<s>system
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.</s>
+<s>user
+INSTRUCTION: Simplify the following text such that the length of the output text (number of words) relative to the source text is approximately equal to the ratio specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. 
+SOURCE TEXT: The story centers around the adventures of the lead character , Goku , around his 18th birthday , as he is asked to gather seven Dragon Balls to save the world from evil alien forces .
+
+EXPLANATION: The <WORD_COMPRESSION=0.5> token specifies that the word-level compression rate should be around 0.5. Values less than 1 indicate text reduction. Values greater than 1 indicate text expansion.</s>
+<s>assistant
+<WORD_COMPRESSION=0.5> </s>
+
+>>> Reference:
+The story follows the adventures of the lead character , Son Goku , around his 18th birthday . </s>
+>>> Prediction:
+2000 - The Legend of Zelda: Ocarina of Time 
+================================================================================
+{'loss': 0.8851, 'grad_norm': 23.99069595336914, 'learning_rate': 4.0906061058164e-06, 'epoch': 1.08}
+{'eval_loss': 1.5363305807113647, 'eval_runtime': 5.3052, 'eval_samples_per_second': 34.494, 'eval_steps_per_second': 8.671, 'epoch': 1.08}
+{'loss': 0.6846, 'grad_norm': 34.065345764160156, 'learning_rate': 3.832010577338414e-06, 'epoch': 1.18}
+{'eval_loss': 1.5540307760238647, 'eval_runtime': 5.2915, 'eval_samples_per_second': 34.583, 'eval_steps_per_second': 8.693, 'epoch': 1.18}
+
+>>> [Step 120] Prompt:
+<s>system
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.</s>
+<s>user
+INSTRUCTION: Simplify the following text such that the length of the output text (number of words) relative to the source text is approximately equal to the ratio specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. 
+SOURCE TEXT: Samael is shown as a recurring recruitable character in the Megami Tensei video game series .
+
+EXPLANATION: The <WORD_COMPRESSION=1.0> token specifies that the word-level compression rate should be around 1.0. Values less than 1 indicate text reduction. Values greater than 1 indicate text expansion.</s>
+<s>assistant
+<WORD_COMPRESSION=1.0> </s>
+
+>>> Reference:
+Popular culture Samael is shown as a character in the Megami Tensei video game series . </s>
+>>> Prediction:
+Saramarus are were created to replace sambas. 
+================================================================================
+
+>>> [Step 120] Prompt:
+<s>system
+You are a helpful assistant. You are very good at simplifying texts. When you receive a text for simplification, you simplify it according to the instructions given by the user. Generate only the simplification, without any comments or notes.</s>
+<s>user
+INSTRUCTION: Simplify the following text such that the length of the output text (number of words) relative to the source text is approximately equal to the ratio specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. 
+SOURCE TEXT: King Mangrai of the Lanna Kingdom -LRB- present day Northern Thailand , Shan State and Xishuangbanna Dai Autonomous Prefecture -RRB- founds the city of Chiang Rai as the kingdom 's capital .
+
+EXPLANATION: The <WORD_COMPRESSION=0.72> token specifies that the word-level compression rate should be around 0.72. Values less than 1 indicate text reduction. Values greater than 1 indicate text expansion.</s>
+<s>assistant
+<WORD_COMPRESSION=0.72> </s>
+
+>>> Reference:
+King Mengrai of the Lannathai kingdom in present day Thailand founds the city of Chiang Rai as the kingdom 's first capital . </s>
+>>> Prediction:
+Sir King Mangria of the Lanna Kingdom -LRB- present day southern Thailand -RRB- was the Emperor of the Lani Province -LRB- Sotho : Ó Loj '' Sanjz '' ) 2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 2 0 0 0 0 0 0 0 0 0 0 0 0 0 ok 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 C 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 In 2007, the government made a governmental plan to kill 11000 fish in the lake 2 0 0 0 0 0 0 0 0 0 0 0
+================================================================================
+
+>>> [Step 120] Prompt:
+<s>system
+You are a helpful assistant. You are very good at simplifying texts. When you receive a text for simplification, you simplify it according to the instructions given by the user. Generate only the simplification, without any comments or notes.</s>
+<s>user
+INSTRUCTION: Simplify the following text such that the length of the output text (number of words) relative to the source text is approximately equal to the ratio specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. 
+SOURCE TEXT: The posthumous name is commonly used when naming royalty of China , Korea , Vietnam , and Japan .
+
+EXPLANATION: The <WORD_COMPRESSION=0.89> token specifies that the word-level compression rate should be around 0.89. Values less than 1 indicate text reduction. Values greater than 1 indicate text expansion.</s>
+<s>assistant
+<WORD_COMPRESSION=0.89> </s>
+
+>>> Reference:
+His son , Ji Fa of Zhou , called his father the '' Civil King '' . </s>
+>>> Prediction:
+Since the posthumous name is given to when it was named in honor of Queen Nascément, in order to remember this memory, the government decided to use the name in the language of the name. 
+================================================================================
+
+>>> [Step 120] Prompt:
+<s>system
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.</s>
+<s>user
+INSTRUCTION: Simplify the following text such that the length of the output text (number of words) relative to the source text is approximately equal to the ratio specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. 
+SOURCE TEXT: Such dual-language recording is common to many subsequent treaties .
+
+EXPLANATION: The <WORD_COMPRESSION=0.9> token specifies that the word-level compression rate should be around 0.9. Values less than 1 indicate text reduction. Values greater than 1 indicate text expansion.</s>
+<s>assistant
+<WORD_COMPRESSION=0.9> </s>
+
+>>> Reference:
+Such dual-language recording is common to many treaties . </s>
+>>> Prediction:
+Although it was not formally formalized during their lifetime, it was part of the language of their belief system. 
+================================================================================
+{'loss': 0.5062, 'grad_norm': 23.58875846862793, 'learning_rate': 3.5517206870395852e-06, 'epoch': 1.29}
+{'eval_loss': 1.5425941944122314, 'eval_runtime': 5.3828, 'eval_samples_per_second': 33.997, 'eval_steps_per_second': 8.546, 'epoch': 1.29}
+{'loss': 0.5567, 'grad_norm': 31.882837295532227, 'learning_rate': 3.2543014964879814e-06, 'epoch': 1.4}
+{'eval_loss': 1.5504276752471924, 'eval_runtime': 5.3342, 'eval_samples_per_second': 34.307, 'eval_steps_per_second': 8.624, 'epoch': 1.4}
+{'train_runtime': 1156.0638, 'train_samples_per_second': 3.822, 'train_steps_per_second': 0.239, 'train_loss': 1.4992033151479869, 'epoch': 1.4}
+Evaluation results: {'eval_loss': 1.4801979064941406, 'eval_runtime': 5.4292, 'eval_samples_per_second': 33.707, 'eval_steps_per_second': 8.473, 'epoch': 1.4010840108401084}
+Removing checkpoint: ./models/WORD_COMPRESSION-WikiLarge_ori_splitwise-token_explanation-Ministral-3b-instruct-20250529/checkpoint-90
