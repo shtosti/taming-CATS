@@ -91,16 +91,16 @@ def extract_metrics(data: list, metrics: list) -> dict:
     """Extract specified metric values from dataset."""
     return {metric: [line["source_metrics"].get(metric, 0) for line in data] for metric in metrics}
 
-def stratified_sampling(data: list, metric_values: dict, metric: str, num_bins=20, subset_size=2000) -> list:
+def stratified_sampling(data: list, metric_values: dict, metric: str, num_bins=20, subset_size=2000, seed=42) -> list:
     """Perform stratified sampling based on a single metric."""
     values = np.array(metric_values[metric])
     bins = np.histogram_bin_edges(values, bins=num_bins)
     bin_indices = np.digitize(values, bins)
     df = pd.DataFrame({"data": data, "bin": bin_indices})
-    subset = df.groupby("bin", group_keys=False).apply(lambda x: x.sample(frac=subset_size / len(df), random_state=42))
+    subset = df.groupby("bin", group_keys=False).apply(lambda x: x.sample(frac=subset_size / len(df), random_state=seed))
     return subset["data"].tolist()
 
-def stratified_sampling_from_split(data: list, metric_values: dict, metric: str, num_bins=20, subset_size=2000):
+def stratified_sampling_from_split(data: list, metric_values: dict, metric: str, num_bins=20, subset_size=2000, seed=42):
     """Perform stratified sampling separately for train, valid, and test to maintain proportions."""
     # Split dataset into train, valid, test
     train_data = [line for line in data if line["metadata"]["original_split"] == "train"]
@@ -123,7 +123,7 @@ def stratified_sampling_from_split(data: list, metric_values: dict, metric: str,
         bins = np.histogram_bin_edges(values, bins=num_bins)
         bin_indices = np.digitize(values, bins)
         df = pd.DataFrame({"data": split_data, "bin": bin_indices})
-        subset = df.groupby("bin", group_keys=False).apply(lambda x: x.sample(frac=split_size / len(df), random_state=42))
+        subset = df.groupby("bin", group_keys=False).apply(lambda x: x.sample(frac=split_size / len(df), random_state=seed))
         return subset["data"].tolist()
 
     # Sample from each split
@@ -246,106 +246,107 @@ def main():
 
     dataset_name = "wikilarge_ori"
     experiment = "explore_sampling"
-    # experiment = "create_subset"
-    num_bins = 45
-    stratification_types = ["splitwise", "global"] 
+    stratification_types = [
+        "splitwise", 
+        "global"
+        ] 
     full_dataset_path = f"./../data/datasets/{dataset_name}/dataset.jsonl"
-    experiment_dir = f"./../experiments/sample_from_{dataset_name}/num_bins_{num_bins}"
+    experiment_dir = f"./../experiments/sample_from_{dataset_name}"
     log_output_dir = os.path.join(experiment_dir, "logs")
     os.makedirs(log_output_dir, exist_ok=True)
     os.makedirs(experiment_dir, exist_ok=True)
     json_output_path = f"{experiment_dir}/all_divergence_results.json"
-    metrics = ["char_count", "word_count", "FKGL", "ARI", "FRE", "Dale-Chall"]
+
+    seeds = [69, 1, 40, 7, 29, 48, 78, 34, 67, 84]
+    bin_values = [15, 25, 35, 45]
+    metrics = ["char_count", "word_count", "FKGL", "ARI", "Dale-Chall"]
     
     data = load_jsonl(full_dataset_path)
     data = remove_outliers_by_char_length(data) # remove outliers by char length
     data = remove_outliers_by_fkgl(data) # remove outliers by FKGL
     data = filter_by_fkgl(data) # remove outliers by FKGL - with thresholding
     data = filter_by_ari(data) # remove outliers by ARI - with thresholding
-
     metric_values = extract_metrics(data, metrics)
     
     if experiment  == "explore_sampling":
-        # Load previous results if the JSON file exists
         if os.path.exists(json_output_path):
             with open(json_output_path, "r", encoding="utf-8") as f:
                 all_results = json.load(f)
         else:
             all_results = {}
 
-        # Iterate over subset sizes (100 to 3500, step 20)
-        for subset_size in range(100, 3501, 20):
-            if str(subset_size) in all_results:
-                print(f"Skipping subset size {subset_size}, already computed.")
-                continue
-            
-            # initialize dict to store all data
-            all_results[str(subset_size)] = {}
+    for seed in seeds:
+        seed_key = f"seed_{seed}"
+        if seed_key not in all_results:
+            all_results[seed_key] = {}
 
-            for stratification_type in stratification_types:
-                # subset_dir = f"{log_output_dir}/{stratification_type}_{subset_size}"
-                # os.makedirs(subset_dir, exist_ok=True)
+        for num_bins in bin_values:
+            bins_key = f"num_bins_{num_bins}"
+            if bins_key not in all_results[seed_key]:
+                all_results[seed_key][bins_key] = {}
 
-                all_subset_metric_values = {}
-                all_similarity_scores = {}
+            for subset_size in range(50, 3000, 50):
+                subset_key = f"subset_size_{subset_size}"
+                if subset_key in all_results[seed_key][bins_key]:
+                    print(f"Skipping seed={seed}, bins={num_bins}, subset={subset_size}")
+                    continue
+                all_results[seed_key][bins_key][subset_key] = {}
 
-                if stratification_type == "splitwise":
-                    sampling_function = stratified_sampling_from_split
-                elif stratification_type == "global":
-                    sampling_function = stratified_sampling
+                for strat_type in stratification_types:
+                    all_subset_metric_values = {}
+                    all_similarity_scores = {}
 
+                    sampling_fn = stratified_sampling_from_split if strat_type == "splitwise" else stratified_sampling
 
-                for strat_metric in metrics:
-                    subset_data = sampling_function(
-                        data, 
-                        metric_values,
-                        strat_metric, 
-                        num_bins=num_bins, 
-                        subset_size=subset_size
-                    )
+                    for strat_metric in metrics:
+                        subset_data = sampling_fn(
+                            data=data,
+                            metric_values=metric_values,
+                            metric=strat_metric,
+                            num_bins=num_bins,
+                            subset_size=subset_size,
+                            seed=seed
+                        )
 
-                    subset_metric_values = extract_metrics(subset_data, metrics)
-                    all_subset_metric_values[strat_metric] = subset_metric_values
-                    all_similarity_scores[strat_metric] = compute_similarity_scores(metric_values, subset_metric_values, metrics)
-                
-                ranked_strats = rank_stratifications(all_similarity_scores)
+                        subset_metric_values = extract_metrics(subset_data, metrics)
+                        all_subset_metric_values[strat_metric] = subset_metric_values
+                        all_similarity_scores[strat_metric] = compute_similarity_scores(metric_values, subset_metric_values, metrics)
 
-                # Store results for this subset size and stratification type
-                all_results[str(subset_size)][stratification_type] = ranked_strats
+                    ranked_strats = rank_stratifications(all_similarity_scores)
+                    all_results[seed_key][bins_key][subset_key][strat_type] = ranked_strats
 
-            # Save after each subset size to avoid data loss
-            save_json(all_results, json_output_path)
-            print(f"Saved results for subset size {subset_size}.")
+                save_json(all_results, json_output_path)
+                print(f"Saved seed={seed}, bins={num_bins}, subset={subset_size}")
 
-    elif experiment == "create_subset":
+    # elif experiment == "create_subset":
 
-        subset_size = 2000
-        num_bins = num_bins
-        strat_metric = "FKGL"
+    #     subset_size = 2000
+    #     num_bins = num_bins
+    #     strat_metric = "FKGL"
 
-        # Run for both stratification types
-        for stratification_type in stratification_types:
-            output_dir = f"./../data/datasets/{dataset_name}_{stratification_type}_{subset_size}"
-            os.makedirs(output_dir, exist_ok=True)
+    #     # Run for both stratification types
+    #     for stratification_type in stratification_types:
+    #         output_dir = f"./../data/datasets/{dataset_name}_{stratification_type}_{subset_size}"
+    #         os.makedirs(output_dir, exist_ok=True)
 
-            all_subset_metric_values = {}
-            all_similarity_scores = {}
+    #         all_subset_metric_values = {}
+    #         all_similarity_scores = {}
 
-            if stratification_type == "splitwise":
-                sampling_function = stratified_sampling_from_split
-            elif stratification_type == "global":
-                sampling_function = stratified_sampling
+    #         if stratification_type == "splitwise":
+    #             sampling_function = stratified_sampling_from_split
+    #         elif stratification_type == "global":
+    #             sampling_function = stratified_sampling
 
-            subset_data = sampling_function(
-                data, 
-                metric_values,
-                strat_metric, 
-                num_bins=num_bins, 
-                subset_size=subset_size
-            )
+    #         subset_data = sampling_function(
+    #             data, 
+    #             metric_values,
+    #             strat_metric, 
+    #             num_bins=num_bins, 
+    #             subset_size=subset_size
+    #         )
 
-            subset_filepath = f"{output_dir}/dataset.jsonl"
-            save_jsonl(subset_data, subset_filepath)
+    #         subset_filepath = f"{output_dir}/dataset.jsonl"
+    #         save_jsonl(subset_data, subset_filepath)
 
 if __name__ == "__main__":
     main()
