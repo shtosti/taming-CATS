@@ -1,24 +1,25 @@
 import json
 import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+import os
+import numpy as np
 
-# Store the results across all datasets
 results = {}
 
-# Path to your experiment results file
 EXPERIMENT_NAME = "splits_sampling"
 RESULTS_FILE = f"./../experiments/{EXPERIMENT_NAME}/all_results.json"
+LOG_FILE_PER_DATASET = f"./../experiments/{EXPERIMENT_NAME}/best_stratification_results_per_dataset.txt"
+LOG_FILE_ACROSS_DATASETS = f"./../experiments/{EXPERIMENT_NAME}/best_stratification_results_across_datasets.txt"
+with open("./../data/colormap/color_map.json", "r") as f:
+    COLOR_MAP = json.load(f)
 
 with open(RESULTS_FILE, "r") as f:
     experiment_results = json.load(f)
 
-# Convert results to DataFrame
 df = pd.DataFrame(experiment_results)
 
-# Log files where we will save the best results
-LOG_FILE_PER_DATASET = f"./../experiments/{EXPERIMENT_NAME}/best_stratification_results_per_dataset.txt"
-LOG_FILE_ACROSS_DATASETS = f"./../experiments/{EXPERIMENT_NAME}/best_stratification_results_across_datasets.txt"
 
-# Results per dataset
 with open(LOG_FILE_PER_DATASET, "w") as log_file:
     log_file.write("Best Stratification Results (Per Dataset)\n")
     log_file.write("="*50 + "\n\n")
@@ -61,11 +62,9 @@ with open(LOG_FILE_PER_DATASET, "w") as log_file:
             "best_avg_ks": best_avg_ks
         }
 
-# Save per dataset results in JSON
 with open(f"./../experiments/{EXPERIMENT_NAME}/best_stratification_results_per_dataset.json", "w") as f:
     json.dump(results, f, indent=4)
 
-# Results across all datasets
 with open(LOG_FILE_ACROSS_DATASETS, "w") as log_file:
     log_file.write("Best Stratification Results (Across All Datasets)\n")
     log_file.write("="*50 + "\n\n")
@@ -74,34 +73,79 @@ with open(LOG_FILE_ACROSS_DATASETS, "w") as log_file:
                    "The combination with the lowest average KS divergence across all datasets is considered the best.\n")
     log_file.write("="*50 + "\n\n")
     
-    # Aggregate the data from all datasets and find the best stratification metric and bins across all datasets
     all_results = df.groupby(["strat_metric", "num_bins"]).agg(
         mean_KS=("average_KS", "mean"),
         std_KS=("average_KS", "std")
     ).reset_index()
 
-    # Find the best stratification metric (lowest mean KS) across all datasets
+    # best stratification metric (lowest mean KS) across all datasets
     best_result = all_results.loc[all_results["mean_KS"].idxmin()]
     
     best_strat_metric = best_result["strat_metric"]
     best_num_bins = int(best_result["num_bins"])
     best_avg_ks = best_result["mean_KS"]
     
-    # Write best results across all datasets to log file
     log_file.write(f"Best Stratification Metric (Across All Datasets): {best_strat_metric}\n")
     log_file.write(f"Best Number of Bins: {best_num_bins}\n")
     log_file.write(f"Lowest Average KS Divergence: {best_avg_ks:.6f}\n")
     log_file.write("-"*50 + "\n")
     
-    # Save the best stratification results across all datasets in the results dictionary
     results["best_strat_metric_across_datasets"] = best_strat_metric
     results["best_num_bins_across_datasets"] = best_num_bins
     results["best_avg_ks_across_datasets"] = best_avg_ks
 
-# Save the results across all datasets in JSON
 with open(f"./../experiments/{EXPERIMENT_NAME}/best_stratification_results_across_datasets.json", "w") as f:
     json.dump(results, f, indent=4)
-
-# Output message
 print(f"Best stratification results per dataset saved to {LOG_FILE_PER_DATASET}")
 print(f"Best stratification results across all datasets saved to {LOG_FILE_ACROSS_DATASETS}")
+
+
+# visualize
+visuals_dir = f"./../experiments/{EXPERIMENT_NAME}/visuals"
+os.makedirs(visuals_dir, exist_ok=True)
+
+def jitter(values, strength=0.25):
+    return [v + np.random.uniform(-strength, strength) for v in values]
+
+metric_order = df["strat_metric"].unique()
+metric_map = {metric: i for i, metric in enumerate(metric_order)}
+df["metric_pos"] = df["strat_metric"].map(metric_map)
+df["metric_jittered"] = jitter(df["metric_pos"])
+
+
+dataset_colors = COLOR_MAP["datasets"]
+shape_palette = {25: "o", 35: "s", 45: "X"}  # Circle, square, fat cross
+
+plt.rcParams.update({
+    "axes.labelsize": 14,
+    "xtick.labelsize": 12,
+    "ytick.labelsize": 12,
+    "legend.fontsize": 11,
+    "legend.title_fontsize": 12
+})
+plt.figure(figsize=(10, 5))
+for dataset in df["dataset"].unique():
+    dataset_df = df[df["dataset"] == dataset]
+    for bin_count in dataset_df["num_bins"].unique():
+        subset = dataset_df[dataset_df["num_bins"] == bin_count]
+        plt.scatter(
+            subset["metric_jittered"],
+            subset["average_KS"],
+            label=f"{dataset} - {bin_count} bins",
+            color=dataset_colors.get(dataset, "gray"),
+            marker=shape_palette.get(bin_count, "o"),
+            s=100,
+            alpha=0.7,
+            edgecolor="black"
+        )
+
+# Final formatting
+plt.xticks(list(metric_map.values()), metric_order)
+plt.xlabel("Stratification Metric")
+plt.ylabel("Average KS Divergence")
+# plt.title("KS Divergence Across Seeds, Metrics, Bin Counts, and Datasets")
+plt.grid(True, linewidth=0.5)
+plt.legend(title="Dataset / Bins", bbox_to_anchor=(1.05, 1), loc='upper left')
+plt.tight_layout()
+plt.savefig(f"{visuals_dir}/ks_scatter_customcolor_jittered.png", dpi=300)
+plt.show()
