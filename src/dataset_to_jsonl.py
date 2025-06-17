@@ -42,14 +42,6 @@ def find_language(dataset, group):
 def find_split(dataset, group):
     return "" if dataset.dataset_name in ["newsela", "simpa_lexical", "simpa_syntactic"] else group.iloc[0][dataset.split]
 
-# def get_control_tokens_access(source=None, target=None):
-#     control_tokens = ControlTokensAccess(source_text=source, target_text=target)
-#     return control_tokens.as_dict()
-
-# def get_control_tokens_muss(source=None, target=None):
-#     control_tokens = ControlTokensMuss(source_text=source, target_text=target)
-#     return control_tokens.as_dict()
-
 def convert_to_jsonl(dataset, grouped_df):
 
     jsonl_data = []
