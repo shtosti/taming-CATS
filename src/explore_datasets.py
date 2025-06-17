@@ -7,6 +7,14 @@ import numpy as np
 import seaborn as sns
 from scipy.stats import pearsonr
 
+plt.rcParams.update({
+    "axes.labelsize": 14,
+    "xtick.labelsize": 14,
+    "ytick.labelsize": 14,
+    "legend.fontsize": 14,
+    "axes.titlesize": 14
+})
+
 
 def load_colormap(filepath: str) -> dict:
     with open(filepath, "r", encoding="utf-8") as f:
@@ -46,6 +54,39 @@ def get_significance_level(p_value: float) -> str:
     else:
         return "n.s."  # Not significant
 
+# def save_legend(handles, labels, filename, fontsize=12, ncol=1):
+#     """Save legend separately as its own figure."""
+#     fig_legend = plt.figure(figsize=(len(labels), 1))
+#     ax = fig_legend.add_subplot(111)
+#     ax.axis('off')
+
+#     fig_legend.legend(handles, labels, loc='center', fontsize=fontsize, ncol=ncol, frameon=False)
+#     plt.tight_layout()
+#     fig_legend.savefig(filename, dpi=300, bbox_inches='tight')
+#     plt.close(fig_legend)
+
+def save_legend(handles, labels, filename, fontsize=14, ncol=1, width=4, height=1):
+    """Save legend separately as its own figure with custom size."""
+    fig_legend = plt.figure(figsize=(width, height))
+    ax = fig_legend.add_subplot(111)
+    ax.axis('off')
+
+    fig_legend.legend(
+        handles, labels,
+        loc='center',
+        fontsize=fontsize,
+        ncol=ncol,
+        frameon=False,
+        handlelength=2,
+        handletextpad=0.8,
+        columnspacing=1.5,
+        borderaxespad=0.0
+    )
+
+    plt.tight_layout()
+    fig_legend.savefig(filename, dpi=300, bbox_inches='tight')
+    plt.close(fig_legend)
+
 def plot_compression(data: list, metric: str, dataset_dir: str) -> None:
     source_lengths, target_lengths = get_compression_values(data, metric)
 
@@ -64,7 +105,7 @@ def plot_compression(data: list, metric: str, dataset_dir: str) -> None:
     ############ histograms with aligned bins ############
     # plt.subplot(1, 2, 1)
 
-    plt.figure(figsize=(5, 5))
+    plt.figure(figsize=(5, 4))
 
     # Plot source and target histograms separately with specific alpha values for transparency
     n_source, bins_source, _ = plt.hist(source_lengths, bins=bins, alpha=0.7, label="Original", color=COLORMAP["text_type"].get("source"), density=True, edgecolor="black", histtype="stepfilled")
@@ -84,23 +125,42 @@ def plot_compression(data: list, metric: str, dataset_dir: str) -> None:
 
     # Add KDE for smooth distribution curves
     if len(set(source_lengths)) > 1:
-        sns.kdeplot(source_lengths, color=COLORMAP["text_type"].get("source"), linewidth=1.5, label="Original KDE")
+        sns.kdeplot(
+                source_lengths, 
+                # color=COLORMAP["text_type"].get("source"), 
+                color="darkorchid",
+                linestyle="solid", 
+                linewidth=1, 
+                label="Original KDE"
+                )
     if len(set(target_lengths)) > 1:
-        sns.kdeplot(target_lengths, color=COLORMAP["text_type"].get("target"), linewidth=1.5, label="Simplification KDE")
+        sns.kdeplot(
+                target_lengths, 
+                # color=COLORMAP["text_type"].get("target"), 
+                color="green",
+                linestyle="solid", 
+                linewidth=1, 
+                label="Simplification KDE"
+                )
 
     if metric in ["char_count", "sentence_count", "word_count"]:
         plt.xlabel(f'{metric} Count')
     else:
         plt.xlabel(f'{metric}')
     plt.ylabel('Frequency')
-    plt.legend()
+    # plt.legend()
     output_dir = f"{dataset_dir}/stats/distributions"
     os.makedirs(output_dir, exist_ok=True)
+
+    # plt.legend()
+    handles, labels = plt.gca().get_legend_handles_labels()
+    save_legend(handles, labels, f"{output_dir}/{metric}_hist_legend.png")
+
     plt.tight_layout()
-    plt.savefig(f"{output_dir}/{metric}_hist.png", dpi=400)
+    plt.savefig(f"{output_dir}/{metric}_hist.png", dpi=300)
 
     ############ scatter plot ############
-    plt.figure(figsize=(5, 5))
+    plt.figure(figsize=(5, 4))
 
     plt.scatter(
         target_lengths, 
@@ -144,7 +204,7 @@ def plot_compression(data: list, metric: str, dataset_dir: str) -> None:
     output_dir = f"{dataset_dir}/stats/distributions"
     os.makedirs(output_dir, exist_ok=True)
     plt.tight_layout()
-    plt.savefig(f"{output_dir}/{metric}_scatter.png", dpi=400)
+    plt.savefig(f"{output_dir}/{metric}_scatter.png", dpi=300)
 
 def get_compression_values(data: list, metric: str) -> tuple:
     source_val_arr = []
@@ -191,31 +251,42 @@ def plot_eval_values(data: list, metric: str, dataset_dir: str) -> None:
     bins = np.linspace(min_val, max_val, 25)  # TODO adjust n bins to ompimize the visual effect 
 
     ############ histograms with aligned bins ############
-    plt.figure(figsize=(5, 5))
+    plt.figure(figsize=(5, 4))
     plt.hist(target_vals, bins=bins, alpha=0.7, label="Simplification", color=COLORMAP["common_color"], density=True, edgecolor="black")
     # Add KDE for smooth distribution curves
     if len(set(target_vals)) > 1:
-        sns.kdeplot(target_vals, color=COLORMAP["common_color"], linewidth=1.5, label="Simplification KDE")
+        sns.kdeplot(
+                target_vals, 
+                # color=COLORMAP["common_color"], 
+                color="black",
+                linestyle="solid", 
+                linewidth=1, 
+                label="Simplification KDE"
+                )
     plt.xlabel(f'{metric}')
     plt.ylabel('Frequency')
-    plt.legend()
     output_dir = f"{dataset_dir}/stats/distributions"
     os.makedirs(output_dir, exist_ok=True)
+
+    # plt.legend()
+    handles, labels = plt.gca().get_legend_handles_labels()
+    save_legend(handles, labels, f"{output_dir}/{metric}_legend.png")
+
     plt.tight_layout()
-    plt.savefig(f"{output_dir}/{metric}_hist.png", dpi=400)
+    plt.savefig(f"{output_dir}/{metric}_hist.png", dpi=300)
 
     ############ violin plot ############
-    plt.figure(figsize=(5, 5))
+    plt.figure(figsize=(5, 4))
     sns.violinplot(x=target_vals, color=COLORMAP["common_color"], alpha=0.7, inner="quartile")
     sns.boxplot(x=target_vals, color='black', width=0.15, fliersize=3)  # Add box plot for summary stats
     plt.xlabel(f'{metric} Score')
-    plt.title(f'Distribution of {metric} Scores')
+    # plt.title(f'Distribution of {metric} Scores')
     
     # save plots
     output_dir = f"{dataset_dir}/stats/distributions"
     os.makedirs(output_dir, exist_ok=True)
     plt.tight_layout()
-    plt.savefig(f"{output_dir}/{metric}_violin.png", dpi=400)
+    plt.savefig(f"{output_dir}/{metric}_violin.png", dpi=300)
     
 def save_log(data: list, dataset_name: str, dataset_dir: str, comparison_metrics: list, similarity_metrics: list) -> None:
     log_data = {}
@@ -262,7 +333,7 @@ def plot_source_target_comparison(source_vals: list, target_vals: list, metric: 
     source_color = COLORMAP["text_type"].get("source")
     target_color = COLORMAP["text_type"].get("target")
 
-    plt.figure(figsize=(5, 5))
+    plt.figure(figsize=(5, 4))
     sns.boxplot(data=df, palette=[source_color, target_color], width=0.3)
     
     # Plot trajectory from median to median and mean to mean
@@ -276,11 +347,12 @@ def plot_source_target_comparison(source_vals: list, target_vals: list, metric: 
     plt.ylabel(metric)
     # plt.title(f"Comparison of Source and Target for {metric}")
     plt.legend()
-    plt.grid()
+    # plt.grid(True)
+    plt.tight_layout()
     
     output_dir = f"{dataset_dir}/stats/trajectory"
     os.makedirs(output_dir, exist_ok=True)
-    plt.savefig(f"{output_dir}/{metric}.png", dpi=400)
+    plt.savefig(f"{output_dir}/{metric}.png", dpi=300)
     plt.close()
 
 def plot_qq_plot(data: list, metric: str, dataset_dir: str) -> None:
@@ -289,7 +361,7 @@ def plot_qq_plot(data: list, metric: str, dataset_dir: str) -> None:
     
     """
 
-    plt.figure(figsize=(4, 4))
+    plt.figure(figsize=(5, 4))
 
     source_vals, target_vals = get_compression_values(data, metric)
 
@@ -317,12 +389,12 @@ def plot_qq_plot(data: list, metric: str, dataset_dir: str) -> None:
     plt.ylabel(f'Original {metric}')
     plt.legend()
     # plt.title(f'QQ Plot for {metric}')
-    plt.grid()
+    # plt.grid()
     plt.tight_layout()    
 
     output_dir = f"{dataset_dir}/stats/qq_plots"
     os.makedirs(output_dir, exist_ok=True)
-    plt.savefig(f"{output_dir}/{metric}.png", dpi=400)
+    plt.savefig(f"{output_dir}/{metric}.png", dpi=300)
     plt.close()
 
 def main():
@@ -331,9 +403,9 @@ def main():
         # "simpa",
         # "simpa_lexical",
         # "simpa_syntactic",
-        # "newsela",
+        "newsela",
         # "medeasi",
-        "wikilarge_ori_global",
+        # "wikilarge_ori_global",
         # "wikilarge_ori_splitwise",
         # "wikilarge_global",
         # "wikilarge_splitwise",
@@ -347,7 +419,7 @@ def main():
 
         dataset = load_jsonl(DATASET_PATH)
 
-        comparison_metrics = ["char", "word", "FRE", "ARI", "FKGL", "Dale-Chall"]
+        comparison_metrics = ["char", "word", "sentence", "FRE", "ARI", "FKGL", "Dale-Chall"]
         similarity_metrics = ["BLEU", "BERTScore"]
         
         for metric in comparison_metrics:
