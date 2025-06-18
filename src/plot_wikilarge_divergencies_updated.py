@@ -3,7 +3,7 @@ import os
 import matplotlib.pyplot as plt
 import numpy as np
 
-NUM_BINS = 25
+NUM_BINS = 35
 DATASET_NAME = "wikilarge_ori"
 EXPERIMENT_DIR = f"./../experiments/sample_from_{DATASET_NAME}"
 BIN_KEY = f"num_bins_{NUM_BINS}"
@@ -59,7 +59,7 @@ for seed_key in SEED_KEYS:
 def plot_separately():
     for stat in STATS:
         for strat_type in STRAT_TYPES:
-            plt.figure(figsize=(8, 5))
+            plt.figure(figsize=(4, 3))
 
             for strat_metric in STRAT_METRICS:
                 means = []
@@ -84,15 +84,28 @@ def plot_separately():
             plt.xlabel("Subset Size")
             plt.ylabel(f"{stat} Score")
             # plt.title(f"{stat} Divergence ({strat_type}) - Avg over Seeds")
+
+            all_means = [np.mean(score_tracker[stat][strat_type][strat_metric][size])
+                        for strat_metric in STRAT_METRICS
+                        for size in SUBSET_SIZES]
+            ymin = max(min(all_means) - 0.005, 0)
+            if stat == "KS":
+                ymax = 0.06
+            elif stat == "JSD":
+                ymax = 0.1
+            elif stat == "EMD":
+                ymax = 1.4
+            plt.ylim(ymin, ymax)
+
             plt.legend()
-            plt.grid(True)
+            plt.grid(True, linestyle='--', alpha=0.7)
             plt.tight_layout()
             plt.savefig(f"{OUTPUT_DIR}/{strat_type}_{stat}.png", dpi=400)
             plt.close()
 
 def plot_together():
     for stat in STATS:
-        plt.figure(figsize=(8, 5))
+        plt.figure(figsize=(4, 3))
 
         for strat_type in STRAT_TYPES:
             linestyle = "-" if strat_type == "splitwise" else "--"
@@ -120,9 +133,20 @@ def plot_together():
 
         plt.xlabel("Subset Size")
         plt.ylabel(f"{stat} Score")
-        # plt.title(f"{stat} Divergence (All Strat Types) - Avg over Seeds")
+        all_means = [np.mean(score_tracker[stat][strat_type][strat_metric][size])
+                    for strat_metric in STRAT_METRICS
+                    for size in SUBSET_SIZES]
+        ymin = max(min(all_means) - 0.005, 0)
+        if stat == "KS":
+            ymax = 0.06
+        elif stat == "JSD":
+            ymax = 0.1
+        elif stat == "EMD":
+            ymax = 1.4
+        plt.ylim(ymin, ymax)
+
         plt.legend()
-        plt.grid(True)
+        plt.grid(True, linestyle='--', alpha=0.7)
         plt.tight_layout()
         plt.savefig(f"{OUTPUT_DIR}/both_{stat}.png", dpi=300)
         plt.close()
