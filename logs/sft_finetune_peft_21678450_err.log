@@ -1,0 +1,211 @@
+
+CondaError: Run 'conda init' before 'conda activate'
+
+wandb: Using wandb-core as the SDK backend.  Please refer to https://wandb.me/wandb-core for more information.
+wandb: Appending key for api.wandb.ai to your netrc file: /home/hhubar/.netrc
+wandb: Currently logged in as: hanna-hubarava (shtosti) to https://api.wandb.ai. Use `wandb login --relogin` to force relogin
+wandb: Tracking run with wandb version 0.19.9
+wandb: Run data is saved locally in /scratch/hhubar/keep-it-simple/wandb/run-20250530_185243-4nzze5x3
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run electric-plasma-410
+wandb: ⭐️ View project at https://wandb.ai/shtosti/ATS_with_control_tokens
+wandb: 🚀 View run at https://wandb.ai/shtosti/ATS_with_control_tokens/runs/4nzze5x3
+Fetching 50 files:   0%|          | 0/50 [00:00<?, ?it/s]Fetching 50 files:   2%|▏         | 1/50 [01:44<1:25:20, 104.51s/it]Fetching 50 files:   4%|▍         | 2/50 [01:54<39:11, 49.00s/it]   Fetching 50 files:  12%|█▏        | 6/50 [01:56<08:31, 11.62s/it]Fetching 50 files:  18%|█▊        | 9/50 [03:26<13:35, 19.90s/it]Fetching 50 files:  24%|██▍       | 12/50 [03:38<08:39, 13.66s/it]Fetching 50 files:  26%|██▌       | 13/50 [03:50<08:15, 13.39s/it]Fetching 50 files:  28%|██▊       | 14/50 [03:53<06:56, 11.57s/it]Fetching 50 files:  30%|███       | 15/50 [03:53<09:05, 15.59s/it]
+Traceback (most recent call last):
+  File "/scratch/hhubar/keep-it-simple/src/sft_finetune.py", line 438, in <module>
+    main()
+  File "/scratch/hhubar/keep-it-simple/src/sft_finetune.py", line 398, in main
+    model, tokenizer = load_and_prepare_model(args, args.model_family, args.model_name, args.model_class, args.peft, args.max_length)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/scratch/hhubar/keep-it-simple/src/sft_finetune.py", line 78, in load_and_prepare_model
+    model = AutoModelForCausalLM.from_pretrained(model_name, device_map="auto")
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/transformers/models/auto/auto_factory.py", line 571, in from_pretrained
+    return model_class.from_pretrained(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/transformers/modeling_utils.py", line 279, in _wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/transformers/modeling_utils.py", line 4261, in from_pretrained
+    checkpoint_files, sharded_metadata = _get_resolved_checkpoint_files(
+                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/transformers/modeling_utils.py", line 1152, in _get_resolved_checkpoint_files
+    checkpoint_files, sharded_metadata = get_checkpoint_shard_files(
+                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/transformers/utils/hub.py", line 1115, in get_checkpoint_shard_files
+    cached_filenames = cached_files(
+                       ^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/transformers/utils/hub.py", line 517, in cached_files
+    raise EnvironmentError(
+OSError: meta-llama/Llama-4-Scout-17B-16E-Instruct does not appear to have files named ('model-00016-of-00050.safetensors', 'model-00017-of-00050.safetensors', 'model-00018-of-00050.safetensors', 'model-00019-of-00050.safetensors', 'model-00020-of-00050.safetensors', 'model-00021-of-00050.safetensors', 'model-00022-of-00050.safetensors', 'model-00023-of-00050.safetensors', 'model-00024-of-00050.safetensors', 'model-00025-of-00050.safetensors', 'model-00026-of-00050.safetensors', 'model-00027-of-00050.safetensors', 'model-00028-of-00050.safetensors', 'model-00029-of-00050.safetensors', 'model-00030-of-00050.safetensors', 'model-00031-of-00050.safetensors', 'model-00032-of-00050.safetensors', 'model-00033-of-00050.safetensors', 'model-00034-of-00050.safetensors', 'model-00035-of-00050.safetensors', 'model-00036-of-00050.safetensors', 'model-00037-of-00050.safetensors', 'model-00038-of-00050.safetensors', 'model-00039-of-00050.safetensors', 'model-00040-of-00050.safetensors', 'model-00041-of-00050.safetensors', 'model-00042-of-00050.safetensors', 'model-00043-of-00050.safetensors', 'model-00044-of-00050.safetensors', 'model-00045-of-00050.safetensors', 'model-00046-of-00050.safetensors', 'model-00047-of-00050.safetensors', 'model-00048-of-00050.safetensors', 'model-00049-of-00050.safetensors', 'model-00050-of-00050.safetensors'). Checkout 'https://huggingface.co/meta-llama/Llama-4-Scout-17B-16E-Instruct/tree/main'for available files.
+Traceback (most recent call last):
+  File "/scratch/hhubar/keep-it-simple/src/sft_finetune.py", line 438, in <module>
+    main()
+  File "/scratch/hhubar/keep-it-simple/src/sft_finetune.py", line 398, in main
+    model, tokenizer = load_and_prepare_model(args, args.model_family, args.model_name, args.model_class, args.peft, args.max_length)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/scratch/hhubar/keep-it-simple/src/sft_finetune.py", line 78, in load_and_prepare_model
+    model = AutoModelForCausalLM.from_pretrained(model_name, device_map="auto")
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/transformers/models/auto/auto_factory.py", line 571, in from_pretrained
+    return model_class.from_pretrained(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/transformers/modeling_utils.py", line 279, in _wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/transformers/modeling_utils.py", line 4261, in from_pretrained
+    checkpoint_files, sharded_metadata = _get_resolved_checkpoint_files(
+                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/transformers/modeling_utils.py", line 1152, in _get_resolved_checkpoint_files
+    checkpoint_files, sharded_metadata = get_checkpoint_shard_files(
+                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/transformers/utils/hub.py", line 1115, in get_checkpoint_shard_files
+    cached_filenames = cached_files(
+                       ^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/transformers/utils/hub.py", line 517, in cached_files
+    raise EnvironmentError(
+OSError: meta-llama/Llama-4-Scout-17B-16E-Instruct does not appear to have files named ('model-00016-of-00050.safetensors', 'model-00017-of-00050.safetensors', 'model-00018-of-00050.safetensors', 'model-00019-of-00050.safetensors', 'model-00020-of-00050.safetensors', 'model-00021-of-00050.safetensors', 'model-00022-of-00050.safetensors', 'model-00023-of-00050.safetensors', 'model-00024-of-00050.safetensors', 'model-00025-of-00050.safetensors', 'model-00026-of-00050.safetensors', 'model-00027-of-00050.safetensors', 'model-00028-of-00050.safetensors', 'model-00029-of-00050.safetensors', 'model-00030-of-00050.safetensors', 'model-00031-of-00050.safetensors', 'model-00032-of-00050.safetensors', 'model-00033-of-00050.safetensors', 'model-00034-of-00050.safetensors', 'model-00035-of-00050.safetensors', 'model-00036-of-00050.safetensors', 'model-00037-of-00050.safetensors', 'model-00038-of-00050.safetensors', 'model-00039-of-00050.safetensors', 'model-00040-of-00050.safetensors', 'model-00041-of-00050.safetensors', 'model-00042-of-00050.safetensors', 'model-00043-of-00050.safetensors', 'model-00044-of-00050.safetensors', 'model-00045-of-00050.safetensors', 'model-00046-of-00050.safetensors', 'model-00047-of-00050.safetensors', 'model-00048-of-00050.safetensors', 'model-00049-of-00050.safetensors', 'model-00050-of-00050.safetensors'). Checkout 'https://huggingface.co/meta-llama/Llama-4-Scout-17B-16E-Instruct/tree/main'for available files.
+wandb: Using wandb-core as the SDK backend.  Please refer to https://wandb.me/wandb-core for more information.
+wandb: Appending key for api.wandb.ai to your netrc file: /home/hhubar/.netrc
+wandb: Currently logged in as: hanna-hubarava (shtosti) to https://api.wandb.ai. Use `wandb login --relogin` to force relogin
+wandb: creating run
+wandb: Tracking run with wandb version 0.19.9
+wandb: Run data is saved locally in /scratch/hhubar/keep-it-simple/wandb/run-20250530_185733-4t7k9yfc
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run wise-yogurt-411
+wandb: ⭐️ View project at https://wandb.ai/shtosti/ATS_with_control_tokens
+wandb: 🚀 View run at https://wandb.ai/shtosti/ATS_with_control_tokens/runs/4t7k9yfc
+Ignored error while writing commit hash to /home/hhubar/data/.cache/huggingface/hub/models--meta-llama--Llama-4-Scout-17B-16E-Instruct/refs/main: [Errno 122] Disk quota exceeded.
+Fetching 50 files:   0%|          | 0/50 [00:00<?, ?it/s]Fetching 50 files:  30%|███       | 15/50 [00:01<00:04,  8.47it/s]
+Traceback (most recent call last):
+  File "/scratch/hhubar/keep-it-simple/src/sft_finetune.py", line 438, in <module>
+    main()
+  File "/scratch/hhubar/keep-it-simple/src/sft_finetune.py", line 398, in main
+    model, tokenizer = load_and_prepare_model(args, args.model_family, args.model_name, args.model_class, args.peft, args.max_length)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/scratch/hhubar/keep-it-simple/src/sft_finetune.py", line 78, in load_and_prepare_model
+    model = AutoModelForCausalLM.from_pretrained(model_name, device_map="auto")
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/transformers/models/auto/auto_factory.py", line 571, in from_pretrained
+    return model_class.from_pretrained(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/transformers/modeling_utils.py", line 279, in _wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/transformers/modeling_utils.py", line 4261, in from_pretrained
+    checkpoint_files, sharded_metadata = _get_resolved_checkpoint_files(
+                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/transformers/modeling_utils.py", line 1152, in _get_resolved_checkpoint_files
+    checkpoint_files, sharded_metadata = get_checkpoint_shard_files(
+                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/transformers/utils/hub.py", line 1115, in get_checkpoint_shard_files
+    cached_filenames = cached_files(
+                       ^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/transformers/utils/hub.py", line 517, in cached_files
+    raise EnvironmentError(
+OSError: meta-llama/Llama-4-Scout-17B-16E-Instruct does not appear to have files named ('model-00001-of-00050.safetensors', 'model-00002-of-00050.safetensors', 'model-00003-of-00050.safetensors', 'model-00004-of-00050.safetensors', 'model-00005-of-00050.safetensors', 'model-00006-of-00050.safetensors', 'model-00007-of-00050.safetensors', 'model-00008-of-00050.safetensors', 'model-00009-of-00050.safetensors', 'model-00010-of-00050.safetensors', 'model-00011-of-00050.safetensors', 'model-00012-of-00050.safetensors', 'model-00013-of-00050.safetensors', 'model-00014-of-00050.safetensors', 'model-00015-of-00050.safetensors', 'model-00016-of-00050.safetensors', 'model-00017-of-00050.safetensors', 'model-00018-of-00050.safetensors', 'model-00019-of-00050.safetensors', 'model-00020-of-00050.safetensors', 'model-00021-of-00050.safetensors', 'model-00022-of-00050.safetensors', 'model-00023-of-00050.safetensors', 'model-00024-of-00050.safetensors', 'model-00025-of-00050.safetensors', 'model-00026-of-00050.safetensors', 'model-00027-of-00050.safetensors', 'model-00028-of-00050.safetensors', 'model-00029-of-00050.safetensors', 'model-00030-of-00050.safetensors', 'model-00031-of-00050.safetensors', 'model-00032-of-00050.safetensors', 'model-00033-of-00050.safetensors', 'model-00034-of-00050.safetensors', 'model-00035-of-00050.safetensors', 'model-00036-of-00050.safetensors', 'model-00037-of-00050.safetensors', 'model-00038-of-00050.safetensors', 'model-00039-of-00050.safetensors', 'model-00040-of-00050.safetensors', 'model-00041-of-00050.safetensors', 'model-00042-of-00050.safetensors', 'model-00043-of-00050.safetensors', 'model-00044-of-00050.safetensors', 'model-00045-of-00050.safetensors', 'model-00046-of-00050.safetensors', 'model-00047-of-00050.safetensors', 'model-00048-of-00050.safetensors', 'model-00049-of-00050.safetensors', 'model-00050-of-00050.safetensors'). Checkout 'https://huggingface.co/meta-llama/Llama-4-Scout-17B-16E-Instruct/tree/main'for available files.
+Traceback (most recent call last):
+  File "/scratch/hhubar/keep-it-simple/src/sft_finetune.py", line 438, in <module>
+    main()
+  File "/scratch/hhubar/keep-it-simple/src/sft_finetune.py", line 398, in main
+    model, tokenizer = load_and_prepare_model(args, args.model_family, args.model_name, args.model_class, args.peft, args.max_length)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/scratch/hhubar/keep-it-simple/src/sft_finetune.py", line 78, in load_and_prepare_model
+    model = AutoModelForCausalLM.from_pretrained(model_name, device_map="auto")
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/transformers/models/auto/auto_factory.py", line 571, in from_pretrained
+    return model_class.from_pretrained(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/transformers/modeling_utils.py", line 279, in _wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/transformers/modeling_utils.py", line 4261, in from_pretrained
+    checkpoint_files, sharded_metadata = _get_resolved_checkpoint_files(
+                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/transformers/modeling_utils.py", line 1152, in _get_resolved_checkpoint_files
+    checkpoint_files, sharded_metadata = get_checkpoint_shard_files(
+                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/transformers/utils/hub.py", line 1115, in get_checkpoint_shard_files
+    cached_filenames = cached_files(
+                       ^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/transformers/utils/hub.py", line 517, in cached_files
+    raise EnvironmentError(
+OSError: meta-llama/Llama-4-Scout-17B-16E-Instruct does not appear to have files named ('model-00001-of-00050.safetensors', 'model-00002-of-00050.safetensors', 'model-00003-of-00050.safetensors', 'model-00004-of-00050.safetensors', 'model-00005-of-00050.safetensors', 'model-00006-of-00050.safetensors', 'model-00007-of-00050.safetensors', 'model-00008-of-00050.safetensors', 'model-00009-of-00050.safetensors', 'model-00010-of-00050.safetensors', 'model-00011-of-00050.safetensors', 'model-00012-of-00050.safetensors', 'model-00013-of-00050.safetensors', 'model-00014-of-00050.safetensors', 'model-00015-of-00050.safetensors', 'model-00016-of-00050.safetensors', 'model-00017-of-00050.safetensors', 'model-00018-of-00050.safetensors', 'model-00019-of-00050.safetensors', 'model-00020-of-00050.safetensors', 'model-00021-of-00050.safetensors', 'model-00022-of-00050.safetensors', 'model-00023-of-00050.safetensors', 'model-00024-of-00050.safetensors', 'model-00025-of-00050.safetensors', 'model-00026-of-00050.safetensors', 'model-00027-of-00050.safetensors', 'model-00028-of-00050.safetensors', 'model-00029-of-00050.safetensors', 'model-00030-of-00050.safetensors', 'model-00031-of-00050.safetensors', 'model-00032-of-00050.safetensors', 'model-00033-of-00050.safetensors', 'model-00034-of-00050.safetensors', 'model-00035-of-00050.safetensors', 'model-00036-of-00050.safetensors', 'model-00037-of-00050.safetensors', 'model-00038-of-00050.safetensors', 'model-00039-of-00050.safetensors', 'model-00040-of-00050.safetensors', 'model-00041-of-00050.safetensors', 'model-00042-of-00050.safetensors', 'model-00043-of-00050.safetensors', 'model-00044-of-00050.safetensors', 'model-00045-of-00050.safetensors', 'model-00046-of-00050.safetensors', 'model-00047-of-00050.safetensors', 'model-00048-of-00050.safetensors', 'model-00049-of-00050.safetensors', 'model-00050-of-00050.safetensors'). Checkout 'https://huggingface.co/meta-llama/Llama-4-Scout-17B-16E-Instruct/tree/main'for available files.
+wandb: Using wandb-core as the SDK backend.  Please refer to https://wandb.me/wandb-core for more information.
+wandb: Appending key for api.wandb.ai to your netrc file: /home/hhubar/.netrc
+wandb: Currently logged in as: hanna-hubarava (shtosti) to https://api.wandb.ai. Use `wandb login --relogin` to force relogin
+wandb: Tracking run with wandb version 0.19.9
+wandb: Run data is saved locally in /scratch/hhubar/keep-it-simple/wandb/run-20250530_185902-jnavi9px
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run swift-field-412
+wandb: ⭐️ View project at https://wandb.ai/shtosti/ATS_with_control_tokens
+wandb: 🚀 View run at https://wandb.ai/shtosti/ATS_with_control_tokens/runs/jnavi9px
+Traceback (most recent call last):
+  File "/scratch/hhubar/keep-it-simple/src/sft_finetune.py", line 438, in <module>
+    main()
+  File "/scratch/hhubar/keep-it-simple/src/sft_finetune.py", line 398, in main
+    model, tokenizer = load_and_prepare_model(args, args.model_family, args.model_name, args.model_class, args.peft, args.max_length)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/scratch/hhubar/keep-it-simple/src/sft_finetune.py", line 54, in load_and_prepare_model
+    tokenizer = AutoTokenizer.from_pretrained(model_name)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/transformers/models/auto/tokenization_auto.py", line 1027, in from_pretrained
+    return tokenizer_class_fast.from_pretrained(pretrained_model_name_or_path, *inputs, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/transformers/tokenization_utils_base.py", line 2046, in from_pretrained
+    raise EnvironmentError(
+OSError: Can't load tokenizer for 'meta-llama/Llama-4-Scout-17B-16E-Instruct'. If you were trying to load it from 'https://huggingface.co/models', make sure you don't have a local directory with the same name. Otherwise, make sure 'meta-llama/Llama-4-Scout-17B-16E-Instruct' is the correct path to a directory containing all relevant files for a LlamaTokenizerFast tokenizer.
+Traceback (most recent call last):
+  File "/scratch/hhubar/keep-it-simple/src/sft_finetune.py", line 438, in <module>
+    main()
+  File "/scratch/hhubar/keep-it-simple/src/sft_finetune.py", line 398, in main
+    model, tokenizer = load_and_prepare_model(args, args.model_family, args.model_name, args.model_class, args.peft, args.max_length)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/scratch/hhubar/keep-it-simple/src/sft_finetune.py", line 54, in load_and_prepare_model
+    tokenizer = AutoTokenizer.from_pretrained(model_name)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/transformers/models/auto/tokenization_auto.py", line 1027, in from_pretrained
+    return tokenizer_class_fast.from_pretrained(pretrained_model_name_or_path, *inputs, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/transformers/tokenization_utils_base.py", line 2046, in from_pretrained
+    raise EnvironmentError(
+OSError: Can't load tokenizer for 'meta-llama/Llama-4-Scout-17B-16E-Instruct'. If you were trying to load it from 'https://huggingface.co/models', make sure you don't have a local directory with the same name. Otherwise, make sure 'meta-llama/Llama-4-Scout-17B-16E-Instruct' is the correct path to a directory containing all relevant files for a LlamaTokenizerFast tokenizer.
+wandb: Using wandb-core as the SDK backend.  Please refer to https://wandb.me/wandb-core for more information.
+wandb: Appending key for api.wandb.ai to your netrc file: /home/hhubar/.netrc
+wandb: Currently logged in as: hanna-hubarava (shtosti) to https://api.wandb.ai. Use `wandb login --relogin` to force relogin
+wandb: Tracking run with wandb version 0.19.9
+wandb: Run data is saved locally in /scratch/hhubar/keep-it-simple/wandb/run-20250530_185955-q9so9ki1
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run polished-rain-413
+wandb: ⭐️ View project at https://wandb.ai/shtosti/ATS_with_control_tokens
+wandb: 🚀 View run at https://wandb.ai/shtosti/ATS_with_control_tokens/runs/q9so9ki1
+Traceback (most recent call last):
+  File "/scratch/hhubar/keep-it-simple/src/sft_finetune.py", line 438, in <module>
+    main()
+  File "/scratch/hhubar/keep-it-simple/src/sft_finetune.py", line 398, in main
+    model, tokenizer = load_and_prepare_model(args, args.model_family, args.model_name, args.model_class, args.peft, args.max_length)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/scratch/hhubar/keep-it-simple/src/sft_finetune.py", line 54, in load_and_prepare_model
+    tokenizer = AutoTokenizer.from_pretrained(model_name)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/transformers/models/auto/tokenization_auto.py", line 1027, in from_pretrained
+    return tokenizer_class_fast.from_pretrained(pretrained_model_name_or_path, *inputs, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/transformers/tokenization_utils_base.py", line 2046, in from_pretrained
+    raise EnvironmentError(
+OSError: Can't load tokenizer for 'meta-llama/Llama-4-Scout-17B-16E-Instruct'. If you were trying to load it from 'https://huggingface.co/models', make sure you don't have a local directory with the same name. Otherwise, make sure 'meta-llama/Llama-4-Scout-17B-16E-Instruct' is the correct path to a directory containing all relevant files for a LlamaTokenizerFast tokenizer.
+Traceback (most recent call last):
+  File "/scratch/hhubar/keep-it-simple/src/sft_finetune.py", line 438, in <module>
+    main()
+  File "/scratch/hhubar/keep-it-simple/src/sft_finetune.py", line 398, in main
+    model, tokenizer = load_and_prepare_model(args, args.model_family, args.model_name, args.model_class, args.peft, args.max_length)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/scratch/hhubar/keep-it-simple/src/sft_finetune.py", line 54, in load_and_prepare_model
+    tokenizer = AutoTokenizer.from_pretrained(model_name)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/transformers/models/auto/tokenization_auto.py", line 1027, in from_pretrained
+    return tokenizer_class_fast.from_pretrained(pretrained_model_name_or_path, *inputs, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/transformers/tokenization_utils_base.py", line 2046, in from_pretrained
+    raise EnvironmentError(
+OSError: Can't load tokenizer for 'meta-llama/Llama-4-Scout-17B-16E-Instruct'. If you were trying to load it from 'https://huggingface.co/models', make sure you don't have a local directory with the same name. Otherwise, make sure 'meta-llama/Llama-4-Scout-17B-16E-Instruct' is the correct path to a directory containing all relevant files for a LlamaTokenizerFast tokenizer.

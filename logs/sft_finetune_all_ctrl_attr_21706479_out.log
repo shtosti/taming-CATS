@@ -1,0 +1,544 @@
+Mon Jun  2 17:17:20 2025       
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 560.35.05              Driver Version: 560.35.05      CUDA Version: 12.6     |
+|-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  NVIDIA A100-SXM4-80GB          Off |   00000000:88:00.0 Off |                    0 |
+| N/A   25C    P0             57W /  400W |       1MiB /  81920MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+                                                                                         
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI        PID   Type   Process name                              GPU Memory |
+|        ID   ID                                                               Usage      |
+|=========================================================================================|
+|  No running processes found                                                             |
++-----------------------------------------------------------------------------------------+
+*** Finetuning ministral/Ministral-3b-instruct with Med-EASi and MIX ***
+torch.cuda.is_bf16_supported: True
+Transformers version: 4.51.0
+Python path: /home/hhubar/data/conda/envs/sft/bin/python
+Not using PEFT...
+
+Run arguments:
+Namespace(metric_names=['ARI', 'FKGL', 'DALE-CHALL', 'CHAR_COMPRESSION', 'WORD_COMPRESSION'], model_class='auto', model_family='base', model_name='ministral/Ministral-3b-instruct', dataset_name='Med-EASi', slice_train=-1, slice_val=-1, batch_size=4, eval_batch_size=4, gradient_accumulation_steps=4, learning_rate=5e-06, weight_decay=0.01, warmup_steps=30, max_grad_norm=0.5, epochs=3, max_length=512, logging_steps=10, wandb_project_name='ATS_with_control_tokens', wandb_entity='shtosti', generate_every=20, seed=42, patience=4, prompting_type='vanilla', user_prompt_id='token_explanation', metric_name='MIX', control_tokens='data/prompts/control_tokens.json', system_prompts='data/prompts/system_prompts.json', user_prompts='data/prompts/user_prompts.json', metric_mapping='data/metric_mapping.json', peft=False, lora_r=8, lora_dropout=0.1)
+
+Saving to: ./models/MIX-Med-EASi-token_explanation-Ministral-3b-instruct-20250602
+
+*** Finetuning Ministral-3b-instruct with Med-EASi ***
+
+CUDA available: True
+Number of GPUs: 1
+GPU name: NVIDIA A100-SXM4-80GB
+Model embedding size BEFORE resizing: 32000
+Model embedding size AFTER resizing: 32000
+--- DEBUG ---
+trainable params:
+Trainable params: 3,315,716,096 / 3,315,716,096 (100.00%)
+--- tokenizer pad_token_id: 2
+--- tokenizer eos_token_id: 2
+--- special tokens:
+<unk>: 0
+<s>: 1
+</s>: 2
+train:	 Inspect the dataset format:
+ {'global_id': ['medeasi_000187'], 'source_text': ['Hot, wet compresses may relieve some pain.'], 'source_metrics': [{'FRE': 81.29, 'ARI': 6.3, 'FKGL': 3.7, 'Dale-Chall': 8.5, 'char_count': 42, 'alphanum_count': 34, 'word_count': 9, 'sentence_count': 1}], 'metadata': [{'dataset': 'medeasi', 'experiment_split': '', 'domain': 'medical', 'language': 'en', 'annotation': 'human', 'level': 'sentence'}], 'simplification_text': ['Hot, wet compresses may help relieve the pain in inflamed lymph nodes.'], 'target_metrics': [{'FRE': 84.68, 'ARI': 7.7, 'FKGL': 4.4, 'Dale-Chall': 10.81, 'char_count': 70, 'alphanum_count': 57, 'word_count': 14, 'sentence_count': 1, 'char_compression_rate': 1.67, 'word_compression_rate': 1.56, 'sentence_compression_rate': 1.0, 'BLEU': 29.89950354998137, 'BERTScore': 0.9616329073905945}], 'simplification_version': [1], 'grade_level': [-1], 'simplification_dimensions': [{'linguistic': {'lexical': False, 'syntactic': False}}]}
+validation:	 Inspect the dataset format:
+ {'global_id': ['medeasi_001663'], 'source_text': ['On 24 March 1950, his eyes were infected by trachoma.'], 'source_metrics': [{'FRE': 86.71, 'ARI': 4.3, 'FKGL': 3.7, 'Dale-Chall': 12.03, 'char_count': 53, 'alphanum_count': 36, 'word_count': 12, 'sentence_count': 1}], 'metadata': [{'dataset': 'medeasi', 'experiment_split': '', 'domain': 'medical', 'language': 'en', 'annotation': 'human', 'level': 'sentence'}], 'simplification_text': ['He was born on 14 January 1950.'], 'target_metrics': [{'FRE': 81.29, 'ARI': -1.2, 'FKGL': 3.7, 'Dale-Chall': 8.5, 'char_count': 31, 'alphanum_count': 18, 'word_count': 8, 'sentence_count': 1, 'char_compression_rate': 0.58, 'word_compression_rate': 0.67, 'sentence_compression_rate': 1.0, 'BLEU': 3.9832534781768225, 'BERTScore': 0.8754134178161621}], 'simplification_version': [1], 'grade_level': [-1], 'simplification_dimensions': [{'linguistic': {'lexical': False, 'syntactic': False}}]}
+
+
+ *** Before tokenization ***
+>>> train:
+
+Showing 1 example(s):
+
+Example 1 (index 130)
+--- Prompt:
+ <s>system
+You are a helpful text simplification assistant. You are not only an expert in simplifying texts for different readerships, but you are also very good at adapting texts according to the exact needs of the user. You output only the simplified text, no further notes or comments allowed.</s>
+<s>user
+INSTRUCTION: Simplify the following text such that its Automated Readability Index (ARI) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the ARI value of the source text. 
+SOURCE TEXT: <ARI=12.6> Other conditions that affect the sebaceous glands include:
+EXPLANATION: The <ARI=16.1> token specifies that the target Automated Readability Index (ARI) score should be approximately 16.1. Lower values indicate simpler text.</s>
+<s>assistant
+<ARI=16.1> </s>
+
+--- Completion:
+ In the glands, sebum is produced within specialized cells and is released as these cells burst; sebaceous glands are thus classified as holocrine glands. </s>
+==================================================
+
+
+ *** After tokenization ***
+>>> train:
+
+Showing 1 example(s):
+
+Example 1 (index 975)
+--- Prompt:
+ <s>system
+You are a helpful text simplification assistant. You are not only an expert in simplifying texts for different readerships, but you are also very good at adapting texts according to the exact needs of the user. You output only the simplified text, no further notes or comments allowed.</s>
+<s>user
+INSTRUCTION: Simplify the following text such that its Automated Readability Index (ARI) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the ARI value of the source text. 
+SOURCE TEXT: <ARI=11.8> Drooling or a very sick appearance indicate other medical conditions.
+EXPLANATION: The <ARI=7.1> token specifies that the target Automated Readability Index (ARI) score should be approximately 7.1. Lower values indicate simpler text.</s>
+<s>assistant
+<ARI=7.1> </s>
+
+--- Completion:
+ Drooling or a sick appearance can mean a different illness. </s>
+--- input_ids:
+ [1, 1, 1587, 13, 1976, 460, 264, 10865, 2245, 9878, 2500, 13892, 28723, 995, 460, 459, 865, 396, 7583, 297, 9878, 6219, 19337, 354, 1581, 1220, 4445, 28713, 28725, 562, 368, 460, 835, 1215, 1179, 438, 616, 377, 1157, 19337, 4771, 298, 272, 3459, 3208, 302, 272, 2188, 28723, 995, 3825, 865, 272, 9878, 1799, 2245, 28725, 708, 3629, 8321, 442, 7616, 4670, 28723, 2, 28705, 13, 1, 2188, 13, 775, 19199, 5324, 28747, 3563, 452, 1575, 272, 2296, 2245, 1259, 369, 871, 15939, 601, 4939, 2437, 12348, 325, 1087, 28737, 28731, 7420, 349, 10870, 6530, 298, 369, 6140, 297, 272, 2602, 6029, 710, 1693, 286, 298, 574, 7138, 9878, 2500, 28723, 415, 2602, 6029, 659, 272, 2296, 5032, 28747, 523, 1574, 2050, 1604, 28746, 10015, 13902, 415, 2602, 6029, 710, 1693, 286, 298, 272, 2832, 2245, 12825, 272, 6108, 28737, 1192, 302, 272, 2832, 2245, 28723, 28705, 13, 17426, 25775, 28747, 523, 1087, 28737, 28746, 28740, 28740, 28723, 28783, 28767, 384, 311, 328, 288, 442, 264, 1215, 7946, 9293, 11634, 799, 5714, 4331, 28723, 13, 2335, 3898, 1251, 4866, 28747, 415, 523, 1087, 28737, 28746, 28787, 28723, 28740, 28767, 6029, 1229, 8961, 369, 272, 2718, 15939, 601, 4939, 2437, 12348, 325, 1087, 28737, 28731, 7420, 1023, 347, 10870, 28705, 28787, 28723, 28740, 28723, 21457, 3069, 11634, 27013, 2245, 28723, 2, 28705, 13, 1, 13892, 13, 28789, 1087, 28737, 28746, 28787, 28723, 28740, 28767, 28705, 2, 28705, 13, 1, 384, 311, 328, 288, 442, 264, 7946, 9293, 541, 2072, 264, 1581, 13214, 28723, 28705, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2]
+--- labels:
+ [-100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, 1, 384, 311, 328, 288, 442, 264, 7946, 9293, 541, 2072, 264, 1581, 13214, 28723, 28705, 2, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100]
+==================================================
+********** DEBUG **********
+Train dataset columns: ['global_id', 'source_text', 'source_metrics', 'metadata', 'simplification_text', 'target_metrics', 'simplification_version', 'grade_level', 'simplification_dimensions', 'prompt', 'completion', 'system_prompt_id', 'user_prompt_id', 'metric_name', 'source_metric_value', 'target_metric_value', 'input_ids', 'labels', 'attention_mask']
+Validation dataset columns: ['global_id', 'source_text', 'source_metrics', 'metadata', 'simplification_text', 'target_metrics', 'simplification_version', 'grade_level', 'simplification_dimensions', 'prompt', 'completion', 'system_prompt_id', 'user_prompt_id', 'metric_name', 'source_metric_value', 'target_metric_value', 'input_ids', 'labels', 'attention_mask']
+First 10 input_ids: [1, 1, 1587, 13, 1976, 460, 264, 10865, 7583, 297]
+First 10 labels: [-100, -100, -100, -100, -100, -100, -100, -100, -100, -100]
+
+--- DEBUG: Explore first instance of the val set:
+ {'global_id': 'medeasi_001547', 'source_text': "This includes studies on testosterone changes in sports which at least for males are similar to those in status conflicts in non-human primates with testosterone levels increasing and decreasing as an individual 's status changes.", 'source_metrics': {'FRE': 19.03, 'ARI': 22.4, 'FKGL': 19.3, 'Dale-Chall': 13.04, 'char_count': 230, 'alphanum_count': 193, 'word_count': 36, 'sentence_count': 1}, 'metadata': {'dataset': 'medeasi', 'experiment_split': '', 'domain': 'medical', 'language': 'en', 'annotation': 'human', 'level': 'sentence'}, 'simplification_text': 'This included psychology.', 'target_metrics': {'FRE': -24.64, 'ARI': 16.2, 'FKGL': 17.4, 'Dale-Chall': 14.31, 'char_count': 25, 'alphanum_count': 22, 'word_count': 4, 'sentence_count': 1, 'char_compression_rate': 0.11, 'word_compression_rate': 0.11, 'sentence_compression_rate': 1.0, 'BLEU': 0.006372411897069753, 'BERTScore': 0.8708639740943909}, 'simplification_version': 1, 'grade_level': -1, 'simplification_dimensions': {'linguistic': {'lexical': False, 'syntactic': False}}, 'prompt': "<s>system\nYou are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.</s>\n<s>user\nINSTRUCTION: Simplify the following text such that the length of the output text (number of words) relative to the source text is approximately equal to the ratio specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. \nSOURCE TEXT: This includes studies on testosterone changes in sports which at least for males are similar to those in status conflicts in non-human primates with testosterone levels increasing and decreasing as an individual 's status changes.\nEXPLANATION: The <WORD_COMPRESSION=0.11> token specifies that the word-level compression rate should be around 0.11. Values less than 1 indicate text reduction. Values greater than 1 indicate text expansion.</s>\n<s>assistant\n<WORD_COMPRESSION=0.11> </s>\n", 'completion': 'This included psychology. </s>', 'system_prompt_id': 'sys_prompt_6', 'user_prompt_id': 'token_explanation', 'metric_name': 'WORD_COMPRESSION', 'source_metric_value': None, 'target_metric_value': 0.11, 'input_ids': [1, 1, 1587, 13, 1976, 460, 264, 10865, 7583, 297, 2245, 9878, 2500, 28723, 995, 8270, 264, 9878, 1799, 2751, 302, 272, 2245, 2787, 486, 272, 2188, 28723, 995, 9878, 1575, 272, 2245, 4771, 298, 272, 11382, 2078, 486, 272, 2188, 28723, 1684, 2261, 298, 9878, 1575, 264, 2245, 28725, 8270, 865, 272, 11939, 9878, 2500, 28725, 1671, 707, 4870, 7616, 28725, 8321, 442, 10928, 697, 28723, 2, 28705, 13, 1, 2188, 13, 775, 19199, 5324, 28747, 3563, 452, 1575, 272, 2296, 2245, 1259, 369, 272, 3575, 302, 272, 3825, 2245, 325, 4810, 302, 3085, 28731, 7986, 298, 272, 2832, 2245, 349, 10870, 6530, 298, 272, 10554, 6140, 297, 272, 2602, 6029, 710, 1693, 286, 298, 574, 7138, 9878, 2500, 28723, 415, 2602, 6029, 659, 272, 2296, 5032, 28747, 523, 1574, 2050, 1604, 28746, 10015, 13902, 28705, 13, 17426, 25775, 28747, 851, 5532, 7193, 356, 1369, 8731, 538, 4435, 297, 8657, 690, 438, 2429, 354, 21071, 460, 3684, 298, 1395, 297, 3425, 24129, 297, 1843, 28733, 18529, 2413, 1002, 395, 1369, 8731, 538, 6157, 6488, 304, 8512, 3706, 390, 396, 3235, 464, 28713, 3425, 4435, 28723, 13, 2335, 3898, 1251, 4866, 28747, 415, 523, 10993, 28730, 9028, 896, 10946, 28746, 28734, 28723, 28740, 28740, 28767, 6029, 1229, 8961, 369, 272, 1707, 28733, 4404, 25242, 4338, 1023, 347, 1401, 28705, 28734, 28723, 28740, 28740, 28723, 3474, 1139, 2108, 821, 28705, 28740, 11634, 2245, 13388, 28723, 3474, 1139, 6517, 821, 28705, 28740, 11634, 2245, 11120, 28723, 2, 28705, 13, 1, 13892, 13, 28789, 10993, 28730, 9028, 896, 10946, 28746, 28734, 28723, 28740, 28740, 28767, 28705, 2, 28705, 13, 1, 851, 4658, 23782, 28723, 28705, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2], 'labels': [-100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, 1, 851, 4658, 23782, 28723, 28705, 2, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100], 'attention_mask': [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]}
+type of input_ids: <class 'list'>
+type of labels: <class 'list'>
+
+--- DEBUG: Tokenized fields ---
+--- Tokenizer vocab size: 32000
+--- input_ids: [1, 1, 1587, 13, 1976, 460, 264, 10865, 7583, 297, 2245, 9878, 2500, 28723, 995, 8270, 264, 9878, 1799, 2751, 302, 272, 2245, 2787, 486, 272, 2188, 28723, 995, 9878, 1575, 272, 2245, 4771, 298, 272, 11382, 2078, 486, 272, 2188, 28723, 1684, 2261, 298, 9878, 1575, 264, 2245, 28725, 8270, 865, 272, 11939, 9878, 2500, 28725, 1671, 707, 4870, 7616, 28725, 8321, 442, 10928, 697, 28723, 2, 28705, 13, 1, 2188, 13, 775, 19199, 5324, 28747, 3563, 452, 1575, 272, 2296, 2245, 1259, 369, 871, 15939, 601, 4939, 2437, 12348, 325, 1087, 28737, 28731, 7420, 349, 10870, 6530, 298, 369, 6140, 297, 272, 2602, 6029, 710, 1693, 286, 298, 574, 7138, 9878, 2500, 28723, 415, 2602, 6029, 659, 272, 2296, 5032, 28747, 523, 1574, 2050, 1604, 28746, 10015, 13902, 415, 2602, 6029, 710, 1693, 286, 298, 272, 2832, 2245, 12825, 272, 6108, 28737, 1192, 302, 272, 2832, 2245, 28723, 28705, 13, 17426, 25775, 28747, 523, 1087, 28737, 28746, 28750, 28770, 28723, 28787, 28767, 17221, 9795, 325, 3211, 272, 11715, 5523, 631, 28725, 2273, 28748, 28713, 3619, 28725, 304, 3497, 278, 28725, 534, 8027, 4644, 442, 891, 602, 1116, 28731, 15654, 298, 396, 534, 8027, 4644, 302, 272, 2273, 28725, 304, 349, 264, 12921, 26210, 1491, 1850, 354, 264, 8057, 1665, 2608, 5397, 390, 14971, 264, 5008, 4320, 302, 3754, 395, 6940, 464, 4135, 13, 2335, 3898, 1251, 4866, 28747, 415, 523, 1087, 28737, 28746, 28740, 28740, 28723, 28770, 28767, 6029, 1229, 8961, 369, 272, 2718, 15939, 601, 4939, 2437, 12348, 325, 1087, 28737, 28731, 7420, 1023, 347, 10870, 28705, 28740, 28740, 28723, 28770, 28723, 21457, 3069, 11634, 27013, 2245, 28723, 2, 28705, 13, 1, 13892, 13, 28789, 1087, 28737, 28746, 28740, 28740, 28723, 28770, 28767, 28705, 2, 28705, 13, 1, 1537, 8350, 28725, 7140, 9795, 2825, 521, 17568, 4644, 302, 272, 7237, 28723, 28705, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2]
+--- labels: [-100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, 1, 1537, 8350, 28725, 7140, 9795, 2825, 521, 17568, 4644, 302, 272, 7237, 28723, 28705, 2, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100]
+--- decoded input_ids:
+ <s><s> system
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.</s> 
+<s> user
+INSTRUCTION: Simplify the following text such that its Automated Readability Index (ARI) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the ARI value of the source text. 
+SOURCE TEXT: <ARI=23.7> Psychosis (from the Greek psyche, mind/soul, and osis, abnormal condition or derangement) refers to an abnormal condition of the mind, and is a generic psychiatric term for a mental state often described as involving a `` loss of contact with reality ''.
+EXPLANATION: The <ARI=11.3> token specifies that the target Automated Readability Index (ARI) score should be approximately 11.3. Lower values indicate simpler text.</s> 
+<s> assistant
+<ARI=11.3> </s> 
+<s> So literally, psychosis means unnatural condition of the soul. </s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s>
+--- decoded labels:
+ So literally, psychosis means unnatural condition of the soul. 
+{'loss': 3.0225, 'grad_norm': 54.88459777832031, 'learning_rate': 1.5e-06, 'epoch': 0.12}
+{'eval_loss': 2.2607576847076416, 'eval_runtime': 5.1136, 'eval_samples_per_second': 33.636, 'eval_steps_per_second': 8.409, 'epoch': 0.12}
+
+>>> [Step 20] Prompt:
+<s>system
+You are a helpful assistant. You are very good at simplifying texts. When you receive a text for simplification, you simplify it according to the instructions given by the user. Generate only the simplification, without any comments or notes.</s>
+<s>user
+INSTRUCTION: Simplify the following text such that its Dale-Chall Readability Score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the Dale-Chall value of the source text. 
+SOURCE TEXT: <DALE-CHALL=10.35> In pathology, it specifically refers to a sharp injury which damages the dermis of the skin.
+EXPLANATION: The <DALE-CHALL=9.64> token specifies that the target Dale-Chall readability score should be approximately 9.64. Lower values indicate simpler text.</s>
+<s>assistant
+<DALE-CHALL=9.64> </s>
+
+>>> Reference:
+In pathology, it specifically means a sharp injury which damages the dermis of the skin. </s>
+>>> Prediction:
+<|im_start|>user
+ <|im_end|>
+ <|im_start|>assistant
+ <Bird: 
+================================================================================
+
+>>> [Step 20] Prompt:
+<s>system
+You are a helpful text simplification assistant. You are not only an expert in simplifying texts for different readerships, but you are also very good at adapting texts according to the exact needs of the user. You output only the simplified text, no further notes or comments allowed.</s>
+<s>user
+INSTRUCTION: Simplify the following text such that its Dale-Chall Readability Score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the Dale-Chall value of the source text. 
+SOURCE TEXT: <DALE-CHALL=10.45> Flaccid penis length is a poor estimate of erect length.
+EXPLANATION: The <DALE-CHALL=10.45> token specifies that the target Dale-Chall readability score should be approximately 10.45. Lower values indicate simpler text.</s>
+<s>assistant
+<DALE-CHALL=10.45> </s>
+
+>>> Reference:
+Flaccid length is not a reliable indication of erect length. </s>
+>>> Prediction:
+< <|im_start|>user
+ <|im_end|>
+ <|im_start|>assistant
+================================================================================
+
+>>> [Step 20] Prompt:
+<s>system
+You are an expert in text simplification. When you receive a text for simplification, you generate a simplified version of that text. You carefully study the simplification criteria specified by the user and adapt the text accordingly. Please generate only the simplified text, no other notes or explanations allowed.</s>
+<s>user
+INSTRUCTION: Simplify the following text such that its Automated Readability Index (ARI) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the ARI value of the source text. 
+SOURCE TEXT: <ARI=14.0> For the coupling of aryl halides with aryl Grignard reagents, nickel chloride in tetrahydrofuran ( THF ) is also a good catalyst.
+EXPLANATION: The <ARI=13.1> token specifies that the target Automated Readability Index (ARI) score should be approximately 13.1. Lower values indicate simpler text.</s>
+<s>assistant
+<ARI=13.1> </s>
+
+>>> Reference:
+For the coupling of aryl halides with aryl Grignards, nickel chloride in tetrahydrofuran ( THF ) is also a good catalyst. </s>
+>>> Prediction:
+<ARGV >. 
+================================================================================
+
+>>> [Step 20] Prompt:
+<s>system
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.</s>
+<s>user
+INSTRUCTION: Simplify the following text such that the length of the output text (number of words) relative to the source text is approximately equal to the ratio specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. 
+SOURCE TEXT: It is named after John Hilton Edwards, who first described the syndrome in 1960.
+EXPLANATION: The <WORD_COMPRESSION=1.0> token specifies that the word-level compression rate should be around 1.0. Values less than 1 indicate text reduction. Values greater than 1 indicate text expansion.</s>
+<s>assistant
+<WORD_COMPRESSION=1.0> </s>
+
+>>> Reference:
+It is named after John H. Edwards, who first described the syndrome in 1960. </s>
+>>> Prediction:
+< <|im_start|>user
+ <|im_end|>
+ <|im_start|>assistant
+================================================================================
+{'loss': 2.1451, 'grad_norm': 42.04740905761719, 'learning_rate': 3.1666666666666667e-06, 'epoch': 0.23}
+{'eval_loss': 2.032186508178711, 'eval_runtime': 5.0625, 'eval_samples_per_second': 33.975, 'eval_steps_per_second': 8.494, 'epoch': 0.23}
+{'loss': 2.0455, 'grad_norm': 35.223609924316406, 'learning_rate': 4.833333333333333e-06, 'epoch': 0.35}
+{'eval_loss': 1.9274684190750122, 'eval_runtime': 5.0107, 'eval_samples_per_second': 34.326, 'eval_steps_per_second': 8.582, 'epoch': 0.35}
+
+>>> [Step 40] Prompt:
+<s>system
+You are an expert in text simplification. When you receive a text for simplification, you generate a simplified version of that text. You carefully study the simplification criteria specified by the user and adapt the text accordingly. Please generate only the simplified text, no other notes or explanations allowed.</s>
+<s>user
+INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=13.9> Although uncomfortable at times extremely so panic attacks are not medically dangerous.
+EXPLANATION: The <FKGL=10.7> token specifies that the target Flesch-Kincaid Grade Level should be approximately 10.7. Lower values indicate simpler text.</s>
+<s>assistant
+<FKGL=10.7> </s>
+
+>>> Reference:
+Although panic attacks are uncomfortable at times extremely so they are not dangerous. </s>
+>>> Prediction:
+<FKWH=12.99. Years ago I had a very scary stroke. This night I began an intense cognitive panic attack. 
+================================================================================
+
+>>> [Step 40] Prompt:
+<s>system
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.</s>
+<s>user
+INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=3.7> On 24 March 1950, his eyes were infected by trachoma.
+EXPLANATION: The <FKGL=3.7> token specifies that the target Flesch-Kincaid Grade Level should be approximately 3.7. Lower values indicate simpler text.</s>
+<s>assistant
+<FKGL=3.7> </s>
+
+>>> Reference:
+He was born on 14 January 1950. </s>
+>>> Prediction:
+Doctors said that the pain was a different pain after the flu. They told me that he should have at least three doctors go to one doctor, the doctor said, of too low interest to take care of him. The doctor told me that he was not going to die but he seemed weak. The doctor said that he had to give him a life: in the days of the flu it was still painful (as the fever was for some days): then he should have to have a doctor. A doctor went to a doctor by the way about the healthiness of this. He said that the doctor told that his wife and wife offerred his wife; but his wife wanted to marry with a different guy, and he was different. He was born an old man and the wife was old and the father was long gone. What was his first wife wife? He told me that a girl and wife should be friends. He had an old daughter and he was just married him to him. The wife had to get her husband a house because he had a child. He had a husband too. He was really bad. He had a husband at he were, when was he killed, the son of a war. He had a wife 30 to the death of his wife or wife. He had a son and wife but he had to die because I saw him like a doctor with a head-buckle. Then I saw his mother, and my boss told me that he were to die. My son and wife had death a while before this time. And I have died now. 
+================================================================================
+
+>>> [Step 40] Prompt:
+<s>system
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.</s>
+<s>user
+INSTRUCTION: Simplify the following text such that the length of the output text (number of words) relative to the source text is approximately equal to the ratio specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. 
+SOURCE TEXT: Other decongestants such as pseudoephedrine appear effective in adults.
+EXPLANATION: The <WORD_COMPRESSION=1.1> token specifies that the word-level compression rate should be around 1.1. Values less than 1 indicate text reduction. Values greater than 1 indicate text expansion.</s>
+<s>assistant
+<WORD_COMPRESSION=1.1> </s>
+
+>>> Reference:
+Other decongestants such as pseudoephedrine are also effective in adults. </s>
+>>> Prediction:
+user
+Do people with decongestants get more allergens from the environment than people who have recliner sickness? This is the idea that the odor of deconfections is more likely to be detected for those who have recliner sickness. 
+================================================================================
+
+>>> [Step 40] Prompt:
+<s>system
+You are a helpful text simplification assistant. You are not only an expert in simplifying texts for different readerships, but you are also very good at adapting texts according to the exact needs of the user. You output only the simplified text, no further notes or comments allowed.</s>
+<s>user
+INSTRUCTION: Simplify the following text such that its Automated Readability Index (ARI) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the ARI value of the source text. 
+SOURCE TEXT: <ARI=18.0> Also, many physicians or diabetes specialists do n't recognize LADA or do n't know that Type 1 diabetes may occur in adults, and so LADA is misdiagnosed as or mistaken for Type 2 diabetes very often.
+EXPLANATION: The <ARI=10.7> token specifies that the target Automated Readability Index (ARI) score should be approximately 10.7. Lower values indicate simpler text.</s>
+<s>assistant
+<ARI=10.7> </s>
+
+>>> Reference:
+People with LADA are misdiagnosed as having Type 2 diabetes, except that LADA has GAD antibodies. </s>
+>>> Prediction:
+<|im_start|>system
+There are several types of cancer: Chrono-fiscal cancer: A kidney has enzymed enzymes that can find cells with the genetic mutation known as Linear-fiscal cancer: LADA is an abalyte in the chromosomes that can present as a cancer. 
+================================================================================
+{'loss': 1.9071, 'grad_norm': 30.229598999023438, 'learning_rate': 4.9808014493426124e-06, 'epoch': 0.46}
+{'eval_loss': 1.8668326139450073, 'eval_runtime': 5.0205, 'eval_samples_per_second': 34.26, 'eval_steps_per_second': 8.565, 'epoch': 0.46}
+{'loss': 1.929, 'grad_norm': 38.02155303955078, 'learning_rate': 4.914814565722671e-06, 'epoch': 0.58}
+{'eval_loss': 1.7943263053894043, 'eval_runtime': 5.0552, 'eval_samples_per_second': 34.025, 'eval_steps_per_second': 8.506, 'epoch': 0.58}
+
+>>> [Step 60] Prompt:
+<s>system
+You are a helpful assistant. You are very good at simplifying texts. When you receive a text for simplification, you simplify it according to the instructions given by the user. Generate only the simplification, without any comments or notes.</s>
+<s>user
+INSTRUCTION: Simplify the following text such that the length of the output text (number of characters) relative to the source text is approximately equal to the ratio specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. 
+SOURCE TEXT: Recurrence rates after surgical excision are about 5 to 15 %.
+EXPLANATION: The <CHAR_COMPRESSION=1.11> token specifies that the character-level compression rate should be around 1.11. Values less than 1 indicate text reduction. Values greater than 1 indicate text expansion.</s>
+<s>assistant
+<CHAR_COMPRESSION=1.11> </s>
+
+>>> Reference:
+After surgical removal, ganglia return in about 5 to 15 % of people. </s>
+>>> Prediction:
+Recurrence rates at a time when the remedies are no longer available, which includes the number of death and 5 to 15 % of death occur. 
+================================================================================
+
+>>> [Step 60] Prompt:
+<s>system
+You are a helpful text simplification assistant. You are not only an expert in simplifying texts for different readerships, but you are also very good at adapting texts according to the exact needs of the user. You output only the simplified text, no further notes or comments allowed.</s>
+<s>user
+INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=13.4> The virus, part of the orthopoxvirus family, is so closely related to the vaccinia virus that the two are often spoken of interchangeably.
+EXPLANATION: The <FKGL=9.1> token specifies that the target Flesch-Kincaid Grade Level should be approximately 9.1. Lower values indicate simpler text.</s>
+<s>assistant
+<FKGL=9.1> </s>
+
+>>> Reference:
+It is caused by a virus (Cowpox virus) that is related to the Vaccinia virus. </s>
+>>> Prediction:
+In most of the viruus, including the vaccinia virus, the virus enters the mouth mouth throat. This makes the teeth to the throat. The syphilis has a infection infection. 
+================================================================================
+
+>>> [Step 60] Prompt:
+<s>system
+You are a helpful text simplification assistant. You are not only an expert in simplifying texts for different readerships, but you are also very good at adapting texts according to the exact needs of the user. You output only the simplified text, no further notes or comments allowed.</s>
+<s>user
+INSTRUCTION: Simplify the following text such that its Automated Readability Index (ARI) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the ARI value of the source text. 
+SOURCE TEXT: <ARI=12.4> Nancy devoted most of her time to caring for her ailing husband, diagnosed in 1994 with Alzheimer 's disease, until his death in 2004.
+EXPLANATION: The <ARI=11.9> token specifies that the target Automated Readability Index (ARI) score should be approximately 11.9. Lower values indicate simpler text.</s>
+<s>assistant
+<ARI=11.9> </s>
+
+>>> Reference:
+Nancy devoted most of her time to caring for her ill husband who was diagnosed in 1994 with Alzheimer 's disease until his death in 2004. </s>
+>>> Prediction:
+Nancy dedicated all of her time to careing for her husband, diagnosed in 1994 with Alzheimer's disease until his death in 2004. 
+================================================================================
+
+>>> [Step 60] Prompt:
+<s>system
+You are an expert in controlled text simplification. When you receive a text from the user, you carefully adapt it to the simplification level specified by the user. Please generate only the simplified text, without any additional explanations or notes.</s>
+<s>user
+INSTRUCTION: Simplify the following text such that its Dale-Chall Readability Score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the Dale-Chall value of the source text. 
+SOURCE TEXT: <DALE-CHALL=9.78> Fade-ins and fade-outs are often used as cinematic devices that begin and end scenes; film language that developed at the same time as these early recordings.
+EXPLANATION: The <DALE-CHALL=10.27> token specifies that the target Dale-Chall readability score should be approximately 10.27. Lower values indicate simpler text.</s>
+<s>assistant
+<DALE-CHALL=10.27> </s>
+
+>>> Reference:
+Fade-ins and fade-outs are cinematic devices that begin and end scenes; film language that developed at the same time as these early recordings. </s>
+>>> Prediction:
+Fade-ins and fade-outs of movie movies are used as cinematic devices during the first 30 minutes of movie scenes. 
+================================================================================
+{'loss': 1.6662, 'grad_norm': 34.29283142089844, 'learning_rate': 4.803052865962642e-06, 'epoch': 0.69}
+{'eval_loss': 1.624281644821167, 'eval_runtime': 5.0692, 'eval_samples_per_second': 33.93, 'eval_steps_per_second': 8.483, 'epoch': 0.69}
+{'loss': 1.4821, 'grad_norm': 32.822628021240234, 'learning_rate': 4.647634885924713e-06, 'epoch': 0.81}
+{'eval_loss': 1.591086506843567, 'eval_runtime': 5.0483, 'eval_samples_per_second': 34.071, 'eval_steps_per_second': 8.518, 'epoch': 0.81}
+
+>>> [Step 80] Prompt:
+<s>system
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.</s>
+<s>user
+INSTRUCTION: Simplify the following text such that its Dale-Chall Readability Score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the Dale-Chall value of the source text. 
+SOURCE TEXT: <DALE-CHALL=12.2> Symptoms of primary coccidioidomycosis, in decreasing order of frequency, include fever, cough, chest pain, chills, sputum production, sore throat, and hemoptysis.
+EXPLANATION: The <DALE-CHALL=8.47> token specifies that the target Dale-Chall readability score should be approximately 8.47. Lower values indicate simpler text.</s>
+<s>assistant
+<DALE-CHALL=8.47> </s>
+
+>>> Reference:
+They include a cough, fever, chills, chest pain, and sometimes shortness of breath. The cough may produce sputum. </s>
+>>> Prediction:
+Symptoms of primary coccidioidomycosis are fever, cough, chest pain, or a swoked. They may also have bleeding of its lymph nodes and heart (leatherback eclipsing the heart). In lung damage, skin is exposed to cytotocerias. 
+================================================================================
+
+>>> [Step 80] Prompt:
+<s>system
+You are a helpful text simplification assistant. You are not only an expert in simplifying texts for different readerships, but you are also very good at adapting texts according to the exact needs of the user. You output only the simplified text, no further notes or comments allowed.</s>
+<s>user
+INSTRUCTION: Simplify the following text such that its Flesch-Kincaid Grade Level (FKGL) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the FKGL value of the source text. 
+SOURCE TEXT: <FKGL=12.9> Frederick Akbar Mahomed ( d. 1884 ), who worked at Guy 's Hospital in London, made substantial contributions to the process of clinical trials, where `` he separated chronic nephritis with secondary hypertension from what we now term essential hypertension.
+EXPLANATION: The <FKGL=15.0> token specifies that the target Flesch-Kincaid Grade Level should be approximately 15.0. Lower values indicate simpler text.</s>
+<s>assistant
+<FKGL=15.0> </s>
+
+>>> Reference:
+Frederick Akbar Mahomed ( d. 1884 ), who worked at Guy 's Hospital in London, made substantial contributions to the process of clinical trials during his detailed clinical studies, where `` he separated chronic nephritis with secondary hypertension from what we now term essential hypertension. '' </s>
+>>> Prediction:
+Edward Jenkins M.A., Josephs E., Henry J. Henry P. Henry G. K. Gworth P. H. Henry W. Sterie F. J. Henry Warren ( 1884) made significant contributions to the field of medicine. 
+================================================================================
+
+>>> [Step 80] Prompt:
+<s>system
+You are a helpful assistant. You are very good at simplifying texts. When you receive a text for simplification, you simplify it according to the instructions given by the user. Generate only the simplification, without any comments or notes.</s>
+<s>user
+INSTRUCTION: Simplify the following text such that its Dale-Chall Readability Score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the Dale-Chall value of the source text. 
+SOURCE TEXT: <DALE-CHALL=12.49> There is little support for increased fight-or-flight response or failure of habituation in autism; there is more evidence of decreased responsiveness to sensory stimuli, although several studies show no differences.
+EXPLANATION: The <DALE-CHALL=7.78> token specifies that the target Dale-Chall readability score should be approximately 7.78. Lower values indicate simpler text.</s>
+<s>assistant
+<DALE-CHALL=7.78> </s>
+
+>>> Reference:
+There are many symptoms. </s>
+>>> Prediction:
+There are some studies that find a strong in-exposure response (feeding anxiety) to certain stimuli, but the general consensus is that this disorder has little to no evidence of disorder and do not have lower adverse effects compared to normal. 
+================================================================================
+
+>>> [Step 80] Prompt:
+<s>system
+You are a helpful text simplification assistant. You are not only an expert in simplifying texts for different readerships, but you are also very good at adapting texts according to the exact needs of the user. You output only the simplified text, no further notes or comments allowed.</s>
+<s>user
+INSTRUCTION: Simplify the following text such that the length of the output text (number of words) relative to the source text is approximately equal to the ratio specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. 
+SOURCE TEXT: Pliny the Younger provided an account of his death, and suggested that he collapsed and died through inhaling poisonous gases emitted from the volcano.
+EXPLANATION: The <WORD_COMPRESSION=1.0> token specifies that the word-level compression rate should be around 1.0. Values less than 1 indicate text reduction. Values greater than 1 indicate text expansion.</s>
+<s>assistant
+<WORD_COMPRESSION=1.0> </s>
+
+>>> Reference:
+Pliny the Younger wrote an account of his death, and suggested that he collapsed and died through inhaling poisonous gases emitted by the volcano. </s>
+>>> Prediction:
+Pliny the Younger wrote an account of his death, and suggested that he collapsed and died by breathing poisonous gases emitted by the volcano. 
+================================================================================
+{'loss': 1.6147, 'grad_norm': 27.4830322265625, 'learning_rate': 4.451506702530106e-06, 'epoch': 0.92}
+{'eval_loss': 1.5670379400253296, 'eval_runtime': 4.9894, 'eval_samples_per_second': 34.473, 'eval_steps_per_second': 8.618, 'epoch': 0.92}
+{'loss': 1.3414, 'grad_norm': 21.680728912353516, 'learning_rate': 4.218386088423647e-06, 'epoch': 1.03}
+{'eval_loss': 1.5793558359146118, 'eval_runtime': 5.0187, 'eval_samples_per_second': 34.272, 'eval_steps_per_second': 8.568, 'epoch': 1.03}
+
+>>> [Step 100] Prompt:
+<s>system
+You are an expert in controlled text simplification. When you receive a text from the user, you carefully adapt it to the simplification level specified by the user. Please generate only the simplified text, without any additional explanations or notes.</s>
+<s>user
+INSTRUCTION: Simplify the following text such that the length of the output text (number of characters) relative to the source text is approximately equal to the ratio specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. 
+SOURCE TEXT: Microbial cultures are rarely done because a valid culture requires a sample obtained by sinus endoscopy or sinus puncture; culturing a swab of nasal secretions is inadequate. Cultures are typically done only when empiric treatment fails and in immunocompromised patients and some hospital- acquired causes of sinusitis.
+EXPLANATION: The <CHAR_COMPRESSION=0.79> token specifies that the character-level compression rate should be around 0.79. Values less than 1 indicate text reduction. Values greater than 1 indicate text expansion.</s>
+<s>assistant
+<CHAR_COMPRESSION=0.79> </s>
+
+>>> Reference:
+Sometimes a doctor passes a thin viewing scope (endoscope) into the nose to inspect the sinus openings and to obtain samples of fluid for culture. This procedure, which requires a local anesthetic (to numb the area), can be done in the doctor's office. </s>
+>>> Prediction:
+The type of culture usually for nasal prophylactic surgery is given below. 
+================================================================================
+
+>>> [Step 100] Prompt:
+<s>system
+You are an expert in text simplification. When you receive a text for simplification, you generate a simplified version of that text. You carefully study the simplification criteria specified by the user and adapt the text accordingly. Please generate only the simplified text, no other notes or explanations allowed.</s>
+<s>user
+INSTRUCTION: Simplify the following text such that the length of the output text (number of characters) relative to the source text is approximately equal to the ratio specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. 
+SOURCE TEXT: Benign paroxysmal vertigo of childhood is an uncommon neurological disorder which presents with recurrent episodes of dizziness.
+EXPLANATION: The <CHAR_COMPRESSION=0.8> token specifies that the character-level compression rate should be around 0.8. Values less than 1 indicate text reduction. Values greater than 1 indicate text expansion.</s>
+<s>assistant
+<CHAR_COMPRESSION=0.8> </s>
+
+>>> Reference:
+Benign paroxysmal vertigo of childhood (BPVC for short) is a medical problem that happens in children. </s>
+>>> Prediction:
+Benign paroxysistent thuddery (a sense of a lot in the air) may occur in childhood. The symptom often recurrently. 
+================================================================================
+
+>>> [Step 100] Prompt:
+<s>system
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.</s>
+<s>user
+INSTRUCTION: Simplify the following text such that the length of the output text (number of characters) relative to the source text is approximately equal to the ratio specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. 
+SOURCE TEXT: The key distinguishing feature of cheletropic reactions is that on one of the reagents , both new bonds are being made to the same atom .
+EXPLANATION: The <CHAR_COMPRESSION=0.87> token specifies that the character-level compression rate should be around 0.87. Values less than 1 indicate text reduction. Values greater than 1 indicate text expansion.</s>
+<s>assistant
+<CHAR_COMPRESSION=0.87> </s>
+
+>>> Reference:
+What sets cheletropic reactions apart is that on one of the reagents , both new bonds are being made to the same atom . </s>
+>>> Prediction:
+The key distinguishing element of cheletropic reactions is that on one of the reagents, both new bonds are making. 
+================================================================================
+
+>>> [Step 100] Prompt:
+<s>system
+You are an expert in text simplification. When you receive a text for simplification, you generate a simplified version of that text. You carefully study the simplification criteria specified by the user and adapt the text accordingly. Please generate only the simplified text, no other notes or explanations allowed.</s>
+<s>user
+INSTRUCTION: Simplify the following text such that its Automated Readability Index (ARI) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the ARI value of the source text. 
+SOURCE TEXT: <ARI=14.0> For the coupling of aryl halides with aryl Grignard reagents, nickel chloride in tetrahydrofuran ( THF ) is also a good catalyst.
+EXPLANATION: The <ARI=13.1> token specifies that the target Automated Readability Index (ARI) score should be approximately 13.1. Lower values indicate simpler text.</s>
+<s>assistant
+<ARI=13.1> </s>
+
+>>> Reference:
+For the coupling of aryl halides with aryl Grignards, nickel chloride in tetrahydrofuran ( THF ) is also a good catalyst. </s>
+>>> Prediction:
+For the coupling of aryl halides with aryl Grignard reagens, nickel chloride is also a good catalyst. 
+================================================================================
+{'loss': 0.655, 'grad_norm': 23.18349266052246, 'learning_rate': 3.9526920385048465e-06, 'epoch': 1.15}
+{'eval_loss': 1.6388943195343018, 'eval_runtime': 5.0595, 'eval_samples_per_second': 33.995, 'eval_steps_per_second': 8.499, 'epoch': 1.15}
+{'loss': 0.5174, 'grad_norm': 28.387836456298828, 'learning_rate': 3.6594610042086016e-06, 'epoch': 1.27}
+{'eval_loss': 1.643596887588501, 'eval_runtime': 5.0653, 'eval_samples_per_second': 33.957, 'eval_steps_per_second': 8.489, 'epoch': 1.27}
+
+>>> [Step 120] Prompt:
+<s>system
+You are a helpful text simplification assistant. You are not only an expert in simplifying texts for different readerships, but you are also very good at adapting texts according to the exact needs of the user. You output only the simplified text, no further notes or comments allowed.</s>
+<s>user
+INSTRUCTION: Simplify the following text such that its Dale-Chall Readability Score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the Dale-Chall value of the source text. 
+SOURCE TEXT: <DALE-CHALL=11.41> The book depicts working class poverty, the absence of social programs, harsh and unpleasant living and working conditions, and a hopelessness among many workers.
+EXPLANATION: The <DALE-CHALL=8.19> token specifies that the target Dale-Chall readability score should be approximately 8.19. Lower values indicate simpler text.</s>
+<s>assistant
+<DALE-CHALL=8.19> </s>
+
+>>> Reference:
+The book writes about the poverty, bad living and working conditions, and sorrow among the working class. </s>
+>>> Prediction:
+The book depicts working class poverty, the absence of social programs, challenging living and working conditions, and a Hopelessness among many workers. 
+================================================================================
+
+>>> [Step 120] Prompt:
+<s>system
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.</s>
+<s>user
+INSTRUCTION: Simplify the following text such that the length of the output text (number of words) relative to the source text is approximately equal to the ratio specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. 
+SOURCE TEXT: A stroke, sometimes referred to as a cerebrovascular accident ( CVA ), cerebrovascular insult ( CVI ), or colloquially brain attack is the loss of brain function due to a disturbance in the blood supply to the brain.
+EXPLANATION: The <WORD_COMPRESSION=0.74> token specifies that the word-level compression rate should be around 0.74. Values less than 1 indicate text reduction. Values greater than 1 indicate text expansion.</s>
+<s>assistant
+<WORD_COMPRESSION=0.74> </s>
+
+>>> Reference:
+A stroke, or cerebrovascular accident ( CVA ), is the rapid loss of brain function ( s ) due to disturbance in the blood supply to the brain. </s>
+>>> Prediction:
+A stroke, sometimes called a cerebrovascular attack ( CSA ) or cerebrovascular incident ( CVI ), brain attack is the loss of brain function caused by a disturbance in the blood supply to the brain. 
+================================================================================
+
+>>> [Step 120] Prompt:
+<s>system
+You are a helpful assistant. You are very good at simplifying texts. When you receive a text for simplification, you simplify it according to the instructions given by the user. Generate only the simplification, without any comments or notes.</s>
+<s>user
+INSTRUCTION: Simplify the following text such that its Automated Readability Index (ARI) score is approximately equal to that specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. The control token prepended to the source text indicates the ARI value of the source text. 
+SOURCE TEXT: <ARI=18.5> When determining the order of a sigmatropic shift involving a hydrogen atom migration it is critical to count across all atoms involved in the reaction rather than only across the closest atoms.
+EXPLANATION: The <ARI=11.2> token specifies that the target Automated Readability Index (ARI) score should be approximately 11.2. Lower values indicate simpler text.</s>
+<s>assistant
+<ARI=11.2> </s>
+
+>>> Reference:
+So, chemists count across all atoms involved in the reaction rather than only across the closest atoms. </s>
+>>> Prediction:
+An sigmatropic shift involves the addition/subjugation of hydrogen atom molecular units (HANO); it thus can either move atoms around (called a minor shift). In a simple ring/planetary orbit around a nucleus, there are two main types of dipersion (called bending): dipersion of hydrogen atoms is most accurate in terms of atomic orientation) or dipersonomy; dipersonomy is also frequently done by a semiconductor. 
+================================================================================
+
+>>> [Step 120] Prompt:
+<s>system
+You are a helpful assistant. You are very good at simplifying texts. When you receive a text for simplification, you simplify it according to the instructions given by the user. Generate only the simplification, without any comments or notes.</s>
+<s>user
+INSTRUCTION: Simplify the following text such that the length of the output text (number of characters) relative to the source text is approximately equal to the ratio specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. 
+SOURCE TEXT: Recurrence rates after surgical excision are about 5 to 15 %.
+EXPLANATION: The <CHAR_COMPRESSION=1.11> token specifies that the character-level compression rate should be around 1.11. Values less than 1 indicate text reduction. Values greater than 1 indicate text expansion.</s>
+<s>assistant
+<CHAR_COMPRESSION=1.11> </s>
+
+>>> Reference:
+After surgical removal, ganglia return in about 5 to 15 % of people. </s>
+>>> Prediction:
+The rejection system builds 5 to 15 % of the first three years of life but reduces it 25 to 15 % over the second three years. 
+================================================================================
+{'loss': 0.6198, 'grad_norm': 27.872173309326172, 'learning_rate': 3.3442514233843484e-06, 'epoch': 1.38}
+{'eval_loss': 1.6370933055877686, 'eval_runtime': 5.0272, 'eval_samples_per_second': 34.214, 'eval_steps_per_second': 8.553, 'epoch': 1.38}
+{'train_runtime': 1074.8983, 'train_samples_per_second': 3.863, 'train_steps_per_second': 0.24, 'train_loss': 1.578820856412252, 'epoch': 1.38}
+Evaluation results: {'eval_loss': 1.5670379400253296, 'eval_runtime': 4.9998, 'eval_samples_per_second': 34.401, 'eval_steps_per_second': 8.6, 'epoch': 1.3815028901734103}
+Removing checkpoint: ./models/MIX-Med-EASi-token_explanation-Ministral-3b-instruct-20250602/checkpoint-80

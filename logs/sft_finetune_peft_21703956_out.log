@@ -1,0 +1,848 @@
+Sun Jun  1 20:56:16 2025       
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 560.35.05              Driver Version: 560.35.05      CUDA Version: 12.6     |
+|-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  NVIDIA A100-SXM4-80GB          Off |   00000000:4C:00.0 Off |                    0 |
+| N/A   28C    P0             59W /  400W |       1MiB /  81920MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+                                                                                         
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI        PID   Type   Process name                              GPU Memory |
+|        ID   ID                                                               Usage      |
+|=========================================================================================|
+|  No running processes found                                                             |
++-----------------------------------------------------------------------------------------+
+*** Finetuning meta-llama/Llama-2-13b-chat-hf with Med-EASi and CHAR_COMPRESSION ***
+torch.cuda.is_bf16_supported: True
+Transformers version: 4.51.0
+Python path: /home/hhubar/data/conda/envs/sft/bin/python
+Using PEFT...
+
+Run arguments:
+Namespace(model_class='auto', model_family='base', model_name='meta-llama/Llama-2-13b-chat-hf', dataset_name='Med-EASi', slice_train=-1, slice_val=-1, batch_size=4, eval_batch_size=4, gradient_accumulation_steps=4, learning_rate=0.0001, weight_decay=0.01, warmup_steps=30, max_grad_norm=1.0, epochs=3, max_length=512, logging_steps=10, wandb_project_name='ATS_with_control_tokens', wandb_entity='shtosti', generate_every=20, seed=42, patience=3, prompting_type='vanilla', user_prompt_id='token_explanation', metric_name='CHAR_COMPRESSION', control_tokens='data/prompts/control_tokens.json', system_prompts='data/prompts/system_prompts.json', user_prompts='data/prompts/user_prompts.json', metric_mapping='data/metric_mapping.json', peft=True, lora_r=16, lora_dropout=0.1)
+
+Saving to: ./models/CHAR_COMPRESSION-Med-EASi-token_explanation-Llama-2-13b-chat-hf-20250601
+
+*** Finetuning Llama-2-13b-chat-hf with Med-EASi ***
+
+CUDA available: True
+Number of GPUs: 1
+GPU name: NVIDIA A100-SXM4-80GB
+Model embedding size BEFORE resizing: 32000
+Model embedding size AFTER resizing: 32001
+Using PEFT for fine-tuning...
+--- DEBUG ---
+trainable params:
+Trainable params: 13,107,200 / 13,028,981,760 (0.10%)
+--- tokenizer pad_token_id: 32000
+--- tokenizer eos_token_id: 2
+--- special tokens:
+train:	 Inspect the dataset format:
+ {'global_id': ['medeasi_000187'], 'source_text': ['Hot, wet compresses may relieve some pain.'], 'source_metrics': [{'FRE': 81.29, 'ARI': 6.3, 'FKGL': 3.7, 'Dale-Chall': 8.5, 'char_count': 42, 'alphanum_count': 34, 'word_count': 9, 'sentence_count': 1}], 'metadata': [{'dataset': 'medeasi', 'experiment_split': '', 'domain': 'medical', 'language': 'en', 'annotation': 'human', 'level': 'sentence'}], 'simplification_text': ['Hot, wet compresses may help relieve the pain in inflamed lymph nodes.'], 'target_metrics': [{'FRE': 84.68, 'ARI': 7.7, 'FKGL': 4.4, 'Dale-Chall': 10.81, 'char_count': 70, 'alphanum_count': 57, 'word_count': 14, 'sentence_count': 1, 'char_compression_rate': 1.67, 'word_compression_rate': 1.56, 'sentence_compression_rate': 1.0, 'BLEU': 29.89950354998137, 'BERTScore': 0.9616329073905945}], 'simplification_version': [1], 'grade_level': [-1], 'simplification_dimensions': [{'linguistic': {'lexical': False, 'syntactic': False}}]}
+validation:	 Inspect the dataset format:
+ {'global_id': ['medeasi_001663'], 'source_text': ['On 24 March 1950, his eyes were infected by trachoma.'], 'source_metrics': [{'FRE': 86.71, 'ARI': 4.3, 'FKGL': 3.7, 'Dale-Chall': 12.03, 'char_count': 53, 'alphanum_count': 36, 'word_count': 12, 'sentence_count': 1}], 'metadata': [{'dataset': 'medeasi', 'experiment_split': '', 'domain': 'medical', 'language': 'en', 'annotation': 'human', 'level': 'sentence'}], 'simplification_text': ['He was born on 14 January 1950.'], 'target_metrics': [{'FRE': 81.29, 'ARI': -1.2, 'FKGL': 3.7, 'Dale-Chall': 8.5, 'char_count': 31, 'alphanum_count': 18, 'word_count': 8, 'sentence_count': 1, 'char_compression_rate': 0.58, 'word_compression_rate': 0.67, 'sentence_compression_rate': 1.0, 'BLEU': 3.9832534781768225, 'BERTScore': 0.8754134178161621}], 'simplification_version': [1], 'grade_level': [-1], 'simplification_dimensions': [{'linguistic': {'lexical': False, 'syntactic': False}}]}
+
+
+ *** Before tokenization ***
+>>> train:
+
+Showing 1 example(s):
+
+Example 1 (index 130)
+--- Prompt:
+ <s>[INST] <<SYS>>
+You are a helpful text simplification assistant. You are not only an expert in simplifying texts for different readerships, but you are also very good at adapting texts according to the exact needs of the user. You output only the simplified text, no further notes or comments allowed.
+<</SYS>>
+
+INSTRUCTION: Simplify the following text such that the length of the output text (number of characters) relative to the source text is approximately equal to the ratio specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. 
+SOURCE TEXT: Other conditions that affect the sebaceous glands include:
+EXPLANATION: The <CHAR_COMPRESSION=2.64> token specifies that the character-level compression rate should be around 2.64. Values less than 1 indicate text reduction. Values greater than 1 indicate text expansion. [/INST] <CHAR_COMPRESSION=2.64> </s>
+--- Completion:
+ In the glands, sebum is produced within specialized cells and is released as these cells burst; sebaceous glands are thus classified as holocrine glands. </s>
+==================================================
+
+
+ *** After tokenization ***
+>>> train:
+
+Showing 1 example(s):
+
+Example 1 (index 975)
+--- Prompt:
+ <s>[INST] <<SYS>>
+You are a helpful text simplification assistant. You are not only an expert in simplifying texts for different readerships, but you are also very good at adapting texts according to the exact needs of the user. You output only the simplified text, no further notes or comments allowed.
+<</SYS>>
+
+INSTRUCTION: Simplify the following text such that the length of the output text (number of characters) relative to the source text is approximately equal to the ratio specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. 
+SOURCE TEXT: Drooling or a very sick appearance indicate other medical conditions.
+EXPLANATION: The <CHAR_COMPRESSION=0.86> token specifies that the character-level compression rate should be around 0.86. Values less than 1 indicate text reduction. Values greater than 1 indicate text expansion. [/INST] <CHAR_COMPRESSION=0.86> </s>
+--- Completion:
+ Drooling or a sick appearance can mean a different illness. </s>
+--- input_ids:
+ [1, 1, 518, 25580, 29962, 3532, 14816, 29903, 6778, 13, 3492, 526, 263, 8444, 1426, 5466, 2450, 20255, 29889, 887, 526, 451, 871, 385, 17924, 297, 5466, 9215, 26442, 363, 1422, 22176, 14587, 29892, 541, 366, 526, 884, 1407, 1781, 472, 7744, 292, 26442, 5034, 304, 278, 2684, 4225, 310, 278, 1404, 29889, 887, 1962, 871, 278, 20875, 1426, 29892, 694, 4340, 11486, 470, 6589, 6068, 29889, 13, 29966, 829, 14816, 29903, 6778, 13, 13, 1177, 10810, 29965, 9838, 29901, 3439, 572, 1598, 278, 1494, 1426, 1316, 393, 278, 3309, 310, 278, 1962, 1426, 313, 4537, 310, 4890, 29897, 6198, 304, 278, 2752, 1426, 338, 14235, 5186, 304, 278, 11959, 6790, 297, 278, 2761, 5993, 8273, 2760, 304, 596, 5759, 5466, 2450, 29889, 450, 2761, 5993, 756, 278, 1494, 3402, 29901, 529, 2303, 5659, 2965, 29922, 19143, 15513, 29871, 13, 27839, 4741, 323, 12194, 29901, 22938, 324, 292, 470, 263, 1407, 17319, 10097, 12266, 916, 16083, 5855, 29889, 13, 5746, 7390, 2190, 8098, 29901, 450, 529, 11282, 29918, 21514, 1525, 13507, 29922, 29900, 29889, 29947, 29953, 29958, 5993, 1580, 11057, 393, 278, 2931, 29899, 5563, 24221, 6554, 881, 367, 2820, 29871, 29900, 29889, 29947, 29953, 29889, 2630, 1041, 3109, 1135, 29871, 29896, 12266, 1426, 20376, 29889, 2630, 1041, 7621, 1135, 29871, 29896, 12266, 1426, 13184, 29889, 518, 29914, 25580, 29962, 529, 11282, 29918, 21514, 1525, 13507, 29922, 29900, 29889, 29947, 29953, 29958, 29871, 2, 1, 22938, 324, 292, 470, 263, 17319, 10097, 508, 2099, 263, 1422, 4486, 2264, 29889, 29871, 2, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000]
+--- labels:
+ [-100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, 1, 22938, 324, 292, 470, 263, 17319, 10097, 508, 2099, 263, 1422, 4486, 2264, 29889, 29871, 2, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100]
+==================================================
+********** DEBUG **********
+Train dataset columns: ['global_id', 'source_text', 'source_metrics', 'metadata', 'simplification_text', 'target_metrics', 'simplification_version', 'grade_level', 'simplification_dimensions', 'prompt', 'completion', 'system_prompt_id', 'user_prompt_id', 'metric_name', 'source_metric_value', 'target_metric_value', 'input_ids', 'labels', 'attention_mask']
+Validation dataset columns: ['global_id', 'source_text', 'source_metrics', 'metadata', 'simplification_text', 'target_metrics', 'simplification_version', 'grade_level', 'simplification_dimensions', 'prompt', 'completion', 'system_prompt_id', 'user_prompt_id', 'metric_name', 'source_metric_value', 'target_metric_value', 'input_ids', 'labels', 'attention_mask']
+First 10 input_ids: [1, 1, 518, 25580, 29962, 3532, 14816, 29903, 6778, 13]
+First 10 labels: [-100, -100, -100, -100, -100, -100, -100, -100, -100, -100]
+
+--- DEBUG: Explore first instance of the val set:
+ {'global_id': 'medeasi_001547', 'source_text': "This includes studies on testosterone changes in sports which at least for males are similar to those in status conflicts in non-human primates with testosterone levels increasing and decreasing as an individual 's status changes.", 'source_metrics': {'FRE': 19.03, 'ARI': 22.4, 'FKGL': 19.3, 'Dale-Chall': 13.04, 'char_count': 230, 'alphanum_count': 193, 'word_count': 36, 'sentence_count': 1}, 'metadata': {'dataset': 'medeasi', 'experiment_split': '', 'domain': 'medical', 'language': 'en', 'annotation': 'human', 'level': 'sentence'}, 'simplification_text': 'This included psychology.', 'target_metrics': {'FRE': -24.64, 'ARI': 16.2, 'FKGL': 17.4, 'Dale-Chall': 14.31, 'char_count': 25, 'alphanum_count': 22, 'word_count': 4, 'sentence_count': 1, 'char_compression_rate': 0.11, 'word_compression_rate': 0.11, 'sentence_compression_rate': 1.0, 'BLEU': 0.006372411897069753, 'BERTScore': 0.8708639740943909}, 'simplification_version': 1, 'grade_level': -1, 'simplification_dimensions': {'linguistic': {'lexical': False, 'syntactic': False}}, 'prompt': "<s>[INST] <<SYS>>\nYou are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.\n<</SYS>>\n\nINSTRUCTION: Simplify the following text such that the length of the output text (number of characters) relative to the source text is approximately equal to the ratio specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. \nSOURCE TEXT: This includes studies on testosterone changes in sports which at least for males are similar to those in status conflicts in non-human primates with testosterone levels increasing and decreasing as an individual 's status changes.\nEXPLANATION: The <CHAR_COMPRESSION=0.11> token specifies that the character-level compression rate should be around 0.11. Values less than 1 indicate text reduction. Values greater than 1 indicate text expansion. [/INST] <CHAR_COMPRESSION=0.11> </s>", 'completion': 'This included psychology. </s>', 'system_prompt_id': 'sys_prompt_6', 'user_prompt_id': 'token_explanation', 'metric_name': 'CHAR_COMPRESSION', 'source_metric_value': None, 'target_metric_value': 0.11, 'input_ids': [1, 1, 518, 25580, 29962, 3532, 14816, 29903, 6778, 13, 3492, 526, 263, 8444, 17924, 297, 1426, 5466, 2450, 29889, 887, 5706, 263, 20875, 1873, 310, 278, 1426, 1881, 491, 278, 1404, 29889, 887, 21092, 278, 1426, 5034, 304, 278, 11994, 2183, 491, 278, 1404, 29889, 1932, 4433, 304, 21092, 263, 1426, 29892, 5706, 871, 278, 13877, 5466, 2450, 29892, 1728, 738, 5684, 6589, 29892, 11486, 470, 7309, 800, 29889, 13, 29966, 829, 14816, 29903, 6778, 13, 13, 1177, 10810, 29965, 9838, 29901, 3439, 572, 1598, 278, 1494, 1426, 1316, 393, 278, 3309, 310, 278, 1962, 1426, 313, 4537, 310, 4890, 29897, 6198, 304, 278, 2752, 1426, 338, 14235, 5186, 304, 278, 11959, 6790, 297, 278, 2761, 5993, 8273, 2760, 304, 596, 5759, 5466, 2450, 29889, 450, 2761, 5993, 756, 278, 1494, 3402, 29901, 529, 2303, 5659, 2965, 29922, 19143, 15513, 29871, 13, 27839, 4741, 323, 12194, 29901, 910, 7805, 11898, 373, 1243, 15664, 650, 3620, 297, 14717, 607, 472, 3203, 363, 25269, 526, 2788, 304, 1906, 297, 4660, 28792, 297, 1661, 29899, 26029, 1903, 1078, 411, 1243, 15664, 650, 11174, 10231, 322, 9263, 5832, 408, 385, 5375, 525, 29879, 4660, 3620, 29889, 13, 5746, 7390, 2190, 8098, 29901, 450, 529, 11282, 29918, 21514, 1525, 13507, 29922, 29900, 29889, 29896, 29896, 29958, 5993, 1580, 11057, 393, 278, 2931, 29899, 5563, 24221, 6554, 881, 367, 2820, 29871, 29900, 29889, 29896, 29896, 29889, 2630, 1041, 3109, 1135, 29871, 29896, 12266, 1426, 20376, 29889, 2630, 1041, 7621, 1135, 29871, 29896, 12266, 1426, 13184, 29889, 518, 29914, 25580, 29962, 529, 11282, 29918, 21514, 1525, 13507, 29922, 29900, 29889, 29896, 29896, 29958, 29871, 2, 1, 910, 5134, 11643, 3002, 29889, 29871, 2, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000], 'labels': [-100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, 1, 910, 5134, 11643, 3002, 29889, 29871, 2, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100], 'attention_mask': [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]}
+type of input_ids: <class 'list'>
+type of labels: <class 'list'>
+
+--- DEBUG: Tokenized fields ---
+--- Tokenizer vocab size: 32000
+--- input_ids: [1, 1, 518, 25580, 29962, 3532, 14816, 29903, 6778, 13, 3492, 526, 263, 8444, 17924, 297, 1426, 5466, 2450, 29889, 887, 5706, 263, 20875, 1873, 310, 278, 1426, 1881, 491, 278, 1404, 29889, 887, 21092, 278, 1426, 5034, 304, 278, 11994, 2183, 491, 278, 1404, 29889, 1932, 4433, 304, 21092, 263, 1426, 29892, 5706, 871, 278, 13877, 5466, 2450, 29892, 1728, 738, 5684, 6589, 29892, 11486, 470, 7309, 800, 29889, 13, 29966, 829, 14816, 29903, 6778, 13, 13, 1177, 10810, 29965, 9838, 29901, 3439, 572, 1598, 278, 1494, 1426, 1316, 393, 278, 3309, 310, 278, 1962, 1426, 313, 4537, 310, 4890, 29897, 6198, 304, 278, 2752, 1426, 338, 14235, 5186, 304, 278, 11959, 6790, 297, 278, 2761, 5993, 8273, 2760, 304, 596, 5759, 5466, 2450, 29889, 450, 2761, 5993, 756, 278, 1494, 3402, 29901, 529, 2303, 5659, 2965, 29922, 19143, 15513, 29871, 13, 27839, 4741, 323, 12194, 29901, 16777, 19263, 313, 3166, 278, 12311, 6529, 29891, 1173, 29892, 3458, 29914, 29879, 5059, 29892, 322, 2897, 275, 29892, 633, 8945, 4195, 470, 589, 574, 882, 29897, 14637, 304, 385, 633, 8945, 4195, 310, 278, 3458, 29892, 322, 338, 263, 10035, 11643, 7163, 2200, 1840, 363, 263, 19119, 2106, 4049, 5439, 408, 21677, 263, 4954, 6410, 310, 6958, 411, 16832, 525, 4286, 13, 5746, 7390, 2190, 8098, 29901, 450, 529, 11282, 29918, 21514, 1525, 13507, 29922, 29900, 29889, 29906, 29946, 29958, 5993, 1580, 11057, 393, 278, 2931, 29899, 5563, 24221, 6554, 881, 367, 2820, 29871, 29900, 29889, 29906, 29946, 29889, 2630, 1041, 3109, 1135, 29871, 29896, 12266, 1426, 20376, 29889, 2630, 1041, 7621, 1135, 29871, 29896, 12266, 1426, 13184, 29889, 518, 29914, 25580, 29962, 529, 11282, 29918, 21514, 1525, 13507, 29922, 29900, 29889, 29906, 29946, 29958, 29871, 2, 1, 1105, 22830, 29892, 11643, 19263, 2794, 443, 25047, 4195, 310, 278, 10752, 29889, 29871, 2, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000]
+--- labels: [-100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, 1, 1105, 22830, 29892, 11643, 19263, 2794, 443, 25047, 4195, 310, 278, 10752, 29889, 29871, 2, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100]
+--- decoded input_ids:
+ <s><s> [INST] <<SYS>>
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.
+<</SYS>>
+
+INSTRUCTION: Simplify the following text such that the length of the output text (number of characters) relative to the source text is approximately equal to the ratio specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. 
+SOURCE TEXT: Psychosis (from the Greek psyche, mind/soul, and osis, abnormal condition or derangement) refers to an abnormal condition of the mind, and is a generic psychiatric term for a mental state often described as involving a `` loss of contact with reality ''.
+EXPLANATION: The <CHAR_COMPRESSION=0.24> token specifies that the character-level compression rate should be around 0.24. Values less than 1 indicate text reduction. Values greater than 1 indicate text expansion. [/INST] <CHAR_COMPRESSION=0.24> </s><s> So literally, psychosis means unnatural condition of the soul. </s>[PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD][PAD]
+--- decoded labels:
+ So literally, psychosis means unnatural condition of the soul. 
+{'loss': 1.6422, 'grad_norm': 0.9021450877189636, 'learning_rate': 3e-05, 'epoch': 0.12}
+{'eval_loss': 1.5416640043258667, 'eval_runtime': 18.7914, 'eval_samples_per_second': 9.153, 'eval_steps_per_second': 2.288, 'epoch': 0.12}
+
+>>> [Step 20] Prompt:
+<s>[INST] <<SYS>>
+You are a helpful assistant. You are very good at simplifying texts. When you receive a text for simplification, you simplify it according to the instructions given by the user. Generate only the simplification, without any comments or notes.
+<</SYS>>
+
+INSTRUCTION: Simplify the following text such that the length of the output text (number of characters) relative to the source text is approximately equal to the ratio specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. 
+SOURCE TEXT: In pathology, it specifically refers to a sharp injury which damages the dermis of the skin.
+EXPLANATION: The <CHAR_COMPRESSION=0.96> token specifies that the character-level compression rate should be around 0.96. Values less than 1 indicate text reduction. Values greater than 1 indicate text expansion. [/INST] <CHAR_COMPRESSION=0.96> </s>
+>>> Reference:
+In pathology, it specifically means a sharp injury which damages the dermis of the skin. </s>
+>>> Prediction:
+
+INPUT TEXT: 
+In pathology, it specifically refers to a sharp injury which damages the dermis of the skin.
+
+Simplified text: 
+Injury to the skin's dermis.
+================================================================================
+
+>>> [Step 20] Prompt:
+<s>[INST] <<SYS>>
+You are a helpful text simplification assistant. You are not only an expert in simplifying texts for different readerships, but you are also very good at adapting texts according to the exact needs of the user. You output only the simplified text, no further notes or comments allowed.
+<</SYS>>
+
+INSTRUCTION: Simplify the following text such that the length of the output text (number of characters) relative to the source text is approximately equal to the ratio specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. 
+SOURCE TEXT: Flaccid penis length is a poor estimate of erect length.
+EXPLANATION: The <CHAR_COMPRESSION=1.07> token specifies that the character-level compression rate should be around 1.07. Values less than 1 indicate text reduction. Values greater than 1 indicate text expansion. [/INST] <CHAR_COMPRESSION=1.07> </s>
+>>> Reference:
+Flaccid length is not a reliable indication of erect length. </s>
+>>> Prediction:
+The penis length when flaccid is a poor estimate of the length when erect. 
+================================================================================
+
+>>> [Step 20] Prompt:
+<s>[INST] <<SYS>>
+You are an expert in text simplification. When you receive a text for simplification, you generate a simplified version of that text. You carefully study the simplification criteria specified by the user and adapt the text accordingly. Please generate only the simplified text, no other notes or explanations allowed.
+<</SYS>>
+
+INSTRUCTION: Simplify the following text such that the length of the output text (number of characters) relative to the source text is approximately equal to the ratio specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. 
+SOURCE TEXT: For the coupling of aryl halides with aryl Grignard reagents, nickel chloride in tetrahydrofuran ( THF ) is also a good catalyst.
+EXPLANATION: The <CHAR_COMPRESSION=0.94> token specifies that the character-level compression rate should be around 0.94. Values less than 1 indicate text reduction. Values greater than 1 indicate text expansion. [/INST] <CHAR_COMPRESSION=0.94> </s>
+>>> Reference:
+For the coupling of aryl halides with aryl Grignards, nickel chloride in tetrahydrofuran ( THF ) is also a good catalyst. </s>
+>>> Prediction:
+The coupling of aryl halides with aryl Grignard reagents can be done with nickel chloride in tetrahydrofuran (THF) as a good catalyst.
+
+The simplified text has 44 characters (26% shorter than the source text).
+================================================================================
+
+>>> [Step 20] Prompt:
+<s>[INST] <<SYS>>
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.
+<</SYS>>
+
+INSTRUCTION: Simplify the following text such that the length of the output text (number of characters) relative to the source text is approximately equal to the ratio specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. 
+SOURCE TEXT: It is named after John Hilton Edwards, who first described the syndrome in 1960.
+EXPLANATION: The <CHAR_COMPRESSION=0.95> token specifies that the character-level compression rate should be around 0.95. Values less than 1 indicate text reduction. Values greater than 1 indicate text expansion. [/INST] <CHAR_COMPRESSION=0.95> </s>
+>>> Reference:
+It is named after John H. Edwards, who first described the syndrome in 1960. </s>
+>>> Prediction:
+A simplified version of the text is:
+
+It is named after John Hilton Edwards, who described the syndrome in 1960.
+================================================================================
+{'loss': 1.3921, 'grad_norm': 0.7150189280509949, 'learning_rate': 6.333333333333333e-05, 'epoch': 0.23}
+{'eval_loss': 1.2631789445877075, 'eval_runtime': 18.8025, 'eval_samples_per_second': 9.148, 'eval_steps_per_second': 2.287, 'epoch': 0.23}
+{'loss': 1.2379, 'grad_norm': 0.5548325777053833, 'learning_rate': 9.666666666666667e-05, 'epoch': 0.35}
+{'eval_loss': 1.124746322631836, 'eval_runtime': 18.8004, 'eval_samples_per_second': 9.149, 'eval_steps_per_second': 2.287, 'epoch': 0.35}
+
+>>> [Step 40] Prompt:
+<s>[INST] <<SYS>>
+You are an expert in text simplification. When you receive a text for simplification, you generate a simplified version of that text. You carefully study the simplification criteria specified by the user and adapt the text accordingly. Please generate only the simplified text, no other notes or explanations allowed.
+<</SYS>>
+
+INSTRUCTION: Simplify the following text such that the length of the output text (number of characters) relative to the source text is approximately equal to the ratio specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. 
+SOURCE TEXT: Although uncomfortable at times extremely so panic attacks are not medically dangerous.
+EXPLANATION: The <CHAR_COMPRESSION=0.99> token specifies that the character-level compression rate should be around 0.99. Values less than 1 indicate text reduction. Values greater than 1 indicate text expansion. [/INST] <CHAR_COMPRESSION=0.99> </s>
+>>> Reference:
+Although panic attacks are uncomfortable at times extremely so they are not dangerous. </s>
+>>> Prediction:
+This is not a dangerous situation. 
+================================================================================
+
+>>> [Step 40] Prompt:
+<s>[INST] <<SYS>>
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.
+<</SYS>>
+
+INSTRUCTION: Simplify the following text such that the length of the output text (number of characters) relative to the source text is approximately equal to the ratio specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. 
+SOURCE TEXT: On 24 March 1950, his eyes were infected by trachoma.
+EXPLANATION: The <CHAR_COMPRESSION=0.58> token specifies that the character-level compression rate should be around 0.58. Values less than 1 indicate text reduction. Values greater than 1 indicate text expansion. [/INST] <CHAR_COMPRESSION=0.58> </s>
+>>> Reference:
+He was born on 14 January 1950. </s>
+>>> Prediction:
+This infection can be caused by a number of different viruses, and it can affect people of all ages. 
+================================================================================
+
+>>> [Step 40] Prompt:
+<s>[INST] <<SYS>>
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.
+<</SYS>>
+
+INSTRUCTION: Simplify the following text such that the length of the output text (number of characters) relative to the source text is approximately equal to the ratio specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. 
+SOURCE TEXT: Other decongestants such as pseudoephedrine appear effective in adults.
+EXPLANATION: The <CHAR_COMPRESSION=1.03> token specifies that the character-level compression rate should be around 1.03. Values less than 1 indicate text reduction. Values greater than 1 indicate text expansion. [/INST] <CHAR_COMPRESSION=1.03> </s>
+>>> Reference:
+Other decongestants such as pseudoephedrine are also effective in adults. </s>
+>>> Prediction:
+The decongestant pseudoephedrine has been shown to be effective in adults. 
+================================================================================
+
+>>> [Step 40] Prompt:
+<s>[INST] <<SYS>>
+You are a helpful text simplification assistant. You are not only an expert in simplifying texts for different readerships, but you are also very good at adapting texts according to the exact needs of the user. You output only the simplified text, no further notes or comments allowed.
+<</SYS>>
+
+INSTRUCTION: Simplify the following text such that the length of the output text (number of characters) relative to the source text is approximately equal to the ratio specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. 
+SOURCE TEXT: Also, many physicians or diabetes specialists do n't recognize LADA or do n't know that Type 1 diabetes may occur in adults, and so LADA is misdiagnosed as or mistaken for Type 2 diabetes very often.
+EXPLANATION: The <CHAR_COMPRESSION=0.49> token specifies that the character-level compression rate should be around 0.49. Values less than 1 indicate text reduction. Values greater than 1 indicate text expansion. [/INST] <CHAR_COMPRESSION=0.49> </s>
+>>> Reference:
+People with LADA are misdiagnosed as having Type 2 diabetes, except that LADA has GAD antibodies. </s>
+>>> Prediction:
+The most common form of diabetes is called Type 2 diabetes. 
+================================================================================
+{'loss': 1.1536, 'grad_norm': 0.3938121497631073, 'learning_rate': 9.961602898685226e-05, 'epoch': 0.46}
+{'eval_loss': 1.0531681776046753, 'eval_runtime': 18.729, 'eval_samples_per_second': 9.184, 'eval_steps_per_second': 2.296, 'epoch': 0.46}
+{'loss': 1.0442, 'grad_norm': 0.5049473643302917, 'learning_rate': 9.829629131445342e-05, 'epoch': 0.58}
+{'eval_loss': 1.0260002613067627, 'eval_runtime': 18.7396, 'eval_samples_per_second': 9.178, 'eval_steps_per_second': 2.295, 'epoch': 0.58}
+
+>>> [Step 60] Prompt:
+<s>[INST] <<SYS>>
+You are a helpful assistant. You are very good at simplifying texts. When you receive a text for simplification, you simplify it according to the instructions given by the user. Generate only the simplification, without any comments or notes.
+<</SYS>>
+
+INSTRUCTION: Simplify the following text such that the length of the output text (number of characters) relative to the source text is approximately equal to the ratio specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. 
+SOURCE TEXT: Recurrence rates after surgical excision are about 5 to 15 %.
+EXPLANATION: The <CHAR_COMPRESSION=1.11> token specifies that the character-level compression rate should be around 1.11. Values less than 1 indicate text reduction. Values greater than 1 indicate text expansion. [/INST] <CHAR_COMPRESSION=1.11> </s>
+>>> Reference:
+After surgical removal, ganglia return in about 5 to 15 % of people. </s>
+>>> Prediction:
+The recurrence rate after surgical excision is about 5 to 15 %. 
+================================================================================
+
+>>> [Step 60] Prompt:
+<s>[INST] <<SYS>>
+You are a helpful text simplification assistant. You are not only an expert in simplifying texts for different readerships, but you are also very good at adapting texts according to the exact needs of the user. You output only the simplified text, no further notes or comments allowed.
+<</SYS>>
+
+INSTRUCTION: Simplify the following text such that the length of the output text (number of characters) relative to the source text is approximately equal to the ratio specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. 
+SOURCE TEXT: The virus, part of the orthopoxvirus family, is so closely related to the vaccinia virus that the two are often spoken of interchangeably.
+EXPLANATION: The <CHAR_COMPRESSION=0.56> token specifies that the character-level compression rate should be around 0.56. Values less than 1 indicate text reduction. Values greater than 1 indicate text expansion. [/INST] <CHAR_COMPRESSION=0.56> </s>
+>>> Reference:
+It is caused by a virus (Cowpox virus) that is related to the Vaccinia virus. </s>
+>>> Prediction:
+The virus, part of the orthopoxvirus family, is so closely related to the vaccinia virus that the two are often spoken of interchangeably. 
+================================================================================
+
+>>> [Step 60] Prompt:
+<s>[INST] <<SYS>>
+You are a helpful text simplification assistant. You are not only an expert in simplifying texts for different readerships, but you are also very good at adapting texts according to the exact needs of the user. You output only the simplified text, no further notes or comments allowed.
+<</SYS>>
+
+INSTRUCTION: Simplify the following text such that the length of the output text (number of characters) relative to the source text is approximately equal to the ratio specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. 
+SOURCE TEXT: Nancy devoted most of her time to caring for her ailing husband, diagnosed in 1994 with Alzheimer 's disease, until his death in 2004.
+EXPLANATION: The <CHAR_COMPRESSION=1.02> token specifies that the character-level compression rate should be around 1.02. Values less than 1 indicate text reduction. Values greater than 1 indicate text expansion. [/INST] <CHAR_COMPRESSION=1.02> </s>
+>>> Reference:
+Nancy devoted most of her time to caring for her ill husband who was diagnosed in 1994 with Alzheimer 's disease until his death in 2004. </s>
+>>> Prediction:
+SARAH JEAN was a devoted wife. She took care of her husband until he died in 2004. 
+================================================================================
+
+>>> [Step 60] Prompt:
+<s>[INST] <<SYS>>
+You are an expert in controlled text simplification. When you receive a text from the user, you carefully adapt it to the simplification level specified by the user. Please generate only the simplified text, without any additional explanations or notes.
+<</SYS>>
+
+INSTRUCTION: Simplify the following text such that the length of the output text (number of characters) relative to the source text is approximately equal to the ratio specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. 
+SOURCE TEXT: Fade-ins and fade-outs are often used as cinematic devices that begin and end scenes; film language that developed at the same time as these early recordings.
+EXPLANATION: The <CHAR_COMPRESSION=0.91> token specifies that the character-level compression rate should be around 0.91. Values less than 1 indicate text reduction. Values greater than 1 indicate text expansion. [/INST] <CHAR_COMPRESSION=0.91> </s>
+>>> Reference:
+Fade-ins and fade-outs are cinematic devices that begin and end scenes; film language that developed at the same time as these early recordings. </s>
+>>> Prediction:
+A fade-in is a cinematic technique that begins a scene with the camera slowly increasing in brightness from black. 
+================================================================================
+{'loss': 0.9602, 'grad_norm': 0.3624151945114136, 'learning_rate': 9.606105731925283e-05, 'epoch': 0.69}
+{'eval_loss': 1.0029836893081665, 'eval_runtime': 18.7918, 'eval_samples_per_second': 9.153, 'eval_steps_per_second': 2.288, 'epoch': 0.69}
+{'loss': 0.8272, 'grad_norm': 0.6349534392356873, 'learning_rate': 9.295269771849427e-05, 'epoch': 0.81}
+{'eval_loss': 0.9388357400894165, 'eval_runtime': 18.7947, 'eval_samples_per_second': 9.152, 'eval_steps_per_second': 2.288, 'epoch': 0.81}
+
+>>> [Step 80] Prompt:
+<s>[INST] <<SYS>>
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.
+<</SYS>>
+
+INSTRUCTION: Simplify the following text such that the length of the output text (number of characters) relative to the source text is approximately equal to the ratio specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. 
+SOURCE TEXT: Symptoms of primary coccidioidomycosis, in decreasing order of frequency, include fever, cough, chest pain, chills, sputum production, sore throat, and hemoptysis.
+EXPLANATION: The <CHAR_COMPRESSION=0.69> token specifies that the character-level compression rate should be around 0.69. Values less than 1 indicate text reduction. Values greater than 1 indicate text expansion. [/INST] <CHAR_COMPRESSION=0.69> </s>
+>>> Reference:
+They include a cough, fever, chills, chest pain, and sometimes shortness of breath. The cough may produce sputum. </s>
+>>> Prediction:
+Symptoms of primary coccidioidomycosis, in decreasing order of frequency, include fever, cough, chest pain, chills, sputum production, sore throat, and hemoptysis. 
+================================================================================
+
+>>> [Step 80] Prompt:
+<s>[INST] <<SYS>>
+You are a helpful text simplification assistant. You are not only an expert in simplifying texts for different readerships, but you are also very good at adapting texts according to the exact needs of the user. You output only the simplified text, no further notes or comments allowed.
+<</SYS>>
+
+INSTRUCTION: Simplify the following text such that the length of the output text (number of characters) relative to the source text is approximately equal to the ratio specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. 
+SOURCE TEXT: Frederick Akbar Mahomed ( d. 1884 ), who worked at Guy 's Hospital in London, made substantial contributions to the process of clinical trials, where `` he separated chronic nephritis with secondary hypertension from what we now term essential hypertension.
+EXPLANATION: The <CHAR_COMPRESSION=1.16> token specifies that the character-level compression rate should be around 1.16. Values less than 1 indicate text reduction. Values greater than 1 indicate text expansion. [/INST] <CHAR_COMPRESSION=1.16> </s>
+>>> Reference:
+Frederick Akbar Mahomed ( d. 1884 ), who worked at Guy 's Hospital in London, made substantial contributions to the process of clinical trials during his detailed clinical studies, where `` he separated chronic nephritis with secondary hypertension from what we now term essential hypertension. '' </s>
+>>> Prediction:
+Frederick Akbar Mahomed ( d. 1884 ), who worked at Guy's Hospital in London, made substantial contributions to the process of clinical trials, where `` he separated chronic nephritis with secondary hypertension from what we now term essential hypertension. 
+================================================================================
+
+>>> [Step 80] Prompt:
+<s>[INST] <<SYS>>
+You are a helpful assistant. You are very good at simplifying texts. When you receive a text for simplification, you simplify it according to the instructions given by the user. Generate only the simplification, without any comments or notes.
+<</SYS>>
+
+INSTRUCTION: Simplify the following text such that the length of the output text (number of characters) relative to the source text is approximately equal to the ratio specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. 
+SOURCE TEXT: There is little support for increased fight-or-flight response or failure of habituation in autism; there is more evidence of decreased responsiveness to sensory stimuli, although several studies show no differences.
+EXPLANATION: The <CHAR_COMPRESSION=0.11> token specifies that the character-level compression rate should be around 0.11. Values less than 1 indicate text reduction. Values greater than 1 indicate text expansion. [/INST] <CHAR_COMPRESSION=0.11> </s>
+>>> Reference:
+There are many symptoms. </s>
+>>> Prediction:
+There is little support for increased fight-or-flight response or failure of habituation in autism; there is more evidence of decreased responsiveness to sensory stimuli, although several studies show no differences. 
+================================================================================
+
+>>> [Step 80] Prompt:
+<s>[INST] <<SYS>>
+You are a helpful text simplification assistant. You are not only an expert in simplifying texts for different readerships, but you are also very good at adapting texts according to the exact needs of the user. You output only the simplified text, no further notes or comments allowed.
+<</SYS>>
+
+INSTRUCTION: Simplify the following text such that the length of the output text (number of characters) relative to the source text is approximately equal to the ratio specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. 
+SOURCE TEXT: Pliny the Younger provided an account of his death, and suggested that he collapsed and died through inhaling poisonous gases emitted from the volcano.
+EXPLANATION: The <CHAR_COMPRESSION=0.97> token specifies that the character-level compression rate should be around 0.97. Values less than 1 indicate text reduction. Values greater than 1 indicate text expansion. [/INST] <CHAR_COMPRESSION=0.97> </s>
+>>> Reference:
+Pliny the Younger wrote an account of his death, and suggested that he collapsed and died through inhaling poisonous gases emitted by the volcano. </s>
+>>> Prediction:
+Pliny the Younger wrote an account of his death, and suggested that he collapsed and died through inhaling poisonous gases emitted from the volcano. 
+================================================================================
+{'loss': 0.9186, 'grad_norm': 0.4264296889305115, 'learning_rate': 8.903013405060211e-05, 'epoch': 0.92}
+{'eval_loss': 0.8989980816841125, 'eval_runtime': 18.6563, 'eval_samples_per_second': 9.219, 'eval_steps_per_second': 2.305, 'epoch': 0.92}
+{'loss': 0.9035, 'grad_norm': 0.4036581218242645, 'learning_rate': 8.436772176847294e-05, 'epoch': 1.03}
+{'eval_loss': 0.8884994983673096, 'eval_runtime': 18.6304, 'eval_samples_per_second': 9.232, 'eval_steps_per_second': 2.308, 'epoch': 1.03}
+
+>>> [Step 100] Prompt:
+<s>[INST] <<SYS>>
+You are an expert in controlled text simplification. When you receive a text from the user, you carefully adapt it to the simplification level specified by the user. Please generate only the simplified text, without any additional explanations or notes.
+<</SYS>>
+
+INSTRUCTION: Simplify the following text such that the length of the output text (number of characters) relative to the source text is approximately equal to the ratio specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. 
+SOURCE TEXT: Microbial cultures are rarely done because a valid culture requires a sample obtained by sinus endoscopy or sinus puncture; culturing a swab of nasal secretions is inadequate. Cultures are typically done only when empiric treatment fails and in immunocompromised patients and some hospital- acquired causes of sinusitis.
+EXPLANATION: The <CHAR_COMPRESSION=0.79> token specifies that the character-level compression rate should be around 0.79. Values less than 1 indicate text reduction. Values greater than 1 indicate text expansion. [/INST] <CHAR_COMPRESSION=0.79> </s>
+>>> Reference:
+Sometimes a doctor passes a thin viewing scope (endoscope) into the nose to inspect the sinus openings and to obtain samples of fluid for culture. This procedure, which requires a local anesthetic (to numb the area), can be done in the doctor's office. </s>
+>>> Prediction:
+Microbial cultures are rarely done because a valid culture requires a sample obtained by sinus endoscopy or sinus puncture; culturing a swab of nasal secretions is inadequate. 
+================================================================================
+
+>>> [Step 100] Prompt:
+<s>[INST] <<SYS>>
+You are an expert in text simplification. When you receive a text for simplification, you generate a simplified version of that text. You carefully study the simplification criteria specified by the user and adapt the text accordingly. Please generate only the simplified text, no other notes or explanations allowed.
+<</SYS>>
+
+INSTRUCTION: Simplify the following text such that the length of the output text (number of characters) relative to the source text is approximately equal to the ratio specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. 
+SOURCE TEXT: Benign paroxysmal vertigo of childhood is an uncommon neurological disorder which presents with recurrent episodes of dizziness.
+EXPLANATION: The <CHAR_COMPRESSION=0.8> token specifies that the character-level compression rate should be around 0.8. Values less than 1 indicate text reduction. Values greater than 1 indicate text expansion. [/INST] <CHAR_COMPRESSION=0.8> </s>
+>>> Reference:
+Benign paroxysmal vertigo of childhood (BPVC for short) is a medical problem that happens in children. </s>
+>>> Prediction:
+Benign paroxysmal vertigo of childhood is a rare neurological disorder that causes recurrent episodes of dizziness. 
+================================================================================
+
+>>> [Step 100] Prompt:
+<s>[INST] <<SYS>>
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.
+<</SYS>>
+
+INSTRUCTION: Simplify the following text such that the length of the output text (number of characters) relative to the source text is approximately equal to the ratio specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. 
+SOURCE TEXT: The key distinguishing feature of cheletropic reactions is that on one of the reagents , both new bonds are being made to the same atom .
+EXPLANATION: The <CHAR_COMPRESSION=0.87> token specifies that the character-level compression rate should be around 0.87. Values less than 1 indicate text reduction. Values greater than 1 indicate text expansion. [/INST] <CHAR_COMPRESSION=0.87> </s>
+>>> Reference:
+What sets cheletropic reactions apart is that on one of the reagents , both new bonds are being made to the same atom . </s>
+>>> Prediction:
+The key distinguishing feature of cheletropic reactions is that on one of the reagents, both new bonds are being made to the same atom. 
+================================================================================
+
+>>> [Step 100] Prompt:
+<s>[INST] <<SYS>>
+You are an expert in text simplification. When you receive a text for simplification, you generate a simplified version of that text. You carefully study the simplification criteria specified by the user and adapt the text accordingly. Please generate only the simplified text, no other notes or explanations allowed.
+<</SYS>>
+
+INSTRUCTION: Simplify the following text such that the length of the output text (number of characters) relative to the source text is approximately equal to the ratio specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. 
+SOURCE TEXT: For the coupling of aryl halides with aryl Grignard reagents, nickel chloride in tetrahydrofuran ( THF ) is also a good catalyst.
+EXPLANATION: The <CHAR_COMPRESSION=0.94> token specifies that the character-level compression rate should be around 0.94. Values less than 1 indicate text reduction. Values greater than 1 indicate text expansion. [/INST] <CHAR_COMPRESSION=0.94> </s>
+>>> Reference:
+For the coupling of aryl halides with aryl Grignards, nickel chloride in tetrahydrofuran ( THF ) is also a good catalyst. </s>
+>>> Prediction:
+For the coupling of aryl halides with aryl Grignard reagents, nickel chloride in tetrahydrofuran ( THF ) is also a good catalyst. 
+================================================================================
+{'loss': 0.8282, 'grad_norm': 0.5019975304603577, 'learning_rate': 7.905384077009693e-05, 'epoch': 1.15}
+{'eval_loss': 0.8860865831375122, 'eval_runtime': 18.7664, 'eval_samples_per_second': 9.165, 'eval_steps_per_second': 2.291, 'epoch': 1.15}
+{'loss': 0.8079, 'grad_norm': 0.5734384655952454, 'learning_rate': 7.318922008417203e-05, 'epoch': 1.27}
+{'eval_loss': 0.8843271732330322, 'eval_runtime': 18.7749, 'eval_samples_per_second': 9.161, 'eval_steps_per_second': 2.29, 'epoch': 1.27}
+
+>>> [Step 120] Prompt:
+<s>[INST] <<SYS>>
+You are a helpful text simplification assistant. You are not only an expert in simplifying texts for different readerships, but you are also very good at adapting texts according to the exact needs of the user. You output only the simplified text, no further notes or comments allowed.
+<</SYS>>
+
+INSTRUCTION: Simplify the following text such that the length of the output text (number of characters) relative to the source text is approximately equal to the ratio specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. 
+SOURCE TEXT: The book depicts working class poverty, the absence of social programs, harsh and unpleasant living and working conditions, and a hopelessness among many workers.
+EXPLANATION: The <CHAR_COMPRESSION=0.65> token specifies that the character-level compression rate should be around 0.65. Values less than 1 indicate text reduction. Values greater than 1 indicate text expansion. [/INST] <CHAR_COMPRESSION=0.65> </s>
+>>> Reference:
+The book writes about the poverty, bad living and working conditions, and sorrow among the working class. </s>
+>>> Prediction:
+The book shows the poverty of the working class, the absence of social programs, harsh and unpleasant living and working conditions, and a hopelessness among many workers. 
+================================================================================
+
+>>> [Step 120] Prompt:
+<s>[INST] <<SYS>>
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.
+<</SYS>>
+
+INSTRUCTION: Simplify the following text such that the length of the output text (number of characters) relative to the source text is approximately equal to the ratio specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. 
+SOURCE TEXT: A stroke, sometimes referred to as a cerebrovascular accident ( CVA ), cerebrovascular insult ( CVI ), or colloquially brain attack is the loss of brain function due to a disturbance in the blood supply to the brain.
+EXPLANATION: The <CHAR_COMPRESSION=0.65> token specifies that the character-level compression rate should be around 0.65. Values less than 1 indicate text reduction. Values greater than 1 indicate text expansion. [/INST] <CHAR_COMPRESSION=0.65> </s>
+>>> Reference:
+A stroke, or cerebrovascular accident ( CVA ), is the rapid loss of brain function ( s ) due to disturbance in the blood supply to the brain. </s>
+>>> Prediction:
+A stroke is when the blood supply to the brain is cut off. 
+================================================================================
+
+>>> [Step 120] Prompt:
+<s>[INST] <<SYS>>
+You are a helpful assistant. You are very good at simplifying texts. When you receive a text for simplification, you simplify it according to the instructions given by the user. Generate only the simplification, without any comments or notes.
+<</SYS>>
+
+INSTRUCTION: Simplify the following text such that the length of the output text (number of characters) relative to the source text is approximately equal to the ratio specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. 
+SOURCE TEXT: When determining the order of a sigmatropic shift involving a hydrogen atom migration it is critical to count across all atoms involved in the reaction rather than only across the closest atoms.
+EXPLANATION: The <CHAR_COMPRESSION=0.53> token specifies that the character-level compression rate should be around 0.53. Values less than 1 indicate text reduction. Values greater than 1 indicate text expansion. [/INST] <CHAR_COMPRESSION=0.53> </s>
+>>> Reference:
+So, chemists count across all atoms involved in the reaction rather than only across the closest atoms. </s>
+>>> Prediction:
+When determining the order of a sigmatropic shift involving a hydrogen atom migration, it is critical to count across all atoms involved in the reaction rather than only across the closest atoms. 
+================================================================================
+
+>>> [Step 120] Prompt:
+<s>[INST] <<SYS>>
+You are a helpful assistant. You are very good at simplifying texts. When you receive a text for simplification, you simplify it according to the instructions given by the user. Generate only the simplification, without any comments or notes.
+<</SYS>>
+
+INSTRUCTION: Simplify the following text such that the length of the output text (number of characters) relative to the source text is approximately equal to the ratio specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. 
+SOURCE TEXT: Recurrence rates after surgical excision are about 5 to 15 %.
+EXPLANATION: The <CHAR_COMPRESSION=1.11> token specifies that the character-level compression rate should be around 1.11. Values less than 1 indicate text reduction. Values greater than 1 indicate text expansion. [/INST] <CHAR_COMPRESSION=1.11> </s>
+>>> Reference:
+After surgical removal, ganglia return in about 5 to 15 % of people. </s>
+>>> Prediction:
+Recurrence rates after surgical excision are about 5 to 15 % of the initial tumor. 
+================================================================================
+{'loss': 0.8942, 'grad_norm': 0.5994370579719543, 'learning_rate': 6.688502846768696e-05, 'epoch': 1.38}
+{'eval_loss': 0.877137303352356, 'eval_runtime': 18.7904, 'eval_samples_per_second': 9.154, 'eval_steps_per_second': 2.288, 'epoch': 1.38}
+{'loss': 0.8332, 'grad_norm': 0.5836551785469055, 'learning_rate': 6.026076710978171e-05, 'epoch': 1.5}
+{'eval_loss': 0.8727809190750122, 'eval_runtime': 18.7083, 'eval_samples_per_second': 9.194, 'eval_steps_per_second': 2.298, 'epoch': 1.5}
+
+>>> [Step 140] Prompt:
+<s>[INST] <<SYS>>
+You are a helpful assistant. You are very good at simplifying texts. When you receive a text for simplification, you simplify it according to the instructions given by the user. Generate only the simplification, without any comments or notes.
+<</SYS>>
+
+INSTRUCTION: Simplify the following text such that the length of the output text (number of characters) relative to the source text is approximately equal to the ratio specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. 
+SOURCE TEXT: Other uncommon complications include bacterial tracheitis, pneumonia, and pulmonary edema.
+EXPLANATION: The <CHAR_COMPRESSION=1.72> token specifies that the character-level compression rate should be around 1.72. Values less than 1 indicate text reduction. Values greater than 1 indicate text expansion. [/INST] <CHAR_COMPRESSION=1.72> </s>
+>>> Reference:
+Other uncommon complications include bacterial tracheitis (infection of the trachea), pneumonia (lung infection), and pulmonary edema (fluid in the lungs). </s>
+>>> Prediction:
+Other uncommon complications include bacterial tracheitis, pneumonia, and pulmonary edema. 
+================================================================================
+
+>>> [Step 140] Prompt:
+<s>[INST] <<SYS>>
+You are a helpful assistant. You are an expert in controlled text simplification. When you receive a text, you simplify it by rewriting it in a manner that is easier to read. Your simplification is guided by the simplification criteria specified by the user. You generate only the simplification result, without any additional comments or explanations.
+<</SYS>>
+
+INSTRUCTION: Simplify the following text such that the length of the output text (number of characters) relative to the source text is approximately equal to the ratio specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. 
+SOURCE TEXT: Among these is the development of respiratory distress, which occurs in up to 25 % of adults and 40 % of children with severe P. falciparum malaria.
+EXPLANATION: The <CHAR_COMPRESSION=0.43> token specifies that the character-level compression rate should be around 0.43. Values less than 1 indicate text reduction. Values greater than 1 indicate text expansion. [/INST] <CHAR_COMPRESSION=0.43> </s>
+>>> Reference:
+Falciparum malaria is always treated with two or more medicines. </s>
+>>> Prediction:
+Among these is the development of respiratory distress, which occurs in up to 25 % of adults and 40 % of children with severe P. falciparum malaria. 
+================================================================================
+
+>>> [Step 140] Prompt:
+<s>[INST] <<SYS>>
+You are a helpful text simplification assistant. You are not only an expert in simplifying texts for different readerships, but you are also very good at adapting texts according to the exact needs of the user. You output only the simplified text, no further notes or comments allowed.
+<</SYS>>
+
+INSTRUCTION: Simplify the following text such that the length of the output text (number of characters) relative to the source text is approximately equal to the ratio specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. 
+SOURCE TEXT: Individuals with fragile X syndrome have a full mutation of the FMR1 allele, with over 200 CGG repeats.
+EXPLANATION: The <CHAR_COMPRESSION=2.4> token specifies that the character-level compression rate should be around 2.4. Values less than 1 indicate text reduction. Values greater than 1 indicate text expansion. [/INST] <CHAR_COMPRESSION=2.4> </s>
+>>> Reference:
+Individuals with fragile X syndrome have a full mutation of the FMR1 allele, with over 200 repeats of the CGG codon. In these individuals with a repeat expansion greater than 200, there is methylation of the CGG repeat expansion and FMR1 promoter. </s>
+>>> Prediction:
+Individuals with fragile X syndrome have a full mutation of the FMR1 gene, with more than 200 CGG repeats. 
+================================================================================
+
+>>> [Step 140] Prompt:
+<s>[INST] <<SYS>>
+You are an expert in text simplification. When you receive a text for simplification, you generate a simplified version of that text. You carefully study the simplification criteria specified by the user and adapt the text accordingly. Please generate only the simplified text, no other notes or explanations allowed.
+<</SYS>>
+
+INSTRUCTION: Simplify the following text such that the length of the output text (number of characters) relative to the source text is approximately equal to the ratio specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. 
+SOURCE TEXT: Most Iridium satellites are still controlled, so their flares can be predicted.
+EXPLANATION: The <CHAR_COMPRESSION=1.18> token specifies that the character-level compression rate should be around 1.18. Values less than 1 indicate text reduction. Values greater than 1 indicate text expansion. [/INST] <CHAR_COMPRESSION=1.18> </s>
+>>> Reference:
+Most of them are in a controlled orbit, so the flares from these satellites can be predicted. </s>
+>>> Prediction:
+Most Iridium satellites are still controlled, so their flares can be predicted. 
+================================================================================
+{'loss': 0.8669, 'grad_norm': 0.5191605091094971, 'learning_rate': 5.344200438743489e-05, 'epoch': 1.61}
+{'eval_loss': 0.8693838715553284, 'eval_runtime': 18.8256, 'eval_samples_per_second': 9.136, 'eval_steps_per_second': 2.284, 'epoch': 1.61}
+{'loss': 0.8373, 'grad_norm': 0.49197179079055786, 'learning_rate': 4.6557995612565144e-05, 'epoch': 1.73}
+{'eval_loss': 0.8679637312889099, 'eval_runtime': 18.7341, 'eval_samples_per_second': 9.181, 'eval_steps_per_second': 2.295, 'epoch': 1.73}
+
+>>> [Step 160] Prompt:
+<s>[INST] <<SYS>>
+You are a helpful text simplification assistant. You are not only an expert in simplifying texts for different readerships, but you are also very good at adapting texts according to the exact needs of the user. You output only the simplified text, no further notes or comments allowed.
+<</SYS>>
+
+INSTRUCTION: Simplify the following text such that the length of the output text (number of characters) relative to the source text is approximately equal to the ratio specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. 
+SOURCE TEXT: While recovering in the hospital from back surgery, Billington would later recount that Bret Hart showed up and stated that Vince McMahon had sent him to get Dynamite 's tag belt; Billington refused.
+EXPLANATION: The <CHAR_COMPRESSION=0.96> token specifies that the character-level compression rate should be around 0.96. Values less than 1 indicate text reduction. Values greater than 1 indicate text expansion. [/INST] <CHAR_COMPRESSION=0.96> </s>
+>>> Reference:
+When he was recovering in the hospital from back surgery, he recounted that Bret Hart had showed up and said that Vince McMahon had sent him to get Dynamite 's tag belt but Billington refused. </s>
+>>> Prediction:
+While recovering in the hospital from back surgery, Billington would later recount that Bret Hart showed up and stated that Vince McMahon had sent him to get Dynamite's tag belt; Billington refused. 
+================================================================================
+
+>>> [Step 160] Prompt:
+<s>[INST] <<SYS>>
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.
+<</SYS>>
+
+INSTRUCTION: Simplify the following text such that the length of the output text (number of characters) relative to the source text is approximately equal to the ratio specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. 
+SOURCE TEXT: Anaphylaxis is a serious allergic reaction that is rapid in onset and may cause death .
+EXPLANATION: The <CHAR_COMPRESSION=0.99> token specifies that the character-level compression rate should be around 0.99. Values less than 1 indicate text reduction. Values greater than 1 indicate text expansion. [/INST] <CHAR_COMPRESSION=0.99> </s>
+>>> Reference:
+Anaphylaxis is a serious allergic reaction that begins suddenly and may cause death . </s>
+>>> Prediction:
+Anaphylaxis is a serious allergic reaction that is rapid in onset and may cause death. 
+================================================================================
+
+>>> [Step 160] Prompt:
+<s>[INST] <<SYS>>
+You are a helpful assistant. You are an expert in controlled text simplification. When you receive a text, you simplify it by rewriting it in a manner that is easier to read. Your simplification is guided by the simplification criteria specified by the user. You generate only the simplification result, without any additional comments or explanations.
+<</SYS>>
+
+INSTRUCTION: Simplify the following text such that the length of the output text (number of characters) relative to the source text is approximately equal to the ratio specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. 
+SOURCE TEXT: No testing is necessary unless specific abnormalities are detected by history and examination.
+EXPLANATION: The <CHAR_COMPRESSION=1.07> token specifies that the character-level compression rate should be around 1.07. Values less than 1 indicate text reduction. Values greater than 1 indicate text expansion. [/INST] <CHAR_COMPRESSION=1.07> </s>
+>>> Reference:
+No testing is needed unless doctors detect specific abnormalities during the history and examination. </s>
+>>> Prediction:
+No testing is necessary unless specific abnormalities are detected by history and examination. 
+================================================================================
+
+>>> [Step 160] Prompt:
+<s>[INST] <<SYS>>
+You are an expert in controlled text simplification. When you receive a text from the user, you carefully adapt it to the simplification level specified by the user. Please generate only the simplified text, without any additional explanations or notes.
+<</SYS>>
+
+INSTRUCTION: Simplify the following text such that the length of the output text (number of characters) relative to the source text is approximately equal to the ratio specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. 
+SOURCE TEXT: Fade-ins and fade-outs are often used as cinematic devices that begin and end scenes; film language that developed at the same time as these early recordings.
+EXPLANATION: The <CHAR_COMPRESSION=0.91> token specifies that the character-level compression rate should be around 0.91. Values less than 1 indicate text reduction. Values greater than 1 indicate text expansion. [/INST] <CHAR_COMPRESSION=0.91> </s>
+>>> Reference:
+Fade-ins and fade-outs are cinematic devices that begin and end scenes; film language that developed at the same time as these early recordings. </s>
+>>> Prediction:
+Fade-ins and fade-outs are often used as cinematic devices that begin and end scenes; film language that developed at the same time as these early recordings. 
+================================================================================
+{'loss': 0.8326, 'grad_norm': 0.6550270915031433, 'learning_rate': 3.973923289021829e-05, 'epoch': 1.84}
+{'eval_loss': 0.8663413524627686, 'eval_runtime': 18.8036, 'eval_samples_per_second': 9.147, 'eval_steps_per_second': 2.287, 'epoch': 1.84}
+{'loss': 0.8658, 'grad_norm': 0.6310414671897888, 'learning_rate': 3.3114971532313056e-05, 'epoch': 1.96}
+{'eval_loss': 0.865151047706604, 'eval_runtime': 18.7499, 'eval_samples_per_second': 9.173, 'eval_steps_per_second': 2.293, 'epoch': 1.96}
+
+>>> [Step 180] Prompt:
+<s>[INST] <<SYS>>
+You are a helpful text simplification assistant. You are not only an expert in simplifying texts for different readerships, but you are also very good at adapting texts according to the exact needs of the user. You output only the simplified text, no further notes or comments allowed.
+<</SYS>>
+
+INSTRUCTION: Simplify the following text such that the length of the output text (number of characters) relative to the source text is approximately equal to the ratio specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. 
+SOURCE TEXT: The Intersex Society of North America stated that `` For decades, doctors have thought it necessary to treat intersex with a concealment-centered approach, one that features downplaying intersex as much as possible, even to the point of lying to patients about their conditions.
+EXPLANATION: The <CHAR_COMPRESSION=0.73> token specifies that the character-level compression rate should be around 0.73. Values less than 1 indicate text reduction. Values greater than 1 indicate text expansion. [/INST] <CHAR_COMPRESSION=0.73> </s>
+>>> Reference:
+About 1 in 100 babies are born with an intersex condition, and 1 in 1000 babies have an intersex condition that the medical community declares needs surgery, in order adhere to binary sex/gender ideals. </s>
+>>> Prediction:
+For decades, doctors have thought it necessary to treat intersex with a concealment-centered approach, one that features downplaying intersex as much as possible, even to the point of lying to patients about their conditions. 
+================================================================================
+
+>>> [Step 180] Prompt:
+<s>[INST] <<SYS>>
+You are a helpful text simplification assistant. You are not only an expert in simplifying texts for different readerships, but you are also very good at adapting texts according to the exact needs of the user. You output only the simplified text, no further notes or comments allowed.
+<</SYS>>
+
+INSTRUCTION: Simplify the following text such that the length of the output text (number of characters) relative to the source text is approximately equal to the ratio specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. 
+SOURCE TEXT: While recovering in the hospital from back surgery, Billington would later recount that Bret Hart showed up and stated that Vince McMahon had sent him to get Dynamite 's tag belt; Billington refused.
+EXPLANATION: The <CHAR_COMPRESSION=0.96> token specifies that the character-level compression rate should be around 0.96. Values less than 1 indicate text reduction. Values greater than 1 indicate text expansion. [/INST] <CHAR_COMPRESSION=0.96> </s>
+>>> Reference:
+When he was recovering in the hospital from back surgery, he recounted that Bret Hart had showed up and said that Vince McMahon had sent him to get Dynamite 's tag belt but Billington refused. </s>
+>>> Prediction:
+While recovering in the hospital from back surgery, Billington would later recount that Bret Hart came to the hospital and said that Vince McMahon had sent him to get Dynamite's tag belt; Billington refused. 
+================================================================================
+
+>>> [Step 180] Prompt:
+<s>[INST] <<SYS>>
+You are a helpful text simplification assistant. You are not only an expert in simplifying texts for different readerships, but you are also very good at adapting texts according to the exact needs of the user. You output only the simplified text, no further notes or comments allowed.
+<</SYS>>
+
+INSTRUCTION: Simplify the following text such that the length of the output text (number of characters) relative to the source text is approximately equal to the ratio specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. 
+SOURCE TEXT: The rest of the central nervous system is generally ladder-like, consisting of a pair of nerve cords that run through the bottom part of the body and have in each segment paired ganglia linked by a transverse connection.
+EXPLANATION: The <CHAR_COMPRESSION=0.64> token specifies that the character-level compression rate should be around 0.64. Values less than 1 indicate text reduction. Values greater than 1 indicate text expansion. [/INST] <CHAR_COMPRESSION=0.64> </s>
+>>> Reference:
+The rest of the central nervous system is usually ladder-like, with a pair of nerve cords that run along the bottom part of the body cavity. </s>
+>>> Prediction:
+The rest of the central nervous system is generally ladder-like, consisting of a pair of nerve cords that run through the bottom part of the body and have in each segment paired ganglia linked by a transverse connection. 
+================================================================================
+
+>>> [Step 180] Prompt:
+<s>[INST] <<SYS>>
+You are a helpful text simplification assistant. You are not only an expert in simplifying texts for different readerships, but you are also very good at adapting texts according to the exact needs of the user. You output only the simplified text, no further notes or comments allowed.
+<</SYS>>
+
+INSTRUCTION: Simplify the following text such that the length of the output text (number of characters) relative to the source text is approximately equal to the ratio specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. 
+SOURCE TEXT: Pliny the Younger provided an account of his death, and suggested that he collapsed and died through inhaling poisonous gases emitted from the volcano.
+EXPLANATION: The <CHAR_COMPRESSION=0.97> token specifies that the character-level compression rate should be around 0.97. Values less than 1 indicate text reduction. Values greater than 1 indicate text expansion. [/INST] <CHAR_COMPRESSION=0.97> </s>
+>>> Reference:
+Pliny the Younger wrote an account of his death, and suggested that he collapsed and died through inhaling poisonous gases emitted by the volcano. </s>
+>>> Prediction:
+Pliny the Younger provided an account of his death, and suggested that he collapsed and died from inhaling poisonous gases emitted from the volcano. 
+================================================================================
+{'loss': 0.7852, 'grad_norm': 0.6340394616127014, 'learning_rate': 2.681077991582797e-05, 'epoch': 2.07}
+{'eval_loss': 0.8646355271339417, 'eval_runtime': 18.7849, 'eval_samples_per_second': 9.156, 'eval_steps_per_second': 2.289, 'epoch': 2.07}
+{'loss': 0.7922, 'grad_norm': 0.6022844910621643, 'learning_rate': 2.094615922990309e-05, 'epoch': 2.18}
+{'eval_loss': 0.8640354871749878, 'eval_runtime': 18.8358, 'eval_samples_per_second': 9.132, 'eval_steps_per_second': 2.283, 'epoch': 2.18}
+
+>>> [Step 200] Prompt:
+<s>[INST] <<SYS>>
+You are an expert in controlled text simplification. When you receive a text from the user, you carefully adapt it to the simplification level specified by the user. Please generate only the simplified text, without any additional explanations or notes.
+<</SYS>>
+
+INSTRUCTION: Simplify the following text such that the length of the output text (number of characters) relative to the source text is approximately equal to the ratio specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. 
+SOURCE TEXT: Because the heterozygote survives , so does the HgbS allele survive at a rate much higher than the mutation rate ( see and refs in Sickle-cell disease ) .
+EXPLANATION: The <CHAR_COMPRESSION=0.75> token specifies that the character-level compression rate should be around 0.75. Values less than 1 indicate text reduction. Values greater than 1 indicate text expansion. [/INST] <CHAR_COMPRESSION=0.75> </s>
+>>> Reference:
+Because the heterozygote survives , so does the HgbS allele survive at a rate much higher than the mutation rate . </s>
+>>> Prediction:
+Because the heterozygote survives, so does the HgbS allele survive at a rate much higher than the mutation rate ( see and refs in Sickle-cell disease ). 
+================================================================================
+
+>>> [Step 200] Prompt:
+<s>[INST] <<SYS>>
+You are a helpful text simplification assistant. You are not only an expert in simplifying texts for different readerships, but you are also very good at adapting texts according to the exact needs of the user. You output only the simplified text, no further notes or comments allowed.
+<</SYS>>
+
+INSTRUCTION: Simplify the following text such that the length of the output text (number of characters) relative to the source text is approximately equal to the ratio specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. 
+SOURCE TEXT: Also, many physicians or diabetes specialists do n't recognize LADA or do n't know that Type 1 diabetes may occur in adults, and so LADA is misdiagnosed as or mistaken for Type 2 diabetes very often.
+EXPLANATION: The <CHAR_COMPRESSION=0.49> token specifies that the character-level compression rate should be around 0.49. Values less than 1 indicate text reduction. Values greater than 1 indicate text expansion. [/INST] <CHAR_COMPRESSION=0.49> </s>
+>>> Reference:
+People with LADA are misdiagnosed as having Type 2 diabetes, except that LADA has GAD antibodies. </s>
+>>> Prediction:
+LADA is often misdiagnosed as or mistaken for Type 2 diabetes. 
+================================================================================
+
+>>> [Step 200] Prompt:
+<s>[INST] <<SYS>>
+You are a helpful assistant. You are very good at simplifying texts. When you receive a text for simplification, you simplify it according to the instructions given by the user. Generate only the simplification, without any comments or notes.
+<</SYS>>
+
+INSTRUCTION: Simplify the following text such that the length of the output text (number of characters) relative to the source text is approximately equal to the ratio specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. 
+SOURCE TEXT: There is little support for increased fight-or-flight response or failure of habituation in autism; there is more evidence of decreased responsiveness to sensory stimuli, although several studies show no differences.
+EXPLANATION: The <CHAR_COMPRESSION=0.11> token specifies that the character-level compression rate should be around 0.11. Values less than 1 indicate text reduction. Values greater than 1 indicate text expansion. [/INST] <CHAR_COMPRESSION=0.11> </s>
+>>> Reference:
+There are many symptoms. </s>
+>>> Prediction:
+There is little support for increased fight-or-flight response or failure of habituation in autism; there is more evidence of decreased responsiveness to sensory stimuli. 
+================================================================================
+
+>>> [Step 200] Prompt:
+<s>[INST] <<SYS>>
+You are an expert in controlled text simplification. When you receive a text from the user, you carefully adapt it to the simplification level specified by the user. Please generate only the simplified text, without any additional explanations or notes.
+<</SYS>>
+
+INSTRUCTION: Simplify the following text such that the length of the output text (number of characters) relative to the source text is approximately equal to the ratio specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. 
+SOURCE TEXT: Worldwide, 0.05-2 % of the population is estimated to have anaphylaxis at some point in life, and rates appear to be increasing.
+EXPLANATION: The <CHAR_COMPRESSION=0.64> token specifies that the character-level compression rate should be around 0.64. Values less than 1 indicate text reduction. Values greater than 1 indicate text expansion. [/INST] <CHAR_COMPRESSION=0.64> </s>
+>>> Reference:
+Worldwide, about 0.05-2 % of people have anaphylaxis at some point in their lives. </s>
+>>> Prediction:
+Worldwide, 0.05-2 % of the population has anaphylaxis at some point in life, and the rates appear to be increasing. 
+================================================================================
+{'loss': 0.7771, 'grad_norm': 0.6461722254753113, 'learning_rate': 1.563227823152708e-05, 'epoch': 2.3}
+{'eval_loss': 0.8631433248519897, 'eval_runtime': 18.8399, 'eval_samples_per_second': 9.13, 'eval_steps_per_second': 2.282, 'epoch': 2.3}
+{'loss': 0.7315, 'grad_norm': 0.6449070572853088, 'learning_rate': 1.0969865949397901e-05, 'epoch': 2.42}
+{'eval_loss': 0.8626177310943604, 'eval_runtime': 18.9145, 'eval_samples_per_second': 9.094, 'eval_steps_per_second': 2.273, 'epoch': 2.42}
+
+>>> [Step 220] Prompt:
+<s>[INST] <<SYS>>
+You are a helpful text simplification assistant. You are not only an expert in simplifying texts for different readerships, but you are also very good at adapting texts according to the exact needs of the user. You output only the simplified text, no further notes or comments allowed.
+<</SYS>>
+
+INSTRUCTION: Simplify the following text such that the length of the output text (number of characters) relative to the source text is approximately equal to the ratio specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. 
+SOURCE TEXT: Symptoms of encephalitis include fever, headache, and altered mental status, often accompanied by seizures and focal neurologic deficits. Status epilepticus, particularly convulsive status epilepticus, or coma suggests severe brain inflammation and a poor prognosis.
+EXPLANATION: The <CHAR_COMPRESSION=0.62> token specifies that the character-level compression rate should be around 0.62. Values less than 1 indicate text reduction. Values greater than 1 indicate text expansion. [/INST] <CHAR_COMPRESSION=0.62> </s>
+>>> Reference:
+Symptoms of encephalitis include Fever; Headache; Personality changes or confusion; Seizures; Paralysis or numbness; Sleepiness that can progress to coma and death. </s>
+>>> Prediction:
+Symptoms of encephalitis include fever, headache, and altered mental status, often accompanied by seizures and focal neurologic deficits. 
+================================================================================
+
+>>> [Step 220] Prompt:
+<s>[INST] <<SYS>>
+You are an expert in text simplification. When you receive a text for simplification, you generate a simplified version of that text. You carefully study the simplification criteria specified by the user and adapt the text accordingly. Please generate only the simplified text, no other notes or explanations allowed.
+<</SYS>>
+
+INSTRUCTION: Simplify the following text such that the length of the output text (number of characters) relative to the source text is approximately equal to the ratio specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. 
+SOURCE TEXT: Oral itraconazole 200 mg orally once a day given until 2 to 4 weeks after all lesions have resolved (typically 3 to 6 months) is the treatment of choice.
+EXPLANATION: The <CHAR_COMPRESSION=0.4> token specifies that the character-level compression rate should be around 0.4. Values less than 1 indicate text reduction. Values greater than 1 indicate text expansion. [/INST] <CHAR_COMPRESSION=0.4> </s>
+>>> Reference:
+Skin infections are treated with itraconazole given by mouth. </s>
+>>> Prediction:
+Oral itraconazole 200 mg once a day given until 2 to 4 weeks after all lesions have resolved (typically 3 to 6 months) is the treatment of choice. 
+================================================================================
+
+>>> [Step 220] Prompt:
+<s>[INST] <<SYS>>
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.
+<</SYS>>
+
+INSTRUCTION: Simplify the following text such that the length of the output text (number of characters) relative to the source text is approximately equal to the ratio specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. 
+SOURCE TEXT: Often, individuals have had one or more major depressive episodes.
+EXPLANATION: The <CHAR_COMPRESSION=0.86> token specifies that the character-level compression rate should be around 0.86. Values less than 1 indicate text reduction. Values greater than 1 indicate text expansion. [/INST] <CHAR_COMPRESSION=0.86> </s>
+>>> Reference:
+They have also had at least one major depressive episode. </s>
+>>> Prediction:
+Often, people have had one or more major depressive episodes. 
+================================================================================
+
+>>> [Step 220] Prompt:
+<s>[INST] <<SYS>>
+You are a helpful expert in text simplification. You generate a simplified version of the text input by the user. You simplify the text according to the instructions given by the user. When asked to simplify a text, generate only the requested simplification, without any additional comments, notes or explanations.
+<</SYS>>
+
+INSTRUCTION: Simplify the following text such that the length of the output text (number of characters) relative to the source text is approximately equal to the ratio specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. 
+SOURCE TEXT: The key distinguishing feature of cheletropic reactions is that on one of the reagents , both new bonds are being made to the same atom .
+EXPLANATION: The <CHAR_COMPRESSION=0.87> token specifies that the character-level compression rate should be around 0.87. Values less than 1 indicate text reduction. Values greater than 1 indicate text expansion. [/INST] <CHAR_COMPRESSION=0.87> </s>
+>>> Reference:
+What sets cheletropic reactions apart is that on one of the reagents , both new bonds are being made to the same atom . </s>
+>>> Prediction:
+The key distinguishing feature of cheletropic reactions is that on one of the reagents, both new bonds are being made to the same atom. 
+================================================================================
+{'loss': 0.7908, 'grad_norm': 0.6587697267532349, 'learning_rate': 7.047302281505736e-06, 'epoch': 2.53}
+{'eval_loss': 0.8628093004226685, 'eval_runtime': 18.9741, 'eval_samples_per_second': 9.065, 'eval_steps_per_second': 2.266, 'epoch': 2.53}
+{'loss': 0.8416, 'grad_norm': 0.7132524847984314, 'learning_rate': 3.9389426807471766e-06, 'epoch': 2.65}
+{'eval_loss': 0.862972617149353, 'eval_runtime': 18.9142, 'eval_samples_per_second': 9.094, 'eval_steps_per_second': 2.273, 'epoch': 2.65}
+
+>>> [Step 240] Prompt:
+<s>[INST] <<SYS>>
+You are a helpful assistant. You are an expert in controlled text simplification. When you receive a text, you simplify it by rewriting it in a manner that is easier to read. Your simplification is guided by the simplification criteria specified by the user. You generate only the simplification result, without any additional comments or explanations.
+<</SYS>>
+
+INSTRUCTION: Simplify the following text such that the length of the output text (number of characters) relative to the source text is approximately equal to the ratio specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. 
+SOURCE TEXT: Up to 20 % of bone density loss occurs during the first 5 yr after menopause. After this period of rapid bone loss, the age-related rate of bone loss in women is similar to that in men.
+EXPLANATION: The <CHAR_COMPRESSION=0.92> token specifies that the character-level compression rate should be around 0.92. Values less than 1 indicate text reduction. Values greater than 1 indicate text expansion. [/INST] <CHAR_COMPRESSION=0.92> </s>
+>>> Reference:
+During the first 5 years after menopause, bone density decreases rapidly. After that, it decreases at about the same rate as it does in men (by about 1 to 3 % each year). </s>
+>>> Prediction:
+Up to 20 % of bone density loss occurs during the first 5 years after menopause. After this period of rapid bone loss, the age-related rate of bone loss in women is similar to that in men. 
+================================================================================
+
+>>> [Step 240] Prompt:
+<s>[INST] <<SYS>>
+You are a helpful text simplification assistant. You are not only an expert in simplifying texts for different readerships, but you are also very good at adapting texts according to the exact needs of the user. You output only the simplified text, no further notes or comments allowed.
+<</SYS>>
+
+INSTRUCTION: Simplify the following text such that the length of the output text (number of characters) relative to the source text is approximately equal to the ratio specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. 
+SOURCE TEXT: Larger cancers are more likely to bleed spontaneously and may cause a foul- smelling vaginal discharge or pelvic pain.
+EXPLANATION: The <CHAR_COMPRESSION=1.04> token specifies that the character-level compression rate should be around 1.04. Values less than 1 indicate text reduction. Values greater than 1 indicate text expansion. [/INST] <CHAR_COMPRESSION=1.04> </s>
+>>> Reference:
+Large cancers are more likely to bleed and may cause a foul-smelling discharge from the vagina and pain in the pelvic area. </s>
+>>> Prediction:
+Larger cancers are more likely to bleed spontaneously and may cause a foul- smelling vaginal discharge or pelvic pain. 
+================================================================================
+
+>>> [Step 240] Prompt:
+<s>[INST] <<SYS>>
+You are a helpful text simplification assistant. You are not only an expert in simplifying texts for different readerships, but you are also very good at adapting texts according to the exact needs of the user. You output only the simplified text, no further notes or comments allowed.
+<</SYS>>
+
+INSTRUCTION: Simplify the following text such that the length of the output text (number of characters) relative to the source text is approximately equal to the ratio specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. 
+SOURCE TEXT: The pain is paroxysmal, lasting seconds up to 2 min, but attacks may recur rapidly.
+EXPLANATION: The <CHAR_COMPRESSION=0.72> token specifies that the character-level compression rate should be around 0.72. Values less than 1 indicate text reduction. Values greater than 1 indicate text expansion. [/INST] <CHAR_COMPRESSION=0.72> </s>
+>>> Reference:
+The pain usually lasts seconds but may last up to 2 minutes. </s>
+>>> Prediction:
+The pain is paroxysmal, lasting seconds up to 2 minutes, but attacks may recur rapidly. 
+================================================================================
+
+>>> [Step 240] Prompt:
+<s>[INST] <<SYS>>
+You are a helpful assistant. You are an expert in controlled text simplification. When you receive a text, you simplify it by rewriting it in a manner that is easier to read. Your simplification is guided by the simplification criteria specified by the user. You generate only the simplification result, without any additional comments or explanations.
+<</SYS>>
+
+INSTRUCTION: Simplify the following text such that the length of the output text (number of characters) relative to the source text is approximately equal to the ratio specified in the control token prepended to your generated simplification. The control token has the following format: <METRIC=VALUE>. 
+SOURCE TEXT: It is distinguished from hyperplasia, in which the cells remain approximately the same size but increase in number.
+EXPLANATION: The <CHAR_COMPRESSION=1.06> token specifies that the character-level compression rate should be around 1.06. Values less than 1 indicate text reduction. Values greater than 1 indicate text expansion. [/INST] <CHAR_COMPRESSION=1.06> </s>
+>>> Reference:
+It should be distinguished from hyperplasia, in which the cells remain approximately the same size but increase in number. </s>
+>>> Prediction:
+It is different from hyperplasia, in which the cells remain the same size but increase in number. 
+================================================================================
+{'loss': 0.8286, 'grad_norm': 0.6481248140335083, 'learning_rate': 1.70370868554659e-06, 'epoch': 2.76}
+{'eval_loss': 0.8626822829246521, 'eval_runtime': 18.7993, 'eval_samples_per_second': 9.149, 'eval_steps_per_second': 2.287, 'epoch': 2.76}
+{'train_runtime': 1920.0054, 'train_samples_per_second': 2.162, 'train_steps_per_second': 0.134, 'train_loss': 0.9330239335695902, 'epoch': 2.76}
+Evaluation results: {'eval_loss': 0.8626177310943604, 'eval_runtime': 18.8409, 'eval_samples_per_second': 9.129, 'eval_steps_per_second': 2.282, 'epoch': 2.7630057803468207}
+Removing checkpoint: ./models/CHAR_COMPRESSION-Med-EASi-token_explanation-Llama-2-13b-chat-hf-20250601/checkpoint-210

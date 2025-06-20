@@ -1,0 +1,96 @@
+Fri May 30 18:52:26 2025       
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 560.35.05              Driver Version: 560.35.05      CUDA Version: 12.6     |
+|-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  NVIDIA A100-SXM4-80GB          Off |   00000000:CB:00.0 Off |                    0 |
+| N/A   35C    P0             65W /  400W |       1MiB /  81920MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+                                                                                         
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI        PID   Type   Process name                              GPU Memory |
+|        ID   ID                                                               Usage      |
+|=========================================================================================|
+|  No running processes found                                                             |
++-----------------------------------------------------------------------------------------+
+*** Finetuning meta-llama/Llama-4-Scout-17B-16E-Instruct with Med-EASi and FKGL ***
+torch.cuda.is_bf16_supported: True
+Transformers version: 4.51.0
+Python path: /home/hhubar/data/conda/envs/sft/bin/python
+Using PEFT...
+
+Run arguments:
+Namespace(model_class='auto', model_family='base', model_name='meta-llama/Llama-4-Scout-17B-16E-Instruct', dataset_name='Med-EASi', slice_train=-1, slice_val=-1, batch_size=4, eval_batch_size=4, gradient_accumulation_steps=4, learning_rate=0.0001, weight_decay=0.01, warmup_steps=30, max_grad_norm=1.0, epochs=3, max_length=512, logging_steps=10, wandb_project_name='ATS_with_control_tokens', wandb_entity='shtosti', generate_every=20, seed=42, patience=3, prompting_type='vanilla', user_prompt_id='token_explanation', metric_name='FKGL', control_tokens='data/prompts/control_tokens.json', system_prompts='data/prompts/system_prompts.json', user_prompts='data/prompts/user_prompts.json', metric_mapping='data/metric_mapping.json', peft=True, lora_r=16, lora_dropout=0.1)
+
+Saving to: ./models/FKGL-Med-EASi-token_explanation-Llama-4-Scout-17B-16E-Instruct-20250530
+
+*** Finetuning Llama-4-Scout-17B-16E-Instruct with Med-EASi ***
+
+CUDA available: True
+Number of GPUs: 1
+GPU name: NVIDIA A100-SXM4-80GB
+[1;34mwandb[0m: 
+[1;34mwandb[0m: 🚀 View run [33melectric-plasma-410[0m at: [34mhttps://wandb.ai/shtosti/ATS_with_control_tokens/runs/4nzze5x3[0m
+[1;34mwandb[0m: Find logs at: [1;35m../../../../scratch/hhubar/keep-it-simple/wandb/run-20250530_185243-4nzze5x3/logs[0m
+*** Finetuning meta-llama/Llama-4-Scout-17B-16E-Instruct with Med-EASi and CHAR_COMPRESSION ***
+torch.cuda.is_bf16_supported: True
+Transformers version: 4.51.0
+Python path: /home/hhubar/data/conda/envs/sft/bin/python
+Using PEFT...
+
+Run arguments:
+Namespace(model_class='auto', model_family='base', model_name='meta-llama/Llama-4-Scout-17B-16E-Instruct', dataset_name='Med-EASi', slice_train=-1, slice_val=-1, batch_size=4, eval_batch_size=4, gradient_accumulation_steps=4, learning_rate=0.0001, weight_decay=0.01, warmup_steps=30, max_grad_norm=1.0, epochs=3, max_length=512, logging_steps=10, wandb_project_name='ATS_with_control_tokens', wandb_entity='shtosti', generate_every=20, seed=42, patience=3, prompting_type='vanilla', user_prompt_id='token_explanation', metric_name='CHAR_COMPRESSION', control_tokens='data/prompts/control_tokens.json', system_prompts='data/prompts/system_prompts.json', user_prompts='data/prompts/user_prompts.json', metric_mapping='data/metric_mapping.json', peft=True, lora_r=16, lora_dropout=0.1)
+
+Saving to: ./models/CHAR_COMPRESSION-Med-EASi-token_explanation-Llama-4-Scout-17B-16E-Instruct-20250530
+
+*** Finetuning Llama-4-Scout-17B-16E-Instruct with Med-EASi ***
+
+CUDA available: True
+Number of GPUs: 1
+GPU name: NVIDIA A100-SXM4-80GB
+[1;34mwandb[0m: 
+[1;34mwandb[0m: 🚀 View run [33mwise-yogurt-411[0m at: [34mhttps://wandb.ai/shtosti/ATS_with_control_tokens/runs/4t7k9yfc[0m
+[1;34mwandb[0m: Find logs at: [1;35m../../../../scratch/hhubar/keep-it-simple/wandb/run-20250530_185733-4t7k9yfc/logs[0m
+*** Finetuning meta-llama/Llama-4-Scout-17B-16E-Instruct with SimPA and FKGL ***
+torch.cuda.is_bf16_supported: True
+Transformers version: 4.51.0
+Python path: /home/hhubar/data/conda/envs/sft/bin/python
+Using PEFT...
+
+Run arguments:
+Namespace(model_class='auto', model_family='base', model_name='meta-llama/Llama-4-Scout-17B-16E-Instruct', dataset_name='SimPA', slice_train=-1, slice_val=-1, batch_size=4, eval_batch_size=4, gradient_accumulation_steps=4, learning_rate=0.0001, weight_decay=0.01, warmup_steps=30, max_grad_norm=1.0, epochs=3, max_length=512, logging_steps=10, wandb_project_name='ATS_with_control_tokens', wandb_entity='shtosti', generate_every=20, seed=42, patience=3, prompting_type='vanilla', user_prompt_id='token_explanation', metric_name='FKGL', control_tokens='data/prompts/control_tokens.json', system_prompts='data/prompts/system_prompts.json', user_prompts='data/prompts/user_prompts.json', metric_mapping='data/metric_mapping.json', peft=True, lora_r=16, lora_dropout=0.1)
+
+Saving to: ./models/FKGL-SimPA-token_explanation-Llama-4-Scout-17B-16E-Instruct-20250530
+
+*** Finetuning Llama-4-Scout-17B-16E-Instruct with SimPA ***
+
+CUDA available: True
+Number of GPUs: 1
+GPU name: NVIDIA A100-SXM4-80GB
+[1;34mwandb[0m: 
+[1;34mwandb[0m: 🚀 View run [33mswift-field-412[0m at: [34mhttps://wandb.ai/shtosti/ATS_with_control_tokens/runs/jnavi9px[0m
+[1;34mwandb[0m: Find logs at: [1;35m../../../../scratch/hhubar/keep-it-simple/wandb/run-20250530_185902-jnavi9px/logs[0m
+*** Finetuning meta-llama/Llama-4-Scout-17B-16E-Instruct with SimPA and CHAR_COMPRESSION ***
+torch.cuda.is_bf16_supported: True
+Transformers version: 4.51.0
+Python path: /home/hhubar/data/conda/envs/sft/bin/python
+Using PEFT...
+
+Run arguments:
+Namespace(model_class='auto', model_family='base', model_name='meta-llama/Llama-4-Scout-17B-16E-Instruct', dataset_name='SimPA', slice_train=-1, slice_val=-1, batch_size=4, eval_batch_size=4, gradient_accumulation_steps=4, learning_rate=0.0001, weight_decay=0.01, warmup_steps=30, max_grad_norm=1.0, epochs=3, max_length=512, logging_steps=10, wandb_project_name='ATS_with_control_tokens', wandb_entity='shtosti', generate_every=20, seed=42, patience=3, prompting_type='vanilla', user_prompt_id='token_explanation', metric_name='CHAR_COMPRESSION', control_tokens='data/prompts/control_tokens.json', system_prompts='data/prompts/system_prompts.json', user_prompts='data/prompts/user_prompts.json', metric_mapping='data/metric_mapping.json', peft=True, lora_r=16, lora_dropout=0.1)
+
+Saving to: ./models/CHAR_COMPRESSION-SimPA-token_explanation-Llama-4-Scout-17B-16E-Instruct-20250530
+
+*** Finetuning Llama-4-Scout-17B-16E-Instruct with SimPA ***
+
+CUDA available: True
+Number of GPUs: 1
+GPU name: NVIDIA A100-SXM4-80GB
+[1;34mwandb[0m: 
+[1;34mwandb[0m: 🚀 View run [33mpolished-rain-413[0m at: [34mhttps://wandb.ai/shtosti/ATS_with_control_tokens/runs/q9so9ki1[0m
+[1;34mwandb[0m: Find logs at: [1;35m../../../../scratch/hhubar/keep-it-simple/wandb/run-20250530_185955-q9so9ki1/logs[0m
