@@ -31,7 +31,7 @@ def get_model_family(model_name, model_info):
 
     for family, models in model_info.items():
         for name, details in models.items():
-            if name in model_name:
+            if name.lower() in model_name.lower():
                 size = details.get("size", "other")
                 rank = size_order.get(size, float('inf'))
                 return (family, rank)

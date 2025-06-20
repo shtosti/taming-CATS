@@ -4,10 +4,10 @@ echo "Script started: $(date)"
 
 # =========================================================================
 # TODO
-MODEL_DIR="CHAR_COMPRESSION-WikiLarge_ori_splitwise-token_explanation-Qwen3-1.7B-20250528"
+MODEL_DIR="CHAR_COMPRESSION-Med-EASi-token_explanation-Llama-3.2-3B-Instruct-20250527"
 METRIC_NAME="CHAR_COMPRESSION"
-DATASET="WikiLarge_ori_splitwise"
-MODEL_NAME="Qwen3-1.7B"
+DATASET="Med-EASi"
+MODEL_NAME="Llama-3.2-3B-Instruct"
 
 USER_PROMPT_ID="token_explanation"
 # =========================================================================

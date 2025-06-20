@@ -2,23 +2,24 @@
 
 # *** TODO ***
 
-MAX_LENGTH=512
+MAX_LENGTH=4096
 
 # --- model name
 # MODEL_NAME="meta-llama/Llama-3.2-1B-Instruct"
 # MODEL_NAME="meta-llama/Llama-3.2-3B-Instruct"
-# MODEL_NAME="Qwen/Qwen3-1.7B"
+MODEL_NAME="Qwen/Qwen3-1.7B"
 # MODEL_NAME="Qwen/Qwen3-4B"
-MODEL_NAME="ministral/Ministral-3b-instruct"
+# MODEL_NAME="ministral/Ministral-3b-instruct"
 
 DATASETS=(
     # "Med-EASi" 
     # "SimPA" 
-    "WikiLarge_ori_splitwise"
+    # "WikiLarge_ori_splitwise"
     # "Med-EASi_hq"
     # "SimPA_hq"
     # "WikiLarge_ori_splitwise_hq"
     # "NoFluff_hq"
+    "Newsela_s"
     )
 METRICS=(
     # "ARI"

@@ -4,10 +4,10 @@ echo "Script started: $(date)"
 
 # =========================================================================
 # TODO
-MODEL_DIR="FKGL-SimPA-token_explanation-Qwen3-1.7B-20250528"
+MODEL_DIR="FKGL-Med-EASi-token_explanation-Qwen3-4B-20250601"
 METRIC_NAME="FKGL"
-DATASET="SimPA"
-MODEL_NAME="Qwen3-1.7B"
+DATASET="Med-EASi"
+MODEL_NAME="Qwen3-4B"
 
 USER_PROMPT_ID="token_explanation"
 # =========================================================================
@@ -33,7 +33,7 @@ for SEED in "${SEEDS[@]}"; do
     --dataset_name "$DATASET"
     --model_class "auto"
     --model_family "base"
-    --max_length 4096
+    --max_length 512
     --batch_size 4
     --slice_test -1
     --output_file "$OUTPUT_FILE"

@@ -4,10 +4,10 @@ echo "Script started: $(date)"
 
 # =========================================================================
 # TODO
-MODEL_DIR="FKGL-WikiLarge_ori_splitwise-token_explanation-Qwen3-1.7B-20250528"
+MODEL_DIR="FKGL-SimPA-token_explanation-Qwen3-4B-20250601"
 METRIC_NAME="FKGL"
-DATASET="WikiLarge_ori_splitwise"
-MODEL_NAME="Qwen3-1.7B"
+DATASET="SimPA"
+MODEL_NAME="Qwen3-4B"
 
 USER_PROMPT_ID="token_explanation"
 # =========================================================================

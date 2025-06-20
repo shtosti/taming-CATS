@@ -2,7 +2,7 @@
 
 # *** TODO ***
 
-MAX_LENGTH=512
+MAX_LENGTH=4096
 
 # --- model name
 # MODEL_NAME="meta-llama/Llama-3.2-1B-Instruct"
@@ -15,18 +15,18 @@ DATASETS=(
     # "Med-EASi" 
     # "SimPA" 
     # "WikiLarge_ori_splitwise"
-    "Med-EASi_hq"
-    "SimPA_hq"
-    "WikiLarge_ori_splitwise_hq"
-    "NoFluff_hq"
+    # "Med-EASi_hq"
+    # "SimPA_hq"
+    # "WikiLarge_ori_splitwise_hq"
+    # "NoFluff_hq"
+    "Newsela_s"
     )
-# METRICS=("ARI" "FKGL" "DALE-CHALL" "CHAR_COMPRESSION" "WORD_COMPRESSION")
 METRICS=(
-    # "ARI"
+    "ARI"
     "FKGL" 
-    # "DALE-CHALL"
-    # "CHAR_COMPRESSION"
-    # "WORD_COMPRESSION"
+    "DALE-CHALL"
+    "CHAR_COMPRESSION"
+    "WORD_COMPRESSION"
     )
 
 for DATASET_NAME in "${DATASETS[@]}"; do

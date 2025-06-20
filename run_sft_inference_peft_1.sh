@@ -4,14 +4,14 @@ echo "Script started: $(date)"
 
 # =========================================================================
 # TODO
-MODEL_DIR="ARI-Med-EASi-token_explanation-Mistral-7B-Instruct-v0.1-20250518"
-CTRL_ATTR="ARI"
-DATASET="Med-EASi"
-MODEL_NAME="Mistral-7B-Instruct-v0.1"
+MODEL_DIR="DALE-CHALL-WikiLarge_ori_splitwise-token_explanation-Llama-3.1-8B-Instruct-20250530"
+CTRL_ATTR="DALE-CHALL"
+DATASET="WikiLarge_ori_splitwise"
+MODEL_NAME="Llama-3.1-8B-Instruct"
 
 
-MODEL_NAME_HF="mistralai/Mistral-7B-Instruct-v0.1"
-# MODEL_NAME_HF="meta-llama/Llama-3.1-8B-Instruct"
+# MODEL_NAME_HF="mistralai/Mistral-7B-Instruct-v0.1"
+MODEL_NAME_HF="meta-llama/Llama-3.1-8B-Instruct"
 
 USER_PROMPT_ID="token_explanation"
 # =========================================================================
@@ -76,9 +76,6 @@ INPUT_FILES=(
   "$INPUT_DIR/output_5.json"
 )
 
-# INPUT_FILES=(
-#   "$INPUT_DIR/output.json"
-# )
 
 python src/sft_eval.py \
   --input_files "${INPUT_FILES[@]}" \

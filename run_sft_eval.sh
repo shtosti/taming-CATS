@@ -3,17 +3,17 @@
 echo "Script started: $(date)"
 
 # TODO
-INPUT_DIR="output/sft_inference/FKGL-NoFluff_hq-token_explanation-Llama-3.2-1B-Instruct-20250529"
+INPUT_DIR="output/sft_inference/CHAR_COMPRESSION-Newsela_s-token_explanation-Llama-3.2-1B-Instruct-20250602"
 MODEL_NAME="Llama-3.2-1B-Instruct"
-DATASET="NoFluff_hq"
-METRIC_NAME="FKGL"
+DATASET="Newsela_s"
+METRIC_NAME="CHAR_COMPRESSION"
 USER_PROMPT_ID="token_explanation"
 
 
 
 INPUT_FILES=(
-  "$INPUT_DIR/output_1.json"
-  "$INPUT_DIR/output_2.json"
+  # "$INPUT_DIR/output_1.json"
+  # "$INPUT_DIR/output_2.json"
   "$INPUT_DIR/output_3.json"
   "$INPUT_DIR/output_4.json"
   "$INPUT_DIR/output_5.json"

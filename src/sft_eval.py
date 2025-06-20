@@ -162,7 +162,7 @@ def plot_metric_scatter(source_vals, reference_vals, prediction_vals, metric_key
     plt.legend()
     plt.grid(True)
     plt.tight_layout()
-    plt.savefig(f"{output_dir}/{metric_key}_scatter_plot.png", bbox_inches='tight', dpi=400)
+    plt.savefig(f"{output_dir}/{metric_key}_scatter_plot.png", bbox_inches='tight', dpi=300)
     print(f"Scatter plot saved as {metric_key}_scatter.png")
 
 def polyfit_plot(ax, x, y, color):
@@ -226,7 +226,7 @@ def plot_ctrl_attr_vs_metrics(predictions, metric_key, output_dir):
         ax.text(0.05, 0.85, f"p={p_value:.2f}\nr={corr_coeff:.2f} ({corr_strength})", transform=ax.transAxes, fontsize=10)
 
     plt.tight_layout()
-    plt.savefig(f"{output_dir}/{metric_key}_vs_metrics.png", bbox_inches='tight', dpi=400)
+    plt.savefig(f"{output_dir}/{metric_key}_vs_metrics.png", bbox_inches='tight', dpi=300)
     print(f"Control attribute vs metrics plot saved as {metric_key}_ctrl_attr_vs_metrics.png")
 
 def cap_outliers(y_vals, lower_pct=1, upper_pct=99):
@@ -291,8 +291,8 @@ def plot_errors_vs_metrics(predictions, metric_key_mapped, metric_key, output_di
     fig_abs.tight_layout()
     fig_sq.tight_layout()
 
-    fig_abs.savefig(f"{output_dir}/{metric_key_mapped}_abs_error_vs_metrics.png", bbox_inches='tight', dpi=400)
-    fig_sq.savefig(f"{output_dir}/{metric_key_mapped}_sq_error_vs_metrics.png", bbox_inches='tight', dpi=400)
+    fig_abs.savefig(f"{output_dir}/{metric_key_mapped}_abs_error_vs_metrics.png", bbox_inches='tight', dpi=300)
+    fig_sq.savefig(f"{output_dir}/{metric_key_mapped}_sq_error_vs_metrics.png", bbox_inches='tight', dpi=300)
     print(f"Error-vs-metrics plots saved.")
 
 def plot_error_std_vs_reference(reference_vals, real_errors, metric_key, output_dir, num_bins=10):
@@ -315,7 +315,7 @@ def plot_error_std_vs_reference(reference_vals, real_errors, metric_key, output_
     # plt.title(f"Error Variability by Reference {metric_key}")
     plt.tight_layout()
     plt.grid(True, axis='y', linestyle="--", alpha=0.5)
-    plt.savefig(f"{output_dir}/{metric_key}_error_std_by_ref_bin.png", bbox_inches='tight', dpi=400)
+    plt.savefig(f"{output_dir}/{metric_key}_error_std_by_ref_bin.png", bbox_inches='tight', dpi=300)
     print(f"STD of error by reference bin saved as {metric_key}_error_std_by_ref_bin.png")
 
 def plot_error_std_binned(reference_vals, real_errors, metric_key, output_dir, num_bins=25):
@@ -337,7 +337,7 @@ def plot_error_std_binned(reference_vals, real_errors, metric_key, output_dir, n
     plt.grid(axis='y', linestyle="--", alpha=0.5)
     plt.legend()
     plt.tight_layout()
-    plt.savefig(f"{output_dir}/{metric_key}_error_std_binned.png", bbox_inches='tight', dpi=400)
+    plt.savefig(f"{output_dir}/{metric_key}_error_std_binned.png", bbox_inches='tight', dpi=300)
 
 def parse_args():
     parser = argparse.ArgumentParser()

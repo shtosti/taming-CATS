@@ -4,14 +4,15 @@ echo "Script started: $(date)"
 
 # =========================================================================
 # TODO
-MODEL_DIR="FKGL-NoFluff_hq-token_explanation-Mistral-7B-Instruct-v0.1-20250529"
+MODEL_DIR="FKGL-Newsela_s-token_explanation-Llama-3.1-8B-Instruct-20250602"
 CTRL_ATTR="FKGL"
-DATASET="NoFluff_hq"
-MODEL_NAME="Mistral-7B-Instruct-v0.1"
+DATASET="Newsela_s"
+MODEL_NAME="Llama-3.1-8B-Instruct"
 
 
-MODEL_NAME_HF="mistralai/Mistral-7B-Instruct-v0.1"
-# MODEL_NAME_HF="meta-llama/Llama-3.1-8B-Instruct"
+# MODEL_NAME_HF="mistralai/Mistral-7B-Instruct-v0.1"
+MODEL_NAME_HF="meta-llama/Llama-3.1-8B-Instruct"
+# MODEL_NAME_HF="meta-llama/Llama-2-13b-chat-hf"
 
 USER_PROMPT_ID="token_explanation"
 # =========================================================================
@@ -23,8 +24,14 @@ OUTPUT_DIR="output/sft_inference/$MODEL_DIR"
 mkdir -p "$OUTPUT_DIR"
 USE_PEFT=true
 
-SEEDS=(37 15 96 2 28)
-i=1
+SEEDS=(
+  # 37 
+  15 
+  96 
+  # 2 
+  # 28
+  )
+i=2
 for SEED in "${SEEDS[@]}"; do
   echo "Running inference $i with seed $SEED..."
 
@@ -37,7 +44,7 @@ for SEED in "${SEEDS[@]}"; do
     --dataset_name "$DATASET"
     --model_class "auto"
     --model_family "base"
-    --max_length 512
+    --max_length 4096
     --batch_size 4
     --slice_test -1
     --output_file "$OUTPUT_FILE"
@@ -72,8 +79,8 @@ INPUT_FILES=(
   "$INPUT_DIR/output_1.json"
   "$INPUT_DIR/output_2.json"
   "$INPUT_DIR/output_3.json"
-  "$INPUT_DIR/output_4.json"
-  "$INPUT_DIR/output_5.json"
+  # "$INPUT_DIR/output_4.json"
+  # "$INPUT_DIR/output_5.json"
 )
 
 

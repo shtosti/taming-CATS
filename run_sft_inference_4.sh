@@ -4,10 +4,10 @@ echo "Script started: $(date)"
 
 # =========================================================================
 # TODO
-MODEL_DIR="CHAR_COMPRESSION-Med-EASi-token_explanation-Ministral-3b-instruct-20250518"
+MODEL_DIR="CHAR_COMPRESSION-SimPA-token_explanation-Llama-3.2-3B-Instruct-20250527"
 METRIC_NAME="CHAR_COMPRESSION"
-DATASET="Med-EASi"
-MODEL_NAME="Ministral-3b-instruct-20250518"
+DATASET="SimPA"
+MODEL_NAME="Llama-3.2-3B-Instruct"
 
 USER_PROMPT_ID="token_explanation"
 # =========================================================================
