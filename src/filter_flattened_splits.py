@@ -12,6 +12,15 @@ def log_stats(logfile_path, message):
         log_file.write(message + "\n")
     print(message)
 
+def map_dataset_name(unformatted_name):
+    dataset_mapping = {
+        "newsela": "Newsela",
+        "simpa": "SimPa",
+        "medeasi": "Med-EASi",
+        "wikilarge_ori_splitwise": "WikiLarge"
+    }
+    return dataset_mapping.get(unformatted_name)
+
 def filter_metrics(flattened_input_path, filtered_output_path, log_file_path=None, metrics=None,
                    dataset_stats=None, dataset=None, dataset_metric_sets=None):
     total = 0
@@ -103,7 +112,7 @@ def plot_stats(stats_df, save_dir):
     datasets = stats_df["Dataset"]
     n_datasets = len(datasets)
 
-    fig, axs = plt.subplots(1, 5, figsize=(10, 4))
+    fig, axs = plt.subplots(1, 4, figsize=(10, 4))
 
     if n_datasets == 1:
         axs = [axs]
@@ -115,28 +124,36 @@ def plot_stats(stats_df, save_dir):
 
         x = 0
         bar_width = 0.6
-        ax.bar(x, kept, color="seagreen", width=bar_width, label="Kept", edgecolor="black")
-        ax.bar(x, removed, bottom=kept, color="salmon", width=bar_width, label="Removed", hatch='//', edgecolor="black")
+        ax.bar(x, kept, color="seagreen", width=bar_width, label="Kept", edgecolor="black", alpha=0.7)
+        ax.bar(x, removed, bottom=kept, color="orchid", width=bar_width, label="Removed", hatch='//', edgecolor="black", alpha=0.7)
 
         ax.set_xlim(-0.5, 0.5)
         ax.set_xticks([])
-        ax.set_title(dataset, fontsize=12)
+        ax.set_title(
+            map_dataset_name(dataset),
+            fontsize=16
+            )
+        ax.tick_params(axis='y', labelsize=14)
         ax.grid(axis="y", linestyle="--", alpha=0.5)
 
-    fig.legend(["Kept", "Removed"], loc="upper left", frameon=True, fontsize=10)
-
-    # plt.suptitle("Filtering Stats: Stacked Count of Kept and Removed Instances", fontsize=16)
-    plt.tight_layout(rect=[0, 0, 1, 0.95])
-    # plt.show()
-    plt.savefig(os.path.join(save_dir, "bars.png"), dpi=400)
+    # fig.legend(["Kept", "Removed"], loc="upper left", frameon=True, fontsize=10)
+    fig.legend(["Kept", "Removed"],
+            loc="lower center",
+            bbox_to_anchor=(0.5, 0.02),
+            ncol=2,
+            frameon=True,
+            fontsize=14)
+    plt.tight_layout()
+    plt.subplots_adjust(bottom=0.2)
+    plt.savefig(os.path.join(save_dir, "bars.png"), dpi=300)
 
 
 def plot_venn_diagrams(dataset_metric_sets, save_dir):
     num_datasets = len(dataset_metric_sets)
     rows = 1
-    cols = 5
+    cols = 4
 
-    fig, axs = plt.subplots(rows, cols, figsize=(10, 5))
+    fig, axs = plt.subplots(rows, cols, figsize=(10, 3.5))
     axs = axs.flatten()
 
     for i, (dataset, metric_sets) in enumerate(dataset_metric_sets.items()):
@@ -150,29 +167,26 @@ def plot_venn_diagrams(dataset_metric_sets, save_dir):
         ax = axs[i]
         v = venn3(sets, set_labels=labels, ax=ax, alpha=0.5)
 
-        # Resize the set labels
         for label in v.set_labels:
-            if label:  # Check if label is not None
-                label.set_fontsize(8)  # or any size you prefer
+            if label:
+                label.set_fontsize(12)
 
-        # Resize the subset labels (numbers inside the diagram)
         for label in v.subset_labels:
             if label:
-                label.set_fontsize(8)  # or adjust as needed
+                label.set_fontsize(12)
 
-        ax.set_title(f"{dataset}", fontsize=12)
+        ax.set_title(f"{map_dataset_name(dataset)}", fontsize=16)
 
     plt.tight_layout()
-    # plt.show()
-    plt.savefig(os.path.join(save_dir, "venn.png"), dpi=400)
+    plt.savefig(os.path.join(save_dir, "venn.png"), dpi=300)
 
 def main():
     datasets = [
-                "newsela", 
-                "simpa", 
-                "medeasi", 
+                "medeasi",
+                "simpa",
                 "wikilarge_ori_splitwise",
-                "wikilarge_ori_global"
+                "newsela",
+                # "wikilarge_ori_global"
                 ]
     metrics_to_filter_by = ["FKGL", "ARI", "Dale-Chall"]
     save_dir = "./../data/splits_flattened_filtered"
