@@ -37,25 +37,6 @@ def get_model_family(model_name, model_info):
                 return (family, rank)
     return ("other", float('inf'))
 
-# def get_model_family_map():
-#     return {
-#         "Llama-3.2-1B-Instruct": ("llama", 1),
-#         "Meta-Llama-3-8B-Instruct": ("llama", 2),
-#         "Llama-2-13b-chat-hf": ("llama", 3),
-#         "Ministral-3b-instruct": ("mistral", 1),
-#         "Mistral-7B-Instruct-v0.1": ("mistral", 2),
-#         "Qwen2.5-1.5B-Instruct": ("qwen", 1),
-#         "Qwen2.5-7B-Instruct": ("qwen", 2),
-#         "Qwen2.5-14B-Instruct": ("qwen", 3),
-#     }
-
-# def get_model_family(model_name):
-#     family_map = get_model_family_map()
-#     for key, family in family_map.items():
-#         if key in model_name:
-#             return family
-#     return "other"
-
 def plot_comparison_metrics(results, dataset, control_attr, save_dir, output_prefix, color_map_path):
     model_info = load_model_info()
     color_map = load_color_map(color_map_path)
@@ -70,11 +51,11 @@ def plot_comparison_metrics(results, dataset, control_attr, save_dir, output_pre
 
     metrics = {
         "SARI": [],
-        "COMET": [],
         "BLEU_to_source": [],
         "BLEU_to_ref": [],
         "BERTScore_to_source": [],
-        "BERTScore_to_ref": []
+        "BERTScore_to_ref": [],
+        "COMET": [],
     }
 
     errors = {metric: {"lower": [], "upper": []} for metric in metrics}
@@ -130,11 +111,10 @@ def plot_comparison_metrics(results, dataset, control_attr, save_dir, output_pre
     total_items = total_metrics + total_losses
     total_plots = len(total_items)
 
-    ncols = 2
-    nrows = (total_plots + ncols - 1) // ncols
+    nrows = 2
+    ncols = (total_plots + nrows - 1) // nrows
 
-    fig, axes = plt.subplots(nrows, ncols, figsize=(10, 4 * nrows), sharex=False)
-    fig.suptitle(f"{control_attr} on {dataset}", fontsize=18)
+    fig, axes = plt.subplots(nrows, ncols, figsize=(14, 3 * nrows), sharex=False)
     axes = axes.flatten()
 
     # Plot metrics with error bars
@@ -152,13 +132,11 @@ def plot_comparison_metrics(results, dataset, control_attr, save_dir, output_pre
                    color=color, edgecolor='black', hatch=hatch,
                    capsize=10)
         ax.set_title(metric)
-        # ax.set_xticks(np.arange(len(models)))
-        # ax.set_xticklabels(models, rotation=90)
         ax.set_xticks([])
         ax.set_xticklabels([])
         ax.grid(True, axis='y', linestyle='--', alpha=0.7)
 
-    # Plot loss values
+
     for j, loss in enumerate(total_losses, start=len(total_metrics)):
         values = losses[loss]
         ax = axes[j]
@@ -189,22 +167,31 @@ def plot_comparison_metrics(results, dataset, control_attr, save_dir, output_pre
             rect = Rectangle((0, 0), 1, 1, facecolor=color, edgecolor='black', hatch=hatch, label=label, linewidth=1)
             legend_handles.append(rect)
 
-    fig.legend(
+
+    plt.tight_layout()
+    plot_path = os.path.join(save_dir, f"{output_prefix}_metrics_losses.png")
+    fig.savefig(plot_path, dpi=300)
+    plt.close()
+    print(f"Saved plot to {plot_path}")
+
+    # legend as separate file
+    fig_leg = plt.figure(figsize=(10,1.5))
+    fig_leg.legend(
         handles=legend_handles,
-        loc='lower center',
-        ncol=4,
-        bbox_to_anchor=(0.5, 0.01),
+        labels=[h.get_label() for h in legend_handles],
+        loc='center',
+        ncol=5,
         frameon=True,
         handlelength=2.5,
         handleheight=2,
-        fontsize=10
+        fontsize=12
     )
+    fig_leg.subplots_adjust(left=0, right=1, top=1, bottom=0)
+    legend_path = os.path.join(save_dir, f"{output_prefix}_legend.png")
+    fig_leg.savefig(legend_path, dpi=300, bbox_inches='tight')
+    plt.close(fig_leg)
 
-    plt.tight_layout(rect=[0, 0.04, 1, 0.96])
-    plot_path = os.path.join(save_dir, f"{output_prefix}_metrics_losses.png")
-    plt.savefig(plot_path, dpi=300)
-    plt.close()
-    print(f"Saved plot to {plot_path}")
+
 
 def main():
     parser = argparse.ArgumentParser()
@@ -220,7 +207,15 @@ def main():
     output_prefix = f"{args.control_attr}_{args.dataset}_{args.user_prompt_id}"
 
     all_results = load_results(args.summary_file)
-    plot_comparison_metrics(all_results, args.dataset, args.control_attr, args.save_dir, output_prefix, args.color_map_path)
+    plot_comparison_metrics(
+                all_results, 
+                args.dataset, 
+                args.control_attr, 
+                args.save_dir, 
+                output_prefix, 
+                args.color_map_path
+                )
+
 
 if __name__ == "__main__":
     main()
