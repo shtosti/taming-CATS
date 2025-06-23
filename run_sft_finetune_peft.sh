@@ -23,7 +23,7 @@ DATASETS=(
     )
 METRICS=(
     # "ARI" 
-    "FKGL" 
+    # "FKGL" 
     # "DALE-CHALL" 
     "CHAR_COMPRESSION" 
     # "WORD_COMPRESSION"

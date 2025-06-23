@@ -4,9 +4,9 @@ echo "Script started: $(date)"
 
 # =========================================================================
 # TODO
-MODEL_DIR="FKGL-SimPA-token_explanation-Llama-2-13b-chat-hf-20250601"
-CTRL_ATTR="FKGL"
-DATASET="SimPA"
+MODEL_DIR="CHAR_COMPRESSION-Med-EASi-token_explanation-Llama-2-13b-chat-hf-20250601"
+CTRL_ATTR="CHAR_COMPRESSION"
+DATASET="Med-EASi"
 MODEL_NAME="Llama-2-13b-chat-hf"
 
 

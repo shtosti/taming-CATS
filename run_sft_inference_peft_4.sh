@@ -4,14 +4,15 @@ echo "Script started: $(date)"
 
 # =========================================================================
 # TODO
-MODEL_DIR="WORD_COMPRESSION-WikiLarge_ori_splitwise-token_explanation-Llama-3.1-8B-Instruct-20250530"
-CTRL_ATTR="WORD_COMPRESSION"
-DATASET="WikiLarge_ori_splitwise"
-MODEL_NAME="Llama-3.1-8B-Instruct"
+MODEL_DIR="CHAR_COMPRESSION-SimPA-token_explanation-Llama-2-13b-chat-hf-20250601"
+CTRL_ATTR="CHAR_COMPRESSION"
+DATASET="SimPA"
+MODEL_NAME="Llama-2-13b-chat-hf"
 
 
 # MODEL_NAME_HF="mistralai/Mistral-7B-Instruct-v0.1"
-MODEL_NAME_HF="meta-llama/Llama-3.1-8B-Instruct"
+# MODEL_NAME_HF="meta-llama/Llama-3.1-8B-Instruct"
+MODEL_NAME="meta-llama/Llama-2-13b-chat-hf"
 
 USER_PROMPT_ID="token_explanation"
 # =========================================================================

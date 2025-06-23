@@ -6,8 +6,8 @@ MAX_LENGTH=4096
 
 # --- model name
 # MODEL_NAME="meta-llama/Llama-3.2-1B-Instruct"
-# MODEL_NAME="meta-llama/Llama-3.2-3B-Instruct"
-MODEL_NAME="Qwen/Qwen3-1.7B"
+MODEL_NAME="meta-llama/Llama-3.2-3B-Instruct"
+# MODEL_NAME="Qwen/Qwen3-1.7B"
 # MODEL_NAME="Qwen/Qwen3-4B"
 # MODEL_NAME="ministral/Ministral-3b-instruct"
 
@@ -22,11 +22,11 @@ DATASETS=(
     "Newsela_s"
     )
 METRICS=(
-    "ARI"
+    # "ARI"
     "FKGL" 
-    "DALE-CHALL"
+    # "DALE-CHALL"
     "CHAR_COMPRESSION"
-    "WORD_COMPRESSION"
+    # "WORD_COMPRESSION"
     )
 
 for DATASET_NAME in "${DATASETS[@]}"; do

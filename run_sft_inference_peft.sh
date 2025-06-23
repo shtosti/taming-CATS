@@ -4,8 +4,8 @@ echo "Script started: $(date)"
 
 # =========================================================================
 # TODO
-MODEL_DIR="FKGL-Newsela_s-token_explanation-Llama-3.1-8B-Instruct-20250602"
-CTRL_ATTR="FKGL"
+MODEL_DIR="CHAR_COMPRESSION-Newsela_s-token_explanation-Llama-3.1-8B-Instruct-20250622"
+CTRL_ATTR="CHAR_COMPRESSION"
 DATASET="Newsela_s"
 MODEL_NAME="Llama-3.1-8B-Instruct"
 
@@ -25,13 +25,13 @@ mkdir -p "$OUTPUT_DIR"
 USE_PEFT=true
 
 SEEDS=(
-  # 37 
+  37 
   15 
   96 
   # 2 
   # 28
   )
-i=2
+i=1
 for SEED in "${SEEDS[@]}"; do
   echo "Running inference $i with seed $SEED..."
 

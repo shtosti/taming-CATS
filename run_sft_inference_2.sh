@@ -4,8 +4,8 @@ echo "Script started: $(date)"
 
 # =========================================================================
 # TODO
-MODEL_DIR="FKGL-SimPA-token_explanation-Qwen3-4B-20250601"
-METRIC_NAME="FKGL"
+MODEL_DIR="CHAR_COMPRESSION-SimPA-token_explanation-Qwen3-4B-20250601"
+METRIC_NAME="CHAR_COMPRESSION"
 DATASET="SimPA"
 MODEL_NAME="Qwen3-4B"
 
