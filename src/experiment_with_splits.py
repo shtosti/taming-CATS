@@ -1,22 +1,29 @@
-# """
-# This script experiments with different methods of generating splits for the datasets.
-
-# """
-
-
-
 import json
 import os
 import numpy as np
 import random
 import pandas as pd
 import matplotlib.pyplot as plt
+import matplotlib.ticker as ticker
 import seaborn as sns
 from scipy.stats import ks_2samp
+from scipy.stats import gaussian_kde
+
 
 COLOR_MAP_FILE = "./../data/colormap/color_map.json"
 with open(COLOR_MAP_FILE, "r") as f:
     COLOR_MAP = json.load(f)
+
+def map_metric_name(metric_ugly):
+    metric_mapping = {
+        "word_count": "word",
+        "sentence_count": "sentence",
+        "char_count": "char",
+        "FKGL": "FKGL",
+        "Dale-Chall": "Dale-Chall",
+        "ARI": "ARI"
+    }
+    return metric_mapping.get(metric_ugly, metric_ugly)
 
 def set_random_seeds(num_seeds=10):
     random.seed(42)
@@ -50,77 +57,6 @@ def remove_outliers_by_char_length(data: list, lower_percentile=3, upper_percent
 
     return filtered_data
 
-def plot_distributions(metrics, full_metric_values, train_metric_values, val_metric_values, test_metric_values, save_dir, dev_metric_values=None):
-    """Plot the distributions of the metrics across the entire dataset, train, validation, and test splits."""
-    save_dir = f"{save_dir}/visuals"
-    os.makedirs(save_dir, exist_ok=True)
-    
-    for metric in metrics:
-        plt.figure(figsize=(5, 5))
-
-        sns.kdeplot(train_metric_values[metric], color=COLOR_MAP["splits"].get("train"), label="Train", linewidth=2, alpha=1)
-        sns.kdeplot(val_metric_values[metric], color=COLOR_MAP["splits"].get("val"), label="Validation", linewidth=2, alpha=1)
-        sns.kdeplot(test_metric_values[metric], color=COLOR_MAP["splits"].get("test"), label="Test", linewidth=2, alpha=1)
-        sns.kdeplot(full_metric_values[metric], color=COLOR_MAP["splits"].get("full"), label="Full Dataset", linewidth=2, alpha=1)
-        if dev_metric_values:
-            sns.kdeplot(dev_metric_values[metric], color=COLOR_MAP["splits"].get("dev"), label="Dev", linewidth=2, alpha=1)
-
-        
-        plt.xlabel(f"{metric}")
-        plt.ylabel("Density")
-        plt.grid(True)
-        # plt.title(f"Distribution of {metric}")
-        plt.legend()
-        plt.tight_layout()
-        plt.savefig(f"{save_dir}/{metric}.png", dpi=400)
-
-def plot_distributions_on_one_image(metrics, full_metric_values, train_metric_values, val_metric_values, test_metric_values, save_dir):
-    """Plot all metric distributions in a single image while maintaining the original appearance."""
-    save_dir = f"{save_dir}/visuals"
-    os.makedirs(save_dir, exist_ok=True)
-    
-    num_metrics = len(metrics)
-    cols = 3  # Number of columns in the grid layout
-    rows = (num_metrics + cols - 1) // cols  # Calculate number of rows
-
-    fig, axes = plt.subplots(rows, cols, figsize=(cols * 4, rows * 4))
-    axes = axes.flatten()  
-
-    # Store legend handles & labels from first subplot
-    legend_handles = None
-
-    for i, metric in enumerate(metrics):
-        ax = axes[i]
-
-        kde_train = sns.kdeplot(train_metric_values[metric], color=COLOR_MAP["splits"].get("train"), label="Train", linewidth=1, alpha=1, ax=ax)
-        kde_val = sns.kdeplot(val_metric_values[metric], color=COLOR_MAP["splits"].get("val"), label="Validation", linewidth=1, alpha=1, ax=ax)
-        kde_test = sns.kdeplot(test_metric_values[metric], color=COLOR_MAP["splits"].get("test"), label="Test", linewidth=1, alpha=1, ax=ax)
-        kde_full = sns.kdeplot(full_metric_values[metric], color=COLOR_MAP["splits"].get("full"), label="Full Dataset", linewidth=1, alpha=1, ax=ax)
-
-        ax.set_xlabel(f"{metric}")
-        ax.set_ylabel("Density")
-        ax.grid(True, linewidth=0.5)
-
-        # Capture legend elements only once
-        if legend_handles is None:
-            legend_handles, labels = ax.get_legend_handles_labels()
-
-    # Hide any unused subplots
-    for j in range(i + 1, len(axes)):
-        fig.delaxes(axes[j])
-
-    # Add a single legend outside the subplots at the bottom
-    fig.legend(
-                legend_handles, 
-                labels, 
-                loc="upper right"
-                )
-
-    plt.tight_layout()
-    save_path = f"{save_dir}/all_metrics_comparison.png"
-    plt.savefig(save_path, dpi=400, bbox_inches="tight")
-    plt.close(fig)
-
 def save_jsonl(data, filepath):
     """Save dataset to a JSONL file."""
     os.makedirs(os.path.dirname(filepath), exist_ok=True)
@@ -150,6 +86,184 @@ def generate_splits(data, metric_values, strat_metric, num_bins=35, seed=None):
     # Return non-overlapping splits
     return train_data, val_data, test_data
 
+def plot_distributions_on_one_image_shadow(metrics,
+                                    full_vals_seeds,   # dict: seed → metric → values
+                                    train_vals_seeds,
+                                    val_vals_seeds,
+                                    test_vals_seeds,
+                                    save_dir,
+                                    dataset_name=None,
+                                    strat_metric=None,
+                                    nbins=25
+                                    ):
+    save_dir = f"{save_dir}"
+    os.makedirs(save_dir, exist_ok=True)
+
+    num_metrics = len(metrics)
+    cols = 5
+    rows = (num_metrics + cols - 1) // cols
+
+    fig, axes = plt.subplots(rows, cols, figsize=(cols * 3, rows * 4))
+    axes = axes.flatten()
+
+    # Precompute a common x‐grid for each metric
+    grid_dict = {}
+    for metric in metrics:
+        all_data = []
+        for d in (full_vals_seeds, train_vals_seeds, val_vals_seeds, test_vals_seeds):
+            for seed in d:
+                all_data += d[seed][metric]
+        low, high = np.percentile(all_data, [0, 100])
+        grid_dict[metric] = np.linspace(low, high, 100)
+
+    for i, metric in enumerate(metrics):
+        ax = axes[i]
+        xs = grid_dict[metric]
+
+        def plot_shadow(vals_seeds, color, label):
+            # build densities matrix: (n_seeds × len(xs))
+            dens = np.stack([
+                gaussian_kde(vals_seeds[seed][metric])(xs)
+                for seed in vals_seeds
+            ])
+            mean = dens.mean(axis=0)
+            std  = dens.std(axis=0)
+
+            ax.fill_between(xs, mean - std, mean + std,
+                            color=color, alpha=0.2)
+            ax.plot(xs, mean, color=color, lw=1.5, label=label)
+
+        # draw full, train, val, test with shadows:
+        plot_shadow(full_vals_seeds,  COLOR_MAP["splits"]["full"],  "Full")
+        plot_shadow(train_vals_seeds, COLOR_MAP["splits"]["train"], "Train")
+        plot_shadow(val_vals_seeds,   COLOR_MAP["splits"]["val"],   "Validation")
+        plot_shadow(test_vals_seeds,  COLOR_MAP["splits"]["test"],  "Test")
+
+        ax.set_xlabel(map_metric_name(metric), fontsize=16)
+        if i % cols == 0:
+            ax.set_ylabel("density", fontsize=16)
+        else:
+            ax.set_ylabel("")
+        ax.tick_params(labelsize=16, rotation=45)
+        ax.tick_params(
+            axis='x',
+            labelsize=16,
+            labelrotation=45
+        )
+        ax.tick_params(
+            axis='y',
+            labelsize=16,
+            labelrotation=0
+        )
+
+        ax.grid(True, linestyle="--", alpha=0.5)
+        ax.xaxis.set_major_locator(ticker.MaxNLocator(nbins=4, prune=None))
+
+    # remove unused axes
+    for j in range(i + 1, len(axes)):
+        fig.delaxes(axes[j])
+
+    plt.tight_layout()
+    fig_path = f"{save_dir}/all_metrics_shadow_{nbins}_{map_metric_name(strat_metric)}_{dataset_name}.png"
+    fig.savefig(fig_path, dpi=400)
+    plt.close(fig)
+
+    # legend-only
+    fig_leg = plt.figure(figsize=(10, 1))
+    handles, labels = axes[0].get_legend_handles_labels()
+    fig_leg.legend(handles, labels, ncol=5, loc="center", frameon=False, fontsize=12)
+    fig_leg.subplots_adjust(left=0, right=1, top=1, bottom=0)
+    leg_path = f"{save_dir}/all_metrics_legend.png"
+    fig_leg.savefig(leg_path, dpi=300, bbox_inches="tight")
+    plt.close(fig_leg)
+
+def plot_distributions_on_one_image_shadow_counts(metrics,
+                                    full_vals_seeds,
+                                    train_vals_seeds,
+                                    val_vals_seeds,
+                                    test_vals_seeds,
+                                    save_dir,
+                                    dataset_name=None,
+                                    strat_metric=None,
+                                    nbins=25
+                                    ):
+    save_dir = f"{save_dir}"
+    os.makedirs(save_dir, exist_ok=True)
+
+    num_metrics = len(metrics)
+    cols = 5
+    rows = (num_metrics + cols - 1) // cols
+
+    fig, axes = plt.subplots(rows, cols, figsize=(cols * 3, rows * 4))
+    axes = axes.flatten()
+
+    # 1) Precompute bin-edges for each metric
+    bins_dict = {}
+    for metric in metrics:
+        all_data = []
+        for d in (full_vals_seeds, train_vals_seeds, val_vals_seeds, test_vals_seeds):
+            for seed in d:
+                all_data += d[seed][metric]
+        low, high = np.percentile(all_data, [0, 100])
+        bins = np.linspace(low, high, nbins)  
+        # bins = np.histogram_bin_edges(all_data, bins='fd')  # Freedman–Diaconis rule
+        # centers = (bins[:-1] + bins[1:]) / 2
+        bins_dict[metric] = bins
+
+    for i, metric in enumerate(metrics):
+        ax = axes[i]
+        bins = bins_dict[metric]
+        centers = (bins[:-1] + bins[1:]) / 2
+
+        def plot_shadow_counts(vals_seeds, color, label):
+            # compute histogram for each seed
+            counts = np.stack([
+                np.histogram(vals_seeds[seed][metric], bins=bins)[0]
+                for seed in vals_seeds
+            ])  # shape = (n_seeds, n_bins)
+            mean = counts.mean(axis=0)
+            std  = counts.std(axis=0)
+
+            ax.fill_between(centers, mean - std, mean + std,
+                            color=color, alpha=0.2)
+            ax.plot(centers, mean, color=color, lw=1.5, label=label)
+
+        # 2) plot each split’s shadowed counts
+        plot_shadow_counts(full_vals_seeds,  COLOR_MAP["splits"]["full"],  "Full")
+        plot_shadow_counts(train_vals_seeds, COLOR_MAP["splits"]["train"], "Train")
+        plot_shadow_counts(val_vals_seeds,   COLOR_MAP["splits"]["val"],   "Validation")
+        plot_shadow_counts(test_vals_seeds,  COLOR_MAP["splits"]["test"],  "Test")
+
+        ax.set_xlabel(map_metric_name(metric), fontsize=16)
+        if i % cols == 0:
+            ax.set_ylabel("count", fontsize=16)
+        else:
+            ax.set_ylabel("")
+        ax.tick_params(axis='x', labelsize=16, rotation=45)
+        ax.tick_params(axis='y', labelsize=16)
+        ax.grid(True, linestyle="--", alpha=0.5)
+
+        # more ticks if you like
+        ax.xaxis.set_major_locator(ticker.MaxNLocator(nbins=4, prune=None))
+
+    # remove unused axes
+    for j in range(i + 1, len(axes)):
+        fig.delaxes(axes[j])
+
+    plt.tight_layout()
+    fig_path = f"{save_dir}/all_metrics_shadow_counts_{nbins}_{map_metric_name(strat_metric)}_{dataset_name}.png"
+    fig.savefig(fig_path, dpi=300)
+    plt.close(fig)
+
+    # legend-only
+    fig_leg = plt.figure(figsize=(8, 1))
+    handles, labels = axes[0].get_legend_handles_labels()
+    fig_leg.legend(handles, labels, ncol=5, loc="center", frameon=False, fontsize=12)
+    fig_leg.subplots_adjust(left=0, right=1, top=1, bottom=0)
+    leg_path = f"{save_dir}/all_metrics_legend.png"
+    fig_leg.savefig(leg_path, dpi=300, bbox_inches="tight")
+    plt.close(fig_leg)
+
 def main():
     DATASETS = [
         "medeasi",
@@ -159,58 +273,53 @@ def main():
         ]
     DATA_DIR = "./../data"
     BINS = [
-            # 15,
+            15,
             25,
             35,
             45
             ]
-    # np.random.seed(42)
+    METRICS = [
+                "char_count", 
+                "word_count", 
+                "FKGL", 
+                "ARI", 
+                "Dale-Chall"
+                ]
+
     seeds = set_random_seeds(num_seeds=10)
     
     EXPERIMENT_RESULTS = []
 
-    for seed in seeds:
-        print(f"\n--- Using seed: {seed} ---")
-
-        for NUM_BINS in BINS:
-
-            METRICS = [
-                        "char_count", 
-                        "word_count", 
-                        "FKGL", 
-                        "ARI", 
-                        # "FRE", # TODO exclude FRE from future experiments
-                        "Dale-Chall"
-                        ]
-
-            for dataset_name in DATASETS:
-                print(f"Processing {dataset_name}...")
-
-                for STRAT_METRIC in METRICS:
-                    print(f"Stratifying by {STRAT_METRIC}...")
+    for NUM_BINS in BINS:
+        for dataset_name in DATASETS:
+            print(f"Processing {dataset_name}...")
+            dataset_path = f"{DATA_DIR}/datasets/{dataset_name}/dataset.jsonl"
+            for STRAT_METRIC in METRICS:
+                print(f"Stratifying by {STRAT_METRIC}...")
+                full_vals_seeds  = {}
+                train_vals_seeds = {}
+                val_vals_seeds   = {}
+                test_vals_seeds  = {}
+                for seed in seeds:
+                    print(f"\n--- Using seed: {seed} ---")
                     
-                    SAVE_DIR = f"./../experiments/splits_sampling/stratified_by_{STRAT_METRIC}/num_bins_{NUM_BINS}/{dataset_name}"
+                    SAVE_DIR = f"./../experiments/splits_sampling_w_outliers/stratified_by_{STRAT_METRIC}"
                     os.makedirs(SAVE_DIR, exist_ok=True)
                     
-                    dataset_path = f"{DATA_DIR}/datasets/{dataset_name}/dataset.jsonl"
                     data = load_jsonl(dataset_path)
-                    data = remove_outliers_by_char_length(
-                                                            data,
-                                                            lower_percentile=3,
-                                                            upper_percentile=97
-                                                            )
+                    # data = remove_outliers_by_char_length(data, lower_percentile=3, upper_percentile=97)
                     
-                    full_metric_values = extract_metrics(data, METRICS)
-                    
-                    train_data, val_data, test_data = generate_splits(data, full_metric_values, STRAT_METRIC, num_bins=NUM_BINS, seed=seed)
-
+                    train_data, val_data, test_data = generate_splits(data, extract_metrics(data, METRICS), STRAT_METRIC, num_bins=NUM_BINS, seed=seed)
+                
                     full_metric_values = extract_metrics(data, METRICS)
                     train_metric_values = extract_metrics(train_data, METRICS)
                     val_metric_values = extract_metrics(val_data, METRICS)
                     test_metric_values = extract_metrics(test_data, METRICS)
 
-                    plot_distributions(METRICS, full_metric_values, train_metric_values, val_metric_values, test_metric_values, SAVE_DIR)
-                    plot_distributions_on_one_image(METRICS, full_metric_values, train_metric_values, val_metric_values, test_metric_values, SAVE_DIR)
+                    full_vals_seeds[seed]  = extract_metrics(data,   METRICS)
+                    train_vals_seeds[seed] = extract_metrics(train_data, METRICS)
+                    val_vals_seeds[seed]   = extract_metrics(val_data,   METRICS)
+                    test_vals_seeds[seed]  = extract_metrics(test_data,  METRICS)
 
                     # Calculate KL Divergence between distributions
                     ks_train,_ = ks_2samp(full_metric_values[STRAT_METRIC], train_metric_values[STRAT_METRIC])
@@ -228,6 +337,29 @@ def main():
                         "KS_full_test": ks_test,
                         "average_KS": np.mean([ks_train, ks_val, ks_test])
                     })
+
+                plot_distributions_on_one_image_shadow(
+                    METRICS,
+                    full_vals_seeds,
+                    train_vals_seeds,
+                    val_vals_seeds,
+                    test_vals_seeds,
+                    SAVE_DIR,
+                    dataset_name=dataset_name,
+                    strat_metric=STRAT_METRIC,
+                    nbins=NUM_BINS
+                )
+                plot_distributions_on_one_image_shadow_counts(
+                    METRICS,
+                    full_vals_seeds,
+                    train_vals_seeds,
+                    val_vals_seeds,
+                    test_vals_seeds,
+                    SAVE_DIR,
+                    dataset_name=dataset_name,
+                    strat_metric=STRAT_METRIC,
+                    nbins=NUM_BINS
+                )
 
     with open(f"./../experiments/splits_sampling/all_results.json", "w") as f:
         json.dump(EXPERIMENT_RESULTS, f, indent=4)
