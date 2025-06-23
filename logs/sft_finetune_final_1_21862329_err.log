@@ -1,0 +1,432 @@
+
+CondaError: Run 'conda init' before 'conda activate'
+
+wandb: Using wandb-core as the SDK backend.  Please refer to https://wandb.me/wandb-core for more information.
+wandb: Currently logged in as: hanna-hubarava (shtosti) to https://api.wandb.ai. Use `wandb login --relogin` to force relogin
+wandb: Tracking run with wandb version 0.19.9
+wandb: Run data is saved locally in /scratch/hhubar/keep-it-simple/wandb/run-20250623_012910-3q6n4jd4
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run major-microwave-456
+wandb: ⭐️ View project at https://wandb.ai/shtosti/ATS_with_control_tokens
+wandb: 🚀 View run at https://wandb.ai/shtosti/ATS_with_control_tokens/runs/3q6n4jd4
+Fetching 2 files:   0%|          | 0/2 [00:00<?, ?it/s]Fetching 2 files:  50%|█████     | 1/2 [00:23<00:23, 23.03s/it]Fetching 2 files: 100%|██████████| 2/2 [00:23<00:00, 11.52s/it]
+Loading checkpoint shards:   0%|          | 0/2 [00:00<?, ?it/s]Loading checkpoint shards:  50%|█████     | 1/2 [00:01<00:01,  1.80s/it]Loading checkpoint shards: 100%|██████████| 2/2 [00:02<00:00,  1.04s/it]Loading checkpoint shards: 100%|██████████| 2/2 [00:02<00:00,  1.16s/it]
+The token has not been saved to the git credentials helper. Pass `add_to_git_credential=True` in this function directly or `--add-to-git-credential` if using via `huggingface-cli` if you want to set the git credential as well.
+Traceback (most recent call last):
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/huggingface_hub/utils/_http.py", line 409, in hf_raise_for_status
+    response.raise_for_status()
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/requests/models.py", line 1024, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 401 Client Error: Unauthorized for url: https://huggingface.co/api/whoami-v2
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/huggingface_hub/hf_api.py", line 1737, in whoami
+    hf_raise_for_status(r)
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/huggingface_hub/utils/_http.py", line 482, in hf_raise_for_status
+    raise _format(HfHubHTTPError, str(e), response) from e
+huggingface_hub.errors.HfHubHTTPError: 401 Client Error: Unauthorized for url: https://huggingface.co/api/whoami-v2 (Request ID: Root=1-685891eb-59757fd815923c54061a1c56;96c5ac4b-5653-43b7-97a3-0597de11d303)
+
+Invalid credentials in Authorization header
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/hhubar/data/conda/envs/sft/bin/huggingface-cli", line 8, in <module>
+    sys.exit(main())
+             ^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/huggingface_hub/commands/huggingface_cli.py", line 57, in main
+    service.run()
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/huggingface_hub/commands/user.py", line 153, in run
+    login(
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/huggingface_hub/utils/_deprecation.py", line 101, in inner_f
+    return f(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/huggingface_hub/utils/_deprecation.py", line 31, in inner_f
+    return f(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/huggingface_hub/_login.py", line 126, in login
+    _login(token, add_to_git_credential=add_to_git_credential)
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/huggingface_hub/_login.py", line 404, in _login
+    token_info = whoami(token)
+                 ^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/huggingface_hub/utils/_validators.py", line 114, in _inner_fn
+    return fn(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/huggingface_hub/hf_api.py", line 1750, in whoami
+    raise HTTPError(error_message, request=e.request, response=e.response) from e
+requests.exceptions.HTTPError: Invalid user token.
+The token has not been saved to the git credentials helper. Pass `add_to_git_credential=True` in this function directly or `--add-to-git-credential` if using via `huggingface-cli` if you want to set the git credential as well.
+Traceback (most recent call last):
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/huggingface_hub/utils/_http.py", line 409, in hf_raise_for_status
+    response.raise_for_status()
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/requests/models.py", line 1024, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 401 Client Error: Unauthorized for url: https://huggingface.co/api/whoami-v2
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/huggingface_hub/hf_api.py", line 1737, in whoami
+    hf_raise_for_status(r)
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/huggingface_hub/utils/_http.py", line 482, in hf_raise_for_status
+    raise _format(HfHubHTTPError, str(e), response) from e
+huggingface_hub.errors.HfHubHTTPError: 401 Client Error: Unauthorized for url: https://huggingface.co/api/whoami-v2 (Request ID: Root=1-685891ee-410522594edca9da23120fef;7f9780ce-406a-4ec0-949a-445afac51fc4)
+
+Invalid credentials in Authorization header
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/hhubar/data/conda/envs/sft/bin/huggingface-cli", line 8, in <module>
+    sys.exit(main())
+             ^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/huggingface_hub/commands/huggingface_cli.py", line 57, in main
+    service.run()
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/huggingface_hub/commands/user.py", line 153, in run
+    login(
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/huggingface_hub/utils/_deprecation.py", line 101, in inner_f
+    return f(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/huggingface_hub/utils/_deprecation.py", line 31, in inner_f
+    return f(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/huggingface_hub/_login.py", line 126, in login
+    _login(token, add_to_git_credential=add_to_git_credential)
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/huggingface_hub/_login.py", line 404, in _login
+    token_info = whoami(token)
+                 ^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/huggingface_hub/utils/_validators.py", line 114, in _inner_fn
+    return fn(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/huggingface_hub/hf_api.py", line 1750, in whoami
+    raise HTTPError(error_message, request=e.request, response=e.response) from e
+requests.exceptions.HTTPError: Invalid user token.
+Map:   0%|          | 0/1687 [00:00<?, ? examples/s]Map:  20%|█▉        | 330/1687 [00:00<00:00, 3247.20 examples/s]Map:  43%|████▎     | 723/1687 [00:00<00:00, 3639.19 examples/s]Map:  71%|███████   | 1200/1687 [00:00<00:00, 2014.88 examples/s]Map:  95%|█████████▌| 1603/1687 [00:00<00:00, 2495.62 examples/s]Map: 100%|██████████| 1687/1687 [00:00<00:00, 2148.48 examples/s]
+Map:   0%|          | 0/208 [00:00<?, ? examples/s]Map: 100%|██████████| 208/208 [00:00<00:00, 983.80 examples/s]Map: 100%|██████████| 208/208 [00:00<00:00, 540.38 examples/s]
+Map:   0%|          | 0/1687 [00:00<?, ? examples/s]Map:   1%|▏         | 22/1687 [00:00<00:08, 202.21 examples/s]Map:   3%|▎         | 44/1687 [00:00<00:08, 205.05 examples/s]Map:   4%|▍         | 65/1687 [00:00<00:07, 204.26 examples/s]Map:   5%|▌         | 88/1687 [00:00<00:07, 211.84 examples/s]Map:   7%|▋         | 112/1687 [00:00<00:07, 215.62 examples/s]Map:   8%|▊         | 134/1687 [00:00<00:07, 213.91 examples/s]Map:  10%|▉         | 164/1687 [00:00<00:07, 206.36 examples/s]Map:  11%|█         | 186/1687 [00:00<00:07, 207.61 examples/s]Map:  13%|█▎        | 217/1687 [00:01<00:07, 206.23 examples/s]Map:  14%|█▍        | 241/1687 [00:01<00:06, 212.31 examples/s]Map:  16%|█▌        | 265/1687 [00:01<00:06, 217.30 examples/s]Map:  18%|█▊        | 297/1687 [00:01<00:06, 213.46 examples/s]Map:  19%|█▉        | 320/1687 [00:01<00:06, 212.94 examples/s]Map:  21%|██        | 353/1687 [00:01<00:06, 213.14 examples/s]Map:  22%|██▏       | 376/1687 [00:01<00:06, 214.41 examples/s]Map:  24%|██▎       | 398/1687 [00:01<00:06, 211.44 examples/s]Map:  25%|██▍       | 420/1687 [00:01<00:05, 211.52 examples/s]Map:  27%|██▋       | 451/1687 [00:02<00:05, 207.50 examples/s]Map:  28%|██▊       | 473/1687 [00:02<00:05, 208.87 examples/s]Map:  29%|██▉       | 495/1687 [00:02<00:05, 207.83 examples/s]Map:  31%|███       | 518/1687 [00:02<00:05, 212.08 examples/s]Map:  32%|███▏      | 540/1687 [00:02<00:05, 212.50 examples/s]Map:  33%|███▎      | 563/1687 [00:02<00:05, 214.18 examples/s]Map:  35%|███▍      | 586/1687 [00:02<00:05, 213.53 examples/s]Map:  36%|███▌      | 608/1687 [00:02<00:05, 212.94 examples/s]Map:  37%|███▋      | 630/1687 [00:02<00:05, 210.54 examples/s]Map:  39%|███▉      | 662/1687 [00:03<00:04, 205.53 examples/s]Map:  41%|████      | 684/1687 [00:03<00:04, 207.59 examples/s]Map:  42%|████▏     | 705/1687 [00:03<00:04, 206.87 examples/s]Map:  43%|████▎     | 728/1687 [00:03<00:04, 209.76 examples/s]Map:  45%|████▍     | 758/1687 [00:03<00:04, 200.32 examples/s]Map:  46%|████▌     | 780/1687 [00:03<00:04, 203.12 examples/s]Map:  48%|████▊     | 803/1687 [00:03<00:04, 207.85 examples/s]Map:  49%|████▉     | 824/1687 [00:03<00:04, 204.96 examples/s]Map:  50%|█████     | 847/1687 [00:04<00:03, 210.30 examples/s]Map:  52%|█████▏    | 879/1687 [00:04<00:03, 208.04 examples/s]Map:  53%|█████▎    | 902/1687 [00:04<00:03, 209.82 examples/s]Map:  55%|█████▍    | 926/1687 [00:04<00:03, 214.74 examples/s]Map:  57%|█████▋    | 959/1687 [00:04<00:03, 212.56 examples/s]Map:  58%|█████▊    | 981/1687 [00:04<00:03, 211.30 examples/s]Map:  60%|█████▉    | 1010/1687 [00:06<00:15, 44.10 examples/s]Map:  61%|██████    | 1030/1687 [00:06<00:12, 54.30 examples/s]Map:  62%|██████▏   | 1051/1687 [00:06<00:09, 67.37 examples/s]Map:  64%|██████▎   | 1072/1687 [00:06<00:07, 82.57 examples/s]Map:  65%|██████▍   | 1092/1687 [00:06<00:06, 97.62 examples/s]Map:  66%|██████▌   | 1113/1687 [00:06<00:05, 113.58 examples/s]Map:  67%|██████▋   | 1134/1687 [00:07<00:04, 130.22 examples/s]Map:  69%|██████▊   | 1156/1687 [00:07<00:04, 127.48 examples/s]Map:  70%|██████▉   | 1175/1687 [00:07<00:03, 139.54 examples/s]Map:  71%|███████   | 1197/1687 [00:07<00:03, 156.54 examples/s]Map:  72%|███████▏  | 1219/1687 [00:07<00:02, 171.59 examples/s]Map:  74%|███████▍  | 1250/1687 [00:07<00:02, 182.38 examples/s]Map:  75%|███████▌  | 1273/1687 [00:07<00:02, 191.48 examples/s]Map:  77%|███████▋  | 1296/1687 [00:07<00:01, 198.65 examples/s]Map:  78%|███████▊  | 1317/1687 [00:07<00:01, 199.00 examples/s]Map:  80%|███████▉  | 1349/1687 [00:08<00:01, 200.27 examples/s]Map:  81%|████████▏ | 1371/1687 [00:08<00:01, 203.96 examples/s]Map:  83%|████████▎ | 1392/1687 [00:08<00:01, 204.35 examples/s]Map:  84%|████████▍ | 1414/1687 [00:08<00:01, 204.38 examples/s]Map:  85%|████████▌ | 1438/1687 [00:08<00:01, 209.53 examples/s]Map:  87%|████████▋ | 1460/1687 [00:08<00:01, 210.52 examples/s]Map:  88%|████████▊ | 1482/1687 [00:08<00:00, 211.40 examples/s]Map:  89%|████████▉ | 1505/1687 [00:08<00:00, 212.16 examples/s]Map:  91%|█████████ | 1527/1687 [00:08<00:00, 212.67 examples/s]Map:  92%|█████████▏| 1550/1687 [00:09<00:00, 214.89 examples/s]Map:  93%|█████████▎| 1573/1687 [00:09<00:00, 217.09 examples/s]Map:  95%|█████████▌| 1603/1687 [00:09<00:00, 206.21 examples/s]Map:  96%|█████████▋| 1624/1687 [00:09<00:00, 203.17 examples/s]Map:  98%|█████████▊| 1648/1687 [00:09<00:00, 209.47 examples/s]Map:  99%|█████████▉| 1671/1687 [00:09<00:00, 211.98 examples/s]Map: 100%|██████████| 1687/1687 [00:10<00:00, 156.26 examples/s]
+Map:   0%|          | 0/208 [00:00<?, ? examples/s]Map:  10%|▉         | 20/208 [00:00<00:01, 184.05 examples/s]Map:  20%|█▉        | 41/208 [00:00<00:00, 192.20 examples/s]Map:  30%|███       | 63/208 [00:00<00:00, 197.77 examples/s]Map:  40%|███▉      | 83/208 [00:00<00:00, 195.01 examples/s]Map:  50%|█████     | 104/208 [00:00<00:00, 194.98 examples/s]Map:  60%|██████    | 125/208 [00:00<00:00, 197.07 examples/s]Map:  74%|███████▍  | 154/208 [00:00<00:00, 188.89 examples/s]Map:  84%|████████▎ | 174/208 [00:00<00:00, 189.86 examples/s]Map:  94%|█████████▍| 195/208 [00:01<00:00, 193.13 examples/s]Map: 100%|██████████| 208/208 [00:01<00:00, 118.76 examples/s]
+/scratch/hhubar/keep-it-simple/src/sft_finetune.py:286: FutureWarning: `tokenizer` is deprecated and will be removed in version 5.0.0 for `Trainer.__init__`. Use `processing_class` instead.
+  trainer = Trainer(
+wandb: WARNING The `run_name` is currently set to the same value as `TrainingArguments.output_dir`. If this was not intended, please specify a different run name by setting the `TrainingArguments.run_name` parameter.
+  0%|          | 0/315 [00:00<?, ?it/s]  0%|          | 1/315 [00:18<1:38:53, 18.90s/it]Traceback (most recent call last):
+  File "/scratch/hhubar/keep-it-simple/src/sft_finetune.py", line 438, in <module>
+    main()
+  File "/scratch/hhubar/keep-it-simple/src/sft_finetune.py", line 419, in main
+    train_model(
+  File "/scratch/hhubar/keep-it-simple/src/sft_finetune.py", line 306, in train_model
+    trainer.train()
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/transformers/trainer.py", line 2245, in train
+    return inner_training_loop(
+           ^^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/transformers/trainer.py", line 2560, in _inner_training_loop
+    tr_loss_step = self.training_step(model, inputs, num_items_in_batch)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/transformers/trainer.py", line 3736, in training_step
+    loss = self.compute_loss(model, inputs, num_items_in_batch=num_items_in_batch)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/transformers/trainer.py", line 3801, in compute_loss
+    outputs = model(**inputs)
+              ^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1736, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1747, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/accelerate/utils/operations.py", line 819, in forward
+    return model_forward(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/accelerate/utils/operations.py", line 807, in __call__
+    return convert_to_fp32(self.model_forward(*args, **kwargs))
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/torch/amp/autocast_mode.py", line 44, in decorate_autocast
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/transformers/utils/generic.py", line 965, in wrapper
+    output = func(self, *args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/transformers/utils/deprecation.py", line 172, in wrapped_func
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/transformers/models/llama/modeling_llama.py", line 841, in forward
+    loss = self.loss_function(logits=logits, labels=labels, vocab_size=self.config.vocab_size, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/transformers/loss/loss_utils.py", line 63, in ForCausalLMLoss
+    loss = fixed_cross_entropy(logits, shift_labels, num_items_in_batch, ignore_index, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/transformers/loss/loss_utils.py", line 35, in fixed_cross_entropy
+    loss = nn.functional.cross_entropy(source, target, ignore_index=ignore_index, reduction=reduction)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/torch/nn/functional.py", line 3479, in cross_entropy
+    return torch._C._nn.cross_entropy_loss(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 7.83 GiB. GPU 0 has a total capacity of 79.25 GiB of which 6.68 GiB is free. Including non-PyTorch memory, this process has 72.56 GiB memory in use. Of the allocated memory 71.78 GiB is allocated by PyTorch, and 285.58 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+Traceback (most recent call last):
+  File "/scratch/hhubar/keep-it-simple/src/sft_finetune.py", line 438, in <module>
+    main()
+  File "/scratch/hhubar/keep-it-simple/src/sft_finetune.py", line 419, in main
+    train_model(
+  File "/scratch/hhubar/keep-it-simple/src/sft_finetune.py", line 306, in train_model
+    trainer.train()
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/transformers/trainer.py", line 2245, in train
+    return inner_training_loop(
+           ^^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/transformers/trainer.py", line 2560, in _inner_training_loop
+    tr_loss_step = self.training_step(model, inputs, num_items_in_batch)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/transformers/trainer.py", line 3736, in training_step
+    loss = self.compute_loss(model, inputs, num_items_in_batch=num_items_in_batch)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/transformers/trainer.py", line 3801, in compute_loss
+    outputs = model(**inputs)
+              ^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1736, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1747, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/accelerate/utils/operations.py", line 819, in forward
+    return model_forward(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/accelerate/utils/operations.py", line 807, in __call__
+    return convert_to_fp32(self.model_forward(*args, **kwargs))
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/torch/amp/autocast_mode.py", line 44, in decorate_autocast
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/transformers/utils/generic.py", line 965, in wrapper
+    output = func(self, *args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/transformers/utils/deprecation.py", line 172, in wrapped_func
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/transformers/models/llama/modeling_llama.py", line 841, in forward
+    loss = self.loss_function(logits=logits, labels=labels, vocab_size=self.config.vocab_size, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/transformers/loss/loss_utils.py", line 63, in ForCausalLMLoss
+    loss = fixed_cross_entropy(logits, shift_labels, num_items_in_batch, ignore_index, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/transformers/loss/loss_utils.py", line 35, in fixed_cross_entropy
+    loss = nn.functional.cross_entropy(source, target, ignore_index=ignore_index, reduction=reduction)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/torch/nn/functional.py", line 3479, in cross_entropy
+    return torch._C._nn.cross_entropy_loss(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 7.83 GiB. GPU 0 has a total capacity of 79.25 GiB of which 6.68 GiB is free. Including non-PyTorch memory, this process has 72.56 GiB memory in use. Of the allocated memory 71.78 GiB is allocated by PyTorch, and 285.58 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+wandb: Using wandb-core as the SDK backend.  Please refer to https://wandb.me/wandb-core for more information.
+wandb: Currently logged in as: hanna-hubarava (shtosti) to https://api.wandb.ai. Use `wandb login --relogin` to force relogin
+wandb: Tracking run with wandb version 0.19.9
+wandb: Run data is saved locally in /scratch/hhubar/keep-it-simple/wandb/run-20250623_013049-fe5jokv0
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run pleasant-darkness-457
+wandb: ⭐️ View project at https://wandb.ai/shtosti/ATS_with_control_tokens
+wandb: 🚀 View run at https://wandb.ai/shtosti/ATS_with_control_tokens/runs/fe5jokv0
+Loading checkpoint shards:   0%|          | 0/2 [00:00<?, ?it/s]Loading checkpoint shards:  50%|█████     | 1/2 [00:01<00:01,  1.97s/it]Loading checkpoint shards: 100%|██████████| 2/2 [00:02<00:00,  1.15s/it]Loading checkpoint shards: 100%|██████████| 2/2 [00:02<00:00,  1.27s/it]
+The token has not been saved to the git credentials helper. Pass `add_to_git_credential=True` in this function directly or `--add-to-git-credential` if using via `huggingface-cli` if you want to set the git credential as well.
+Traceback (most recent call last):
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/huggingface_hub/utils/_http.py", line 409, in hf_raise_for_status
+    response.raise_for_status()
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/requests/models.py", line 1024, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 401 Client Error: Unauthorized for url: https://huggingface.co/api/whoami-v2
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/huggingface_hub/hf_api.py", line 1737, in whoami
+    hf_raise_for_status(r)
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/huggingface_hub/utils/_http.py", line 482, in hf_raise_for_status
+    raise _format(HfHubHTTPError, str(e), response) from e
+huggingface_hub.errors.HfHubHTTPError: 401 Client Error: Unauthorized for url: https://huggingface.co/api/whoami-v2 (Request ID: Root=1-6858922f-7766246f368540e5678941a3;54cc705c-7286-4d5c-8ec9-de764766487b)
+
+Invalid credentials in Authorization header
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/hhubar/data/conda/envs/sft/bin/huggingface-cli", line 8, in <module>
+    sys.exit(main())
+             ^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/huggingface_hub/commands/huggingface_cli.py", line 57, in main
+    service.run()
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/huggingface_hub/commands/user.py", line 153, in run
+    login(
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/huggingface_hub/utils/_deprecation.py", line 101, in inner_f
+    return f(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/huggingface_hub/utils/_deprecation.py", line 31, in inner_f
+    return f(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/huggingface_hub/_login.py", line 126, in login
+    _login(token, add_to_git_credential=add_to_git_credential)
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/huggingface_hub/_login.py", line 404, in _login
+    token_info = whoami(token)
+                 ^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/huggingface_hub/utils/_validators.py", line 114, in _inner_fn
+    return fn(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/huggingface_hub/hf_api.py", line 1750, in whoami
+    raise HTTPError(error_message, request=e.request, response=e.response) from e
+requests.exceptions.HTTPError: Invalid user token.
+The token has not been saved to the git credentials helper. Pass `add_to_git_credential=True` in this function directly or `--add-to-git-credential` if using via `huggingface-cli` if you want to set the git credential as well.
+Traceback (most recent call last):
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/huggingface_hub/utils/_http.py", line 409, in hf_raise_for_status
+    response.raise_for_status()
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/requests/models.py", line 1024, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 401 Client Error: Unauthorized for url: https://huggingface.co/api/whoami-v2
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/huggingface_hub/hf_api.py", line 1737, in whoami
+    hf_raise_for_status(r)
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/huggingface_hub/utils/_http.py", line 482, in hf_raise_for_status
+    raise _format(HfHubHTTPError, str(e), response) from e
+huggingface_hub.errors.HfHubHTTPError: 401 Client Error: Unauthorized for url: https://huggingface.co/api/whoami-v2 (Request ID: Root=1-68589232-79d5d0885318f13151458397;631eb028-c77e-4216-8270-794149bf9586)
+
+Invalid credentials in Authorization header
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/hhubar/data/conda/envs/sft/bin/huggingface-cli", line 8, in <module>
+    sys.exit(main())
+             ^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/huggingface_hub/commands/huggingface_cli.py", line 57, in main
+    service.run()
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/huggingface_hub/commands/user.py", line 153, in run
+    login(
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/huggingface_hub/utils/_deprecation.py", line 101, in inner_f
+    return f(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/huggingface_hub/utils/_deprecation.py", line 31, in inner_f
+    return f(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/huggingface_hub/_login.py", line 126, in login
+    _login(token, add_to_git_credential=add_to_git_credential)
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/huggingface_hub/_login.py", line 404, in _login
+    token_info = whoami(token)
+                 ^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/huggingface_hub/utils/_validators.py", line 114, in _inner_fn
+    return fn(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/huggingface_hub/hf_api.py", line 1750, in whoami
+    raise HTTPError(error_message, request=e.request, response=e.response) from e
+requests.exceptions.HTTPError: Invalid user token.
+Map:   0%|          | 0/1687 [00:00<?, ? examples/s]Map:  21%|██▏       | 359/1687 [00:00<00:00, 3531.64 examples/s]Map:  46%|████▌     | 775/1687 [00:00<00:00, 3897.60 examples/s]Map:  72%|███████▏  | 1223/1687 [00:00<00:00, 2550.19 examples/s]Map:  99%|█████████▉| 1671/1687 [00:00<00:00, 3097.51 examples/s]Map: 100%|██████████| 1687/1687 [00:00<00:00, 2467.33 examples/s]
+Map:   0%|          | 0/208 [00:00<?, ? examples/s]Map: 100%|██████████| 208/208 [00:00<00:00, 2556.33 examples/s]
+Map:   0%|          | 0/1687 [00:00<?, ? examples/s]Map:   1%|          | 12/1687 [00:00<00:19, 87.07 examples/s]Map:   2%|▏         | 34/1687 [00:00<00:10, 152.72 examples/s]Map:   3%|▎         | 56/1687 [00:00<00:09, 176.87 examples/s]Map:   5%|▍         | 79/1687 [00:00<00:08, 191.14 examples/s]Map:   6%|▌         | 102/1687 [00:00<00:07, 200.96 examples/s]Map:   7%|▋         | 125/1687 [00:00<00:07, 206.61 examples/s]Map:   9%|▊         | 146/1687 [00:00<00:07, 202.88 examples/s]Map:  10%|█         | 176/1687 [00:00<00:07, 198.72 examples/s]Map:  12%|█▏        | 197/1687 [00:01<00:07, 200.49 examples/s]Map:  13%|█▎        | 221/1687 [00:01<00:07, 207.58 examples/s]Map:  15%|█▍        | 250/1687 [00:01<00:07, 197.41 examples/s]Map:  16%|█▋        | 275/1687 [00:01<00:06, 208.66 examples/s]Map:  18%|█▊        | 298/1687 [00:01<00:06, 212.07 examples/s]Map:  19%|█▉        | 320/1687 [00:01<00:06, 211.91 examples/s]Map:  21%|██        | 353/1687 [00:01<00:06, 212.66 examples/s]Map:  22%|██▏       | 376/1687 [00:01<00:06, 213.90 examples/s]Map:  24%|██▍       | 408/1687 [00:02<00:06, 211.53 examples/s]Map:  25%|██▌       | 430/1687 [00:02<00:05, 209.64 examples/s]Map:  27%|██▋       | 463/1687 [00:02<00:05, 208.61 examples/s]Map:  29%|██▊       | 485/1687 [00:02<00:05, 210.88 examples/s]Map:  30%|███       | 508/1687 [00:02<00:05, 213.27 examples/s]Map:  32%|███▏      | 532/1687 [00:02<00:05, 216.47 examples/s]Map:  33%|███▎      | 554/1687 [00:02<00:05, 216.10 examples/s]Map:  34%|███▍      | 578/1687 [00:02<00:05, 220.76 examples/s]Map:  36%|███▌      | 601/1687 [00:02<00:04, 219.33 examples/s]Map:  37%|███▋      | 631/1687 [00:03<00:05, 208.98 examples/s]Map:  39%|███▉      | 663/1687 [00:03<00:04, 206.28 examples/s]Map:  41%|████      | 685/1687 [00:03<00:04, 208.22 examples/s]Map:  42%|████▏     | 707/1687 [00:03<00:04, 208.51 examples/s]Map:  43%|████▎     | 731/1687 [00:03<00:04, 214.84 examples/s]Map:  45%|████▍     | 754/1687 [00:03<00:04, 214.67 examples/s]Map:  46%|████▌     | 776/1687 [00:03<00:04, 214.71 examples/s]Map:  47%|████▋     | 799/1687 [00:03<00:04, 215.93 examples/s]Map:  49%|████▉     | 830/1687 [00:04<00:04, 211.03 examples/s]Map:  51%|█████     | 853/1687 [00:04<00:03, 213.59 examples/s]Map:  52%|█████▏    | 875/1687 [00:04<00:03, 213.00 examples/s]Map:  53%|█████▎    | 897/1687 [00:04<00:03, 212.39 examples/s]Map:  55%|█████▍    | 921/1687 [00:04<00:03, 217.68 examples/s]Map:  57%|█████▋    | 954/1687 [00:04<00:03, 213.72 examples/s]Map:  58%|█████▊    | 976/1687 [00:04<00:03, 213.69 examples/s]Map:  59%|█████▉    | 998/1687 [00:04<00:03, 213.87 examples/s]Map:  60%|██████    | 1020/1687 [00:06<00:17, 38.17 examples/s]Map:  62%|██████▏   | 1040/1687 [00:06<00:13, 48.43 examples/s]Map:  63%|██████▎   | 1062/1687 [00:06<00:09, 62.70 examples/s]Map:  64%|██████▍   | 1083/1687 [00:06<00:07, 77.81 examples/s]Map:  65%|██████▌   | 1104/1687 [00:07<00:06, 94.26 examples/s]Map:  67%|██████▋   | 1124/1687 [00:07<00:05, 110.65 examples/s]Map:  68%|██████▊   | 1146/1687 [00:07<00:04, 130.24 examples/s]Map:  69%|██████▉   | 1166/1687 [00:07<00:03, 142.54 examples/s]Map:  70%|███████   | 1188/1687 [00:07<00:03, 158.46 examples/s]Map:  72%|███████▏  | 1211/1687 [00:07<00:02, 173.34 examples/s]Map:  73%|███████▎  | 1232/1687 [00:07<00:02, 180.71 examples/s]Map:  74%|███████▍  | 1254/1687 [00:07<00:02, 190.72 examples/s]Map:  76%|███████▌  | 1277/1687 [00:07<00:02, 199.62 examples/s]Map:  77%|███████▋  | 1300/1687 [00:07<00:01, 204.67 examples/s]Map:  78%|███████▊  | 1322/1687 [00:08<00:01, 205.42 examples/s]Map:  80%|███████▉  | 1344/1687 [00:08<00:01, 206.13 examples/s]Map:  81%|████████  | 1366/1687 [00:08<00:01, 207.13 examples/s]Map:  83%|████████▎ | 1398/1687 [00:08<00:01, 205.64 examples/s]Map:  84%|████████▍ | 1420/1687 [00:08<00:01, 207.86 examples/s]Map:  86%|████████▌ | 1443/1687 [00:08<00:01, 210.89 examples/s]Map:  87%|████████▋ | 1474/1687 [00:08<00:01, 201.93 examples/s]Map:  89%|████████▉ | 1498/1687 [00:08<00:00, 209.79 examples/s]Map:  90%|█████████ | 1520/1687 [00:08<00:00, 210.93 examples/s]Map:  91%|█████████▏| 1543/1687 [00:09<00:00, 214.35 examples/s]Map:  93%|█████████▎| 1565/1687 [00:09<00:00, 214.00 examples/s]Map:  94%|█████████▍| 1588/1687 [00:09<00:00, 216.15 examples/s]Map:  95%|█████████▌| 1610/1687 [00:09<00:00, 215.51 examples/s]Map:  97%|█████████▋| 1643/1687 [00:09<00:00, 213.25 examples/s]Map:  99%|█████████▉| 1668/1687 [00:09<00:00, 218.66 examples/s]Map: 100%|██████████| 1687/1687 [00:10<00:00, 156.48 examples/s]
+Map:   0%|          | 0/208 [00:00<?, ? examples/s]Map:  10%|▉         | 20/208 [00:00<00:01, 186.19 examples/s]Map:  20%|█▉        | 41/208 [00:00<00:00, 194.11 examples/s]Map:  30%|███       | 63/208 [00:00<00:00, 200.41 examples/s]Map:  45%|████▍     | 93/208 [00:00<00:00, 195.40 examples/s]Map:  56%|█████▌    | 116/208 [00:00<00:00, 203.01 examples/s]Map:  70%|██████▉   | 145/208 [00:00<00:00, 196.45 examples/s]Map:  79%|███████▉  | 165/208 [00:00<00:00, 194.18 examples/s]Map:  90%|████████▉ | 187/208 [00:00<00:00, 200.28 examples/s]Map: 100%|██████████| 208/208 [00:01<00:00, 200.46 examples/s]Map: 100%|██████████| 208/208 [00:01<00:00, 109.53 examples/s]
+/scratch/hhubar/keep-it-simple/src/sft_finetune.py:286: FutureWarning: `tokenizer` is deprecated and will be removed in version 5.0.0 for `Trainer.__init__`. Use `processing_class` instead.
+  trainer = Trainer(
+wandb: WARNING The `run_name` is currently set to the same value as `TrainingArguments.output_dir`. If this was not intended, please specify a different run name by setting the `TrainingArguments.run_name` parameter.
+  0%|          | 0/315 [00:00<?, ?it/s]  0%|          | 1/315 [00:18<1:37:40, 18.66s/it]Traceback (most recent call last):
+  File "/scratch/hhubar/keep-it-simple/src/sft_finetune.py", line 438, in <module>
+    main()
+  File "/scratch/hhubar/keep-it-simple/src/sft_finetune.py", line 419, in main
+    train_model(
+  File "/scratch/hhubar/keep-it-simple/src/sft_finetune.py", line 306, in train_model
+    trainer.train()
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/transformers/trainer.py", line 2245, in train
+    return inner_training_loop(
+           ^^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/transformers/trainer.py", line 2560, in _inner_training_loop
+    tr_loss_step = self.training_step(model, inputs, num_items_in_batch)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/transformers/trainer.py", line 3736, in training_step
+    loss = self.compute_loss(model, inputs, num_items_in_batch=num_items_in_batch)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/transformers/trainer.py", line 3801, in compute_loss
+    outputs = model(**inputs)
+              ^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1736, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1747, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/accelerate/utils/operations.py", line 819, in forward
+    return model_forward(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/accelerate/utils/operations.py", line 807, in __call__
+    return convert_to_fp32(self.model_forward(*args, **kwargs))
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/torch/amp/autocast_mode.py", line 44, in decorate_autocast
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/transformers/utils/generic.py", line 965, in wrapper
+    output = func(self, *args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/transformers/utils/deprecation.py", line 172, in wrapped_func
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/transformers/models/llama/modeling_llama.py", line 841, in forward
+    loss = self.loss_function(logits=logits, labels=labels, vocab_size=self.config.vocab_size, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/transformers/loss/loss_utils.py", line 63, in ForCausalLMLoss
+    loss = fixed_cross_entropy(logits, shift_labels, num_items_in_batch, ignore_index, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/transformers/loss/loss_utils.py", line 35, in fixed_cross_entropy
+    loss = nn.functional.cross_entropy(source, target, ignore_index=ignore_index, reduction=reduction)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/torch/nn/functional.py", line 3479, in cross_entropy
+    return torch._C._nn.cross_entropy_loss(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 7.83 GiB. GPU 0 has a total capacity of 79.25 GiB of which 6.68 GiB is free. Including non-PyTorch memory, this process has 72.56 GiB memory in use. Of the allocated memory 71.78 GiB is allocated by PyTorch, and 285.58 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+Traceback (most recent call last):
+  File "/scratch/hhubar/keep-it-simple/src/sft_finetune.py", line 438, in <module>
+    main()
+  File "/scratch/hhubar/keep-it-simple/src/sft_finetune.py", line 419, in main
+    train_model(
+  File "/scratch/hhubar/keep-it-simple/src/sft_finetune.py", line 306, in train_model
+    trainer.train()
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/transformers/trainer.py", line 2245, in train
+    return inner_training_loop(
+           ^^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/transformers/trainer.py", line 2560, in _inner_training_loop
+    tr_loss_step = self.training_step(model, inputs, num_items_in_batch)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/transformers/trainer.py", line 3736, in training_step
+    loss = self.compute_loss(model, inputs, num_items_in_batch=num_items_in_batch)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/transformers/trainer.py", line 3801, in compute_loss
+    outputs = model(**inputs)
+              ^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1736, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1747, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/accelerate/utils/operations.py", line 819, in forward
+    return model_forward(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/accelerate/utils/operations.py", line 807, in __call__
+    return convert_to_fp32(self.model_forward(*args, **kwargs))
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/torch/amp/autocast_mode.py", line 44, in decorate_autocast
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/transformers/utils/generic.py", line 965, in wrapper
+    output = func(self, *args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/transformers/utils/deprecation.py", line 172, in wrapped_func
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/transformers/models/llama/modeling_llama.py", line 841, in forward
+    loss = self.loss_function(logits=logits, labels=labels, vocab_size=self.config.vocab_size, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/transformers/loss/loss_utils.py", line 63, in ForCausalLMLoss
+    loss = fixed_cross_entropy(logits, shift_labels, num_items_in_batch, ignore_index, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/transformers/loss/loss_utils.py", line 35, in fixed_cross_entropy
+    loss = nn.functional.cross_entropy(source, target, ignore_index=ignore_index, reduction=reduction)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/torch/nn/functional.py", line 3479, in cross_entropy
+    return torch._C._nn.cross_entropy_loss(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 7.83 GiB. GPU 0 has a total capacity of 79.25 GiB of which 6.68 GiB is free. Including non-PyTorch memory, this process has 72.56 GiB memory in use. Of the allocated memory 71.78 GiB is allocated by PyTorch, and 285.58 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
