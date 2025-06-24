@@ -205,17 +205,17 @@ def plot_eval_values(data: list, metric: str, dataset_dir: str) -> None:
     plt.savefig(f"{output_dir}/{metric}_hist.png", dpi=400)
 
     ############ violin plot ############
-    plt.figure(figsize=(5, 5))
+    plt.figure(figsize=(4, 3))
     sns.violinplot(x=target_vals, color=COLORMAP["common_color"], alpha=0.7, inner="quartile")
     sns.boxplot(x=target_vals, color='black', width=0.15, fliersize=3)  # Add box plot for summary stats
-    plt.xlabel(f'{metric} Score')
-    plt.title(f'Distribution of {metric} Scores')
+    # plt.xlabel(f'{metric} Score')
+    # plt.title(f'Distribution of {metric} Scores')
     
     # save plots
     output_dir = f"{dataset_dir}/stats/distributions"
     os.makedirs(output_dir, exist_ok=True)
     plt.tight_layout()
-    plt.savefig(f"{output_dir}/{metric}_violin.png", dpi=400)
+    plt.savefig(f"{output_dir}/{metric}_violin.png", dpi=300)
     
 def save_log(data: list, dataset_name: str, dataset_dir: str, comparison_metrics: list, similarity_metrics: list) -> None:
     log_data = {}
@@ -328,12 +328,12 @@ def plot_qq_plot(data: list, metric: str, dataset_dir: str) -> None:
 def main():
 
     DATASETS = [
-        # "simpa",
+        "simpa",
         # "simpa_lexical",
         # "simpa_syntactic",
         # "newsela",
         # "medeasi",
-        "wikilarge_ori_global",
+        # "wikilarge_ori_global",
         # "wikilarge_ori_splitwise",
         # "wikilarge_global",
         # "wikilarge_splitwise",
