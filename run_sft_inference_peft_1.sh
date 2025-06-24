@@ -4,14 +4,17 @@ echo "Script started: $(date)"
 
 # =========================================================================
 # TODO
-MODEL_DIR="CHAR_COMPRESSION-SimPA-token_explanation-Mistral-7B-Instruct-v0.1-20250519"
+MODEL_DIR="CHAR_COMPRESSION-SimPA-token_explanation-Qwen3-8B-20250624"
 CTRL_ATTR="CHAR_COMPRESSION"
 DATASET="SimPA"
-MODEL_NAME="Mistral-7B-Instruct-v0.1"
+MODEL_NAME="Qwen3-8B"
 
 
-MODEL_NAME_HF="mistralai/Mistral-7B-Instruct-v0.1"
+# MODEL_NAME_HF="mistralai/Mistral-7B-Instruct-v0.1"
 # MODEL_NAME_HF="meta-llama/Llama-3.1-8B-Instruct"
+# MODEL_NAME_HF="meta-llama/Llama-2-13b-chat-hf"
+MODEL_NAME_HF=Qwen/Qwen3-8B
+
 
 USER_PROMPT_ID="token_explanation"
 # =========================================================================

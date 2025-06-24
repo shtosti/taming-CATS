@@ -7,14 +7,14 @@ MAX_LENGTH=512
 # --- model name
 # MODEL_NAME="meta-llama/Llama-3.1-8B-Instruct"
 # MODEL_NAME="meta-llama/Llama-2-13b-chat-hf"
-MODEL_NAME="Qwen/Qwen3-8B"
-# MODEL_NAME="Qwen/Qwen3-14B"
+# MODEL_NAME="Qwen/Qwen3-8B"
+MODEL_NAME="Qwen/Qwen3-14B"
 # MODEL_NAME="mistralai/Mistral-7B-Instruct-v0.1"
 
 DATASETS=(
     "Med-EASi" 
     # "Med-EASi_hq"
-    # "SimPA" 
+    "SimPA" 
     # "SimPA_hq"
     # "NoFluff_hq"
     # "WikiLarge_ori_splitwise_hq"
@@ -25,7 +25,7 @@ METRICS=(
     # "ARI" 
     "FKGL" 
     # "DALE-CHALL" 
-    # "CHAR_COMPRESSION" 
+    "CHAR_COMPRESSION" 
     # "WORD_COMPRESSION"
     )
 

@@ -4,14 +4,17 @@ echo "Script started: $(date)"
 
 # =========================================================================
 # TODO
-MODEL_DIR="CHAR_COMPRESSION-Newsela_s-token_explanation-Mistral-7B-Instruct-v0.1-20250602"
+MODEL_DIR="CHAR_COMPRESSION-Med-EASi-token_explanation-Qwen3-8B-20250624"
 CTRL_ATTR="CHAR_COMPRESSION"
-DATASET="Newsela_s"
-MODEL_NAME="Mistral-7B-Instruct-v0.1"
+DATASET="Med-EASi"
+MODEL_NAME="Qwen3-8B"
 
 
-MODEL_NAME_HF="mistralai/Mistral-7B-Instruct-v0.1"
+# MODEL_NAME_HF="mistralai/Mistral-7B-Instruct-v0.1"
 # MODEL_NAME_HF="meta-llama/Llama-3.1-8B-Instruct"
+# MODEL_NAME_HF="meta-llama/Llama-2-13b-chat-hf"
+MODEL_NAME_HF=Qwen/Qwen3-8B
+
 
 USER_PROMPT_ID="token_explanation"
 # =========================================================================
@@ -27,8 +30,8 @@ SEEDS=(
   37 
   15 
   96 
-  # 2 
-  # 28
+  2 
+  28
   )
 i=1
 for SEED in "${SEEDS[@]}"; do
@@ -43,7 +46,7 @@ for SEED in "${SEEDS[@]}"; do
     --dataset_name "$DATASET"
     --model_class "auto"
     --model_family "base"
-    --max_length 4096
+    --max_length 512
     --batch_size 4
     --slice_test -1
     --output_file "$OUTPUT_FILE"
@@ -78,8 +81,8 @@ INPUT_FILES=(
   "$INPUT_DIR/output_1.json"
   "$INPUT_DIR/output_2.json"
   "$INPUT_DIR/output_3.json"
-  # "$INPUT_DIR/output_4.json"
-  # "$INPUT_DIR/output_5.json"
+  "$INPUT_DIR/output_4.json"
+  "$INPUT_DIR/output_5.json"
 )
 
 
