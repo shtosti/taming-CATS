@@ -1,0 +1,40 @@
+Mon Jun 23 20:38:08 2025       
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 560.35.05              Driver Version: 560.35.05      CUDA Version: 12.6     |
+|-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  NVIDIA A100-SXM4-80GB          Off |   00000000:0B:00.0 Off |                    0 |
+| N/A   38C    P0             59W /  400W |       1MiB /  81920MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+                                                                                         
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI        PID   Type   Process name                              GPU Memory |
+|        ID   ID                                                               Usage      |
+|=========================================================================================|
+|  No running processes found                                                             |
++-----------------------------------------------------------------------------------------+
+*** Finetuning Qwen/Qwen3-14B with Med-EASi and FKGL ***
+torch.cuda.is_bf16_supported: True
+Transformers version: 4.51.0
+Python path: /home/hhubar/data/conda/envs/sft/bin/python
+Using PEFT...
+
+Run arguments:
+Namespace(model_class='auto', model_family='base', model_name='Qwen/Qwen3-14B', dataset_name='Med-EASi', slice_train=-1, slice_val=-1, batch_size=4, eval_batch_size=4, gradient_accumulation_steps=4, learning_rate=0.0001, weight_decay=0.01, warmup_steps=30, max_grad_norm=1.0, epochs=3, max_length=512, logging_steps=10, wandb_project_name='ATS_with_control_tokens', wandb_entity='shtosti', generate_every=20, seed=42, patience=3, prompting_type='vanilla', user_prompt_id='token_explanation', metric_name='FKGL', control_tokens='data/prompts/control_tokens.json', system_prompts='data/prompts/system_prompts.json', user_prompts='data/prompts/user_prompts.json', metric_mapping='data/metric_mapping.json', peft=True, lora_r=16, lora_dropout=0.1)
+
+Saving to: ./models/FKGL-Med-EASi-token_explanation-Qwen3-14B-20250623
+
+*** Finetuning Qwen3-14B with Med-EASi ***
+
+CUDA available: True
+Number of GPUs: 1
+GPU name: NVIDIA A100-SXM4-80GB
+{"timestamp":"2025-06-23T18:38:34.463726Z","level":"ERROR","fields":{"message":"error fetching 1 term, error: ChunkCache(IO(Os { code: 2, kind: NotFound, message: \"No such file or directory\" }))","caller":"/home/runner/work/xet-core/xet-core/cas_client/src/remote_client.rs:475"},"filename":"/home/runner/work/xet-core/xet-core/error_printer/src/lib.rs","line_number":28}
+[1;34mwandb[0m: 
+[1;34mwandb[0m: 🚀 View run [33mprime-paper-461[0m at: [34mhttps://wandb.ai/shtosti/ATS_with_control_tokens/runs/s2yghgrn[0m
+[1;34mwandb[0m: Find logs at: [1;35m../../../../scratch/hhubar/keep-it-simple/wandb/run-20250623_203816-s2yghgrn/logs[0m

@@ -1,6 +1,8 @@
 import json
+import os
 import argparse
 import matplotlib.pyplot as plt
+import matplotlib.lines as mlines
 import seaborn as sns
 import numpy as np
 from sklearn.metrics import mean_squared_error, mean_absolute_error
@@ -134,36 +136,70 @@ def compute_mean_metrics(predictions):
     return results
 
 def plot_metric_scatter(source_vals, reference_vals, prediction_vals, metric_key, output_dir, use_source=False):
-
-    x = list(range(len(reference_vals)))
-
-    plt.figure(figsize=(6, 5))
-
-    # Cap outliers
+    # Cap and sort as before…
     source_vals = cap_outliers(source_vals) if use_source else []
     reference_vals = cap_outliers(reference_vals)
     prediction_vals = cap_outliers(prediction_vals)
 
+    idxs       = np.argsort(reference_vals)
+    x_sorted   = np.arange(len(reference_vals))
+    ref_sorted = np.array(reference_vals)[idxs]
+    pred_sorted= np.array(prediction_vals)[idxs]
     if use_source:
-        plt.scatter(x, source_vals, color="orchid", label="Source", alpha=0.7)
-        source_trend = np.poly1d(np.polyfit(x, source_vals, 1))
-        plt.plot(x, source_trend(x), color="orchid", linestyle="-", linewidth=2)
+        src_sorted = np.array(source_vals)[idxs]
 
-    plt.scatter(x, reference_vals, color="darkorange", label="Reference", alpha=0.7)
-    plt.scatter(x, prediction_vals, color="seagreen", label="Prediction", alpha=0.7)
-    reference_trend = np.poly1d(np.polyfit(x, reference_vals, 1))
-    prediction_trend = np.poly1d(np.polyfit(x, prediction_vals, 1))
-    plt.plot(x, reference_trend(x), color="darkorange", linestyle="-", linewidth=2)
-    plt.plot(x, prediction_trend(x), color="seagreen", linestyle="-", linewidth=2)
+    fig, ax = plt.subplots(figsize=(4, 3))
 
-    # plt.title(f"{metric_key}")
-    plt.xlabel("idx")
-    plt.ylabel(metric_key)
-    plt.legend()
-    plt.grid(True)
+    # plot the three series (and their trend‐lines)
+    if use_source:
+        sc1 = ax.scatter(x_sorted, src_sorted,  color="orchid", label="Source", alpha=0.5, s=20)
+        ln1 = ax.plot(   x_sorted, np.poly1d(np.polyfit(x_sorted, src_sorted, 1))(x_sorted),
+                        color="darkorchid", linewidth=1.5)
+    sc2 = ax.scatter(x_sorted, ref_sorted,  color="gold", label="Reference",  alpha=0.5, s=20)
+    sc3 = ax.scatter(x_sorted, pred_sorted, color="mediumseagreen", label="Prediction", alpha=0.5, s=20)
+
+    ref_trend  = np.poly1d(np.polyfit(x_sorted, ref_sorted,  1))
+    pred_trend = np.poly1d(np.polyfit(x_sorted, pred_sorted, 1))
+    ln2 = ax.plot(x_sorted, ref_trend(x_sorted),  color="darkorange", linewidth=1.5)
+    ln3 = ax.plot(x_sorted, pred_trend(x_sorted), color="seagreen",   linewidth=1.5)
+
+    ax.set_xlabel("idx",       fontsize=14)
+    ax.set_ylabel(metric_key,  fontsize=14)
+    ax.tick_params(axis='both', labelsize=12)
+    ax.grid(True, linestyle="--", alpha=0.6)
     plt.tight_layout()
-    plt.savefig(f"{output_dir}/{metric_key}_scatter_plot.png", bbox_inches='tight', dpi=300)
-    print(f"Scatter plot saved as {metric_key}_scatter.png")
+
+    # 1) save the scatter + lines WITHOUT a legend
+    scatter_path = os.path.join(output_dir, f"{metric_key}_scatter_plot.png")
+    fig.savefig(scatter_path, bbox_inches='tight', dpi=300)
+    plt.close(fig)
+
+    # 2) now build a separate legend figure
+    # grab one of the axes to collect handles/labels
+    # (we have to recreate the artists; easiest is to collect them before closing)
+    handles = []
+    labels  = []
+    if use_source:
+        handles.append(sc1); labels.append("Source")
+        handles.append(mlines.Line2D([], [], color="darkorchid", linewidth=1.5))
+        labels.append("Source trend")
+    handles.append(sc2); labels.append("Reference")
+    handles.append(mlines.Line2D([], [], color="darkorange", linewidth=1.5))
+    labels.append("Reference trend")
+    handles.append(sc3); labels.append("Prediction")
+    handles.append(mlines.Line2D([], [], color="seagreen", linewidth=1.5))
+    labels.append("Prediction trend")
+
+    fig_leg = plt.figure(figsize=(4, 1))
+    fig_leg.legend(handles, labels, ncol=3 if use_source else 2, frameon=False, fontsize=12, loc="center")
+    fig_leg.tight_layout()
+    legend_path = os.path.join(output_dir, f"{metric_key}_scatter_legend.png")
+    fig_leg.savefig(legend_path, bbox_inches='tight', dpi=300)
+    plt.close(fig_leg)
+
+    print(f"Scatter plot saved to {scatter_path}")
+    print(f"Legend saved to {legend_path}")
+
 
 def polyfit_plot(ax, x, y, color):
     x_np = np.array(x, dtype=np.float32)
@@ -173,7 +209,7 @@ def polyfit_plot(ax, x, y, color):
         coeffs = np.polyfit(x_np[mask], y_np[mask], 1)
         trend = np.poly1d(coeffs)
         sorted_x = np.sort(x_np[mask])
-        ax.plot(sorted_x, trend(sorted_x), color=color, linestyle="--", linewidth=2)
+        ax.plot(sorted_x, trend(sorted_x), color=color, linestyle="--", linewidth=1.5)
 
 def plot_ctrl_attr_vs_metrics(predictions, metric_key, output_dir):
 
@@ -229,7 +265,7 @@ def plot_ctrl_attr_vs_metrics(predictions, metric_key, output_dir):
     plt.savefig(f"{output_dir}/{metric_key}_vs_metrics.png", bbox_inches='tight', dpi=300)
     print(f"Control attribute vs metrics plot saved as {metric_key}_ctrl_attr_vs_metrics.png")
 
-def cap_outliers(y_vals, lower_pct=1, upper_pct=99):
+def cap_outliers(y_vals, lower_pct=3, upper_pct=97):
     if len(y_vals) == 0:
         return y_vals
     y_np = np.array(y_vals, dtype=np.float32)
@@ -277,7 +313,7 @@ def plot_errors_vs_metrics(predictions, metric_key_mapped, metric_key, output_di
         ax_abs.scatter(x_vals, abs_errors_capped, alpha=0.7, color="skyblue")
         polyfit_plot(ax_abs, x_vals, abs_errors_capped, color="black")
         ax_abs.set_xlabel(label)
-        ax_abs.set_ylabel(f"Absolute Error ({metric_key_mapped})")
+        ax_abs.set_ylabel(f"Absolute Error")
         ax_abs.set_title(f"{significance_level_abs}")
         ax_abs.text(0.05, 0.85, f"p={p_value_abs:.2f}\nr={corr_coeff_abs:.2f} ({corr_strength_abs})", transform=ax_abs.transAxes, fontsize=10)
 
@@ -285,7 +321,7 @@ def plot_errors_vs_metrics(predictions, metric_key_mapped, metric_key, output_di
         polyfit_plot(ax_sq, x_vals, sq_errors_capped, color="black")
         ax_sq.set_title(f"{significance_level_sq}")
         ax_sq.set_xlabel(label)
-        ax_sq.set_ylabel(f"Squared Error ({metric_key_mapped})")
+        ax_sq.set_ylabel(f"Squared Error")
         ax_sq.text(0.05, 0.85, f"p={p_value_sq:.2f}\nr={corr_coeff_sq:.2f} ({corr_strength_sq})", transform=ax_sq.transAxes, fontsize=10)
 
     fig_abs.tight_layout()
@@ -310,18 +346,19 @@ def plot_error_std_vs_reference(reference_vals, real_errors, metric_key, output_
     plt.figure(figsize=(5, 4))
     plt.bar(bin_labels, std_by_bin.values, color="skyblue", edgecolor="black")
     plt.xticks(rotation=45, ha="right")
-    plt.ylabel("error std")
-    plt.xlabel(f"{metric_key}")
-    # plt.title(f"Error Variability by Reference {metric_key}")
+    plt.ylabel("error std", fontsize=14)
+    plt.xlabel(f"{metric_key}", fontsize=14)
+    ax = plt.gca()
+    ax.tick_params(axis='both', labelsize=12)
     plt.tight_layout()
-    plt.grid(True, axis='y', linestyle="--", alpha=0.5)
+    plt.grid(True, axis='y', linestyle="--", alpha=0.6)
     plt.savefig(f"{output_dir}/{metric_key}_error_std_by_ref_bin.png", bbox_inches='tight', dpi=300)
     print(f"STD of error by reference bin saved as {metric_key}_error_std_by_ref_bin.png")
 
 def plot_error_std_binned(reference_vals, real_errors, metric_key, output_dir, num_bins=25):
     mean_error = np.mean(real_errors)
 
-    plt.figure(figsize=(5, 4))
+    plt.figure(figsize=(4, 3))
     sns.histplot(
         real_errors, 
         bins=num_bins, 
@@ -331,11 +368,13 @@ def plot_error_std_binned(reference_vals, real_errors, metric_key, output_dir, n
         edgecolor="black"
         )
     plt.axvline(mean_error, color='black', linestyle='--', label=f'Mean Error: {mean_error:.2f}')
-    plt.xlabel("Standard deviation of errors")
-    plt.ylabel("Count by bin")
+    plt.xlabel("std of errors", fontsize=14)
+    plt.ylabel("count", fontsize=14)
+    ax = plt.gca()
+    ax.tick_params(axis='both', labelsize=12)
     # horizontal grid
     plt.grid(axis='y', linestyle="--", alpha=0.5)
-    plt.legend()
+    plt.legend(fontsize=12)
     plt.tight_layout()
     plt.savefig(f"{output_dir}/{metric_key}_error_std_binned.png", bbox_inches='tight', dpi=300)
 

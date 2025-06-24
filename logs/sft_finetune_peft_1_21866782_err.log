@@ -1,0 +1,66 @@
+
+CondaError: Run 'conda init' before 'conda activate'
+
+wandb: Using wandb-core as the SDK backend.  Please refer to https://wandb.me/wandb-core for more information.
+wandb: Currently logged in as: hanna-hubarava (shtosti) to https://api.wandb.ai. Use `wandb login --relogin` to force relogin
+wandb: Tracking run with wandb version 0.19.9
+wandb: Run data is saved locally in /scratch/hhubar/keep-it-simple/wandb/run-20250623_203816-s2yghgrn
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run prime-paper-461
+wandb: ⭐️ View project at https://wandb.ai/shtosti/ATS_with_control_tokens
+wandb: 🚀 View run at https://wandb.ai/shtosti/ATS_with_control_tokens/runs/s2yghgrn
+Fetching 8 files:   0%|          | 0/8 [00:00<?, ?it/s]Fetching 8 files:  12%|█▎        | 1/8 [01:23<09:47, 84.00s/it]Fetching 8 files:  38%|███▊      | 3/8 [01:24<01:49, 21.88s/it]Fetching 8 files:  50%|█████     | 4/8 [01:24<00:57, 14.46s/it]Fetching 8 files:  75%|███████▌  | 6/8 [01:24<00:28, 14.12s/it]
+Traceback (most recent call last):
+  File "/scratch/hhubar/keep-it-simple/src/sft_finetune.py", line 438, in <module>
+    main()
+  File "/scratch/hhubar/keep-it-simple/src/sft_finetune.py", line 398, in main
+    model, tokenizer = load_and_prepare_model(args, args.model_family, args.model_name, args.model_class, args.peft, args.max_length)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/scratch/hhubar/keep-it-simple/src/sft_finetune.py", line 78, in load_and_prepare_model
+    model = AutoModelForCausalLM.from_pretrained(model_name, device_map="auto")
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/transformers/models/auto/auto_factory.py", line 571, in from_pretrained
+    return model_class.from_pretrained(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/transformers/modeling_utils.py", line 279, in _wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/transformers/modeling_utils.py", line 4261, in from_pretrained
+    checkpoint_files, sharded_metadata = _get_resolved_checkpoint_files(
+                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/transformers/modeling_utils.py", line 1152, in _get_resolved_checkpoint_files
+    checkpoint_files, sharded_metadata = get_checkpoint_shard_files(
+                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/transformers/utils/hub.py", line 1115, in get_checkpoint_shard_files
+    cached_filenames = cached_files(
+                       ^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/transformers/utils/hub.py", line 517, in cached_files
+    raise EnvironmentError(
+OSError: Qwen/Qwen3-14B does not appear to have a file named model-00007-of-00008.safetensors. Checkout 'https://huggingface.co/Qwen/Qwen3-14B/tree/main'for available files.
+Traceback (most recent call last):
+  File "/scratch/hhubar/keep-it-simple/src/sft_finetune.py", line 438, in <module>
+    main()
+  File "/scratch/hhubar/keep-it-simple/src/sft_finetune.py", line 398, in main
+    model, tokenizer = load_and_prepare_model(args, args.model_family, args.model_name, args.model_class, args.peft, args.max_length)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/scratch/hhubar/keep-it-simple/src/sft_finetune.py", line 78, in load_and_prepare_model
+    model = AutoModelForCausalLM.from_pretrained(model_name, device_map="auto")
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/transformers/models/auto/auto_factory.py", line 571, in from_pretrained
+    return model_class.from_pretrained(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/transformers/modeling_utils.py", line 279, in _wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/transformers/modeling_utils.py", line 4261, in from_pretrained
+    checkpoint_files, sharded_metadata = _get_resolved_checkpoint_files(
+                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/transformers/modeling_utils.py", line 1152, in _get_resolved_checkpoint_files
+    checkpoint_files, sharded_metadata = get_checkpoint_shard_files(
+                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/transformers/utils/hub.py", line 1115, in get_checkpoint_shard_files
+    cached_filenames = cached_files(
+                       ^^^^^^^^^^^^^
+  File "/home/hhubar/data/conda/envs/sft/lib/python3.12/site-packages/transformers/utils/hub.py", line 517, in cached_files
+    raise EnvironmentError(
+OSError: Qwen/Qwen3-14B does not appear to have a file named model-00007-of-00008.safetensors. Checkout 'https://huggingface.co/Qwen/Qwen3-14B/tree/main'for available files.

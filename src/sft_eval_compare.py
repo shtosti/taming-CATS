@@ -1,7 +1,10 @@
 import json
 import argparse
 import matplotlib.pyplot as plt
+import matplotlib.ticker as ticker
 import numpy as np
+import pandas as pd
+import seaborn as sns
 import os
 import matplotlib.patches as mpatches
 from matplotlib.patches import Rectangle
@@ -45,16 +48,16 @@ def plot_comparison_metrics(results, dataset, control_attr, save_dir, output_pre
     losses = {
         "MSE": [],
         "MAE": [],
-        "std_error": [],
-        "var_error": []
+        # "std_error": [],
+        # "var_error": []
     }
 
     metrics = {
-        "SARI": [],
         "BLEU_to_source": [],
         "BLEU_to_ref": [],
         "BERTScore_to_source": [],
         "BERTScore_to_ref": [],
+        "SARI": [],
         "COMET": [],
     }
 
@@ -114,7 +117,7 @@ def plot_comparison_metrics(results, dataset, control_attr, save_dir, output_pre
     nrows = 2
     ncols = (total_plots + nrows - 1) // nrows
 
-    fig, axes = plt.subplots(nrows, ncols, figsize=(14, 3 * nrows), sharex=False)
+    fig, axes = plt.subplots(nrows, ncols, figsize=(16, 3 * nrows), sharex=False)
     axes = axes.flatten()
 
     # Plot metrics with error bars
@@ -131,10 +134,11 @@ def plot_comparison_metrics(results, dataset, control_attr, save_dir, output_pre
             ax.bar(j, means[j], yerr=[[lower[j]], [upper[j]]],
                    color=color, edgecolor='black', hatch=hatch,
                    capsize=10)
-        ax.set_title(metric)
+        ax.set_title(metric, fontsize=14)
         ax.set_xticks([])
         ax.set_xticklabels([])
         ax.grid(True, axis='y', linestyle='--', alpha=0.7)
+        ax.tick_params(axis='y', labelsize=14)
 
 
     for j, loss in enumerate(total_losses, start=len(total_metrics)):
@@ -145,11 +149,10 @@ def plot_comparison_metrics(results, dataset, control_attr, save_dir, output_pre
             hatch = get_model_hatch(model, model_styles)
             ax.bar(k, values[k], color=color, edgecolor='black', hatch=hatch)
         ax.set_title(loss)
-        # ax.set_xticks(np.arange(len(models)))
-        # ax.set_xticklabels(models, rotation=90)
         ax.set_xticks([])
         ax.set_xticklabels([])
         ax.grid(True, axis='y', linestyle='--', alpha=0.7)
+        ax.tick_params(axis='y', labelsize=14)
 
     for ax in axes[total_plots:]:
         ax.set_visible(False)
@@ -192,6 +195,91 @@ def plot_comparison_metrics(results, dataset, control_attr, save_dir, output_pre
     plt.close(fig_leg)
 
 
+def plot_pairwise_correlations(results, dataset, control_attr, save_dir, output_prefix, color_map_path):
+    rows = []
+    for model, model_data in results.items():
+        if dataset not in model_data or control_attr not in model_data[dataset]:
+            continue
+        entry = model_data[dataset][control_attr]
+        mm = entry["mean_metrics"]
+        losses = entry["losses"]
+
+        row = {
+            "model": model,
+            "SARI": mm["SARI"]["mean"],
+            "COMET": round(mm["COMET"]["mean"],2),
+            "BERT_to_src": round(mm["BERTScore_to_source"]["mean"],2),
+            "BERT_to_ref": round(mm["BERTScore_to_ref"]["mean"],2),
+            "BLEU_to_src": round(mm["BLEU_to_source"]["mean"],2),
+            "BLEU_to_ref": round(mm["BLEU_to_ref"]["mean"],2),
+            "MSE": losses["MSE"],
+            "MAE": losses["MAE"],
+        }
+        rows.append(row)
+
+    df = pd.DataFrame(rows).set_index("model")
+
+    # -------------- heatmap ---------------
+    corr = df.corr(method="pearson")
+    plt.figure(figsize=(7, 6))
+    ax = sns.heatmap(
+            corr,
+            annot=True,
+            fmt=".2f",
+            # cmap="BrBG",
+            cmap="PRGn",
+            center=0,
+            annot_kws={"size": 12},
+            cbar_kws={"shrink": .8},
+            square=True,
+        )
+    ax.tick_params(axis='x', labelsize=14, rotation=90)
+    ax.tick_params(axis='y', labelsize=14, rotation=0)
+    plt.tight_layout()
+    heatmap_path = os.path.join(save_dir, f"{output_prefix}_corr_heatmap.png")
+    plt.savefig(heatmap_path, dpi=300)
+    plt.close()
+
+    # -------------- pairplot ---------------
+    subset = ["SARI",
+            "COMET",
+            "BERT_to_src",
+            "BERT_to_ref",
+            "BLEU_to_src",
+            "BLEU_to_ref",
+            "MSE",
+            # "MAE"
+            ]
+    g = sns.pairplot(
+        df[subset],
+        kind="reg",
+        plot_kws={"line_kws":{"color":"orchid"}, "scatter_kws":{"s":30, "alpha":0.6}},
+        diag_kind="hist",
+        diag_kws={"bins":10, "edgecolor":"k"},
+    )
+
+    for ax in g.axes.flatten():
+        if ax is not None:
+            ax.xaxis.set_major_locator(ticker.MaxNLocator(nbins=4, prune=None))
+            ax.yaxis.set_major_locator(ticker.MaxNLocator(nbins=4, prune=None))
+            # ax.xaxis.set_major_formatter(ticker.FormatStrFormatter('%.1f'))
+            # ax.yaxis.set_major_formatter(ticker.FormatStrFormatter('%.1f'))
+            ax.tick_params(axis='x', rotation=45, labelsize=14)
+            ax.tick_params(axis='y', rotation=0, labelsize=14)
+            ax.xaxis.label.set_size(16)
+            ax.yaxis.label.set_size(16)
+
+
+    g.fig.set_size_inches(15, 15)
+    # plt.suptitle("Pairwise Scatter + Regression", y=1.02)
+    pairplot_path = os.path.join(save_dir, f"{output_prefix}_pairplot.png")
+    plt.tight_layout()
+    plt.savefig(pairplot_path, dpi=300)
+    plt.close()
+
+    print(f"Saved correlation heatmap to {heatmap_path}")
+    print(f"Saved pairplot to {pairplot_path}")
+
 
 def main():
     parser = argparse.ArgumentParser()
@@ -207,6 +295,7 @@ def main():
     output_prefix = f"{args.control_attr}_{args.dataset}_{args.user_prompt_id}"
 
     all_results = load_results(args.summary_file)
+
     plot_comparison_metrics(
                 all_results, 
                 args.dataset, 
@@ -215,6 +304,15 @@ def main():
                 output_prefix, 
                 args.color_map_path
                 )
+
+    plot_pairwise_correlations(
+                all_results,
+                args.dataset,
+                args.control_attr,
+                args.save_dir,
+                output_prefix,
+                args.color_map_path
+    )
 
 
 if __name__ == "__main__":

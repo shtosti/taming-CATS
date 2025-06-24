@@ -25,13 +25,13 @@ mkdir -p "$OUTPUT_DIR"
 USE_PEFT=true
 
 SEEDS=(
-  37 
+  # 37 
   15 
   96 
   # 2 
   # 28
   )
-i=1
+i=2
 for SEED in "${SEEDS[@]}"; do
   echo "Running inference $i with seed $SEED..."
 
