@@ -93,7 +93,9 @@ def load_and_prepare_model(args, model_family, model_name, model_class, peft_ena
             r=args.lora_r,
             lora_alpha=args.lora_r * 2, # lora_alpha = r * 2
             lora_dropout=args.lora_dropout,
-            bias="none"
+            bias="none",
+            # task_type="CAUSAL_LM",
+            target_modules=["q_proj", "v_proj"]
         )
         # model = get_peft_model(model, peft_config)
         model = PeftModelForCausalLM(model, peft_config)
