@@ -134,11 +134,17 @@ def plot_comparison_metrics(results, dataset, control_attr, save_dir, output_pre
             ax.bar(j, means[j], yerr=[[lower[j]], [upper[j]]],
                    color=color, edgecolor='black', hatch=hatch,
                    capsize=10)
-        ax.set_title(metric, fontsize=14)
+        ax.set_title(metric, fontsize=16)
         ax.set_xticks([])
         ax.set_xticklabels([])
         ax.grid(True, axis='y', linestyle='--', alpha=0.7)
-        ax.tick_params(axis='y', labelsize=14)
+        ax.tick_params(axis='y', labelsize=16)
+        # TODO force consistent y‐ranges
+        if metric in ("BLEU_to_source", "BLEU_to_ref", "SARI"):
+            ax.set_ylim(0, 100)
+        elif metric in ("BERTScore_to_source", "BERTScore_to_ref", "COMET"):
+            ax.set_ylim(0, 1.0)
+
 
 
     for j, loss in enumerate(total_losses, start=len(total_metrics)):
@@ -148,11 +154,11 @@ def plot_comparison_metrics(results, dataset, control_attr, save_dir, output_pre
             color = get_model_color(model, model_styles)
             hatch = get_model_hatch(model, model_styles)
             ax.bar(k, values[k], color=color, edgecolor='black', hatch=hatch)
-        ax.set_title(loss)
+        ax.set_title(loss, fontsize=16)
         ax.set_xticks([])
         ax.set_xticklabels([])
         ax.grid(True, axis='y', linestyle='--', alpha=0.7)
-        ax.tick_params(axis='y', labelsize=14)
+        ax.tick_params(axis='y', labelsize=16)
 
     for ax in axes[total_plots:]:
         ax.set_visible(False)
@@ -224,6 +230,7 @@ def plot_pairwise_correlations(results, dataset, control_attr, save_dir, output_
     plt.figure(figsize=(7, 6))
     ax = sns.heatmap(
             corr,
+            # mask=mask,
             annot=True,
             fmt=".2f",
             # cmap="BrBG",
@@ -254,7 +261,8 @@ def plot_pairwise_correlations(results, dataset, control_attr, save_dir, output_
         df[subset],
         kind="reg",
         plot_kws={"line_kws":{"color":"orchid"}, "scatter_kws":{"s":30, "alpha":0.6}},
-        diag_kind="hist",
+        # diag_kind="hist",
+        diag_kind=None,
         diag_kws={"bins":10, "edgecolor":"k"},
     )
 

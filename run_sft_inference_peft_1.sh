@@ -4,9 +4,9 @@ echo "Script started: $(date)"
 
 # =========================================================================
 # TODO
-MODEL_DIR="CHAR_COMPRESSION-SimPA-token_explanation-Qwen3-8B-20250624"
-CTRL_ATTR="CHAR_COMPRESSION"
-DATASET="SimPA"
+MODEL_DIR="FKGL-NoFluff_hq-token_explanation-Qwen3-8B-20250624"
+CTRL_ATTR="FKGL"
+DATASET="NoFluff_hq"
 MODEL_NAME="Qwen3-8B"
 
 
@@ -14,6 +14,7 @@ MODEL_NAME="Qwen3-8B"
 # MODEL_NAME_HF="meta-llama/Llama-3.1-8B-Instruct"
 # MODEL_NAME_HF="meta-llama/Llama-2-13b-chat-hf"
 MODEL_NAME_HF=Qwen/Qwen3-8B
+# MODEL_NAME_HF=Qwen/Qwen3-14B
 
 
 USER_PROMPT_ID="token_explanation"

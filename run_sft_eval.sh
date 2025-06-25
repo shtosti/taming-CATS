@@ -3,10 +3,10 @@
 echo "Script started: $(date)"
 
 # TODO
-DATA_DIR="FKGL-SimPA-token_explanation-Qwen3-8B-20250624"
+DATA_DIR="DALE-CHALL-SimPA-token_explanation-Qwen3-8B-20250624"
 MODEL_NAME="Qwen3-8B"
 DATASET="SimPA"
-METRIC_NAME="FKGL"
+METRIC_NAME="DALE-CHALL"
 
 
 
