@@ -201,15 +201,34 @@ def plot_metric_scatter(source_vals, reference_vals, prediction_vals, metric_key
     print(f"Legend saved to {legend_path}")
 
 
-def polyfit_plot(ax, x, y, color):
-    x_np = np.array(x, dtype=np.float32)
-    y_np = np.array(y, dtype=np.float32)
-    mask = ~np.isnan(x_np) & ~np.isnan(y_np)
-    if np.sum(mask) >= 2:
-        coeffs = np.polyfit(x_np[mask], y_np[mask], 1)
-        trend = np.poly1d(coeffs)
-        sorted_x = np.sort(x_np[mask])
-        ax.plot(sorted_x, trend(sorted_x), color=color, linestyle="--", linewidth=1.5)
+# def polyfit_plot(ax, x, y, color):
+def polyfit_plot(ax, x, y, color, *, deg=1, lowess_frac=None):
+    # x_np = np.array(x, dtype=np.float32)
+    # y_np = np.array(y, dtype=np.float32)
+    # mask = ~np.isnan(x_np) & ~np.isnan(y_np)
+    # if np.sum(mask) >= 2:
+    #     coeffs = np.polyfit(x_np[mask], y_np[mask], 1)
+    #     trend = np.poly1d(coeffs)
+    #     sorted_x = np.sort(x_np[mask])
+    #     ax.plot(sorted_x, trend(sorted_x), color=color, linestyle="--", linewidth=1.5)
+    x_np = np.array(x, dtype=float)
+    y_np = np.array(y, dtype=float)
+    mask = (~np.isnan(x_np)) & (~np.isnan(y_np))
+    x_m, y_m = x_np[mask], y_np[mask]
+    if len(x_m) < 2:
+        return  # nothing to fit
+    if lowess_frac is not None:
+        # LOWESS
+        smoothed = sm.nonparametric.lowess(y_m, x_m, frac=lowess_frac, return_sorted=True)
+        ax.plot(smoothed[:,0], smoothed[:,1],
+                color=color, linestyle="--", linewidth=1.5)
+    else:
+        # ordinary polyfit
+        coeffs = np.polyfit(x_m, y_m, deg)
+        poly = np.poly1d(coeffs)
+        xs = np.linspace(x_m.min(), x_m.max(), 200)
+        ax.plot(xs, poly(xs),
+                color=color, linestyle="--", linewidth=1.5)
 
 def plot_ctrl_attr_vs_metrics(predictions, metric_key, output_dir):
 
@@ -247,7 +266,7 @@ def plot_ctrl_attr_vs_metrics(predictions, metric_key, output_dir):
 
     for ax, (metric_vals, title, color) in zip(axs.flat, metric_groups):
         ax.scatter(control_attr_vals, metric_vals, color=color, alpha=0.7, label=title)
-        polyfit_plot(ax, control_attr_vals, metric_vals, color="black")
+        polyfit_plot(ax, control_attr_vals, metric_vals, color="black", deg=3)
 
         # Compute correlation
         correlation_data = get_correlation_data(control_attr_vals, metric_vals)

@@ -1,8 +1,8 @@
 #!/bin/bash
 
 # *** TODO ***
-MAX_LENGTH=512
-# MAX_LENGTH=4096
+# MAX_LENGTH=512
+MAX_LENGTH=4096
 
 # --- model name
 # MODEL_NAME="meta-llama/Llama-3.1-8B-Instruct"
