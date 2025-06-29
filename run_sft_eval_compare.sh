@@ -4,15 +4,15 @@
 # TODO
 DATASETS=(
   "Newsela_s" 
-  "Newsela" 
+  # "Newsela" 
   "Med-EASi" 
-  "Med-EASi_hq" 
-  "NoFluff" 
-  "NoFluff_hq" 
+  # "Med-EASi_hq" 
+  # "NoFluff" 
+  # "NoFluff_hq" 
   "WikiLarge_ori_splitwise" 
-  "WikiLarge_ori_splitwise_hq"
+  # "WikiLarge_ori_splitwise_hq"
   "SimPA" 
-  "SimPA_hq"
+  # "SimPA_hq"
   )
 CTRL_ATTRS=(
   "FKGL" 

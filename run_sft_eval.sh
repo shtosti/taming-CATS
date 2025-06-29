@@ -3,10 +3,10 @@
 echo "Script started: $(date)"
 
 # TODO
-DATA_DIR="FKGL-Newsela_s-token_explanation-Qwen3-8B-20250624"
+DATA_DIR="WORD_COMPRESSION-WikiLarge_ori_splitwise-token_explanation-Qwen3-8B-20250624"
 MODEL_NAME="Qwen3-8B"
-DATASET="Newsela_s"
-METRIC_NAME="FKGL"
+DATASET="WikiLarge_ori_splitwise"
+METRIC_NAME="WORD_COMPRESSION"
 
 
 
@@ -16,9 +16,9 @@ INPUT_DIR="$BASE_DIR/$DATA_DIR"
 INPUT_FILES=(
   "$INPUT_DIR/output_1.json"
   "$INPUT_DIR/output_2.json"
-  # "$INPUT_DIR/output_3.json"
-  # "$INPUT_DIR/output_4.json"
-  # "$INPUT_DIR/output_5.json"
+  "$INPUT_DIR/output_3.json"
+  "$INPUT_DIR/output_4.json"
+  "$INPUT_DIR/output_5.json"
 )
 
 
