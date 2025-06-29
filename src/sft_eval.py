@@ -436,6 +436,24 @@ def main():
     std_error = np.std(per_sample_real_loss)
     var_error = np.var(per_sample_real_loss)
 
+
+    mean_ctrl = {
+        "reference": float(np.mean(reference_vals)),
+        "prediction": float(np.mean(prediction_vals))
+    }
+    if use_source:
+        mean_ctrl["source"] = float(np.mean(source_vals))
+
+    median_ctrl = {
+        "reference": float(np.median(reference_vals)),
+        "prediction": float(np.median(prediction_vals))
+    }
+    if use_source:
+        median_ctrl["source"] = float(np.median(source_vals))
+
+
+
+
     print(f"--- {metric_key_mapped} losses:")
     print(f"Mean Squared Error (MSE): {mse}")
     print(f"Mean Absolute Error (MAE): {mae}")
@@ -469,12 +487,12 @@ def main():
         json.dump(predictions, f, indent=4)
     print(f"Updated averaged predictions file with per-sample losses: {args.output_dir}/output_averaged.json")
 
-    plot_metric_scatter(source_vals, reference_vals, prediction_vals, metric_key_mapped, args.output_dir, use_source=use_source)
-    plot_ctrl_attr_vs_metrics(predictions, metric_key_mapped, args.output_dir)
-    plot_errors_vs_metrics(predictions, metric_key_mapped, args.metric_key, args.output_dir)
-    plot_error_std_vs_reference(reference_vals, per_sample_real_loss, metric_key_mapped, args.output_dir)
-    plot_error_std_binned(reference_vals, per_sample_real_loss, metric_key_mapped, args.output_dir)
-    print(f"Plots saved to {args.output_dir}")
+    # plot_metric_scatter(source_vals, reference_vals, prediction_vals, metric_key_mapped, args.output_dir, use_source=use_source)
+    # plot_ctrl_attr_vs_metrics(predictions, metric_key_mapped, args.output_dir)
+    # plot_errors_vs_metrics(predictions, metric_key_mapped, args.metric_key, args.output_dir)
+    # plot_error_std_vs_reference(reference_vals, per_sample_real_loss, metric_key_mapped, args.output_dir)
+    # plot_error_std_binned(reference_vals, per_sample_real_loss, metric_key_mapped, args.output_dir)
+    # print(f"Plots saved to {args.output_dir}")
 
 
     print(f"\nAll plots saved to {args.output_dir}")
@@ -507,7 +525,9 @@ def main():
             "std_error": std_error,
             "var_error": var_error
         },
-        "mean_metrics": mean_metrics
+        "mean_metrics": mean_metrics,
+        "mean_ctrl":    mean_ctrl,
+        "median_ctrl":  median_ctrl,
     }
 
     # Write back to the summary file
