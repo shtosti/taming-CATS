@@ -70,7 +70,7 @@ def plot_mean_ctrl(all_results, save_dir, all_means):
     out_dir = os.path.join(save_dir, "mean_plots")
     os.makedirs(out_dir, exist_ok=True)
 
-    def jitter(xs, scale=0.20):
+    def jitter(xs, scale=0.25):
         return xs + np.random.uniform(-scale, scale, size=len(xs))
     
     def map_short_dataset_name(ds_name):
@@ -97,6 +97,7 @@ def plot_mean_ctrl(all_results, save_dir, all_means):
                          for ds_map in all_means.values()
                          for d in ds_map.values()
                          for m in d})
+    all_models.remove("Ministral-3b-instruct")
     cmap = plt.get_cmap("tab10")
     model_colors = {m: cmap(i % 10) for i, m in enumerate(all_models)}
 
@@ -116,22 +117,24 @@ def plot_mean_ctrl(all_results, save_dir, all_means):
         fig, ax = plt.subplots(figsize=(4, 2.5))
 
         # big points
-        ax.scatter(x, source_vals,    s=350, color="orchid",
-                   label="Source mean",    edgecolor="black", zorder=3)
+        ax.scatter(x, source_vals,    s=250, color="orchid",
+                   label="Source mean",    edgecolor="black", zorder=3, marker="P")
         ax.scatter(x, reference_vals, s=350, color="gold",
-                   label="Reference mean", edgecolor="black", zorder=3)
+                   label="Reference mean", edgecolor="black", zorder=3, marker="*")
 
         # per-model dots
         for i, ds in enumerate(datasets_orig):
             for model, mdata in ds_map[ds].items():
+                if model not in all_models:
+                    continue
                 col = model_colors[model]
                 pred = mdata["prediction"]
                 xi = jitter(np.array([i]))
                 lbl = model if ds == datasets_orig[0] else "_nolegend_"
                 ax.scatter(xi, pred, color=col, edgecolor="black",
-                           s=100, label=lbl, zorder=4)
+                           s=100, label=lbl, zorder=4, alpha=0.7)
 
-        ax.set_xticks(x, fontsize=13)
+        ax.set_xticks(x)
         ax.set_xticklabels(datasets_disp, rotation=0, ha="center", fontsize=13)
         ax.set_ylabel(f"{map_short_ctrl_attr_name(ctrl_attr)} mean", fontsize=13)
         ax.grid(axis="y", linestyle="--", alpha=0.5)
@@ -166,94 +169,6 @@ def plot_mean_ctrl(all_results, save_dir, all_means):
         leg_path = os.path.join(out_dir, f"{ctrl_attr}_legend.png")
         fig_leg.savefig(leg_path, dpi=300, bbox_inches="tight")
         plt.close(fig_leg)
-
-def plot_mean_ctrl_with_broken_axis(all_means, save_dir):
-    out_dir = os.path.join(save_dir, "mean_plots_broken")
-    os.makedirs(out_dir, exist_ok=True)
-
-    def jitter(xs, scale=0.20):
-        return xs + np.random.uniform(-scale, scale, size=len(xs))
-
-    # collect all model names once
-    all_models = sorted({m
-                         for ds_map in all_means.values()
-                         for d in ds_map.values()
-                         for m in d})
-
-    cmap = plt.get_cmap("tab10")
-    model_colors = {m: cmap(i % 10) for i, m in enumerate(all_models)}
-
-    for ctrl_attr, ds_map in all_means.items():
-        datasets = list(ds_map.keys())
-        x = np.arange(len(datasets))
-
-        # gather source/ref and preds
-        source_vals, reference_vals = [], []
-        preds_by_ds = []
-        for ds in datasets:
-            entry0 = next(iter(ds_map[ds].values()))
-            source_vals.append(entry0["source"])
-            reference_vals.append(entry0["reference"])
-            preds_by_ds.append([v["prediction"] for v in ds_map[ds].values()])
-
-        # figure with two subplots sharing x
-        fig, (ax_low, ax_high) = plt.subplots(2,1, sharex=True,
-                                              gridspec_kw={"height_ratios":[1,3]},
-                                              figsize=(5,4))
-
-        # define the break point
-        # you might tune these limits to your data
-        low_ylim = (min(min(source_vals), min(reference_vals)), 
-                    max(max(source_vals), max(reference_vals)) + 0.5)
-        high_ylim = (max(low_ylim[1] + 0.1, 0), max(max(map(max, preds_by_ds)), low_ylim[1]) + 1)
-
-        # plot on both axes
-        for ax, ylim in zip((ax_low, ax_high),(high_ylim, low_ylim)):
-            # big points
-            ax.scatter(x, source_vals,    s=200, c="orchid",   edgecolor="k", label="Source mean",    zorder=3)
-            ax.scatter(x, reference_vals, s=200, c="gold",     edgecolor="k", label="Reference mean", zorder=3)
-            # preds
-            for xi, preds in zip(x, preds_by_ds):
-                xs = jitter(np.full(len(preds), xi))
-                for i, p in enumerate(preds):
-                    ax.scatter(xs[i], p,
-                               color=model_colors[all_models[i]],
-                               edgecolor="k", s=60,
-                               label=("_nolabel_" if ax is ax_high else all_models[i]),
-                               zorder=4)
-            ax.set_ylim(*ylim)
-            ax.grid(axis="y", linestyle="--", alpha=0.5)
-
-        # hide the spines between ax_low and ax_high
-        ax_low.spines['bottom'].set_visible(False)
-        ax_high.spines['top'].set_visible(False)
-        ax_low.tick_params(labeltop=False)  # no tick labels on top plot
-        ax_high.xaxis.tick_bottom()
-
-        # add the diagonal lines to indicate the break
-        d = .015  # how big to make those diagonal lines in axes coords
-        kwargs = dict(transform=ax_low.transAxes, color='k', clip_on=False)
-        ax_low.plot((-d, +d), (-d*2, +d*2), **kwargs)
-        ax_low.plot((1-d, 1+d), (-d*2, +d*2), **kwargs)
-
-        kwargs.update(transform=ax_high.transAxes)  # switch to the bottom axes
-        ax_high.plot((-d, +d), (1-d*2, 1+d*2), **kwargs)
-        ax_high.plot((1-d, 1+d), (1-d*2, 1+d*2), **kwargs)
-
-        # labels & legend
-        ax_high.set_ylabel(f"{ctrl_attr} mean")
-        ax_high.set_xticks(x)
-        ax_high.set_xticklabels(datasets, rotation=45, ha="right")
-        # build legend once on the bottom axis
-        handles, labels = ax_high.get_legend_handles_labels()
-        # filter out the dummy labels
-        unique = dict(zip(labels, handles))
-        fig.legend(unique.values(), unique.keys(), loc='upper right', ncol=1, fontsize=8)
-
-        plt.suptitle(f"Mean {ctrl_attr}", y=1.02)
-        plt.tight_layout()
-        fig.savefig(os.path.join(out_dir, f"{ctrl_attr}_broken.png"), dpi=300)
-        plt.close(fig)
 
 
 def plot_comparison_metrics(results, dataset, control_attr, save_dir, output_prefix, color_map_path):
@@ -526,8 +441,7 @@ def main():
     # with open(means_file, "w", encoding="utf-8") as f:
     #     json.dump(all_means, f, indent=4)
 
-    # plot_mean_ctrl(all_results, args.save_dir, all_means)
-    plot_mean_ctrl_with_broken_axis(all_means, args.save_dir)
+    plot_mean_ctrl(all_results, args.save_dir, all_means)
 
     # plot_comparison_metrics(
     #             all_results, 
