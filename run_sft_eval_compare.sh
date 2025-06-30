@@ -3,23 +3,23 @@
 # =========================================================================
 # TODO
 DATASETS=(
-  "Newsela_s" 
+  # "Newsela_s" 
   # "Newsela" 
   "Med-EASi" 
   # "Med-EASi_hq" 
   # "NoFluff" 
   # "NoFluff_hq" 
-  "WikiLarge_ori_splitwise" 
+  # "WikiLarge_ori_splitwise" 
   # "WikiLarge_ori_splitwise_hq"
-  "SimPA" 
+  # "SimPA" 
   # "SimPA_hq"
   )
 CTRL_ATTRS=(
   "FKGL" 
-  "ARI" 
-  "DALE-CHALL" 
-  "CHAR_COMPRESSION" 
-  "WORD_COMPRESSION"
+  # "ARI" 
+  # "DALE-CHALL" 
+  # "CHAR_COMPRESSION" 
+  # "WORD_COMPRESSION"
   )
 # =========================================================================
 
