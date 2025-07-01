@@ -97,7 +97,7 @@ def plot_mean_ctrl(all_results, save_dir, all_means):
                          for ds_map in all_means.values()
                          for d in ds_map.values()
                          for m in d})
-    all_models.remove("Ministral-3b-instruct")
+    # all_models.remove("Ministral-3b-instruct")
     cmap = plt.get_cmap("tab10")
     model_colors = {m: cmap(i % 10) for i, m in enumerate(all_models)}
 
