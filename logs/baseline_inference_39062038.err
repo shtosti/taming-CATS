@@ -1,0 +1,285 @@
+[nltk_data] Downloading package punkt to
+[nltk_data]     /storage/homefs/hh25g551/nltk_data...
+[nltk_data]   Package punkt is already up-to-date!
+We will use 90% of the memory on device 0 for storing the model, and 10% for the buffer to avoid OOM. You can set `max_memory` in to a higher value to use more memory (at your own risk).
+The new embeddings will be initialized from a multivariate normal distribution that has old embeddings' mean and covariance. As described in this article: https://nlp.stanford.edu/~johnhew/vocab-expansion.html. To disable this, use `mean_resizing=False`
+The token has not been saved to the git credentials helper. Pass `add_to_git_credential=True` in this function directly or `--add-to-git-credential` if using via `huggingface-cli` if you want to set the git credential as well.
+Traceback (most recent call last):
+  File "/storage/homefs/hh25g551/ondemand/data/taming-CATS/venv/lib/python3.11/site-packages/huggingface_hub/utils/_http.py", line 406, in hf_raise_for_status
+    response.raise_for_status()
+  File "/storage/homefs/hh25g551/ondemand/data/taming-CATS/venv/lib/python3.11/site-packages/requests/models.py", line 1024, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 401 Client Error: Unauthorized for url: https://huggingface.co/api/whoami-v2
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/storage/homefs/hh25g551/ondemand/data/taming-CATS/venv/lib/python3.11/site-packages/huggingface_hub/hf_api.py", line 1639, in whoami
+    hf_raise_for_status(r)
+  File "/storage/homefs/hh25g551/ondemand/data/taming-CATS/venv/lib/python3.11/site-packages/huggingface_hub/utils/_http.py", line 477, in hf_raise_for_status
+    raise _format(HfHubHTTPError, str(e), response) from e
+huggingface_hub.errors.HfHubHTTPError: 401 Client Error: Unauthorized for url: https://huggingface.co/api/whoami-v2 (Request ID: Root=1-693313c9-1fff85bf4332ea3e1be77b30;2be56e79-563d-441f-9c84-f0f241448748)
+
+Invalid username or password.
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/storage/homefs/hh25g551/ondemand/data/taming-CATS/venv/bin/huggingface-cli", line 7, in <module>
+    sys.exit(main())
+             ^^^^^^
+  File "/storage/homefs/hh25g551/ondemand/data/taming-CATS/venv/lib/python3.11/site-packages/huggingface_hub/commands/huggingface_cli.py", line 57, in main
+    service.run()
+  File "/storage/homefs/hh25g551/ondemand/data/taming-CATS/venv/lib/python3.11/site-packages/huggingface_hub/commands/user.py", line 153, in run
+    login(
+  File "/storage/homefs/hh25g551/ondemand/data/taming-CATS/venv/lib/python3.11/site-packages/huggingface_hub/utils/_deprecation.py", line 101, in inner_f
+    return f(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^
+  File "/storage/homefs/hh25g551/ondemand/data/taming-CATS/venv/lib/python3.11/site-packages/huggingface_hub/utils/_deprecation.py", line 31, in inner_f
+    return f(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^
+  File "/storage/homefs/hh25g551/ondemand/data/taming-CATS/venv/lib/python3.11/site-packages/huggingface_hub/_login.py", line 126, in login
+    _login(token, add_to_git_credential=add_to_git_credential)
+  File "/storage/homefs/hh25g551/ondemand/data/taming-CATS/venv/lib/python3.11/site-packages/huggingface_hub/_login.py", line 404, in _login
+    token_info = whoami(token)
+                 ^^^^^^^^^^^^^
+  File "/storage/homefs/hh25g551/ondemand/data/taming-CATS/venv/lib/python3.11/site-packages/huggingface_hub/utils/_validators.py", line 114, in _inner_fn
+    return fn(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/storage/homefs/hh25g551/ondemand/data/taming-CATS/venv/lib/python3.11/site-packages/huggingface_hub/hf_api.py", line 1641, in whoami
+    raise HTTPError(
+requests.exceptions.HTTPError: Invalid user token. If you didn't pass a user token, make sure you are properly logged in by executing `huggingface-cli login`, and if you did pass a user token, double-check it's correct.
+Generating train split: 0 examples [00:00, ? examples/s]Generating train split: 954 examples [00:00, 1357.17 examples/s]Generating train split: 1687 examples [00:00, 2303.37 examples/s]
+Generating test split: 0 examples [00:00, ? examples/s]Generating test split: 227 examples [00:00, 13770.11 examples/s]
+Generating validation split: 0 examples [00:00, ? examples/s]Generating validation split: 208 examples [00:00, 15771.20 examples/s]
+Map:   0%|          | 0/227 [00:00<?, ? examples/s]Map:   0%|          | 1/227 [00:00<00:39,  5.74 examples/s]Map:  10%|▉         | 22/227 [00:00<00:02, 96.00 examples/s]Map:  19%|█▉        | 44/227 [00:00<00:01, 139.98 examples/s]Map:  29%|██▊       | 65/227 [00:00<00:00, 162.02 examples/s]Map:  38%|███▊      | 86/227 [00:00<00:00, 174.99 examples/s]Map:  47%|████▋     | 107/227 [00:00<00:00, 182.60 examples/s]Map:  56%|█████▌    | 127/227 [00:00<00:00, 185.04 examples/s]Map:  66%|██████▌   | 149/227 [00:00<00:00, 192.83 examples/s]Map:  75%|███████▍  | 170/227 [00:01<00:00, 194.36 examples/s]Map:  84%|████████▎ | 190/227 [00:01<00:00, 195.26 examples/s]Map:  93%|█████████▎| 212/227 [00:01<00:00, 199.12 examples/s]Map: 100%|██████████| 227/227 [00:01<00:00, 144.90 examples/s]
+Running inference on test set:   0%|          | 0/15 [00:00<?, ?it/s]/storage/homefs/hh25g551/ondemand/data/taming-CATS/venv/lib/python3.11/site-packages/transformers/generation/configuration_utils.py:628: UserWarning: `do_sample` is set to `False`. However, `temperature` is set to `0.6` -- this flag is only used in sample-based generation modes. You should set `do_sample=True` or unset `temperature`.
+  warnings.warn(
+/storage/homefs/hh25g551/ondemand/data/taming-CATS/venv/lib/python3.11/site-packages/transformers/generation/configuration_utils.py:633: UserWarning: `do_sample` is set to `False`. However, `top_p` is set to `0.9` -- this flag is only used in sample-based generation modes. You should set `do_sample=True` or unset `top_p`.
+  warnings.warn(
+Both `max_new_tokens` (=4095) and `max_length`(=8191) seem to have been set. `max_new_tokens` will take precedence. Please refer to the documentation for more information. (https://huggingface.co/docs/transformers/main/en/main_classes/text_generation)
+Running inference on test set:   0%|          | 0/15 [02:09<?, ?it/s]
+Traceback (most recent call last):
+  File "/storage/homefs/hh25g551/ondemand/data/taming-CATS/src/sft_inference.py", line 453, in <module>
+    main()
+  File "/storage/homefs/hh25g551/ondemand/data/taming-CATS/src/sft_inference.py", line 433, in main
+    predictions = run_inference(
+                  ^^^^^^^^^^^^^^
+  File "/storage/homefs/hh25g551/ondemand/data/taming-CATS/src/sft_inference.py", line 232, in run_inference
+    computed_prediction_metrics = prediction_metrics.compute_metrics()
+                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/storage/homefs/hh25g551/ondemand/data/taming-CATS/src/classes/Metrics.py", line 147, in compute_metrics
+    'word_count': self.count_words(),
+                  ^^^^^^^^^^^^^^^^^^
+  File "/storage/homefs/hh25g551/ondemand/data/taming-CATS/src/classes/Metrics.py", line 50, in count_words
+    return len(word_tokenize(self.text))
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/storage/homefs/hh25g551/ondemand/data/taming-CATS/venv/lib/python3.11/site-packages/nltk/tokenize/__init__.py", line 142, in word_tokenize
+    sentences = [text] if preserve_line else sent_tokenize(text, language)
+                                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/storage/homefs/hh25g551/ondemand/data/taming-CATS/venv/lib/python3.11/site-packages/nltk/tokenize/__init__.py", line 119, in sent_tokenize
+    tokenizer = _get_punkt_tokenizer(language)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/storage/homefs/hh25g551/ondemand/data/taming-CATS/venv/lib/python3.11/site-packages/nltk/tokenize/__init__.py", line 105, in _get_punkt_tokenizer
+    return PunktTokenizer(language)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/storage/homefs/hh25g551/ondemand/data/taming-CATS/venv/lib/python3.11/site-packages/nltk/tokenize/punkt.py", line 1744, in __init__
+    self.load_lang(lang)
+  File "/storage/homefs/hh25g551/ondemand/data/taming-CATS/venv/lib/python3.11/site-packages/nltk/tokenize/punkt.py", line 1749, in load_lang
+    lang_dir = find(f"tokenizers/punkt_tab/{lang}/")
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/storage/homefs/hh25g551/ondemand/data/taming-CATS/venv/lib/python3.11/site-packages/nltk/data.py", line 579, in find
+    raise LookupError(resource_not_found)
+LookupError: 
+**********************************************************************
+  Resource [93mpunkt_tab[0m not found.
+  Please use the NLTK Downloader to obtain the resource:
+
+  [31m>>> import nltk
+  >>> nltk.download('punkt_tab')
+  [0m
+  For more information see: https://www.nltk.org/data.html
+
+  Attempted to load [93mtokenizers/punkt_tab/english/[0m
+
+  Searched in:
+    - '/storage/homefs/hh25g551/nltk_data'
+    - '/storage/homefs/hh25g551/ondemand/data/taming-CATS/venv/nltk_data'
+    - '/storage/homefs/hh25g551/ondemand/data/taming-CATS/venv/share/nltk_data'
+    - '/storage/homefs/hh25g551/ondemand/data/taming-CATS/venv/lib/nltk_data'
+    - '/usr/share/nltk_data'
+    - '/usr/local/share/nltk_data'
+    - '/usr/lib/nltk_data'
+    - '/usr/local/lib/nltk_data'
+**********************************************************************
+
+[nltk_data] Downloading package punkt to
+[nltk_data]     /storage/homefs/hh25g551/nltk_data...
+[nltk_data]   Package punkt is already up-to-date!
+We will use 90% of the memory on device 0 for storing the model, and 10% for the buffer to avoid OOM. You can set `max_memory` in to a higher value to use more memory (at your own risk).
+The new embeddings will be initialized from a multivariate normal distribution that has old embeddings' mean and covariance. As described in this article: https://nlp.stanford.edu/~johnhew/vocab-expansion.html. To disable this, use `mean_resizing=False`
+The token has not been saved to the git credentials helper. Pass `add_to_git_credential=True` in this function directly or `--add-to-git-credential` if using via `huggingface-cli` if you want to set the git credential as well.
+Traceback (most recent call last):
+  File "/storage/homefs/hh25g551/ondemand/data/taming-CATS/venv/lib/python3.11/site-packages/huggingface_hub/utils/_http.py", line 406, in hf_raise_for_status
+    response.raise_for_status()
+  File "/storage/homefs/hh25g551/ondemand/data/taming-CATS/venv/lib/python3.11/site-packages/requests/models.py", line 1024, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 401 Client Error: Unauthorized for url: https://huggingface.co/api/whoami-v2
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/storage/homefs/hh25g551/ondemand/data/taming-CATS/venv/lib/python3.11/site-packages/huggingface_hub/hf_api.py", line 1639, in whoami
+    hf_raise_for_status(r)
+  File "/storage/homefs/hh25g551/ondemand/data/taming-CATS/venv/lib/python3.11/site-packages/huggingface_hub/utils/_http.py", line 477, in hf_raise_for_status
+    raise _format(HfHubHTTPError, str(e), response) from e
+huggingface_hub.errors.HfHubHTTPError: 401 Client Error: Unauthorized for url: https://huggingface.co/api/whoami-v2 (Request ID: Root=1-69331480-5cd02a744e2e80926907300f;d69d338d-a42a-4a7f-9203-7f814cd6ae24)
+
+Invalid username or password.
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/storage/homefs/hh25g551/ondemand/data/taming-CATS/venv/bin/huggingface-cli", line 7, in <module>
+    sys.exit(main())
+             ^^^^^^
+  File "/storage/homefs/hh25g551/ondemand/data/taming-CATS/venv/lib/python3.11/site-packages/huggingface_hub/commands/huggingface_cli.py", line 57, in main
+    service.run()
+  File "/storage/homefs/hh25g551/ondemand/data/taming-CATS/venv/lib/python3.11/site-packages/huggingface_hub/commands/user.py", line 153, in run
+    login(
+  File "/storage/homefs/hh25g551/ondemand/data/taming-CATS/venv/lib/python3.11/site-packages/huggingface_hub/utils/_deprecation.py", line 101, in inner_f
+    return f(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^
+  File "/storage/homefs/hh25g551/ondemand/data/taming-CATS/venv/lib/python3.11/site-packages/huggingface_hub/utils/_deprecation.py", line 31, in inner_f
+    return f(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^
+  File "/storage/homefs/hh25g551/ondemand/data/taming-CATS/venv/lib/python3.11/site-packages/huggingface_hub/_login.py", line 126, in login
+    _login(token, add_to_git_credential=add_to_git_credential)
+  File "/storage/homefs/hh25g551/ondemand/data/taming-CATS/venv/lib/python3.11/site-packages/huggingface_hub/_login.py", line 404, in _login
+    token_info = whoami(token)
+                 ^^^^^^^^^^^^^
+  File "/storage/homefs/hh25g551/ondemand/data/taming-CATS/venv/lib/python3.11/site-packages/huggingface_hub/utils/_validators.py", line 114, in _inner_fn
+    return fn(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/storage/homefs/hh25g551/ondemand/data/taming-CATS/venv/lib/python3.11/site-packages/huggingface_hub/hf_api.py", line 1641, in whoami
+    raise HTTPError(
+requests.exceptions.HTTPError: Invalid user token. If you didn't pass a user token, make sure you are properly logged in by executing `huggingface-cli login`, and if you did pass a user token, double-check it's correct.
+Map:   0%|          | 0/227 [00:00<?, ? examples/s]Map:   8%|▊         | 19/227 [00:00<00:01, 179.51 examples/s]Map:  17%|█▋        | 39/227 [00:00<00:01, 187.13 examples/s]Map:  26%|██▋       | 60/227 [00:00<00:00, 193.24 examples/s]Map:  35%|███▌      | 80/227 [00:00<00:00, 195.23 examples/s]Map:  44%|████▍     | 100/227 [00:00<00:00, 192.52 examples/s]Map:  53%|█████▎    | 120/227 [00:00<00:00, 194.53 examples/s]Map:  66%|██████▌   | 150/227 [00:00<00:00, 194.18 examples/s]Map:  79%|███████▉  | 179/227 [00:00<00:00, 190.89 examples/s]Map:  88%|████████▊ | 200/227 [00:01<00:00, 193.84 examples/s]Map:  97%|█████████▋| 221/227 [00:01<00:00, 193.58 examples/s]Map: 100%|██████████| 227/227 [00:01<00:00, 177.95 examples/s]
+Running inference on test set:   0%|          | 0/15 [00:00<?, ?it/s]/storage/homefs/hh25g551/ondemand/data/taming-CATS/venv/lib/python3.11/site-packages/transformers/generation/configuration_utils.py:628: UserWarning: `do_sample` is set to `False`. However, `temperature` is set to `0.6` -- this flag is only used in sample-based generation modes. You should set `do_sample=True` or unset `temperature`.
+  warnings.warn(
+/storage/homefs/hh25g551/ondemand/data/taming-CATS/venv/lib/python3.11/site-packages/transformers/generation/configuration_utils.py:633: UserWarning: `do_sample` is set to `False`. However, `top_p` is set to `0.9` -- this flag is only used in sample-based generation modes. You should set `do_sample=True` or unset `top_p`.
+  warnings.warn(
+Both `max_new_tokens` (=4095) and `max_length`(=8191) seem to have been set. `max_new_tokens` will take precedence. Please refer to the documentation for more information. (https://huggingface.co/docs/transformers/main/en/main_classes/text_generation)
+Running inference on test set:   0%|          | 0/15 [02:07<?, ?it/s]
+Traceback (most recent call last):
+  File "/storage/homefs/hh25g551/ondemand/data/taming-CATS/src/sft_inference.py", line 453, in <module>
+    main()
+  File "/storage/homefs/hh25g551/ondemand/data/taming-CATS/src/sft_inference.py", line 433, in main
+    predictions = run_inference(
+                  ^^^^^^^^^^^^^^
+  File "/storage/homefs/hh25g551/ondemand/data/taming-CATS/src/sft_inference.py", line 232, in run_inference
+    computed_prediction_metrics = prediction_metrics.compute_metrics()
+                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/storage/homefs/hh25g551/ondemand/data/taming-CATS/src/classes/Metrics.py", line 147, in compute_metrics
+    'word_count': self.count_words(),
+                  ^^^^^^^^^^^^^^^^^^
+  File "/storage/homefs/hh25g551/ondemand/data/taming-CATS/src/classes/Metrics.py", line 50, in count_words
+    return len(word_tokenize(self.text))
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/storage/homefs/hh25g551/ondemand/data/taming-CATS/venv/lib/python3.11/site-packages/nltk/tokenize/__init__.py", line 142, in word_tokenize
+    sentences = [text] if preserve_line else sent_tokenize(text, language)
+                                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/storage/homefs/hh25g551/ondemand/data/taming-CATS/venv/lib/python3.11/site-packages/nltk/tokenize/__init__.py", line 119, in sent_tokenize
+    tokenizer = _get_punkt_tokenizer(language)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/storage/homefs/hh25g551/ondemand/data/taming-CATS/venv/lib/python3.11/site-packages/nltk/tokenize/__init__.py", line 105, in _get_punkt_tokenizer
+    return PunktTokenizer(language)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/storage/homefs/hh25g551/ondemand/data/taming-CATS/venv/lib/python3.11/site-packages/nltk/tokenize/punkt.py", line 1744, in __init__
+    self.load_lang(lang)
+  File "/storage/homefs/hh25g551/ondemand/data/taming-CATS/venv/lib/python3.11/site-packages/nltk/tokenize/punkt.py", line 1749, in load_lang
+    lang_dir = find(f"tokenizers/punkt_tab/{lang}/")
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/storage/homefs/hh25g551/ondemand/data/taming-CATS/venv/lib/python3.11/site-packages/nltk/data.py", line 579, in find
+    raise LookupError(resource_not_found)
+LookupError: 
+**********************************************************************
+  Resource [93mpunkt_tab[0m not found.
+  Please use the NLTK Downloader to obtain the resource:
+
+  [31m>>> import nltk
+  >>> nltk.download('punkt_tab')
+  [0m
+  For more information see: https://www.nltk.org/data.html
+
+  Attempted to load [93mtokenizers/punkt_tab/english/[0m
+
+  Searched in:
+    - '/storage/homefs/hh25g551/nltk_data'
+    - '/storage/homefs/hh25g551/ondemand/data/taming-CATS/venv/nltk_data'
+    - '/storage/homefs/hh25g551/ondemand/data/taming-CATS/venv/share/nltk_data'
+    - '/storage/homefs/hh25g551/ondemand/data/taming-CATS/venv/lib/nltk_data'
+    - '/usr/share/nltk_data'
+    - '/usr/local/share/nltk_data'
+    - '/usr/lib/nltk_data'
+    - '/usr/local/lib/nltk_data'
+**********************************************************************
+
+[nltk_data] Downloading package punkt to
+[nltk_data]     /storage/homefs/hh25g551/nltk_data...
+[nltk_data]   Package punkt is already up-to-date!
+We will use 90% of the memory on device 0 for storing the model, and 10% for the buffer to avoid OOM. You can set `max_memory` in to a higher value to use more memory (at your own risk).
+The new embeddings will be initialized from a multivariate normal distribution that has old embeddings' mean and covariance. As described in this article: https://nlp.stanford.edu/~johnhew/vocab-expansion.html. To disable this, use `mean_resizing=False`
+The token has not been saved to the git credentials helper. Pass `add_to_git_credential=True` in this function directly or `--add-to-git-credential` if using via `huggingface-cli` if you want to set the git credential as well.
+Traceback (most recent call last):
+  File "/storage/homefs/hh25g551/ondemand/data/taming-CATS/venv/lib/python3.11/site-packages/huggingface_hub/utils/_http.py", line 406, in hf_raise_for_status
+    response.raise_for_status()
+  File "/storage/homefs/hh25g551/ondemand/data/taming-CATS/venv/lib/python3.11/site-packages/requests/models.py", line 1024, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 401 Client Error: Unauthorized for url: https://huggingface.co/api/whoami-v2
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/storage/homefs/hh25g551/ondemand/data/taming-CATS/venv/lib/python3.11/site-packages/huggingface_hub/hf_api.py", line 1639, in whoami
+    hf_raise_for_status(r)
+  File "/storage/homefs/hh25g551/ondemand/data/taming-CATS/venv/lib/python3.11/site-packages/huggingface_hub/utils/_http.py", line 477, in hf_raise_for_status
+    raise _format(HfHubHTTPError, str(e), response) from e
+huggingface_hub.errors.HfHubHTTPError: 401 Client Error: Unauthorized for url: https://huggingface.co/api/whoami-v2 (Request ID: Root=1-69331521-3e17261e7b6c69f765e4ca18;d7b762ba-f284-4f5b-9bb4-ad84711786db)
+
+Invalid username or password.
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/storage/homefs/hh25g551/ondemand/data/taming-CATS/venv/bin/huggingface-cli", line 7, in <module>
+    sys.exit(main())
+             ^^^^^^
+  File "/storage/homefs/hh25g551/ondemand/data/taming-CATS/venv/lib/python3.11/site-packages/huggingface_hub/commands/huggingface_cli.py", line 57, in main
+    service.run()
+  File "/storage/homefs/hh25g551/ondemand/data/taming-CATS/venv/lib/python3.11/site-packages/huggingface_hub/commands/user.py", line 153, in run
+    login(
+  File "/storage/homefs/hh25g551/ondemand/data/taming-CATS/venv/lib/python3.11/site-packages/huggingface_hub/utils/_deprecation.py", line 101, in inner_f
+    return f(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^
+  File "/storage/homefs/hh25g551/ondemand/data/taming-CATS/venv/lib/python3.11/site-packages/huggingface_hub/utils/_deprecation.py", line 31, in inner_f
+    return f(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^
+  File "/storage/homefs/hh25g551/ondemand/data/taming-CATS/venv/lib/python3.11/site-packages/huggingface_hub/_login.py", line 126, in login
+    _login(token, add_to_git_credential=add_to_git_credential)
+  File "/storage/homefs/hh25g551/ondemand/data/taming-CATS/venv/lib/python3.11/site-packages/huggingface_hub/_login.py", line 404, in _login
+    token_info = whoami(token)
+                 ^^^^^^^^^^^^^
+  File "/storage/homefs/hh25g551/ondemand/data/taming-CATS/venv/lib/python3.11/site-packages/huggingface_hub/utils/_validators.py", line 114, in _inner_fn
+    return fn(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/storage/homefs/hh25g551/ondemand/data/taming-CATS/venv/lib/python3.11/site-packages/huggingface_hub/hf_api.py", line 1641, in whoami
+    raise HTTPError(
+requests.exceptions.HTTPError: Invalid user token. If you didn't pass a user token, make sure you are properly logged in by executing `huggingface-cli login`, and if you did pass a user token, double-check it's correct.
+Map:   0%|          | 0/227 [00:00<?, ? examples/s]Map:   9%|▉         | 20/227 [00:00<00:01, 189.73 examples/s]Map:  18%|█▊        | 41/227 [00:00<00:00, 198.57 examples/s]Map:  27%|██▋       | 62/227 [00:00<00:00, 200.28 examples/s]Map:  37%|███▋      | 84/227 [00:00<00:00, 201.60 examples/s]Map:  46%|████▋     | 105/227 [00:00<00:00, 201.57 examples/s]Map:  60%|█████▉    | 136/227 [00:00<00:00, 200.53 examples/s]Map:  69%|██████▉   | 157/227 [00:00<00:00, 201.65 examples/s]Map:  82%|████████▏ | 187/227 [00:00<00:00, 198.59 examples/s]Map:  93%|█████████▎| 210/227 [00:01<00:00, 203.05 examples/s]Map: 100%|██████████| 227/227 [00:01<00:00, 181.87 examples/s]
+Running inference on test set:   0%|          | 0/15 [00:00<?, ?it/s]/storage/homefs/hh25g551/ondemand/data/taming-CATS/venv/lib/python3.11/site-packages/transformers/generation/configuration_utils.py:628: UserWarning: `do_sample` is set to `False`. However, `temperature` is set to `0.6` -- this flag is only used in sample-based generation modes. You should set `do_sample=True` or unset `temperature`.
+  warnings.warn(
+/storage/homefs/hh25g551/ondemand/data/taming-CATS/venv/lib/python3.11/site-packages/transformers/generation/configuration_utils.py:633: UserWarning: `do_sample` is set to `False`. However, `top_p` is set to `0.9` -- this flag is only used in sample-based generation modes. You should set `do_sample=True` or unset `top_p`.
+  warnings.warn(
+Both `max_new_tokens` (=4095) and `max_length`(=8191) seem to have been set. `max_new_tokens` will take precedence. Please refer to the documentation for more information. (https://huggingface.co/docs/transformers/main/en/main_classes/text_generation)
+slurmstepd: error: *** JOB 39062038 ON gnode35 CANCELLED AT 2025-12-05T18:25:01 ***
