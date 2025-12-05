@@ -5,12 +5,12 @@
 #SBATCH --error=logs/baseline_inference_%j.err
 #SBATCH --partition=gpu-invest
 #SBATCH --qos=job_gpu_preemptable
-#SBATCH --gres=gpu:rtx4090:1
-#SBATCH --mem-per-gpu=32G
-#SBATCH --time=03:00:00
+#SBATCH --gres=gpu:h100:1
+#SBATCH --mem-per-gpu=60G
+#SBATCH --time=06:00:00
 #SBATCH --ntasks=1
 
-which python
+which python3
 
 # Activate the venv
 source venv/bin/activate
