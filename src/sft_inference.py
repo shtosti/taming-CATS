@@ -226,8 +226,21 @@ def run_inference(args, metric_mapping, model, tokenizer, test_dataset, batch_si
                 skip_special_tokens=True,
                 clean_up_tokenization_spaces=True
             )
+            
+            # Clean up role tokens and extra whitespace from predictions
+            cleaned_preds = []
+            for pred in decoded_preds:
+                # Remove common role tokens that models might generate
+                pred_clean = pred.strip()
+                # Remove "assistant" prefix (case-insensitive) followed by newlines/spaces
+                if pred_clean.lower().startswith("assistant"):
+                    pred_clean = pred_clean[len("assistant"):].lstrip()
+                # Remove any leading special tokens or markers
+                pred_clean = pred_clean.lstrip("<|").lstrip()
+                cleaned_preds.append(pred_clean)
+            
             print("\n--- Processing batch:")
-            for item, pred in zip(batch, decoded_preds):
+            for item, pred in zip(batch, cleaned_preds):
                 prediction_metrics = Metrics(input_text=pred.strip(), reference_text=item["simplification_text"], source_text=item["source_text"])
                 computed_prediction_metrics = prediction_metrics.compute_metrics()
                 source_metrics = Metrics(input_text=item["source_text"])
@@ -288,6 +301,13 @@ def run_inference_with_vllm(args, metric_mapping, llm, tokenizer, test_dataset, 
     print("\n--- Running vLLM generation")
     for item, output in zip(test_dataset, outputs):
         pred = output.outputs[0].text.strip()
+        
+        # Clean up role tokens and extra whitespace from predictions
+        if pred.lower().startswith("assistant"):
+            pred = pred[len("assistant"):].lstrip()
+        # Remove any leading special tokens or markers
+        pred = pred.lstrip("<|").lstrip()
+        
         prediction_metrics = Metrics(input_text=pred, reference_text=item["simplification_text"], source_text=item["source_text"])
         computed_prediction_metrics = prediction_metrics.compute_metrics()
         source_metrics = Metrics(input_text=item["source_text"])
