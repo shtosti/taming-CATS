@@ -9,7 +9,9 @@ python -c "import nltk; nltk.download('punkt_tab', quiet=True)"
 # BASELINE CONFIGURATION - Non-finetuned model from Hugging Face
 # =========================================================================
 # MODEL_NAME="meta-llama/Llama-3.1-8B-Instruct"  # Change to any HF model
-MODEL_NAME="Qwen/Qwen3-1.7B"
+# MODEL_NAME="meta-llama/Llama-3.2-3B-Instruct"
+MODEL_NAME="meta-llama/Llama-2-13b-chat-hf"
+# MODEL_NAME="Qwen/Qwen3-1.7B"
 # MODEL_NAME="mistralai/Ministral-3b-instruct"
 
 USER_PROMPT_ID="token_explanation"
