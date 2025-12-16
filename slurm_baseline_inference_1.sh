@@ -18,4 +18,4 @@ source venv/bin/activate
 nvidia-smi
 
 # Run the baseline inference script
-bash ./run_baseline_inference.sh
+bash ./run_baseline_inference_1.sh
