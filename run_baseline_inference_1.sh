@@ -8,21 +8,22 @@ python -c "import nltk; nltk.download('punkt_tab', quiet=True)"
 # =========================================================================
 # BASELINE CONFIGURATION - Non-finetuned model from Hugging Face
 # =========================================================================
-MODEL_NAME="meta-llama/Llama-3.2-1B-Instruct"
+# MODEL_NAME="meta-llama/Llama-3.2-1B-Instruct"
 # MODEL_NAME="meta-llama/Llama-3.1-8B-Instruct"
 # MODEL_NAME="meta-llama/Llama-3.2-3B-Instruct"
 # MODEL_NAME="meta-llama/Llama-2-13b-chat-hf"
 # MODEL_NAME="Qwen/Qwen3-1.7B"
 # MODEL_NAME="Qwen/Qwen3-4B"
 # MODEL_NAME="mistralai/Ministral-3b-instruct"
+MODEL_NAME="mistralai/Mistral-7B-Instruct-v0.1"
 
 USER_PROMPT_ID="token_explanation"
 
 # Define datasets and metrics to iterate over
 DATASETS=(
-  # "Med-EASi"
+  "Med-EASi"
 #   "SimPA"
-  "WikiLarge_ori_splitwise"
+  # "WikiLarge_ori_splitwise"
   # "Newsela_s"
 )
 
@@ -67,7 +68,7 @@ for DATASET in "${DATASETS[@]}"; do
         --model_class "auto"
         --model_family "base"  # Options: "llama", "mistral", "qwen", "base"
         --max_length 4096
-        --batch_size 16  # Reduced to 2 to avoid OOM with float16
+        --batch_size 8  # Reduced to 2 to avoid OOM with float16
         --slice_test -1  # -1 for full test set, or specify a number for subset
         --output_file "$OUTPUT_FILE"
         --control_tokens "data/prompts/control_tokens.json"

@@ -5,9 +5,9 @@
 #SBATCH --error=logs/baseline_inference_%j.err
 #SBATCH --partition=gpu-invest
 #SBATCH --qos=job_gpu_preemptable
-#SBATCH --gres=gpu:h100:1
+#SBATCH --gres=gpu:a100:1
 #SBATCH --mem-per-gpu=80G
-#SBATCH --time=05:00:00
+#SBATCH --time=06:00:00
 #SBATCH --ntasks=1
 
 which python3

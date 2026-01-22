@@ -3,10 +3,10 @@
 echo "Script started: $(date)"
 
 # TODO
-DATA_DIR="WORD_COMPRESSION-WikiLarge_ori_splitwise-token_explanation-Qwen3-8B-20250624"
-MODEL_NAME="Qwen3-8B"
+DATA_DIR="FKGL-WikiLarge_ori_splitwise-token_explanation-Llama-3.1-8B-Instruct-20250527"
+MODEL_NAME="Llama-3.1-8B-Instruct"
 DATASET="WikiLarge_ori_splitwise"
-METRIC_NAME="WORD_COMPRESSION"
+METRIC_NAME="FKGL"
 
 
 

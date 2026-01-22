@@ -9,32 +9,39 @@ python -c "import nltk; nltk.download('punkt_tab', quiet=True)"
 # BASELINE CONFIGURATION - Non-finetuned model from Hugging Face
 # =========================================================================
 # MODEL_NAME="meta-llama/Llama-3.2-1B-Instruct"
-MODEL_NAME="meta-llama/Llama-3.1-8B-Instruct"
+# MODEL_NAME="meta-llama/Llama-3.1-8B-Instruct"
 # MODEL_NAME="meta-llama/Llama-3.2-3B-Instruct"
 # MODEL_NAME="meta-llama/Llama-2-13b-chat-hf"
 # MODEL_NAME="Qwen/Qwen3-1.7B"
 # MODEL_NAME="Qwen/Qwen3-4B"
-# MODEL_NAME="mistralai/Ministral-3b-instruct"
+# MODEL_NAME="Qwen/Qwen3-8B"
+MODEL_NAME="ministral/Ministral-3b-instruct"
 
 USER_PROMPT_ID="token_explanation"
 
 # Define datasets and metrics to iterate over
 DATASETS=(
-  # "Med-EASi"
-  "SimPA"
+  "Med-EASi"
+  # "SimPA"
   # "WikiLarge_ori_splitwise"
   # "Newsela_s"
 )
 
 METRICS=(
   "ARI"
-  # "FKGL"
+  "FKGL"
   "DALE-CHALL"
-  # "CHAR_COMPRESSION"
+  "CHAR_COMPRESSION"
   "WORD_COMPRESSION"
 )
 
-SEEDS=(37 15 96 2 28)
+SEEDS=(
+  37 
+  15
+  96 
+  2 
+  28
+  )
 # =========================================================================
 
 # For baseline, model_path = model_name (no local finetuned model)
@@ -54,9 +61,16 @@ for DATASET in "${DATASETS[@]}"; do
     # Run inference with multiple seeds
     i=1
     for SEED in "${SEEDS[@]}"; do
-      echo "Running baseline inference $i with seed $SEED..."
-
       OUTPUT_FILE="$OUTPUT_DIR/output_$i.json"
+      
+      # Skip if output already exists
+      if [ -f "$OUTPUT_FILE" ]; then
+        echo "Output $i already exists, skipping (file: $OUTPUT_FILE)"
+        ((i++))
+        continue
+      fi
+      
+      echo "Running baseline inference $i with seed $SEED..."
 
       ARGS=(
         # --use_vllm  # Uncomment for faster inference if vllm is installed
@@ -66,8 +80,8 @@ for DATASET in "${DATASETS[@]}"; do
         --dataset_name "$DATASET"
         --model_class "auto"
         --model_family "base"  # Options: "llama", "mistral", "qwen", "base"
-        --max_length 4096
-        --batch_size 16  # Reduced to 2 to avoid OOM with float16
+        --max_length 4096  # Safe for all models (Llama: 128K, Qwen: 32K-128K, Mistral: 32K)
+        --batch_size 16
         --slice_test -1  # -1 for full test set, or specify a number for subset
         --output_file "$OUTPUT_FILE"
         --control_tokens "data/prompts/control_tokens.json"
