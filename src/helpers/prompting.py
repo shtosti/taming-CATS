@@ -121,8 +121,9 @@ def format_prompt_with_tokenizer(tokenizer, system_prompt, user_prompt, metric_n
     formatted_prompt = tokenizer.apply_chat_template(
         messages, 
         tokenize=False, 
+        enable_thinking=False ,
         # continue_final_message=True,
-        # add_generation_prompt=True
+        add_generation_prompt=True
     )
 
     return formatted_prompt
