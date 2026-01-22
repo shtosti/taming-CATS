@@ -163,9 +163,9 @@ def plot_metric_scatter(source_vals, reference_vals, prediction_vals, metric_key
     ln2 = ax.plot(x_sorted, ref_trend(x_sorted),  color="darkorange", linewidth=1.5)
     ln3 = ax.plot(x_sorted, pred_trend(x_sorted), color="seagreen",   linewidth=1.5)
 
-    ax.set_xlabel("idx",       fontsize=14)
-    ax.set_ylabel(metric_key,  fontsize=14)
-    ax.tick_params(axis='both', labelsize=12)
+    ax.set_ylabel(metric_key,  fontsize=18)
+    ax.tick_params(axis='y', labelsize=16)
+    ax.tick_params(axis='x', which='both', bottom=False, labelbottom=False)
     ax.grid(True, linestyle="--", alpha=0.6)
     plt.tight_layout()
 
@@ -191,7 +191,7 @@ def plot_metric_scatter(source_vals, reference_vals, prediction_vals, metric_key
     labels.append("Prediction trend")
 
     fig_leg = plt.figure(figsize=(4, 1))
-    fig_leg.legend(handles, labels, ncol=3 if use_source else 2, frameon=False, fontsize=12, loc="center")
+    fig_leg.legend(handles, labels, ncol=3 if use_source else 2, frameon=False, fontsize=16, loc="center")
     fig_leg.tight_layout()
     legend_path = os.path.join(output_dir, f"{metric_key}_scatter_legend.png")
     fig_leg.savefig(legend_path, bbox_inches='tight', dpi=300)
@@ -487,12 +487,12 @@ def main():
         json.dump(predictions, f, indent=4)
     print(f"Updated averaged predictions file with per-sample losses: {args.output_dir}/output_averaged.json")
 
-    # plot_metric_scatter(source_vals, reference_vals, prediction_vals, metric_key_mapped, args.output_dir, use_source=use_source)
-    # plot_ctrl_attr_vs_metrics(predictions, metric_key_mapped, args.output_dir)
-    # plot_errors_vs_metrics(predictions, metric_key_mapped, args.metric_key, args.output_dir)
-    # plot_error_std_vs_reference(reference_vals, per_sample_real_loss, metric_key_mapped, args.output_dir)
-    # plot_error_std_binned(reference_vals, per_sample_real_loss, metric_key_mapped, args.output_dir)
-    # print(f"Plots saved to {args.output_dir}")
+    plot_metric_scatter(source_vals, reference_vals, prediction_vals, metric_key_mapped, args.output_dir, use_source=use_source)
+    plot_ctrl_attr_vs_metrics(predictions, metric_key_mapped, args.output_dir)
+    plot_errors_vs_metrics(predictions, metric_key_mapped, args.metric_key, args.output_dir)
+    plot_error_std_vs_reference(reference_vals, per_sample_real_loss, metric_key_mapped, args.output_dir)
+    plot_error_std_binned(reference_vals, per_sample_real_loss, metric_key_mapped, args.output_dir)
+    print(f"Plots saved to {args.output_dir}")
 
 
     print(f"\nAll plots saved to {args.output_dir}")

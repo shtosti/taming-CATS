@@ -87,8 +87,8 @@ def plot_mean_ctrl(all_results, save_dir, all_means):
             "FKGL": "FKGL",
             "ARI": "ARI",
             "DALE-CHALL": "Dale-Chall",
-            "CHAR_COMPRESSION": "char compression",
-            "WORD_COMPRESSION": "word compression",
+            "CHAR_COMPRESSION": "char ratio",
+            "WORD_COMPRESSION": "word ratio",
         }
         return mapping.get(attr_name, attr_name)
 
@@ -97,7 +97,7 @@ def plot_mean_ctrl(all_results, save_dir, all_means):
                          for ds_map in all_means.values()
                          for d in ds_map.values()
                          for m in d})
-    # all_models.remove("Ministral-3b-instruct")
+    all_models.remove("Ministral-3b-instruct")
     cmap = plt.get_cmap("tab10")
     model_colors = {m: cmap(i % 10) for i, m in enumerate(all_models)}
 
@@ -114,13 +114,13 @@ def plot_mean_ctrl(all_results, save_dir, all_means):
             source_vals.append(first["source"])
             reference_vals.append(first["reference"])
 
-        fig, ax = plt.subplots(figsize=(4, 2.5))
+        fig, ax = plt.subplots(figsize=(4, 3.5))
 
         # big points
-        ax.scatter(x, source_vals,    s=250, color="orchid",
-                   label="Source mean",    edgecolor="black", zorder=3, marker="P")
-        ax.scatter(x, reference_vals, s=350, color="gold",
-                   label="Reference mean", edgecolor="black", zorder=3, marker="*")
+        ax.scatter(x, source_vals,    s=230, color="orchid",
+                   label=f"Source $\mu$",    edgecolor="black", zorder=3, marker="P")
+        ax.scatter(x, reference_vals, s=330, color="gold",
+                   label=f"Reference $\mu$", edgecolor="black", zorder=3, marker="*")
 
         # per-model dots
         for i, ds in enumerate(datasets_orig):
@@ -132,11 +132,12 @@ def plot_mean_ctrl(all_results, save_dir, all_means):
                 xi = jitter(np.array([i]))
                 lbl = model if ds == datasets_orig[0] else "_nolegend_"
                 ax.scatter(xi, pred, color=col, edgecolor="black",
-                           s=100, label=lbl, zorder=4, alpha=0.7)
+                           s=130, label=lbl, zorder=4, alpha=0.7)
 
         ax.set_xticks(x)
-        ax.set_xticklabels(datasets_disp, rotation=0, ha="center", fontsize=13)
-        ax.set_ylabel(f"{map_short_ctrl_attr_name(ctrl_attr)} mean", fontsize=13)
+        ax.set_xticklabels(datasets_disp, rotation=45, ha="right", fontsize=16)
+        ax.set_ylabel(f"{map_short_ctrl_attr_name(ctrl_attr)} $\mu$", fontsize=16)
+        ax.tick_params(axis='y', labelsize=16)
         ax.grid(axis="y", linestyle="--", alpha=0.5)
 
         # collect handles & labels
@@ -144,7 +145,7 @@ def plot_mean_ctrl(all_results, save_dir, all_means):
         # reorder
         new_handles = []
         new_labels = []
-        for fixed in ("Source mean", "Reference mean"):
+        for fixed in (f"Source $\mu$", f"Reference $\mu$"):
             idx = labels.index(fixed)
             new_handles.append(handles[idx])
             new_labels.append(labels[idx])
@@ -158,7 +159,7 @@ def plot_mean_ctrl(all_results, save_dir, all_means):
         # ax.legend(new_handles, new_labels, loc="upper right", fontsize=8)
         plt.tight_layout()
         fig_path = os.path.join(out_dir, f"{ctrl_attr}.png")
-        fig.savefig(fig_path, dpi=300)
+        fig.savefig(fig_path, dpi=300, bbox_inches='tight')
         plt.close(fig)
 
         # now draw a separate legend figure
