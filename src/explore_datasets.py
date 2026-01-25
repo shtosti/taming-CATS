@@ -12,7 +12,7 @@ def load_colormap(filepath: str) -> dict:
     with open(filepath, "r", encoding="utf-8") as f:
         return json.load(f)
     
-COLORMAP_PATH = "./../data/colormap/color_map.json"
+COLORMAP_PATH = "./data/colormap/color_map.json"
 COLORMAP = load_colormap(COLORMAP_PATH)
 
 def load_jsonl(filepath: str) -> list:
@@ -89,15 +89,15 @@ def plot_compression(data: list, metric: str, dataset_dir: str) -> None:
         sns.kdeplot(target_lengths, color=COLORMAP["text_type"].get("target"), linewidth=1.5, label="Simplification KDE")
 
     if metric in ["char_count", "sentence_count", "word_count"]:
-        plt.xlabel(f'{metric} Count')
+        plt.xlabel(f'{metric} Count', fontsize=18)
     else:
-        plt.xlabel(f'{metric}')
-    plt.ylabel('Frequency')
-    plt.legend()
+        plt.xlabel(f'{metric}', fontsize=18)
+    plt.tick_params(axis='both', labelsize=16)
+    plt.legend(fontsize=14)
     output_dir = f"{dataset_dir}/stats/distributions"
     os.makedirs(output_dir, exist_ok=True)
     plt.tight_layout()
-    plt.savefig(f"{output_dir}/{metric}_hist.png", dpi=400)
+    plt.savefig(f"{output_dir}/{metric}_hist.png", dpi=400, bbox_inches='tight')
 
     ############ scatter plot ############
     plt.figure(figsize=(5, 5))
@@ -339,7 +339,7 @@ def main():
         # "wikilarge_splitwise",
         # "wikilarge"
     ]
-    DATA_DIR = "./../data" 
+    DATA_DIR = "./data" 
 
     for DATASET in DATASETS:
         DATASET_DIR = f"{DATA_DIR}/datasets/{DATASET}"
