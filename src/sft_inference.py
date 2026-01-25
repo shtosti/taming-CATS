@@ -27,7 +27,12 @@ def load_json(file_path: str):
 
 def setup_tokenizer(model_source, model_family, max_length):
     tokenizer = AutoTokenizer.from_pretrained(model_source)
-    tokenizer.model_max_length = max_length
+    # If max_length is -1, use the model's native max length
+    if max_length == -1:
+        # Keep the tokenizer's default max length from the model config
+        print(f"Using model's native max length: {tokenizer.model_max_length}")
+    else:
+        tokenizer.model_max_length = max_length
     tokenizer.padding_side = "left"
     tokenizer.truncation_side = "right"
 
