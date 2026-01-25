@@ -89,7 +89,7 @@ def main():
 
     num_bins = 25
     stratification_metric = "FKGL"
-    subset_size = 7000
+    subset_size = 2000
     base_dir = "./../data/datasets"
     experiment_name = f"wikilarge_ori_global_{subset_size}"
     full_dataset_path = f"{base_dir}/wikilarge_ori/dataset.jsonl"
