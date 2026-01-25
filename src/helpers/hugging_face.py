@@ -4,7 +4,7 @@ import os
 def load_dataset_from_hf(DATASET, split="validation", slice=-1) -> list:
 
     hf_token = os.getenv("HF_TOKEN")
-    os.system(f"huggingface-cli login --token {hf_token}")
+    os.system(f"hf auth login --token {hf_token}")
 
     dataset = load_dataset(
         f"shtosti/{DATASET}",
