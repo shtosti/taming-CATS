@@ -3,7 +3,7 @@ import os
 import matplotlib.pyplot as plt
 import numpy as np
 
-NUM_BINS = 45
+NUM_BINS = 25
 DATASET_NAME = "wikilarge_ori"
 EXPERIMENT_DIR = f"./../experiments/sample_from_{DATASET_NAME}"
 BIN_KEY = f"num_bins_{NUM_BINS}"
@@ -68,7 +68,7 @@ def map_metric_name(metric_ugly):
 def plot_separately():
     for stat in STATS:
         for strat_type in STRAT_TYPES:
-            fig, ax = plt.subplots(figsize=(4, 4))
+            fig, ax = plt.subplots(figsize=(3.6, 3.6))
 
             # … your existing plot code …
             for strat_metric in STRAT_METRICS:
@@ -106,8 +106,8 @@ def plot_separately():
             fig.savefig(f"{OUTPUT_DIR}/{strat_type}_{stat}.png", dpi=300)
             plt.close(fig)
 
-            fig_leg = plt.figure(figsize=(10, 1))
-            fig_leg.legend(handles, labels, ncol=5, loc="center", frameon=False, fontsize=12)
+            fig_leg = plt.figure(figsize=(8, 1))
+            fig_leg.legend(handles, labels, ncol=1, loc="center", frameon=False, fontsize=12)
             fig_leg.subplots_adjust(left=0, right=1, top=1, bottom=0)
             fig_leg.savefig(f"{OUTPUT_DIR}/legend_{strat_type}.png",
                             dpi=300, bbox_inches="tight")
@@ -117,7 +117,7 @@ def plot_separately():
 def plot_together():
 
     for stat in STATS:
-        fig, ax = plt.subplots(figsize=(4, 4))
+        fig, ax = plt.subplots(figsize=(3.6, 3.6))
 
         for strat_type in STRAT_TYPES:
             linestyle = "-" if strat_type == "splitwise" else "--"
@@ -161,8 +161,8 @@ def plot_together():
         plt.close(fig)
 
         # 2) Draw & save legend only
-        fig_leg = plt.figure(figsize=(10, 1))
-        fig_leg.legend(handles, labels, ncol=5, loc="center", frameon=False, fontsize=12)
+        fig_leg = plt.figure(figsize=(8, 1))
+        fig_leg.legend(handles, labels, ncol=1, loc="center", frameon=False, fontsize=12)
         fig_leg.subplots_adjust(left=0, right=1, top=1, bottom=0)
         fig_leg.savefig(f"{OUTPUT_DIR}/legend_both.png",
                         dpi=300, bbox_inches="tight")
