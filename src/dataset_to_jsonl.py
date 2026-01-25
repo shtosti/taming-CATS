@@ -1,8 +1,6 @@
 import json
 import pandas as pd
 from classes.Dataset import Newsela, MedEASi, WikiLarge, SimPALex, SimPASyn
-# from classes.ControlTokensAccess import ControlTokensAccess
-# from classes.ControlTokensMuss import ControlTokensMuss
 from classes.Metrics import Metrics
 import os
 
