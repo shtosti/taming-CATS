@@ -3,14 +3,13 @@
 echo "Script started: $(date)"
 
 # TODO
-DATA_DIR="FKGL-WikiLarge_ori_splitwise-token_explanation-Llama-3.1-8B-Instruct-20250527"
+DATA_DIR="Llama-3.1-8B-Instruct-Med-EASi-WORD_COMPRESSION"
 MODEL_NAME="Llama-3.1-8B-Instruct"
-DATASET="WikiLarge_ori_splitwise"
-METRIC_NAME="FKGL"
+DATASET="Med-EASi"
+METRIC_NAME="WORD_COMPRESSION"
 
-
-
-BASE_DIR="output/sft_inference"
+# BASE_DIR="output/sft_inference"
+BASE_DIR="output/baseline_inference"
 INPUT_DIR="$BASE_DIR/$DATA_DIR"
 
 INPUT_FILES=(
@@ -30,6 +29,6 @@ python src/sft_eval.py \
   --model_name "$MODEL_NAME"\
   --dataset "$DATASET"\
   --user_prompt_id="token_explanation"\
-  --summary_file="output/sft_results/all_results.json"
+  --summary_file="output/nonsft_results_baseline/all_results.json"
 
 echo "Script completed: $(date)"

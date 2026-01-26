@@ -7,7 +7,7 @@
 #SBATCH --qos=job_gpu_preemptable
 #SBATCH --gres=gpu:a100:1
 #SBATCH --mem-per-gpu=80G
-#SBATCH --time=05:00:00
+#SBATCH --time=05:30:00
 #SBATCH --ntasks=1
 
 which python3

@@ -8,27 +8,26 @@ python -c "import nltk; nltk.download('punkt_tab', quiet=True)"
 # =========================================================================
 # BASELINE CONFIGURATION - Non-finetuned model from Hugging Face
 # =========================================================================
-# MODEL_NAME="meta-llama/Llama-3.2-1B-Instruct"
+MODEL_NAME="meta-llama/Llama-3.2-1B-Instruct"
 # MODEL_NAME="meta-llama/Llama-3.1-8B-Instruct"
-# MODEL_NAME="meta-llama/Llama-3.2-3B-Instruct"
-# MODEL_NAME="meta-llama/Llama-2-13b-chat-hf"
 # MODEL_NAME="Qwen/Qwen3-1.7B"
-# MODEL_NAME="Qwen/Qwen3-4B"
 # MODEL_NAME="Qwen/Qwen3-8B"
-MODEL_NAME="ministral/Ministral-3b-instruct"
+# MODEL_NAME="ministral/Ministral-3b-instruct"
+# MODEL_NAME="mistralai/Mistral-7B-Instruct-v0.1"
 
 USER_PROMPT_ID="token_explanation"
+TEMPERATURE=0.0
 
 # Define datasets and metrics to iterate over
 DATASETS=(
-  "Med-EASi"
+  # "Med-EASi"
   # "SimPA"
-  # "WikiLarge_ori_splitwise"
+  "WikiLarge_ori_splitwise"
   # "Newsela_s"
 )
 
 METRICS=(
-  "ARI"
+  # "ARI"
   "FKGL"
   "DALE-CHALL"
   "CHAR_COMPRESSION"
@@ -39,8 +38,8 @@ SEEDS=(
   37 
   15
   96 
-  2 
-  28
+  # 2 
+  # 28
   )
 # =========================================================================
 
@@ -90,6 +89,7 @@ for DATASET in "${DATASETS[@]}"; do
         --metric_mapping "data/metric_mapping.json"
         --metric_name "$METRIC_NAME"
         --user_prompt_id "$USER_PROMPT_ID"
+        --temperature "$TEMPERATURE"
       )
 
       # Note: No --peft_path for baseline (non-finetuned models)
@@ -109,8 +109,8 @@ for DATASET in "${DATASETS[@]}"; do
       "$INPUT_DIR/output_1.json"
       "$INPUT_DIR/output_2.json"
       "$INPUT_DIR/output_3.json"
-      "$INPUT_DIR/output_4.json"
-      "$INPUT_DIR/output_5.json"
+      # "$INPUT_DIR/output_4.json"
+      # "$INPUT_DIR/output_5.json"
     )
 
     python src/sft_eval.py \
