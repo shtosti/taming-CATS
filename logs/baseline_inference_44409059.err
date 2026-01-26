@@ -1,0 +1,506 @@
+[nltk_data] Downloading package punkt to
+[nltk_data]     /storage/homefs/hh25g551/nltk_data...
+[nltk_data]   Package punkt is already up-to-date!
+We will use 90% of the memory on device 0 for storing the model, and 10% for the buffer to avoid OOM. You can set `max_memory` in to a higher value to use more memory (at your own risk).
+Loading checkpoint shards:   0%|          | 0/5 [00:00<?, ?it/s]Loading checkpoint shards:  20%|██        | 1/5 [00:07<00:28,  7.00s/it]Loading checkpoint shards:  40%|████      | 2/5 [00:12<00:18,  6.21s/it]Loading checkpoint shards:  60%|██████    | 3/5 [00:18<00:12,  6.01s/it]Loading checkpoint shards:  80%|████████  | 4/5 [00:23<00:05,  5.49s/it]Loading checkpoint shards: 100%|██████████| 5/5 [00:25<00:00,  4.22s/it]Loading checkpoint shards: 100%|██████████| 5/5 [00:25<00:00,  5.02s/it]
+The token has not been saved to the git credentials helper. Pass `add_to_git_credential=True` in this function directly or `--add-to-git-credential` if using via `hf`CLI if you want to set the git credential as well.
+Traceback (most recent call last):
+  File "/storage/homefs/hh25g551/ondemand/data/taming-CATS/venv/lib/python3.11/site-packages/huggingface_hub/utils/_http.py", line 402, in hf_raise_for_status
+    response.raise_for_status()
+  File "/storage/homefs/hh25g551/ondemand/data/taming-CATS/venv/lib/python3.11/site-packages/requests/models.py", line 1024, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 401 Client Error: Unauthorized for url: https://huggingface.co/api/whoami-v2
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/storage/homefs/hh25g551/ondemand/data/taming-CATS/venv/lib/python3.11/site-packages/huggingface_hub/hf_api.py", line 1800, in whoami
+    hf_raise_for_status(r)
+  File "/storage/homefs/hh25g551/ondemand/data/taming-CATS/venv/lib/python3.11/site-packages/huggingface_hub/utils/_http.py", line 475, in hf_raise_for_status
+    raise _format(HfHubHTTPError, str(e), response) from e
+huggingface_hub.errors.HfHubHTTPError: 401 Client Error: Unauthorized for url: https://huggingface.co/api/whoami-v2 (Request ID: Root=1-69769704-4dd9462d5749b8844af08607;6cab0983-6390-4c3b-90fc-4b42ee8c017b)
+
+Invalid username or password.
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/storage/homefs/hh25g551/ondemand/data/taming-CATS/venv/bin/hf", line 7, in <module>
+    sys.exit(main())
+             ^^^^^^
+  File "/storage/homefs/hh25g551/ondemand/data/taming-CATS/venv/lib/python3.11/site-packages/huggingface_hub/cli/hf.py", line 59, in main
+    service.run()
+  File "/storage/homefs/hh25g551/ondemand/data/taming-CATS/venv/lib/python3.11/site-packages/huggingface_hub/cli/auth.py", line 126, in run
+    login(
+  File "/storage/homefs/hh25g551/ondemand/data/taming-CATS/venv/lib/python3.11/site-packages/huggingface_hub/utils/_deprecation.py", line 101, in inner_f
+    return f(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^
+  File "/storage/homefs/hh25g551/ondemand/data/taming-CATS/venv/lib/python3.11/site-packages/huggingface_hub/utils/_deprecation.py", line 31, in inner_f
+    return f(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^
+  File "/storage/homefs/hh25g551/ondemand/data/taming-CATS/venv/lib/python3.11/site-packages/huggingface_hub/_login.py", line 120, in login
+    _login(token, add_to_git_credential=add_to_git_credential)
+  File "/storage/homefs/hh25g551/ondemand/data/taming-CATS/venv/lib/python3.11/site-packages/huggingface_hub/_login.py", line 398, in _login
+    token_info = whoami(token)
+                 ^^^^^^^^^^^^^
+  File "/storage/homefs/hh25g551/ondemand/data/taming-CATS/venv/lib/python3.11/site-packages/huggingface_hub/utils/_validators.py", line 114, in _inner_fn
+    return fn(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/storage/homefs/hh25g551/ondemand/data/taming-CATS/venv/lib/python3.11/site-packages/huggingface_hub/hf_api.py", line 1814, in whoami
+    raise HTTPError(error_message, request=e.request, response=e.response) from e
+requests.exceptions.HTTPError: Invalid user token.
+Map:   0%|          | 0/188 [00:00<?, ? examples/s]Map:  12%|█▏        | 22/188 [00:00<00:00, 206.03 examples/s]Map:  27%|██▋       | 50/188 [00:00<00:00, 240.94 examples/s]Map:  41%|████▏     | 78/188 [00:00<00:00, 252.77 examples/s]Map:  56%|█████▋    | 106/188 [00:00<00:00, 257.01 examples/s]Map:  71%|███████▏  | 134/188 [00:00<00:00, 259.75 examples/s]Map:  86%|████████▌ | 162/188 [00:00<00:00, 260.93 examples/s]Map: 100%|██████████| 188/188 [00:00<00:00, 220.88 examples/s]
+Running inference on test set:   0%|          | 0/12 [00:00<?, ?it/s]Both `max_new_tokens` (=4095) and `max_length`(=8191) seem to have been set. `max_new_tokens` will take precedence. Please refer to the documentation for more information. (https://huggingface.co/docs/transformers/main/en/main_classes/text_generation)
+Some weights of RobertaModel were not initialized from the model checkpoint at roberta-large and are newly initialized: ['pooler.dense.bias', 'pooler.dense.weight']
+You should probably TRAIN this model on a down-stream task to be able to use it for predictions and inference.
+Running inference on test set:   0%|          | 0/12 [00:47<?, ?it/s]
+Traceback (most recent call last):
+  File "/storage/homefs/hh25g551/ondemand/data/taming-CATS/src/sft_inference.py", line 530, in <module>
+    main()
+  File "/storage/homefs/hh25g551/ondemand/data/taming-CATS/src/sft_inference.py", line 510, in main
+    predictions = run_inference(
+                  ^^^^^^^^^^^^^^
+  File "/storage/homefs/hh25g551/ondemand/data/taming-CATS/src/sft_inference.py", line 286, in run_inference
+    computed_prediction_metrics = prediction_metrics.compute_metrics()
+                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/storage/homefs/hh25g551/ondemand/data/taming-CATS/src/classes/Metrics.py", line 156, in compute_metrics
+    'BERTScore': self.compute_bertscore(),
+                 ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/storage/homefs/hh25g551/ondemand/data/taming-CATS/src/classes/Metrics.py", line 101, in compute_bertscore
+    results = Metrics.bertscore_model.compute(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/storage/homefs/hh25g551/ondemand/data/taming-CATS/venv/lib/python3.11/site-packages/evaluate/module.py", line 481, in compute
+    os.remove(file_path)
+FileNotFoundError: [Errno 2] No such file or directory: '/storage/homefs/hh25g551/.cache/huggingface/metrics/bert_score/default/default_experiment-1-0.arrow'
+Traceback (most recent call last):
+  File "/storage/homefs/hh25g551/ondemand/data/taming-CATS/src/sft_eval.py", line 545, in <module>
+    main()
+  File "/storage/homefs/hh25g551/ondemand/data/taming-CATS/src/sft_eval.py", line 428, in main
+    predictions = average_predictions_across_runs(args.input_files)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/storage/homefs/hh25g551/ondemand/data/taming-CATS/src/sft_eval.py", line 30, in average_predictions_across_runs
+    all_runs = [load_json(file) for file in json_files]
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/storage/homefs/hh25g551/ondemand/data/taming-CATS/src/sft_eval.py", line 30, in <listcomp>
+    all_runs = [load_json(file) for file in json_files]
+                ^^^^^^^^^^^^^^^
+  File "/storage/homefs/hh25g551/ondemand/data/taming-CATS/src/sft_eval.py", line 16, in load_json
+    with open(file_path, "r", encoding="utf-8") as file:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: 'output/baseline_inference/Qwen3-8B-Med-EASi-ARI/output_1.json'
+[nltk_data] Downloading package punkt to
+[nltk_data]     /storage/homefs/hh25g551/nltk_data...
+[nltk_data]   Package punkt is already up-to-date!
+We will use 90% of the memory on device 0 for storing the model, and 10% for the buffer to avoid OOM. You can set `max_memory` in to a higher value to use more memory (at your own risk).
+Loading checkpoint shards:   0%|          | 0/5 [00:00<?, ?it/s]Loading checkpoint shards:  20%|██        | 1/5 [00:01<00:07,  1.80s/it]Loading checkpoint shards:  40%|████      | 2/5 [00:03<00:05,  1.81s/it]Loading checkpoint shards:  60%|██████    | 3/5 [00:05<00:03,  1.80s/it]Loading checkpoint shards:  80%|████████  | 4/5 [00:06<00:01,  1.65s/it]Loading checkpoint shards: 100%|██████████| 5/5 [00:07<00:00,  1.25s/it]Loading checkpoint shards: 100%|██████████| 5/5 [00:07<00:00,  1.47s/it]
+The token has not been saved to the git credentials helper. Pass `add_to_git_credential=True` in this function directly or `--add-to-git-credential` if using via `hf`CLI if you want to set the git credential as well.
+Traceback (most recent call last):
+  File "/storage/homefs/hh25g551/ondemand/data/taming-CATS/venv/lib/python3.11/site-packages/huggingface_hub/utils/_http.py", line 402, in hf_raise_for_status
+    response.raise_for_status()
+  File "/storage/homefs/hh25g551/ondemand/data/taming-CATS/venv/lib/python3.11/site-packages/requests/models.py", line 1024, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 401 Client Error: Unauthorized for url: https://huggingface.co/api/whoami-v2
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/storage/homefs/hh25g551/ondemand/data/taming-CATS/venv/lib/python3.11/site-packages/huggingface_hub/hf_api.py", line 1800, in whoami
+    hf_raise_for_status(r)
+  File "/storage/homefs/hh25g551/ondemand/data/taming-CATS/venv/lib/python3.11/site-packages/huggingface_hub/utils/_http.py", line 475, in hf_raise_for_status
+    raise _format(HfHubHTTPError, str(e), response) from e
+huggingface_hub.errors.HfHubHTTPError: 401 Client Error: Unauthorized for url: https://huggingface.co/api/whoami-v2 (Request ID: Root=1-69769751-7bbc4d67137624f05add5cf8;fa033bd8-efc8-4440-ac46-198594a1bae8)
+
+Invalid username or password.
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/storage/homefs/hh25g551/ondemand/data/taming-CATS/venv/bin/hf", line 7, in <module>
+    sys.exit(main())
+             ^^^^^^
+  File "/storage/homefs/hh25g551/ondemand/data/taming-CATS/venv/lib/python3.11/site-packages/huggingface_hub/cli/hf.py", line 59, in main
+    service.run()
+  File "/storage/homefs/hh25g551/ondemand/data/taming-CATS/venv/lib/python3.11/site-packages/huggingface_hub/cli/auth.py", line 126, in run
+    login(
+  File "/storage/homefs/hh25g551/ondemand/data/taming-CATS/venv/lib/python3.11/site-packages/huggingface_hub/utils/_deprecation.py", line 101, in inner_f
+    return f(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^
+  File "/storage/homefs/hh25g551/ondemand/data/taming-CATS/venv/lib/python3.11/site-packages/huggingface_hub/utils/_deprecation.py", line 31, in inner_f
+    return f(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^
+  File "/storage/homefs/hh25g551/ondemand/data/taming-CATS/venv/lib/python3.11/site-packages/huggingface_hub/_login.py", line 120, in login
+    _login(token, add_to_git_credential=add_to_git_credential)
+  File "/storage/homefs/hh25g551/ondemand/data/taming-CATS/venv/lib/python3.11/site-packages/huggingface_hub/_login.py", line 398, in _login
+    token_info = whoami(token)
+                 ^^^^^^^^^^^^^
+  File "/storage/homefs/hh25g551/ondemand/data/taming-CATS/venv/lib/python3.11/site-packages/huggingface_hub/utils/_validators.py", line 114, in _inner_fn
+    return fn(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/storage/homefs/hh25g551/ondemand/data/taming-CATS/venv/lib/python3.11/site-packages/huggingface_hub/hf_api.py", line 1814, in whoami
+    raise HTTPError(error_message, request=e.request, response=e.response) from e
+requests.exceptions.HTTPError: Invalid user token.
+Map:   0%|          | 0/188 [00:00<?, ? examples/s]Map:  12%|█▏        | 23/188 [00:00<00:00, 220.65 examples/s]Map:  27%|██▋       | 51/188 [00:00<00:00, 246.38 examples/s]Map:  42%|████▏     | 79/188 [00:00<00:00, 255.10 examples/s]Map:  56%|█████▋    | 106/188 [00:00<00:00, 257.18 examples/s]Map:  71%|███████▏  | 134/188 [00:00<00:00, 259.09 examples/s]Map:  86%|████████▌ | 162/188 [00:00<00:00, 261.20 examples/s]Map: 100%|██████████| 188/188 [00:00<00:00, 243.00 examples/s]
+Running inference on test set:   0%|          | 0/12 [00:00<?, ?it/s]Both `max_new_tokens` (=4095) and `max_length`(=8191) seem to have been set. `max_new_tokens` will take precedence. Please refer to the documentation for more information. (https://huggingface.co/docs/transformers/main/en/main_classes/text_generation)
+Running inference on test set:   0%|          | 0/12 [00:35<?, ?it/s]
+Traceback (most recent call last):
+  File "/storage/homefs/hh25g551/ondemand/data/taming-CATS/src/sft_inference.py", line 530, in <module>
+    main()
+  File "/storage/homefs/hh25g551/ondemand/data/taming-CATS/src/sft_inference.py", line 510, in main
+    predictions = run_inference(
+                  ^^^^^^^^^^^^^^
+  File "/storage/homefs/hh25g551/ondemand/data/taming-CATS/src/sft_inference.py", line 286, in run_inference
+    computed_prediction_metrics = prediction_metrics.compute_metrics()
+                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/storage/homefs/hh25g551/ondemand/data/taming-CATS/src/classes/Metrics.py", line 156, in compute_metrics
+    'BERTScore': self.compute_bertscore(),
+                 ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/storage/homefs/hh25g551/ondemand/data/taming-CATS/src/classes/Metrics.py", line 101, in compute_bertscore
+    results = Metrics.bertscore_model.compute(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/storage/homefs/hh25g551/ondemand/data/taming-CATS/venv/lib/python3.11/site-packages/evaluate/module.py", line 456, in compute
+    self._finalize()
+  File "/storage/homefs/hh25g551/ondemand/data/taming-CATS/venv/lib/python3.11/site-packages/evaluate/module.py", line 406, in _finalize
+    raise ValueError(
+ValueError: Error in finalize: another evaluation module instance is already using the local cache file. Please specify an experiment_id to avoid collision between distributed evaluation module instances.
+Traceback (most recent call last):
+  File "/storage/homefs/hh25g551/ondemand/data/taming-CATS/src/sft_eval.py", line 545, in <module>
+    main()
+  File "/storage/homefs/hh25g551/ondemand/data/taming-CATS/src/sft_eval.py", line 428, in main
+    predictions = average_predictions_across_runs(args.input_files)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/storage/homefs/hh25g551/ondemand/data/taming-CATS/src/sft_eval.py", line 30, in average_predictions_across_runs
+    all_runs = [load_json(file) for file in json_files]
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/storage/homefs/hh25g551/ondemand/data/taming-CATS/src/sft_eval.py", line 30, in <listcomp>
+    all_runs = [load_json(file) for file in json_files]
+                ^^^^^^^^^^^^^^^
+  File "/storage/homefs/hh25g551/ondemand/data/taming-CATS/src/sft_eval.py", line 16, in load_json
+    with open(file_path, "r", encoding="utf-8") as file:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: 'output/baseline_inference/Qwen3-8B-Med-EASi-FKGL/output_1.json'
+[nltk_data] Downloading package punkt to
+[nltk_data]     /storage/homefs/hh25g551/nltk_data...
+[nltk_data]   Package punkt is already up-to-date!
+We will use 90% of the memory on device 0 for storing the model, and 10% for the buffer to avoid OOM. You can set `max_memory` in to a higher value to use more memory (at your own risk).
+Loading checkpoint shards:   0%|          | 0/5 [00:00<?, ?it/s]Loading checkpoint shards:  20%|██        | 1/5 [00:01<00:07,  1.80s/it]Loading checkpoint shards:  40%|████      | 2/5 [00:03<00:05,  1.81s/it]Loading checkpoint shards:  60%|██████    | 3/5 [00:05<00:03,  1.80s/it]Loading checkpoint shards:  80%|████████  | 4/5 [00:06<00:01,  1.67s/it]Loading checkpoint shards: 100%|██████████| 5/5 [00:07<00:00,  1.26s/it]Loading checkpoint shards: 100%|██████████| 5/5 [00:07<00:00,  1.48s/it]
+The token has not been saved to the git credentials helper. Pass `add_to_git_credential=True` in this function directly or `--add-to-git-credential` if using via `hf`CLI if you want to set the git credential as well.
+Traceback (most recent call last):
+  File "/storage/homefs/hh25g551/ondemand/data/taming-CATS/venv/lib/python3.11/site-packages/huggingface_hub/utils/_http.py", line 402, in hf_raise_for_status
+    response.raise_for_status()
+  File "/storage/homefs/hh25g551/ondemand/data/taming-CATS/venv/lib/python3.11/site-packages/requests/models.py", line 1024, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 401 Client Error: Unauthorized for url: https://huggingface.co/api/whoami-v2
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/storage/homefs/hh25g551/ondemand/data/taming-CATS/venv/lib/python3.11/site-packages/huggingface_hub/hf_api.py", line 1800, in whoami
+    hf_raise_for_status(r)
+  File "/storage/homefs/hh25g551/ondemand/data/taming-CATS/venv/lib/python3.11/site-packages/huggingface_hub/utils/_http.py", line 475, in hf_raise_for_status
+    raise _format(HfHubHTTPError, str(e), response) from e
+huggingface_hub.errors.HfHubHTTPError: 401 Client Error: Unauthorized for url: https://huggingface.co/api/whoami-v2 (Request ID: Root=1-69769790-75c9bea63d56acb36f2b661e;97577a7d-5839-485a-847b-469e203564e7)
+
+Invalid username or password.
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/storage/homefs/hh25g551/ondemand/data/taming-CATS/venv/bin/hf", line 7, in <module>
+    sys.exit(main())
+             ^^^^^^
+  File "/storage/homefs/hh25g551/ondemand/data/taming-CATS/venv/lib/python3.11/site-packages/huggingface_hub/cli/hf.py", line 59, in main
+    service.run()
+  File "/storage/homefs/hh25g551/ondemand/data/taming-CATS/venv/lib/python3.11/site-packages/huggingface_hub/cli/auth.py", line 126, in run
+    login(
+  File "/storage/homefs/hh25g551/ondemand/data/taming-CATS/venv/lib/python3.11/site-packages/huggingface_hub/utils/_deprecation.py", line 101, in inner_f
+    return f(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^
+  File "/storage/homefs/hh25g551/ondemand/data/taming-CATS/venv/lib/python3.11/site-packages/huggingface_hub/utils/_deprecation.py", line 31, in inner_f
+    return f(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^
+  File "/storage/homefs/hh25g551/ondemand/data/taming-CATS/venv/lib/python3.11/site-packages/huggingface_hub/_login.py", line 120, in login
+    _login(token, add_to_git_credential=add_to_git_credential)
+  File "/storage/homefs/hh25g551/ondemand/data/taming-CATS/venv/lib/python3.11/site-packages/huggingface_hub/_login.py", line 398, in _login
+    token_info = whoami(token)
+                 ^^^^^^^^^^^^^
+  File "/storage/homefs/hh25g551/ondemand/data/taming-CATS/venv/lib/python3.11/site-packages/huggingface_hub/utils/_validators.py", line 114, in _inner_fn
+    return fn(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/storage/homefs/hh25g551/ondemand/data/taming-CATS/venv/lib/python3.11/site-packages/huggingface_hub/hf_api.py", line 1814, in whoami
+    raise HTTPError(error_message, request=e.request, response=e.response) from e
+requests.exceptions.HTTPError: Invalid user token.
+Map:   0%|          | 0/188 [00:00<?, ? examples/s]Map:  12%|█▏        | 23/188 [00:00<00:00, 217.86 examples/s]Map:  27%|██▋       | 51/188 [00:00<00:00, 246.07 examples/s]Map:  42%|████▏     | 79/188 [00:00<00:00, 254.84 examples/s]Map:  56%|█████▋    | 106/188 [00:00<00:00, 257.68 examples/s]Map:  71%|███████▏  | 134/188 [00:00<00:00, 260.01 examples/s]Map:  86%|████████▌ | 162/188 [00:00<00:00, 261.33 examples/s]Map: 100%|██████████| 188/188 [00:00<00:00, 222.02 examples/s]
+Running inference on test set:   0%|          | 0/12 [00:00<?, ?it/s]Both `max_new_tokens` (=4095) and `max_length`(=8191) seem to have been set. `max_new_tokens` will take precedence. Please refer to the documentation for more information. (https://huggingface.co/docs/transformers/main/en/main_classes/text_generation)
+Some weights of RobertaModel were not initialized from the model checkpoint at roberta-large and are newly initialized: ['pooler.dense.bias', 'pooler.dense.weight']
+You should probably TRAIN this model on a down-stream task to be able to use it for predictions and inference.
+Running inference on test set:   0%|          | 0/12 [00:36<?, ?it/s]
+Traceback (most recent call last):
+  File "/storage/homefs/hh25g551/ondemand/data/taming-CATS/src/sft_inference.py", line 530, in <module>
+    main()
+  File "/storage/homefs/hh25g551/ondemand/data/taming-CATS/src/sft_inference.py", line 510, in main
+    predictions = run_inference(
+                  ^^^^^^^^^^^^^^
+  File "/storage/homefs/hh25g551/ondemand/data/taming-CATS/src/sft_inference.py", line 286, in run_inference
+    computed_prediction_metrics = prediction_metrics.compute_metrics()
+                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/storage/homefs/hh25g551/ondemand/data/taming-CATS/src/classes/Metrics.py", line 156, in compute_metrics
+    'BERTScore': self.compute_bertscore(),
+                 ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/storage/homefs/hh25g551/ondemand/data/taming-CATS/src/classes/Metrics.py", line 101, in compute_bertscore
+    results = Metrics.bertscore_model.compute(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/storage/homefs/hh25g551/ondemand/data/taming-CATS/venv/lib/python3.11/site-packages/evaluate/module.py", line 481, in compute
+    os.remove(file_path)
+FileNotFoundError: [Errno 2] No such file or directory: '/storage/homefs/hh25g551/.cache/huggingface/metrics/bert_score/default/default_experiment-1-0.arrow'
+Traceback (most recent call last):
+  File "/storage/homefs/hh25g551/ondemand/data/taming-CATS/src/sft_eval.py", line 545, in <module>
+    main()
+  File "/storage/homefs/hh25g551/ondemand/data/taming-CATS/src/sft_eval.py", line 428, in main
+    predictions = average_predictions_across_runs(args.input_files)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/storage/homefs/hh25g551/ondemand/data/taming-CATS/src/sft_eval.py", line 30, in average_predictions_across_runs
+    all_runs = [load_json(file) for file in json_files]
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/storage/homefs/hh25g551/ondemand/data/taming-CATS/src/sft_eval.py", line 30, in <listcomp>
+    all_runs = [load_json(file) for file in json_files]
+                ^^^^^^^^^^^^^^^
+  File "/storage/homefs/hh25g551/ondemand/data/taming-CATS/src/sft_eval.py", line 16, in load_json
+    with open(file_path, "r", encoding="utf-8") as file:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: 'output/baseline_inference/Qwen3-8B-Med-EASi-DALE-CHALL/output_1.json'
+[nltk_data] Downloading package punkt to
+[nltk_data]     /storage/homefs/hh25g551/nltk_data...
+[nltk_data]   Package punkt is already up-to-date!
+We will use 90% of the memory on device 0 for storing the model, and 10% for the buffer to avoid OOM. You can set `max_memory` in to a higher value to use more memory (at your own risk).
+Loading checkpoint shards:   0%|          | 0/5 [00:00<?, ?it/s]Loading checkpoint shards:  20%|██        | 1/5 [00:01<00:07,  1.80s/it]Loading checkpoint shards:  40%|████      | 2/5 [00:03<00:05,  1.81s/it]Loading checkpoint shards:  60%|██████    | 3/5 [00:05<00:03,  1.81s/it]Loading checkpoint shards:  80%|████████  | 4/5 [00:06<00:01,  1.65s/it]Loading checkpoint shards: 100%|██████████| 5/5 [00:07<00:00,  1.25s/it]Loading checkpoint shards: 100%|██████████| 5/5 [00:07<00:00,  1.48s/it]
+The token has not been saved to the git credentials helper. Pass `add_to_git_credential=True` in this function directly or `--add-to-git-credential` if using via `hf`CLI if you want to set the git credential as well.
+Traceback (most recent call last):
+  File "/storage/homefs/hh25g551/ondemand/data/taming-CATS/venv/lib/python3.11/site-packages/huggingface_hub/utils/_http.py", line 402, in hf_raise_for_status
+    response.raise_for_status()
+  File "/storage/homefs/hh25g551/ondemand/data/taming-CATS/venv/lib/python3.11/site-packages/requests/models.py", line 1024, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 401 Client Error: Unauthorized for url: https://huggingface.co/api/whoami-v2
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/storage/homefs/hh25g551/ondemand/data/taming-CATS/venv/lib/python3.11/site-packages/huggingface_hub/hf_api.py", line 1800, in whoami
+    hf_raise_for_status(r)
+  File "/storage/homefs/hh25g551/ondemand/data/taming-CATS/venv/lib/python3.11/site-packages/huggingface_hub/utils/_http.py", line 475, in hf_raise_for_status
+    raise _format(HfHubHTTPError, str(e), response) from e
+huggingface_hub.errors.HfHubHTTPError: 401 Client Error: Unauthorized for url: https://huggingface.co/api/whoami-v2 (Request ID: Root=1-697697cf-036e0fe53a6dc220429bb359;08f26e6f-351f-4306-ad73-fd63dafd1523)
+
+Invalid username or password.
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/storage/homefs/hh25g551/ondemand/data/taming-CATS/venv/bin/hf", line 7, in <module>
+    sys.exit(main())
+             ^^^^^^
+  File "/storage/homefs/hh25g551/ondemand/data/taming-CATS/venv/lib/python3.11/site-packages/huggingface_hub/cli/hf.py", line 59, in main
+    service.run()
+  File "/storage/homefs/hh25g551/ondemand/data/taming-CATS/venv/lib/python3.11/site-packages/huggingface_hub/cli/auth.py", line 126, in run
+    login(
+  File "/storage/homefs/hh25g551/ondemand/data/taming-CATS/venv/lib/python3.11/site-packages/huggingface_hub/utils/_deprecation.py", line 101, in inner_f
+    return f(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^
+  File "/storage/homefs/hh25g551/ondemand/data/taming-CATS/venv/lib/python3.11/site-packages/huggingface_hub/utils/_deprecation.py", line 31, in inner_f
+    return f(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^
+  File "/storage/homefs/hh25g551/ondemand/data/taming-CATS/venv/lib/python3.11/site-packages/huggingface_hub/_login.py", line 120, in login
+    _login(token, add_to_git_credential=add_to_git_credential)
+  File "/storage/homefs/hh25g551/ondemand/data/taming-CATS/venv/lib/python3.11/site-packages/huggingface_hub/_login.py", line 398, in _login
+    token_info = whoami(token)
+                 ^^^^^^^^^^^^^
+  File "/storage/homefs/hh25g551/ondemand/data/taming-CATS/venv/lib/python3.11/site-packages/huggingface_hub/utils/_validators.py", line 114, in _inner_fn
+    return fn(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/storage/homefs/hh25g551/ondemand/data/taming-CATS/venv/lib/python3.11/site-packages/huggingface_hub/hf_api.py", line 1814, in whoami
+    raise HTTPError(error_message, request=e.request, response=e.response) from e
+requests.exceptions.HTTPError: Invalid user token.
+Map:   0%|          | 0/188 [00:00<?, ? examples/s]Map:  12%|█▏        | 23/188 [00:00<00:00, 222.24 examples/s]Map:  27%|██▋       | 51/188 [00:00<00:00, 247.40 examples/s]Map:  46%|████▋     | 87/188 [00:00<00:00, 238.31 examples/s]Map:  61%|██████    | 115/188 [00:00<00:00, 247.33 examples/s]Map:  76%|███████▌  | 143/188 [00:00<00:00, 252.99 examples/s]Map:  91%|█████████ | 171/188 [00:00<00:00, 256.15 examples/s]Map: 100%|██████████| 188/188 [00:00<00:00, 224.88 examples/s]
+Running inference on test set:   0%|          | 0/12 [00:00<?, ?it/s]Both `max_new_tokens` (=4095) and `max_length`(=8191) seem to have been set. `max_new_tokens` will take precedence. Please refer to the documentation for more information. (https://huggingface.co/docs/transformers/main/en/main_classes/text_generation)
+Some weights of RobertaModel were not initialized from the model checkpoint at roberta-large and are newly initialized: ['pooler.dense.bias', 'pooler.dense.weight']
+You should probably TRAIN this model on a down-stream task to be able to use it for predictions and inference.
+
+Fetching 5 files:   0%|          | 0/5 [00:00<?, ?it/s][AFetching 5 files: 100%|██████████| 5/5 [00:00<00:00, 5700.33it/s]
+Lightning automatically upgraded your loaded checkpoint from v1.8.3.post1 to v2.5.0.post0. To apply the upgrade to your files permanently, run `python -m pytorch_lightning.utilities.upgrade_checkpoint ../../../.cache/huggingface/hub/models--Unbabel--wmt22-comet-da/snapshots/2760a223ac957f30acfb18c8aa649b01cf1d75f2/checkpoints/model.ckpt`
+Encoder model frozen.
+/storage/homefs/hh25g551/ondemand/data/taming-CATS/venv/lib/python3.11/site-packages/pytorch_lightning/core/saving.py:195: Found keys that are not in the model state dict but in the checkpoint: ['encoder.model.embeddings.position_ids']
+/storage/homefs/hh25g551/ondemand/data/taming-CATS/venv/lib/python3.11/site-packages/torch/utils/data/dataloader.py:624: UserWarning: This DataLoader will create 2 worker processes in total. Our suggested max number of worker in current system is 1, which is smaller than what this DataLoader is going to create. Please be aware that excessive worker creation might get DataLoader running slow or even freeze, lower the worker number to avoid potential slowness/freeze if necessary.
+  warnings.warn(
+GPU available: True (cuda), used: True
+TPU available: False, using: 0 TPU cores
+HPU available: False, using: 0 HPUs
+You are using a CUDA device ('NVIDIA H100 NVL') that has Tensor Cores. To properly utilize them, you should set `torch.set_float32_matmul_precision('medium' | 'high')` which will trade-off precision for performance. For more details, read https://pytorch.org/docs/stable/generated/torch.set_float32_matmul_precision.html#torch.set_float32_matmul_precision
+LOCAL_RANK: 0 - CUDA_VISIBLE_DEVICES: [0]
+SLURM auto-requeueing enabled. Setting signal handlers.
+/storage/homefs/hh25g551/ondemand/data/taming-CATS/venv/lib/python3.11/site-packages/torch/utils/data/dataloader.py:624: UserWarning: This DataLoader will create 2 worker processes in total. Our suggested max number of worker in current system is 1, which is smaller than what this DataLoader is going to create. Please be aware that excessive worker creation might get DataLoader running slow or even freeze, lower the worker number to avoid potential slowness/freeze if necessary.
+  warnings.warn(
+huggingface/tokenizers: The current process just got forked, after parallelism has already been used. Disabling parallelism to avoid deadlocks...
+To disable this warning, you can either:
+	- Avoid using `tokenizers` before the fork if possible
+	- Explicitly set the environment variable TOKENIZERS_PARALLELISM=(true | false)
+Predicting: 0it [00:00, ?it/s]huggingface/tokenizers: The current process just got forked, after parallelism has already been used. Disabling parallelism to avoid deadlocks...
+To disable this warning, you can either:
+	- Avoid using `tokenizers` before the fork if possible
+	- Explicitly set the environment variable TOKENIZERS_PARALLELISM=(true | false)
+Predicting:   0%|          | 0/1 [00:00<?, ?it/s]Predicting DataLoader 0:   0%|          | 0/1 [00:00<?, ?it/s]Predicting DataLoader 0: 100%|██████████| 1/1 [00:00<00:00,  4.23it/s]Predicting DataLoader 0: 100%|██████████| 1/1 [00:00<00:00,  4.22it/s]
+GPU available: True (cuda), used: True
+TPU available: False, using: 0 TPU cores
+HPU available: False, using: 0 HPUs
+LOCAL_RANK: 0 - CUDA_VISIBLE_DEVICES: [0]
+SLURM auto-requeueing enabled. Setting signal handlers.
+/storage/homefs/hh25g551/ondemand/data/taming-CATS/venv/lib/python3.11/site-packages/torch/utils/data/dataloader.py:624: UserWarning: This DataLoader will create 2 worker processes in total. Our suggested max number of worker in current system is 1, which is smaller than what this DataLoader is going to create. Please be aware that excessive worker creation might get DataLoader running slow or even freeze, lower the worker number to avoid potential slowness/freeze if necessary.
+  warnings.warn(
+huggingface/tokenizers: The current process just got forked, after parallelism has already been used. Disabling parallelism to avoid deadlocks...
+To disable this warning, you can either:
+	- Avoid using `tokenizers` before the fork if possible
+	- Explicitly set the environment variable TOKENIZERS_PARALLELISM=(true | false)
+Predicting: 0it [00:00, ?it/s]huggingface/tokenizers: The current process just got forked, after parallelism has already been used. Disabling parallelism to avoid deadlocks...
+To disable this warning, you can either:
+	- Avoid using `tokenizers` before the fork if possible
+	- Explicitly set the environment variable TOKENIZERS_PARALLELISM=(true | false)
+Predicting:   0%|          | 0/1 [00:00<?, ?it/s]Predicting DataLoader 0:   0%|          | 0/1 [00:00<?, ?it/s]Predicting DataLoader 0: 100%|██████████| 1/1 [00:00<00:00, 46.04it/s]Predicting DataLoader 0: 100%|██████████| 1/1 [00:00<00:00, 45.44it/s]
+GPU available: True (cuda), used: True
+TPU available: False, using: 0 TPU cores
+HPU available: False, using: 0 HPUs
+LOCAL_RANK: 0 - CUDA_VISIBLE_DEVICES: [0]
+SLURM auto-requeueing enabled. Setting signal handlers.
+/storage/homefs/hh25g551/ondemand/data/taming-CATS/venv/lib/python3.11/site-packages/torch/utils/data/dataloader.py:624: UserWarning: This DataLoader will create 2 worker processes in total. Our suggested max number of worker in current system is 1, which is smaller than what this DataLoader is going to create. Please be aware that excessive worker creation might get DataLoader running slow or even freeze, lower the worker number to avoid potential slowness/freeze if necessary.
+  warnings.warn(
+huggingface/tokenizers: The current process just got forked, after parallelism has already been used. Disabling parallelism to avoid deadlocks...
+To disable this warning, you can either:
+	- Avoid using `tokenizers` before the fork if possible
+	- Explicitly set the environment variable TOKENIZERS_PARALLELISM=(true | false)
+Predicting: 0it [00:00, ?it/s]huggingface/tokenizers: The current process just got forked, after parallelism has already been used. Disabling parallelism to avoid deadlocks...
+To disable this warning, you can either:
+	- Avoid using `tokenizers` before the fork if possible
+	- Explicitly set the environment variable TOKENIZERS_PARALLELISM=(true | false)
+Predicting:   0%|          | 0/1 [00:00<?, ?it/s]Predicting DataLoader 0:   0%|          | 0/1 [00:00<?, ?it/s]Predicting DataLoader 0: 100%|██████████| 1/1 [00:00<00:00, 37.86it/s]Predicting DataLoader 0: 100%|██████████| 1/1 [00:00<00:00, 37.43it/s]
+Running inference on test set:   0%|          | 0/12 [00:52<?, ?it/s]
+Traceback (most recent call last):
+  File "/storage/homefs/hh25g551/ondemand/data/taming-CATS/src/sft_inference.py", line 530, in <module>
+    main()
+  File "/storage/homefs/hh25g551/ondemand/data/taming-CATS/src/sft_inference.py", line 510, in main
+    predictions = run_inference(
+                  ^^^^^^^^^^^^^^
+  File "/storage/homefs/hh25g551/ondemand/data/taming-CATS/src/sft_inference.py", line 290, in run_inference
+    computed_reference_metrics = reference_metrics.compute_metrics()
+                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/storage/homefs/hh25g551/ondemand/data/taming-CATS/src/classes/Metrics.py", line 156, in compute_metrics
+    'BERTScore': self.compute_bertscore(),
+                 ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/storage/homefs/hh25g551/ondemand/data/taming-CATS/src/classes/Metrics.py", line 101, in compute_bertscore
+    results = Metrics.bertscore_model.compute(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/storage/homefs/hh25g551/ondemand/data/taming-CATS/venv/lib/python3.11/site-packages/evaluate/module.py", line 481, in compute
+    os.remove(file_path)
+FileNotFoundError: [Errno 2] No such file or directory: '/storage/homefs/hh25g551/.cache/huggingface/metrics/bert_score/default/default_experiment-1-0.arrow'
+Traceback (most recent call last):
+  File "/storage/homefs/hh25g551/ondemand/data/taming-CATS/src/sft_eval.py", line 545, in <module>
+    main()
+  File "/storage/homefs/hh25g551/ondemand/data/taming-CATS/src/sft_eval.py", line 428, in main
+    predictions = average_predictions_across_runs(args.input_files)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/storage/homefs/hh25g551/ondemand/data/taming-CATS/src/sft_eval.py", line 30, in average_predictions_across_runs
+    all_runs = [load_json(file) for file in json_files]
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/storage/homefs/hh25g551/ondemand/data/taming-CATS/src/sft_eval.py", line 30, in <listcomp>
+    all_runs = [load_json(file) for file in json_files]
+                ^^^^^^^^^^^^^^^
+  File "/storage/homefs/hh25g551/ondemand/data/taming-CATS/src/sft_eval.py", line 16, in load_json
+    with open(file_path, "r", encoding="utf-8") as file:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: 'output/baseline_inference/Qwen3-8B-Med-EASi-CHAR_COMPRESSION/output_1.json'
+[nltk_data] Downloading package punkt to
+[nltk_data]     /storage/homefs/hh25g551/nltk_data...
+[nltk_data]   Package punkt is already up-to-date!
+We will use 90% of the memory on device 0 for storing the model, and 10% for the buffer to avoid OOM. You can set `max_memory` in to a higher value to use more memory (at your own risk).
+Loading checkpoint shards:   0%|          | 0/5 [00:00<?, ?it/s]Loading checkpoint shards:  20%|██        | 1/5 [00:01<00:07,  1.80s/it]Loading checkpoint shards:  40%|████      | 2/5 [00:03<00:05,  1.80s/it]Loading checkpoint shards:  60%|██████    | 3/5 [00:05<00:03,  1.79s/it]Loading checkpoint shards:  80%|████████  | 4/5 [00:06<00:01,  1.64s/it]Loading checkpoint shards: 100%|██████████| 5/5 [00:07<00:00,  1.24s/it]Loading checkpoint shards: 100%|██████████| 5/5 [00:07<00:00,  1.46s/it]
+The token has not been saved to the git credentials helper. Pass `add_to_git_credential=True` in this function directly or `--add-to-git-credential` if using via `hf`CLI if you want to set the git credential as well.
+Traceback (most recent call last):
+  File "/storage/homefs/hh25g551/ondemand/data/taming-CATS/venv/lib/python3.11/site-packages/huggingface_hub/utils/_http.py", line 402, in hf_raise_for_status
+    response.raise_for_status()
+  File "/storage/homefs/hh25g551/ondemand/data/taming-CATS/venv/lib/python3.11/site-packages/requests/models.py", line 1024, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 401 Client Error: Unauthorized for url: https://huggingface.co/api/whoami-v2
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/storage/homefs/hh25g551/ondemand/data/taming-CATS/venv/lib/python3.11/site-packages/huggingface_hub/hf_api.py", line 1800, in whoami
+    hf_raise_for_status(r)
+  File "/storage/homefs/hh25g551/ondemand/data/taming-CATS/venv/lib/python3.11/site-packages/huggingface_hub/utils/_http.py", line 475, in hf_raise_for_status
+    raise _format(HfHubHTTPError, str(e), response) from e
+huggingface_hub.errors.HfHubHTTPError: 401 Client Error: Unauthorized for url: https://huggingface.co/api/whoami-v2 (Request ID: Root=1-6976981d-69bcdf18503b48d738b39197;eaa9baa2-a416-4a9a-8c95-a1c1c3346406)
+
+Invalid username or password.
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/storage/homefs/hh25g551/ondemand/data/taming-CATS/venv/bin/hf", line 7, in <module>
+    sys.exit(main())
+             ^^^^^^
+  File "/storage/homefs/hh25g551/ondemand/data/taming-CATS/venv/lib/python3.11/site-packages/huggingface_hub/cli/hf.py", line 59, in main
+    service.run()
+  File "/storage/homefs/hh25g551/ondemand/data/taming-CATS/venv/lib/python3.11/site-packages/huggingface_hub/cli/auth.py", line 126, in run
+    login(
+  File "/storage/homefs/hh25g551/ondemand/data/taming-CATS/venv/lib/python3.11/site-packages/huggingface_hub/utils/_deprecation.py", line 101, in inner_f
+    return f(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^
+  File "/storage/homefs/hh25g551/ondemand/data/taming-CATS/venv/lib/python3.11/site-packages/huggingface_hub/utils/_deprecation.py", line 31, in inner_f
+    return f(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^
+  File "/storage/homefs/hh25g551/ondemand/data/taming-CATS/venv/lib/python3.11/site-packages/huggingface_hub/_login.py", line 120, in login
+    _login(token, add_to_git_credential=add_to_git_credential)
+  File "/storage/homefs/hh25g551/ondemand/data/taming-CATS/venv/lib/python3.11/site-packages/huggingface_hub/_login.py", line 398, in _login
+    token_info = whoami(token)
+                 ^^^^^^^^^^^^^
+  File "/storage/homefs/hh25g551/ondemand/data/taming-CATS/venv/lib/python3.11/site-packages/huggingface_hub/utils/_validators.py", line 114, in _inner_fn
+    return fn(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/storage/homefs/hh25g551/ondemand/data/taming-CATS/venv/lib/python3.11/site-packages/huggingface_hub/hf_api.py", line 1814, in whoami
+    raise HTTPError(error_message, request=e.request, response=e.response) from e
+requests.exceptions.HTTPError: Invalid user token.
+Map:   0%|          | 0/188 [00:00<?, ? examples/s]Map:  13%|█▎        | 24/188 [00:00<00:00, 226.56 examples/s]Map:  28%|██▊       | 52/188 [00:00<00:00, 252.16 examples/s]Map:  43%|████▎     | 80/188 [00:00<00:00, 259.57 examples/s]Map:  57%|█████▋    | 108/188 [00:00<00:00, 262.02 examples/s]Map:  72%|███████▏  | 136/188 [00:00<00:00, 263.49 examples/s]Map:  87%|████████▋ | 164/188 [00:00<00:00, 264.96 examples/s]Map: 100%|██████████| 188/188 [00:00<00:00, 247.29 examples/s]
+Running inference on test set:   0%|          | 0/12 [00:00<?, ?it/s]Both `max_new_tokens` (=4095) and `max_length`(=8191) seem to have been set. `max_new_tokens` will take precedence. Please refer to the documentation for more information. (https://huggingface.co/docs/transformers/main/en/main_classes/text_generation)
+Some weights of RobertaModel were not initialized from the model checkpoint at roberta-large and are newly initialized: ['pooler.dense.bias', 'pooler.dense.weight']
+You should probably TRAIN this model on a down-stream task to be able to use it for predictions and inference.
+Running inference on test set:   0%|          | 0/12 [00:35<?, ?it/s]
+Traceback (most recent call last):
+  File "/storage/homefs/hh25g551/ondemand/data/taming-CATS/src/sft_inference.py", line 530, in <module>
+    main()
+  File "/storage/homefs/hh25g551/ondemand/data/taming-CATS/src/sft_inference.py", line 510, in main
+    predictions = run_inference(
+                  ^^^^^^^^^^^^^^
+  File "/storage/homefs/hh25g551/ondemand/data/taming-CATS/src/sft_inference.py", line 286, in run_inference
+    computed_prediction_metrics = prediction_metrics.compute_metrics()
+                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/storage/homefs/hh25g551/ondemand/data/taming-CATS/src/classes/Metrics.py", line 156, in compute_metrics
+    'BERTScore': self.compute_bertscore(),
+                 ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/storage/homefs/hh25g551/ondemand/data/taming-CATS/src/classes/Metrics.py", line 101, in compute_bertscore
+    results = Metrics.bertscore_model.compute(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/storage/homefs/hh25g551/ondemand/data/taming-CATS/venv/lib/python3.11/site-packages/evaluate/module.py", line 481, in compute
+    os.remove(file_path)
+FileNotFoundError: [Errno 2] No such file or directory: '/storage/homefs/hh25g551/.cache/huggingface/metrics/bert_score/default/default_experiment-1-0.arrow'
+Traceback (most recent call last):
+  File "/storage/homefs/hh25g551/ondemand/data/taming-CATS/src/sft_eval.py", line 545, in <module>
+    main()
+  File "/storage/homefs/hh25g551/ondemand/data/taming-CATS/src/sft_eval.py", line 428, in main
+    predictions = average_predictions_across_runs(args.input_files)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/storage/homefs/hh25g551/ondemand/data/taming-CATS/src/sft_eval.py", line 30, in average_predictions_across_runs
+    all_runs = [load_json(file) for file in json_files]
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/storage/homefs/hh25g551/ondemand/data/taming-CATS/src/sft_eval.py", line 30, in <listcomp>
+    all_runs = [load_json(file) for file in json_files]
+                ^^^^^^^^^^^^^^^
+  File "/storage/homefs/hh25g551/ondemand/data/taming-CATS/src/sft_eval.py", line 16, in load_json
+    with open(file_path, "r", encoding="utf-8") as file:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: 'output/baseline_inference/Qwen3-8B-Med-EASi-WORD_COMPRESSION/output_1.json'

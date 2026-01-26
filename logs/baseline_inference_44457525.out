@@ -1,0 +1,216 @@
+/storage/homefs/hh25g551/ondemand/data/taming-CATS/venv/bin/python3
+Mon Jan 26 19:52:36 2026       
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 550.163.01             Driver Version: 550.163.01     CUDA Version: 12.4     |
+|-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  NVIDIA A100 80GB PCIe          On  |   00000000:01:00.0 Off |                    0 |
+| N/A   38C    P0             43W /  300W |       1MiB /  81920MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+                                                                                         
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI        PID   Type   Process name                              GPU Memory |
+|        ID   ID                                                               Usage      |
+|=========================================================================================|
+|  No running processes found                                                             |
++-----------------------------------------------------------------------------------------+
+Script started: Mon Jan 26 07:52:36 PM CET 2026
+
+=========================================================================
+Running baseline inference for DATASET=WikiLarge_ori_splitwise, METRIC=ARI
+=========================================================================
+Output 1 already exists, skipping (file: output/baseline_inference/Llama-3.2-1B-Instruct-WikiLarge_ori_splitwise-ARI/output_1.json)
+Output 2 already exists, skipping (file: output/baseline_inference/Llama-3.2-1B-Instruct-WikiLarge_ori_splitwise-ARI/output_2.json)
+Output 3 already exists, skipping (file: output/baseline_inference/Llama-3.2-1B-Instruct-WikiLarge_ori_splitwise-ARI/output_3.json)
+Running evaluation script for WikiLarge_ori_splitwise - ARI...
+--- Running evaluation...
+Input files:	 ['output/baseline_inference/Llama-3.2-1B-Instruct-WikiLarge_ori_splitwise-ARI/output_1.json', 'output/baseline_inference/Llama-3.2-1B-Instruct-WikiLarge_ori_splitwise-ARI/output_2.json', 'output/baseline_inference/Llama-3.2-1B-Instruct-WikiLarge_ori_splitwise-ARI/output_3.json']
+Metric:	 ARI
+--- ARI losses:
+Mean Squared Error (MSE): 54.0183417085427
+Mean Absolute Error (MAE): 4.357286432160805
+Standard Deviation of Errors: 6.933687097587644
+Variance of Errors: 48.07601676725336
+
+Saved loss values to stats.json
+Updated averaged predictions file with per-sample losses: output/baseline_inference/Llama-3.2-1B-Instruct-WikiLarge_ori_splitwise-ARI/output_averaged.json
+Scatter plot saved to output/baseline_inference/Llama-3.2-1B-Instruct-WikiLarge_ori_splitwise-ARI/ARI_scatter_plot.png
+Legend saved to output/baseline_inference/Llama-3.2-1B-Instruct-WikiLarge_ori_splitwise-ARI/ARI_scatter_legend.png
+Control attribute vs metrics plot saved as ARI_ctrl_attr_vs_metrics.png
+Error-vs-metrics plots saved.
+STD of error by reference bin saved as ARI_error_std_by_ref_bin.png
+Plots saved to output/baseline_inference/Llama-3.2-1B-Instruct-WikiLarge_ori_splitwise-ARI
+
+All plots saved to output/baseline_inference/Llama-3.2-1B-Instruct-WikiLarge_ori_splitwise-ARI
+
+--- Mean metrics:
+BLEU_to_source: BLEU_to_source: 77.38 (+3.84 -3.99)
+BLEU_to_ref: BLEU_to_ref: 30.01 (+3.78 -3.90)
+BERTScore_to_source: BERTScore_to_source: 0.96 (+0.01 -0.01)
+BERTScore_to_ref: BERTScore_to_ref: 0.90 (+0.01 -0.01)
+COMET: COMET: 0.71 (+0.02 -0.02)
+SARI: SARI: 43.31 (+2.05 -2.05)
+
+Saved evaluation summary to output/nonsft_results_baseline/all_results.json
+
+--- Evaluation complete.
+Evaluation completed for WikiLarge_ori_splitwise - ARI
+
+
+=========================================================================
+Running baseline inference for DATASET=WikiLarge_ori_splitwise, METRIC=FKGL
+=========================================================================
+Output 1 already exists, skipping (file: output/baseline_inference/Llama-3.2-1B-Instruct-WikiLarge_ori_splitwise-FKGL/output_1.json)
+Output 2 already exists, skipping (file: output/baseline_inference/Llama-3.2-1B-Instruct-WikiLarge_ori_splitwise-FKGL/output_2.json)
+Running baseline inference 3 with seed 96...
+Loading from meta-llama/Llama-3.2-1B-Instruct...
+Inference args:
+Namespace(use_vllm=False, seed=96, model_path='meta-llama/Llama-3.2-1B-Instruct', model_name='meta-llama/Llama-3.2-1B-Instruct', dataset_name='WikiLarge_ori_splitwise', model_class='auto', model_family='base', max_length=4096, batch_size=16, slice_test=-1, output_file='output/baseline_inference/Llama-3.2-1B-Instruct-WikiLarge_ori_splitwise-FKGL/output_3.json', device='cuda', peft_path=None, temperature=0.0, control_tokens='data/prompts/control_tokens.json', system_prompts='data/prompts/system_prompts.json', user_prompts='data/prompts/user_prompts.json', metric_mapping='data/metric_mapping.json', metric_name='FKGL', user_prompt_id='token_explanation')
+
+test:	 Inspect the dataset format:
+ {'global_id': ['wikilarge_ori_220768'], 'source_text': ['Smaller riverboats can reach higher as far as Achual Point .\n'], 'source_metrics': [{'FRE': 78.25, 'ARI': 7.1, 'FKGL': 4.8, 'Dale-Chall': 10.45, 'char_count': 61, 'alphanum_count': 49, 'word_count': 11, 'sentence_count': 1}], 'metadata': [{'dataset': 'wikilarge_ori', 'experiment_split': '', 'domain': 'general', 'language': 'en', 'annotation': 'automatic', 'level': 'sentence'}], 'simplification_text': ['Smaller riverboats can reach 780 km -LRB- 486 mi -RRB- higher as far as Actual Point .\n'], 'target_metrics': [{'FRE': 72.16, 'ARI': 7.2, 'FKGL': 7.2, 'Dale-Chall': 14.3, 'char_count': 87, 'alphanum_count': 59, 'word_count': 17, 'sentence_count': 1, 'char_compression_rate': 1.43, 'word_compression_rate': 1.55, 'sentence_compression_rate': 1.0, 'BLEU': 31.46660996956415, 'BERTScore': 0.8939859867095947}], 'simplification_version': [1], 'grade_level': [-1], 'simplification_dimensions': [{'linguistic': {'lexical': False, 'syntactic': False}}]}
+Using greedy decoding (temperature=0.0, do_sample=False)
+
+--- Processing batch:
+Baseline inference 4 completed.
+Running evaluation script for WikiLarge_ori_splitwise - FKGL...
+--- Running evaluation...
+Input files:	 ['output/baseline_inference/Llama-3.2-1B-Instruct-WikiLarge_ori_splitwise-FKGL/output_1.json', 'output/baseline_inference/Llama-3.2-1B-Instruct-WikiLarge_ori_splitwise-FKGL/output_2.json', 'output/baseline_inference/Llama-3.2-1B-Instruct-WikiLarge_ori_splitwise-FKGL/output_3.json']
+Metric:	 FKGL
+Evaluation completed for WikiLarge_ori_splitwise - FKGL
+
+
+=========================================================================
+Running baseline inference for DATASET=WikiLarge_ori_splitwise, METRIC=DALE-CHALL
+=========================================================================
+Running baseline inference 1 with seed 37...
+Loading from meta-llama/Llama-3.2-1B-Instruct...
+Inference args:
+Namespace(use_vllm=False, seed=37, model_path='meta-llama/Llama-3.2-1B-Instruct', model_name='meta-llama/Llama-3.2-1B-Instruct', dataset_name='WikiLarge_ori_splitwise', model_class='auto', model_family='base', max_length=4096, batch_size=16, slice_test=-1, output_file='output/baseline_inference/Llama-3.2-1B-Instruct-WikiLarge_ori_splitwise-DALE-CHALL/output_1.json', device='cuda', peft_path=None, temperature=0.0, control_tokens='data/prompts/control_tokens.json', system_prompts='data/prompts/system_prompts.json', user_prompts='data/prompts/user_prompts.json', metric_mapping='data/metric_mapping.json', metric_name='DALE-CHALL', user_prompt_id='token_explanation')
+
+test:	 Inspect the dataset format:
+ {'global_id': ['wikilarge_ori_220768'], 'source_text': ['Smaller riverboats can reach higher as far as Achual Point .\n'], 'source_metrics': [{'FRE': 78.25, 'ARI': 7.1, 'FKGL': 4.8, 'Dale-Chall': 10.45, 'char_count': 61, 'alphanum_count': 49, 'word_count': 11, 'sentence_count': 1}], 'metadata': [{'dataset': 'wikilarge_ori', 'experiment_split': '', 'domain': 'general', 'language': 'en', 'annotation': 'automatic', 'level': 'sentence'}], 'simplification_text': ['Smaller riverboats can reach 780 km -LRB- 486 mi -RRB- higher as far as Actual Point .\n'], 'target_metrics': [{'FRE': 72.16, 'ARI': 7.2, 'FKGL': 7.2, 'Dale-Chall': 14.3, 'char_count': 87, 'alphanum_count': 59, 'word_count': 17, 'sentence_count': 1, 'char_compression_rate': 1.43, 'word_compression_rate': 1.55, 'sentence_compression_rate': 1.0, 'BLEU': 31.46660996956415, 'BERTScore': 0.8939859867095947}], 'simplification_version': [1], 'grade_level': [-1], 'simplification_dimensions': [{'linguistic': {'lexical': False, 'syntactic': False}}]}
+Using greedy decoding (temperature=0.0, do_sample=False)
+
+--- Processing batch:
+Baseline inference 2 completed.
+Running baseline inference 2 with seed 15...
+Loading from meta-llama/Llama-3.2-1B-Instruct...
+Inference args:
+Namespace(use_vllm=False, seed=15, model_path='meta-llama/Llama-3.2-1B-Instruct', model_name='meta-llama/Llama-3.2-1B-Instruct', dataset_name='WikiLarge_ori_splitwise', model_class='auto', model_family='base', max_length=4096, batch_size=16, slice_test=-1, output_file='output/baseline_inference/Llama-3.2-1B-Instruct-WikiLarge_ori_splitwise-DALE-CHALL/output_2.json', device='cuda', peft_path=None, temperature=0.0, control_tokens='data/prompts/control_tokens.json', system_prompts='data/prompts/system_prompts.json', user_prompts='data/prompts/user_prompts.json', metric_mapping='data/metric_mapping.json', metric_name='DALE-CHALL', user_prompt_id='token_explanation')
+
+test:	 Inspect the dataset format:
+ {'global_id': ['wikilarge_ori_220768'], 'source_text': ['Smaller riverboats can reach higher as far as Achual Point .\n'], 'source_metrics': [{'FRE': 78.25, 'ARI': 7.1, 'FKGL': 4.8, 'Dale-Chall': 10.45, 'char_count': 61, 'alphanum_count': 49, 'word_count': 11, 'sentence_count': 1}], 'metadata': [{'dataset': 'wikilarge_ori', 'experiment_split': '', 'domain': 'general', 'language': 'en', 'annotation': 'automatic', 'level': 'sentence'}], 'simplification_text': ['Smaller riverboats can reach 780 km -LRB- 486 mi -RRB- higher as far as Actual Point .\n'], 'target_metrics': [{'FRE': 72.16, 'ARI': 7.2, 'FKGL': 7.2, 'Dale-Chall': 14.3, 'char_count': 87, 'alphanum_count': 59, 'word_count': 17, 'sentence_count': 1, 'char_compression_rate': 1.43, 'word_compression_rate': 1.55, 'sentence_compression_rate': 1.0, 'BLEU': 31.46660996956415, 'BERTScore': 0.8939859867095947}], 'simplification_version': [1], 'grade_level': [-1], 'simplification_dimensions': [{'linguistic': {'lexical': False, 'syntactic': False}}]}
+Using greedy decoding (temperature=0.0, do_sample=False)
+
+--- Processing batch:
+Baseline inference 3 completed.
+Running baseline inference 3 with seed 96...
+Loading from meta-llama/Llama-3.2-1B-Instruct...
+Inference args:
+Namespace(use_vllm=False, seed=96, model_path='meta-llama/Llama-3.2-1B-Instruct', model_name='meta-llama/Llama-3.2-1B-Instruct', dataset_name='WikiLarge_ori_splitwise', model_class='auto', model_family='base', max_length=4096, batch_size=16, slice_test=-1, output_file='output/baseline_inference/Llama-3.2-1B-Instruct-WikiLarge_ori_splitwise-DALE-CHALL/output_3.json', device='cuda', peft_path=None, temperature=0.0, control_tokens='data/prompts/control_tokens.json', system_prompts='data/prompts/system_prompts.json', user_prompts='data/prompts/user_prompts.json', metric_mapping='data/metric_mapping.json', metric_name='DALE-CHALL', user_prompt_id='token_explanation')
+
+test:	 Inspect the dataset format:
+ {'global_id': ['wikilarge_ori_220768'], 'source_text': ['Smaller riverboats can reach higher as far as Achual Point .\n'], 'source_metrics': [{'FRE': 78.25, 'ARI': 7.1, 'FKGL': 4.8, 'Dale-Chall': 10.45, 'char_count': 61, 'alphanum_count': 49, 'word_count': 11, 'sentence_count': 1}], 'metadata': [{'dataset': 'wikilarge_ori', 'experiment_split': '', 'domain': 'general', 'language': 'en', 'annotation': 'automatic', 'level': 'sentence'}], 'simplification_text': ['Smaller riverboats can reach 780 km -LRB- 486 mi -RRB- higher as far as Actual Point .\n'], 'target_metrics': [{'FRE': 72.16, 'ARI': 7.2, 'FKGL': 7.2, 'Dale-Chall': 14.3, 'char_count': 87, 'alphanum_count': 59, 'word_count': 17, 'sentence_count': 1, 'char_compression_rate': 1.43, 'word_compression_rate': 1.55, 'sentence_compression_rate': 1.0, 'BLEU': 31.46660996956415, 'BERTScore': 0.8939859867095947}], 'simplification_version': [1], 'grade_level': [-1], 'simplification_dimensions': [{'linguistic': {'lexical': False, 'syntactic': False}}]}
+Using greedy decoding (temperature=0.0, do_sample=False)
+
+--- Processing batch:
+Baseline inference 4 completed.
+Running evaluation script for WikiLarge_ori_splitwise - DALE-CHALL...
+--- Running evaluation...
+Input files:	 ['output/baseline_inference/Llama-3.2-1B-Instruct-WikiLarge_ori_splitwise-DALE-CHALL/output_1.json', 'output/baseline_inference/Llama-3.2-1B-Instruct-WikiLarge_ori_splitwise-DALE-CHALL/output_2.json', 'output/baseline_inference/Llama-3.2-1B-Instruct-WikiLarge_ori_splitwise-DALE-CHALL/output_3.json']
+Metric:	 DALE-CHALL
+Evaluation completed for WikiLarge_ori_splitwise - DALE-CHALL
+
+
+=========================================================================
+Running baseline inference for DATASET=WikiLarge_ori_splitwise, METRIC=CHAR_COMPRESSION
+=========================================================================
+Running baseline inference 1 with seed 37...
+Loading from meta-llama/Llama-3.2-1B-Instruct...
+Inference args:
+Namespace(use_vllm=False, seed=37, model_path='meta-llama/Llama-3.2-1B-Instruct', model_name='meta-llama/Llama-3.2-1B-Instruct', dataset_name='WikiLarge_ori_splitwise', model_class='auto', model_family='base', max_length=4096, batch_size=16, slice_test=-1, output_file='output/baseline_inference/Llama-3.2-1B-Instruct-WikiLarge_ori_splitwise-CHAR_COMPRESSION/output_1.json', device='cuda', peft_path=None, temperature=0.0, control_tokens='data/prompts/control_tokens.json', system_prompts='data/prompts/system_prompts.json', user_prompts='data/prompts/user_prompts.json', metric_mapping='data/metric_mapping.json', metric_name='CHAR_COMPRESSION', user_prompt_id='token_explanation')
+
+test:	 Inspect the dataset format:
+ {'global_id': ['wikilarge_ori_220768'], 'source_text': ['Smaller riverboats can reach higher as far as Achual Point .\n'], 'source_metrics': [{'FRE': 78.25, 'ARI': 7.1, 'FKGL': 4.8, 'Dale-Chall': 10.45, 'char_count': 61, 'alphanum_count': 49, 'word_count': 11, 'sentence_count': 1}], 'metadata': [{'dataset': 'wikilarge_ori', 'experiment_split': '', 'domain': 'general', 'language': 'en', 'annotation': 'automatic', 'level': 'sentence'}], 'simplification_text': ['Smaller riverboats can reach 780 km -LRB- 486 mi -RRB- higher as far as Actual Point .\n'], 'target_metrics': [{'FRE': 72.16, 'ARI': 7.2, 'FKGL': 7.2, 'Dale-Chall': 14.3, 'char_count': 87, 'alphanum_count': 59, 'word_count': 17, 'sentence_count': 1, 'char_compression_rate': 1.43, 'word_compression_rate': 1.55, 'sentence_compression_rate': 1.0, 'BLEU': 31.46660996956415, 'BERTScore': 0.8939859867095947}], 'simplification_version': [1], 'grade_level': [-1], 'simplification_dimensions': [{'linguistic': {'lexical': False, 'syntactic': False}}]}
+Using greedy decoding (temperature=0.0, do_sample=False)
+
+--- Processing batch:
+Baseline inference 2 completed.
+Running baseline inference 2 with seed 15...
+Loading from meta-llama/Llama-3.2-1B-Instruct...
+Inference args:
+Namespace(use_vllm=False, seed=15, model_path='meta-llama/Llama-3.2-1B-Instruct', model_name='meta-llama/Llama-3.2-1B-Instruct', dataset_name='WikiLarge_ori_splitwise', model_class='auto', model_family='base', max_length=4096, batch_size=16, slice_test=-1, output_file='output/baseline_inference/Llama-3.2-1B-Instruct-WikiLarge_ori_splitwise-CHAR_COMPRESSION/output_2.json', device='cuda', peft_path=None, temperature=0.0, control_tokens='data/prompts/control_tokens.json', system_prompts='data/prompts/system_prompts.json', user_prompts='data/prompts/user_prompts.json', metric_mapping='data/metric_mapping.json', metric_name='CHAR_COMPRESSION', user_prompt_id='token_explanation')
+
+test:	 Inspect the dataset format:
+ {'global_id': ['wikilarge_ori_220768'], 'source_text': ['Smaller riverboats can reach higher as far as Achual Point .\n'], 'source_metrics': [{'FRE': 78.25, 'ARI': 7.1, 'FKGL': 4.8, 'Dale-Chall': 10.45, 'char_count': 61, 'alphanum_count': 49, 'word_count': 11, 'sentence_count': 1}], 'metadata': [{'dataset': 'wikilarge_ori', 'experiment_split': '', 'domain': 'general', 'language': 'en', 'annotation': 'automatic', 'level': 'sentence'}], 'simplification_text': ['Smaller riverboats can reach 780 km -LRB- 486 mi -RRB- higher as far as Actual Point .\n'], 'target_metrics': [{'FRE': 72.16, 'ARI': 7.2, 'FKGL': 7.2, 'Dale-Chall': 14.3, 'char_count': 87, 'alphanum_count': 59, 'word_count': 17, 'sentence_count': 1, 'char_compression_rate': 1.43, 'word_compression_rate': 1.55, 'sentence_compression_rate': 1.0, 'BLEU': 31.46660996956415, 'BERTScore': 0.8939859867095947}], 'simplification_version': [1], 'grade_level': [-1], 'simplification_dimensions': [{'linguistic': {'lexical': False, 'syntactic': False}}]}
+Using greedy decoding (temperature=0.0, do_sample=False)
+
+--- Processing batch:
+Baseline inference 3 completed.
+Running baseline inference 3 with seed 96...
+Loading from meta-llama/Llama-3.2-1B-Instruct...
+Inference args:
+Namespace(use_vllm=False, seed=96, model_path='meta-llama/Llama-3.2-1B-Instruct', model_name='meta-llama/Llama-3.2-1B-Instruct', dataset_name='WikiLarge_ori_splitwise', model_class='auto', model_family='base', max_length=4096, batch_size=16, slice_test=-1, output_file='output/baseline_inference/Llama-3.2-1B-Instruct-WikiLarge_ori_splitwise-CHAR_COMPRESSION/output_3.json', device='cuda', peft_path=None, temperature=0.0, control_tokens='data/prompts/control_tokens.json', system_prompts='data/prompts/system_prompts.json', user_prompts='data/prompts/user_prompts.json', metric_mapping='data/metric_mapping.json', metric_name='CHAR_COMPRESSION', user_prompt_id='token_explanation')
+
+test:	 Inspect the dataset format:
+ {'global_id': ['wikilarge_ori_220768'], 'source_text': ['Smaller riverboats can reach higher as far as Achual Point .\n'], 'source_metrics': [{'FRE': 78.25, 'ARI': 7.1, 'FKGL': 4.8, 'Dale-Chall': 10.45, 'char_count': 61, 'alphanum_count': 49, 'word_count': 11, 'sentence_count': 1}], 'metadata': [{'dataset': 'wikilarge_ori', 'experiment_split': '', 'domain': 'general', 'language': 'en', 'annotation': 'automatic', 'level': 'sentence'}], 'simplification_text': ['Smaller riverboats can reach 780 km -LRB- 486 mi -RRB- higher as far as Actual Point .\n'], 'target_metrics': [{'FRE': 72.16, 'ARI': 7.2, 'FKGL': 7.2, 'Dale-Chall': 14.3, 'char_count': 87, 'alphanum_count': 59, 'word_count': 17, 'sentence_count': 1, 'char_compression_rate': 1.43, 'word_compression_rate': 1.55, 'sentence_compression_rate': 1.0, 'BLEU': 31.46660996956415, 'BERTScore': 0.8939859867095947}], 'simplification_version': [1], 'grade_level': [-1], 'simplification_dimensions': [{'linguistic': {'lexical': False, 'syntactic': False}}]}
+Using greedy decoding (temperature=0.0, do_sample=False)
+
+--- Processing batch:
+Baseline inference 4 completed.
+Running evaluation script for WikiLarge_ori_splitwise - CHAR_COMPRESSION...
+--- Running evaluation...
+Input files:	 ['output/baseline_inference/Llama-3.2-1B-Instruct-WikiLarge_ori_splitwise-CHAR_COMPRESSION/output_1.json', 'output/baseline_inference/Llama-3.2-1B-Instruct-WikiLarge_ori_splitwise-CHAR_COMPRESSION/output_2.json', 'output/baseline_inference/Llama-3.2-1B-Instruct-WikiLarge_ori_splitwise-CHAR_COMPRESSION/output_3.json']
+Metric:	 CHAR_COMPRESSION
+Evaluation completed for WikiLarge_ori_splitwise - CHAR_COMPRESSION
+
+
+=========================================================================
+Running baseline inference for DATASET=WikiLarge_ori_splitwise, METRIC=WORD_COMPRESSION
+=========================================================================
+Running baseline inference 1 with seed 37...
+Loading from meta-llama/Llama-3.2-1B-Instruct...
+Inference args:
+Namespace(use_vllm=False, seed=37, model_path='meta-llama/Llama-3.2-1B-Instruct', model_name='meta-llama/Llama-3.2-1B-Instruct', dataset_name='WikiLarge_ori_splitwise', model_class='auto', model_family='base', max_length=4096, batch_size=16, slice_test=-1, output_file='output/baseline_inference/Llama-3.2-1B-Instruct-WikiLarge_ori_splitwise-WORD_COMPRESSION/output_1.json', device='cuda', peft_path=None, temperature=0.0, control_tokens='data/prompts/control_tokens.json', system_prompts='data/prompts/system_prompts.json', user_prompts='data/prompts/user_prompts.json', metric_mapping='data/metric_mapping.json', metric_name='WORD_COMPRESSION', user_prompt_id='token_explanation')
+
+test:	 Inspect the dataset format:
+ {'global_id': ['wikilarge_ori_220768'], 'source_text': ['Smaller riverboats can reach higher as far as Achual Point .\n'], 'source_metrics': [{'FRE': 78.25, 'ARI': 7.1, 'FKGL': 4.8, 'Dale-Chall': 10.45, 'char_count': 61, 'alphanum_count': 49, 'word_count': 11, 'sentence_count': 1}], 'metadata': [{'dataset': 'wikilarge_ori', 'experiment_split': '', 'domain': 'general', 'language': 'en', 'annotation': 'automatic', 'level': 'sentence'}], 'simplification_text': ['Smaller riverboats can reach 780 km -LRB- 486 mi -RRB- higher as far as Actual Point .\n'], 'target_metrics': [{'FRE': 72.16, 'ARI': 7.2, 'FKGL': 7.2, 'Dale-Chall': 14.3, 'char_count': 87, 'alphanum_count': 59, 'word_count': 17, 'sentence_count': 1, 'char_compression_rate': 1.43, 'word_compression_rate': 1.55, 'sentence_compression_rate': 1.0, 'BLEU': 31.46660996956415, 'BERTScore': 0.8939859867095947}], 'simplification_version': [1], 'grade_level': [-1], 'simplification_dimensions': [{'linguistic': {'lexical': False, 'syntactic': False}}]}
+Using greedy decoding (temperature=0.0, do_sample=False)
+
+--- Processing batch:
+Baseline inference 2 completed.
+Running baseline inference 2 with seed 15...
+Loading from meta-llama/Llama-3.2-1B-Instruct...
+Inference args:
+Namespace(use_vllm=False, seed=15, model_path='meta-llama/Llama-3.2-1B-Instruct', model_name='meta-llama/Llama-3.2-1B-Instruct', dataset_name='WikiLarge_ori_splitwise', model_class='auto', model_family='base', max_length=4096, batch_size=16, slice_test=-1, output_file='output/baseline_inference/Llama-3.2-1B-Instruct-WikiLarge_ori_splitwise-WORD_COMPRESSION/output_2.json', device='cuda', peft_path=None, temperature=0.0, control_tokens='data/prompts/control_tokens.json', system_prompts='data/prompts/system_prompts.json', user_prompts='data/prompts/user_prompts.json', metric_mapping='data/metric_mapping.json', metric_name='WORD_COMPRESSION', user_prompt_id='token_explanation')
+
+test:	 Inspect the dataset format:
+ {'global_id': ['wikilarge_ori_220768'], 'source_text': ['Smaller riverboats can reach higher as far as Achual Point .\n'], 'source_metrics': [{'FRE': 78.25, 'ARI': 7.1, 'FKGL': 4.8, 'Dale-Chall': 10.45, 'char_count': 61, 'alphanum_count': 49, 'word_count': 11, 'sentence_count': 1}], 'metadata': [{'dataset': 'wikilarge_ori', 'experiment_split': '', 'domain': 'general', 'language': 'en', 'annotation': 'automatic', 'level': 'sentence'}], 'simplification_text': ['Smaller riverboats can reach 780 km -LRB- 486 mi -RRB- higher as far as Actual Point .\n'], 'target_metrics': [{'FRE': 72.16, 'ARI': 7.2, 'FKGL': 7.2, 'Dale-Chall': 14.3, 'char_count': 87, 'alphanum_count': 59, 'word_count': 17, 'sentence_count': 1, 'char_compression_rate': 1.43, 'word_compression_rate': 1.55, 'sentence_compression_rate': 1.0, 'BLEU': 31.46660996956415, 'BERTScore': 0.8939859867095947}], 'simplification_version': [1], 'grade_level': [-1], 'simplification_dimensions': [{'linguistic': {'lexical': False, 'syntactic': False}}]}
+Using greedy decoding (temperature=0.0, do_sample=False)
+
+--- Processing batch:
+Baseline inference 3 completed.
+Running baseline inference 3 with seed 96...
+Loading from meta-llama/Llama-3.2-1B-Instruct...
+Inference args:
+Namespace(use_vllm=False, seed=96, model_path='meta-llama/Llama-3.2-1B-Instruct', model_name='meta-llama/Llama-3.2-1B-Instruct', dataset_name='WikiLarge_ori_splitwise', model_class='auto', model_family='base', max_length=4096, batch_size=16, slice_test=-1, output_file='output/baseline_inference/Llama-3.2-1B-Instruct-WikiLarge_ori_splitwise-WORD_COMPRESSION/output_3.json', device='cuda', peft_path=None, temperature=0.0, control_tokens='data/prompts/control_tokens.json', system_prompts='data/prompts/system_prompts.json', user_prompts='data/prompts/user_prompts.json', metric_mapping='data/metric_mapping.json', metric_name='WORD_COMPRESSION', user_prompt_id='token_explanation')
+
+test:	 Inspect the dataset format:
+ {'global_id': ['wikilarge_ori_220768'], 'source_text': ['Smaller riverboats can reach higher as far as Achual Point .\n'], 'source_metrics': [{'FRE': 78.25, 'ARI': 7.1, 'FKGL': 4.8, 'Dale-Chall': 10.45, 'char_count': 61, 'alphanum_count': 49, 'word_count': 11, 'sentence_count': 1}], 'metadata': [{'dataset': 'wikilarge_ori', 'experiment_split': '', 'domain': 'general', 'language': 'en', 'annotation': 'automatic', 'level': 'sentence'}], 'simplification_text': ['Smaller riverboats can reach 780 km -LRB- 486 mi -RRB- higher as far as Actual Point .\n'], 'target_metrics': [{'FRE': 72.16, 'ARI': 7.2, 'FKGL': 7.2, 'Dale-Chall': 14.3, 'char_count': 87, 'alphanum_count': 59, 'word_count': 17, 'sentence_count': 1, 'char_compression_rate': 1.43, 'word_compression_rate': 1.55, 'sentence_compression_rate': 1.0, 'BLEU': 31.46660996956415, 'BERTScore': 0.8939859867095947}], 'simplification_version': [1], 'grade_level': [-1], 'simplification_dimensions': [{'linguistic': {'lexical': False, 'syntactic': False}}]}
+Using greedy decoding (temperature=0.0, do_sample=False)
+
+--- Processing batch:
+Baseline inference 4 completed.
+Running evaluation script for WikiLarge_ori_splitwise - WORD_COMPRESSION...
+--- Running evaluation...
+Input files:	 ['output/baseline_inference/Llama-3.2-1B-Instruct-WikiLarge_ori_splitwise-WORD_COMPRESSION/output_1.json', 'output/baseline_inference/Llama-3.2-1B-Instruct-WikiLarge_ori_splitwise-WORD_COMPRESSION/output_2.json', 'output/baseline_inference/Llama-3.2-1B-Instruct-WikiLarge_ori_splitwise-WORD_COMPRESSION/output_3.json']
+Metric:	 WORD_COMPRESSION
+Evaluation completed for WikiLarge_ori_splitwise - WORD_COMPRESSION
+
+Script completed: Mon Jan 26 08:10:34 PM CET 2026
