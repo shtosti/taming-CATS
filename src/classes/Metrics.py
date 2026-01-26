@@ -1,4 +1,5 @@
 import os
+import uuid
 import textstat
 import sacrebleu
 import evaluate
@@ -29,9 +30,10 @@ class Metrics:
 
     @staticmethod
     def load_bertscore():
-        """Loads BERTScore model once for efficiency."""
-        if Metrics.bertscore_model is None:
-            Metrics.bertscore_model = evaluate.load("bertscore")
+        """Loads BERTScore model with unique experiment_id to avoid cache collisions."""
+        # Always create a new instance with unique experiment_id for parallel jobs
+        experiment_id = f"{os.getpid()}_{uuid.uuid4().hex[:8]}"
+        return evaluate.load("bertscore", experiment_id=experiment_id)
 
     @staticmethod
     def load_sari():
@@ -97,8 +99,8 @@ class Metrics:
         """
         if not self.source:
             return 0.0
-        self.load_bertscore()
-        results = Metrics.bertscore_model.compute(
+        bertscore_model = self.load_bertscore()
+        results = bertscore_model.compute(
             predictions=[self.text], references=[self.source], lang="en"
         )
         self.bertscore = results["f1"][0]  # get only first value, F1
@@ -111,8 +113,8 @@ class Metrics:
         """
         if not self.reference:
             return 0.0
-        self.load_bertscore()
-        results = Metrics.bertscore_model.compute(
+        bertscore_model = self.load_bertscore()
+        results = bertscore_model.compute(
             predictions=[self.text], references=[self.reference], lang="en"
         )
         self.bertscore_ref = results["f1"][0]  # get only first value, F1
