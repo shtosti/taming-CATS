@@ -3,7 +3,7 @@
 echo "Script started: $(date)"
 
 # TODO
-DATA_DIR="Llama-3.1-8B-Instruct-Med-EASi-WORD_COMPRESSION"
+DATA_DIR="Llama-3.1-8B-Instruct-SimPA-WORD_COMPRESSION"
 MODEL_NAME="Llama-3.1-8B-Instruct"
 DATASET="Med-EASi"
 METRIC_NAME="WORD_COMPRESSION"
