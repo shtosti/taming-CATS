@@ -165,23 +165,20 @@ def load_and_prepare_test_set(dataset_name, tokenizer, max_length, control_token
             # model_family=model_family
             )
 
-        encoded = tokenizer(
-            formatted_prompt,
-            truncation=True,
-            max_length=max_length,
-            padding="max_length",  # or "longest" for dynamic padding or True
-            return_tensors="pt"
-        )
+        # Handle tokenization with proper max_length (-1 means use model default)
+        tokenizer_kwargs = {
+            "truncation": True if max_length > 0 else False,
+            "padding": "max_length" if max_length > 0 else False,
+            "return_tensors": "pt"
+        }
+        if max_length > 0:
+            tokenizer_kwargs["max_length"] = max_length
+        
+        encoded = tokenizer(formatted_prompt, **tokenizer_kwargs)
         input_ids = encoded["input_ids"]
         attention_mask = encoded["attention_mask"]
 
-        encoded_completion = tokenizer(
-            formatted_completion,
-            truncation=True,
-            max_length=max_length,
-            padding="max_length",  # or "longest" or True
-            return_tensors="pt"
-        )
+        encoded_completion = tokenizer(formatted_completion, **tokenizer_kwargs)
         completion_ids = encoded_completion["input_ids"]
 
         return {
@@ -198,30 +195,69 @@ def load_and_prepare_test_set(dataset_name, tokenizer, max_length, control_token
 
 def run_inference(args, metric_mapping, model, tokenizer, test_dataset, batch_size=4, device="cuda", max_length=512, max_new_tokens=511, source_based_metric=False, compression_metric=False):
     model.eval()
-    predictions = []
+    predictions = []    
+    
+    if args.temperature == 0.0:
+        print(f"Using greedy decoding (temperature=0.0, do_sample=False)")
+    elif args.temperature == -1:
+        print(f"Using model's default temperature settings")
+    else:
+        print(f"Using temperature: {args.temperature}, do_sample: True")
     
     # Create a DataLoader to handle batching
     for i in tqdm(range(0, len(test_dataset), batch_size), desc="Running inference on test set"):
         batch = test_dataset[i:i + batch_size]
         batch = [dict(zip(batch.keys(), values)) for values in zip(*batch.values())]
 
-        # Ensure we're working with a list of dictionaries
-        input_ids = torch.stack([torch.tensor(item["input_ids"]) for item in batch]).to(device) # TODO  bring back
-        attention_mask = torch.stack([torch.tensor(item["attention_mask"]) for item in batch]).to(device) if "attention_mask" in batch[0] else None
+        # Pad sequences dynamically to the max length in the batch
+        input_ids_list = [torch.tensor(item["input_ids"]) for item in batch]
+        attention_mask_list = [torch.tensor(item["attention_mask"]) for item in batch] if "attention_mask" in batch[0] else None
+        
+        # Use torch.nn.utils.rnn.pad_sequence for dynamic padding
+        input_ids = torch.nn.utils.rnn.pad_sequence(
+            input_ids_list, 
+            batch_first=True, 
+            padding_value=tokenizer.pad_token_id
+        ).to(device)
+        
+        if attention_mask_list:
+            attention_mask = torch.nn.utils.rnn.pad_sequence(
+                attention_mask_list, 
+                batch_first=True, 
+                padding_value=0
+            ).to(device)
+        else:
+            attention_mask = None
         
         with torch.no_grad():
             torch.cuda.empty_cache()
 
             # Generate with the max_new_tokens to limit the number of tokens generated beyond the input length
-            outputs = model.generate(
-                input_ids,
-                attention_mask=attention_mask,
-                max_length=max_length + max_new_tokens,
-                max_new_tokens=max_new_tokens,
-                do_sample=False,
-                pad_token_id=tokenizer.pad_token_id,
-                eos_token_id=tokenizer.eos_token_id
-            )
+            # Temperature: 0.0 = greedy, -1 = model default, >0 = sampling with specified temp
+            gen_kwargs = {
+                "input_ids": input_ids,
+                "attention_mask": attention_mask,
+                "max_new_tokens": max_new_tokens,
+                "pad_token_id": tokenizer.pad_token_id,
+                "eos_token_id": tokenizer.eos_token_id
+            }
+            
+            # Only set max_length if we have a specific limit (not using model default)
+            if max_length > 0:
+                gen_kwargs["max_length"] = max_length + max_new_tokens
+            
+            if args.temperature == 0.0:
+                # Greedy decoding
+                gen_kwargs["do_sample"] = False
+            elif args.temperature == -1:
+                # Use model defaults (don't set do_sample or temperature)
+                pass
+            else:
+                # Use specified temperature
+                gen_kwargs["do_sample"] = True
+                gen_kwargs["temperature"] = args.temperature
+            
+            outputs = model.generate(**gen_kwargs)
             
             # Slice off the generated portion (remove the input tokens)
             generated_only_ids = outputs[:, input_ids.shape[-1]:]  # Skip the input portion
@@ -290,14 +326,29 @@ def run_inference(args, metric_mapping, model, tokenizer, test_dataset, batch_si
     return predictions
 
 def run_inference_with_vllm(args, metric_mapping, llm, tokenizer, test_dataset, max_new_tokens, source_based_metric=False, compression_metric=False):
-    sampling_params = SamplingParams(
-        temperature=0.0,
-        max_tokens=max_new_tokens,
-        top_p=1.0,
-        top_k=-1,
-        do_sample=False,
-        stop=tokenizer.eos_token or None,
-    )
+    # Build sampling params based on temperature setting
+    sampling_kwargs = {
+        "max_tokens": max_new_tokens,
+        "stop": tokenizer.eos_token or None,
+    }
+    
+    if args.temperature == 0.0:
+        # Greedy decoding
+        sampling_kwargs["temperature"] = 0.0
+        sampling_kwargs["top_p"] = 1.0
+        sampling_kwargs["top_k"] = -1
+        print(f"Using greedy decoding (temperature=0.0)")
+    elif args.temperature == -1:
+        # Use vLLM defaults (don't specify temperature, top_p, top_k)
+        print(f"Using vLLM's default sampling parameters")
+    else:
+        # Use specified temperature
+        sampling_kwargs["temperature"] = args.temperature
+        sampling_kwargs["top_p"] = 1.0
+        sampling_kwargs["top_k"] = -1
+        print(f"Using temperature: {args.temperature}")
+    
+    sampling_params = SamplingParams(**sampling_kwargs)
 
     prompts = [item["prompt"] for item in test_dataset]
     outputs = llm.generate(prompts, sampling_params)
@@ -378,6 +429,7 @@ def parse_args():
     parser.add_argument("--output_file", type=str, required=True, help="Path to save the predictions.")
     parser.add_argument("--device", type=str, default="cuda", choices=["cuda", "cpu"], help="Device to run inference on.")
     parser.add_argument("--peft_path", type=str, default=None, help="Path to PEFT adapter dir.")
+    parser.add_argument("--temperature", type=float, default=0.0, help="Temperature for sampling. 0.0=greedy, -1=model default, >0=sampling with specified value.")
 
     
     # Arguments for dynamic prompting
