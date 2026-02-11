@@ -1,0 +1,63 @@
+/storage/homefs/hh25g551/ondemand/data/taming-CATS/venv/bin/python3
+Wed Feb 11 23:31:44 2026       
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 550.163.01             Driver Version: 550.163.01     CUDA Version: 12.4     |
+|-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  NVIDIA A100 80GB PCIe          On  |   00000000:01:00.0 Off |                    0 |
+| N/A   38C    P0             43W /  300W |       1MiB /  81920MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+                                                                                         
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI        PID   Type   Process name                              GPU Memory |
+|        ID   ID                                                               Usage      |
+|=========================================================================================|
+|  No running processes found                                                             |
++-----------------------------------------------------------------------------------------+
+Script started: Wed Feb 11 11:31:44 PM CET 2026
+
+=========================================================================
+Running baseline inference for DATASET=Newsela_s, METRIC=FKGL
+=========================================================================
+Output 1 already exists, skipping (file: output/baseline_inference/Llama-3.2-1B-Instruct-Newsela_s-FKGL/output_1.json)
+Output 2 already exists, skipping (file: output/baseline_inference/Llama-3.2-1B-Instruct-Newsela_s-FKGL/output_2.json)
+Running evaluation script for Newsela_s - FKGL...
+--- Running evaluation...
+Input files:	 ['output/baseline_inference/Llama-3.2-1B-Instruct-Newsela_s-FKGL/output_1.json', 'output/baseline_inference/Llama-3.2-1B-Instruct-Newsela_s-FKGL/output_2.json']
+Metric:	 FKGL
+--- FKGL losses:
+Mean Squared Error (MSE): 13.071629955947136
+Mean Absolute Error (MAE): 2.894273127753304
+Standard Deviation of Errors: 3.3456541913090696
+Variance of Errors: 11.193401967823943
+
+Saved loss values to stats.json
+Updated averaged predictions file with per-sample losses: output/baseline_inference/Llama-3.2-1B-Instruct-Newsela_s-FKGL/output_averaged.json
+Scatter plot saved to output/baseline_inference/Llama-3.2-1B-Instruct-Newsela_s-FKGL/FKGL_scatter_plot.png
+Legend saved to output/baseline_inference/Llama-3.2-1B-Instruct-Newsela_s-FKGL/FKGL_scatter_legend.png
+Control attribute vs metrics plot saved as FKGL_ctrl_attr_vs_metrics.png
+Error-vs-metrics plots saved.
+STD of error by reference bin saved as FKGL_error_std_by_ref_bin.png
+Plots saved to output/baseline_inference/Llama-3.2-1B-Instruct-Newsela_s-FKGL
+
+All plots saved to output/baseline_inference/Llama-3.2-1B-Instruct-Newsela_s-FKGL
+
+--- Mean metrics:
+BLEU_to_source: BLEU_to_source: 29.68 (+5.11 -4.81)
+BLEU_to_ref: BLEU_to_ref: 13.45 (+2.57 -2.37)
+BERTScore_to_source: BERTScore_to_source: 0.89 (+0.01 -0.01)
+BERTScore_to_ref: BERTScore_to_ref: 0.87 (+0.00 -0.00)
+COMET: COMET: 0.75 (+0.02 -0.02)
+SARI: SARI: 28.52 (+1.14 -1.15)
+
+Saved evaluation summary to output/nonsft_results_baseline/all_results.json
+
+--- Evaluation complete.
+Evaluation completed for Newsela_s - FKGL
+
+Script completed: Wed Feb 11 11:31:51 PM CET 2026

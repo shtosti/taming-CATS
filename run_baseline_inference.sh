@@ -8,8 +8,8 @@ python -c "import nltk; nltk.download('punkt_tab', quiet=True)"
 # =========================================================================
 # BASELINE CONFIGURATION - Non-finetuned model from Hugging Face
 # =========================================================================
-MODEL_NAME="meta-llama/Llama-3.2-1B-Instruct"
-# MODEL_NAME="meta-llama/Llama-3.1-8B-Instruct"
+# MODEL_NAME="meta-llama/Llama-3.2-1B-Instruct"
+MODEL_NAME="meta-llama/Llama-3.1-8B-Instruct"
 # MODEL_NAME="Qwen/Qwen3-1.7B"
 # MODEL_NAME="Qwen/Qwen3-8B"
 # MODEL_NAME="ministral/Ministral-3b-instruct"
@@ -28,10 +28,10 @@ DATASETS=(
 
 METRICS=(
   # "ARI"
-  "FKGL"
-  "DALE-CHALL"
+  # "FKGL"
+  # "DALE-CHALL"
   "CHAR_COMPRESSION"
-  "WORD_COMPRESSION"
+  # "WORD_COMPRESSION"
 )
 
 SEEDS=(
@@ -79,8 +79,8 @@ for DATASET in "${DATASETS[@]}"; do
         --dataset_name "$DATASET"
         --model_class "auto"
         --model_family "base"  # Options: "llama", "mistral", "qwen", "base"
-        --max_length 4096  # Safe for all models (Llama: 128K, Qwen: 32K-128K, Mistral: 32K)
-        --batch_size 16
+        --max_length 8192
+        --batch_size 4
         --slice_test -1  # -1 for full test set, or specify a number for subset
         --output_file "$OUTPUT_FILE"
         --control_tokens "data/prompts/control_tokens.json"
