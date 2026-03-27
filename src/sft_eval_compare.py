@@ -191,6 +191,7 @@ def plot_comparison_metrics(results, dataset, control_attr, save_dir, output_pre
         "BERTScore_to_ref": [],
         "SARI": [],
         "COMET": [],
+        "LENS": [],
     }
 
     errors = {metric: {"lower": [], "upper": []} for metric in metrics}
@@ -202,23 +203,26 @@ def plot_comparison_metrics(results, dataset, control_attr, save_dir, output_pre
             mean_metrics = entry.get("mean_metrics", {})
             losses_data = entry.get("losses", {})
 
-            try:
-                for metric in metrics:
-                    mean = mean_metrics[metric]["mean"]
-                    ci_low = mean_metrics[metric]["ci_lower"]
-                    ci_up = mean_metrics[metric]["ci_upper"]
+            for metric in metrics:
+                metric_entry = mean_metrics.get(metric)
+                if not metric_entry:
+                    metrics[metric].append(np.nan)
+                    errors[metric]["lower"].append(0.0)
+                    errors[metric]["upper"].append(0.0)
+                    continue
 
-                    metrics[metric].append(mean)
-                    errors[metric]["lower"].append(mean - ci_low)
-                    errors[metric]["upper"].append(ci_up - mean)
+                mean = metric_entry.get("mean", np.nan)
+                ci_low = metric_entry.get("ci_lower", mean)
+                ci_up = metric_entry.get("ci_upper", mean)
 
-                for loss in losses:
-                    losses[loss].append(losses_data.get(loss, np.nan))
+                metrics[metric].append(mean)
+                errors[metric]["lower"].append(mean - ci_low)
+                errors[metric]["upper"].append(ci_up - mean)
 
-                models.append(model)
-            except KeyError as e:
-                print(f"Skipping model '{model}' with dataset '{dataset}' due to missing metric key: {e}")
-                continue
+            for loss in losses:
+                losses[loss].append(losses_data.get(loss, np.nan))
+
+            models.append(model)
 
     if not models:
         print(f"No valid data for {dataset}/{control_attr}")
@@ -274,7 +278,7 @@ def plot_comparison_metrics(results, dataset, control_attr, save_dir, output_pre
         # TODO force consistent y‐ranges
         if metric in ("BLEU_to_source", "BLEU_to_ref", "SARI"):
             ax.set_ylim(0, 100)
-        elif metric in ("BERTScore_to_source", "BERTScore_to_ref", "COMET"):
+        elif metric in ("BERTScore_to_source", "BERTScore_to_ref", "COMET", "LENS"):
             ax.set_ylim(0, 1.0)
 
 
@@ -346,6 +350,7 @@ def plot_pairwise_correlations(results, dataset, control_attr, save_dir, output_
             "model": model,
             "SARI": mm["SARI"]["mean"],
             "COMET": round(mm["COMET"]["mean"],2),
+            "LENS": round(mm.get("LENS", {}).get("mean", np.nan), 2),
             "BERT_to_src": round(mm["BERTScore_to_source"]["mean"],2),
             "BERT_to_ref": round(mm["BERTScore_to_ref"]["mean"],2),
             "BLEU_to_src": round(mm["BLEU_to_source"]["mean"],2),
@@ -382,6 +387,7 @@ def plot_pairwise_correlations(results, dataset, control_attr, save_dir, output_
     # -------------- pairplot ---------------
     subset = ["SARI",
             "COMET",
+            "LENS",
             "BERT_to_src",
             "BERT_to_ref",
             "BLEU_to_src",

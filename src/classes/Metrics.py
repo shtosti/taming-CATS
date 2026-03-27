@@ -3,10 +3,11 @@ import uuid
 import textstat
 import sacrebleu
 import evaluate
-from evaluate import load
+import torch
 import nltk
 from nltk.tokenize import sent_tokenize, word_tokenize
-from comet.models import download_model, load_from_checkpoint
+from comet.models import download_model as download_comet_model, load_from_checkpoint
+from lens import download_model as download_lens_model, LENS
 
 nltk.download('punkt')
 
@@ -14,6 +15,8 @@ class Metrics:
     bertscore_model = None # on first use if ref provided
     comet_model = None 
     sari_model = None
+    lens_model = None
+    lens_unavailable = False
 
     def __init__(self, input_text, reference_text=None, source_text=None):
         self.text = input_text
@@ -27,6 +30,7 @@ class Metrics:
         self.bleu_ref = 0.0 # comparison with the ref
         self.comet = 0.0
         self.sari = 0.0
+        self.lens = None
 
     @staticmethod
     def load_bertscore():
@@ -45,8 +49,26 @@ class Metrics:
     def load_comet():
         """Loads COMET model once for efficiency."""
         if Metrics.comet_model is None:
-            model_path = download_model("Unbabel/wmt22-comet-da")
+            model_path = download_comet_model("Unbabel/wmt22-comet-da")
             Metrics.comet_model = load_from_checkpoint(model_path)
+
+    @staticmethod
+    def load_lens():
+        """Loads LENS model via lens-metric and caches it for reuse."""
+        if Metrics.lens_unavailable:
+            return None
+
+        if Metrics.lens_model is not None:
+            return Metrics.lens_model
+
+        try:
+            lens_path = download_lens_model("davidheineman/lens")
+            Metrics.lens_model = LENS(lens_path, rescale=True)
+            return Metrics.lens_model
+        except Exception:
+            Metrics.lens_unavailable = True
+            print("[WARN] LENS metric unavailable. Skipping LENS computation.")
+            return None
 
     def count_words(self):
         return len(word_tokenize(self.text))
@@ -143,6 +165,46 @@ class Metrics:
         self.sari_ref = sari_score["sari"]  # Extract SARI score
         return self.sari_ref
 
+    def compute_lens(self):
+        """Computes LENS score for text simplification quality."""
+        if not self.source:
+            return None
+
+        lens_model = self.load_lens()
+        if lens_model is None:
+            return None
+
+        references = [[self.reference]] if self.reference else [[]]
+        score_kwargs = {
+            "batch_size": 8,
+        }
+        if torch.cuda.is_available():
+            score_kwargs["devices"] = [0]
+
+        try:
+            scores = lens_model.score(
+                [self.source],
+                [self.text],
+                references,
+                **score_kwargs,
+            )
+        except TypeError:
+            # Older versions may not accept devices.
+            scores = lens_model.score(
+                [self.source],
+                [self.text],
+                references,
+                batch_size=8,
+            )
+        except Exception:
+            return None
+
+        if not scores:
+            return None
+
+        self.lens = float(scores[0])
+        return self.lens
+
     def compute_metrics(self):
         """Computes all required metrics and returns them as a dictionary."""
         self.metrics = {
@@ -159,7 +221,8 @@ class Metrics:
             'BLEU_ref': self.compute_bleu_w_reference(),
             'BERTScore_ref': self.compute_bertscore_w_reference(),
             'COMET': self.compute_comet(),
-            'SARI': self.compute_sari()
+            'SARI': self.compute_sari(),
+            'LENS': self.compute_lens(),
         }
 
         return self.metrics

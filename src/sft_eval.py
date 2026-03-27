@@ -10,6 +10,7 @@ from helpers.utils import get_correlation_data
 import pandas as pd
 import scipy.stats as stats
 from collections import defaultdict
+from classes.Metrics import Metrics
 
 def load_json(file_path: str):
     """Load JSON from a file."""
@@ -25,9 +26,104 @@ def load_predictions(file_path):
     with open(file_path, "r", encoding="utf-8") as f:
         return json.load(f)
 
+
+def _score_lens_batch(lens_model, source_texts, prediction_texts, reference_lists, batch_size=64):
+    """Batch LENS scoring with compatibility fallback for package versions."""
+    try:
+        return lens_model.score(
+            source_texts,
+            prediction_texts,
+            reference_lists,
+            batch_size=batch_size,
+            devices=[0],
+        )
+    except TypeError:
+        return lens_model.score(
+            source_texts,
+            prediction_texts,
+            reference_lists,
+            batch_size=batch_size,
+        )
+
+
+def enrich_predictions_with_lens(predictions, batch_size=64):
+    """Backfill LENS in prediction_metrics when missing in older output files."""
+    cache = {}
+    keys_to_score = []
+
+    for item in predictions:
+        prediction_metrics = item.get("prediction_metrics", {})
+        if prediction_metrics.get("LENS") is not None:
+            continue
+
+        source_text = item.get("source_text")
+        prediction_text = item.get("prediction")
+        reference_text = item.get("reference_simplification")
+
+        if not source_text or not prediction_text:
+            continue
+
+        cache_key = (source_text, prediction_text, reference_text)
+        if cache_key not in cache:
+            cache[cache_key] = None
+            keys_to_score.append(cache_key)
+
+    if keys_to_score:
+        lens_model = Metrics.load_lens()
+        if lens_model is None:
+            print("LENS backfill skipped: LENS model unavailable.")
+        else:
+            for start in range(0, len(keys_to_score), batch_size):
+                batch_keys = keys_to_score[start:start + batch_size]
+                batch_sources = [key[0] for key in batch_keys]
+                batch_predictions = [key[1] for key in batch_keys]
+                batch_references = [[key[2]] if key[2] else [] for key in batch_keys]
+
+                try:
+                    scores = _score_lens_batch(
+                        lens_model,
+                        batch_sources,
+                        batch_predictions,
+                        batch_references,
+                        batch_size=min(batch_size, len(batch_keys)),
+                    )
+                except Exception:
+                    # Fallback: avoid dropping the whole run if a batch fails.
+                    scores = []
+                    for source_text, prediction_text, reference_list in zip(batch_sources, batch_predictions, batch_references):
+                        metric_obj = Metrics(
+                            input_text=prediction_text,
+                            reference_text=reference_list[0] if reference_list and reference_list[0] else None,
+                            source_text=source_text,
+                        )
+                        scores.append(metric_obj.compute_lens())
+
+                for key, score in zip(batch_keys, scores):
+                    cache[key] = float(score) if score is not None else None
+
+    updated = 0
+    for item in predictions:
+        prediction_metrics = item.get("prediction_metrics", {})
+        if prediction_metrics.get("LENS") is not None:
+            continue
+
+        source_text = item.get("source_text")
+        prediction_text = item.get("prediction")
+        reference_text = item.get("reference_simplification")
+        cache_key = (source_text, prediction_text, reference_text)
+
+        if cache_key in cache:
+            prediction_metrics["LENS"] = cache[cache_key]
+            item["prediction_metrics"] = prediction_metrics
+            if cache[cache_key] is not None:
+                updated += 1
+
+    print(f"LENS backfill complete: {updated} predictions updated (batch_size={batch_size}).")
+    return predictions
+
 def average_predictions_across_runs(json_files):
     """Loads multiple JSON files and averages prediction metrics per sample."""
-    all_runs = [load_json(file) for file in json_files]
+    all_runs = [enrich_predictions_with_lens(load_json(file)) for file in json_files]
 
     assert all(len(run) == len(all_runs[0]) for run in all_runs), "All files must have the same number of samples"
 
@@ -87,6 +183,20 @@ def compute_per_sample_losses(reference_vals, prediction_vals):
 def compute_mean_metrics(predictions):
     """Compute mean and 95% confidence intervals for all comparison metrics."""
 
+    def clean_values(values):
+        cleaned = []
+        for value in values:
+            if value is None:
+                continue
+            try:
+                value = float(value)
+            except (TypeError, ValueError):
+                continue
+            if np.isnan(value):
+                continue
+            cleaned.append(value)
+        return cleaned
+
     def bootstrap_ci(data, n_bootstraps=1000, ci=0.95):
         boot_means = [
             np.mean(np.random.choice(data, size=len(data), replace=True))
@@ -98,7 +208,7 @@ def compute_mean_metrics(predictions):
 
     BLEU_to_source, BLEU_to_ref = [], []
     BERTScore_to_source, BERTScore_to_ref = [], []
-    COMET, SARI = [], []
+    COMET, SARI, LENS = [], [], []
 
     for item in predictions:
         BLEU_to_source.append(item["prediction_metrics"].get("BLEU"))
@@ -107,6 +217,7 @@ def compute_mean_metrics(predictions):
         BERTScore_to_ref.append(item["prediction_metrics"].get("BERTScore_ref"))
         COMET.append(item["prediction_metrics"].get("COMET"))
         SARI.append(item["prediction_metrics"].get("SARI"))
+        LENS.append(item["prediction_metrics"].get("LENS"))
 
     metrics = {
         "BLEU_to_source": BLEU_to_source,
@@ -115,13 +226,15 @@ def compute_mean_metrics(predictions):
         "BERTScore_to_ref": BERTScore_to_ref,
         "COMET": COMET,
         "SARI": SARI,
+        "LENS": LENS,
     }
 
     results = {}
     for name, values in metrics.items():
-        if not values:
+        clean_metric_values = clean_values(values)
+        if not clean_metric_values:
             continue
-        mean, lower, upper = bootstrap_ci(values)
+        mean, lower, upper = bootstrap_ci(clean_metric_values)
         delta_lower = mean - lower
         delta_upper = upper - mean
         results[name] = {
@@ -218,10 +331,11 @@ def polyfit_plot(ax, x, y, color, *, deg=1, lowess_frac=None):
     if len(x_m) < 2:
         return  # nothing to fit
     if lowess_frac is not None:
-        # LOWESS
-        smoothed = sm.nonparametric.lowess(y_m, x_m, frac=lowess_frac, return_sorted=True)
-        ax.plot(smoothed[:,0], smoothed[:,1],
-                color=color, linestyle="--", linewidth=1.5)
+        # Fallback to polynomial fit when LOWESS dependencies are unavailable.
+        coeffs = np.polyfit(x_m, y_m, deg)
+        poly = np.poly1d(coeffs)
+        xs = np.linspace(x_m.min(), x_m.max(), 200)
+        ax.plot(xs, poly(xs), color=color, linestyle="--", linewidth=1.5)
     else:
         # ordinary polyfit
         coeffs = np.polyfit(x_m, y_m, deg)
@@ -235,7 +349,7 @@ def plot_ctrl_attr_vs_metrics(predictions, metric_key, output_dir):
     control_attr_vals = []
     BLEU_to_source, BLEU_to_ref = [], []
     BERTScore_to_source, BERTScore_to_ref = [], []
-    COMET, SARI = [], []
+    COMET, SARI, LENS = [], [], []
 
     for item in predictions:
         control_attr_vals.append(item["prediction_metrics"].get(metric_key))
@@ -245,31 +359,38 @@ def plot_ctrl_attr_vs_metrics(predictions, metric_key, output_dir):
         BERTScore_to_ref.append(item["prediction_metrics"].get("BERTScore_ref"))
         COMET.append(item["prediction_metrics"].get("COMET"))
         SARI.append(item["prediction_metrics"].get("SARI"))
+        LENS.append(item["prediction_metrics"].get("LENS"))
 
-    fig, axs = plt.subplots(2, 3, figsize=(10, 6))
+    fig, axs = plt.subplots(2, 4, figsize=(13, 6))
     metric_groups = [
         (BLEU_to_source, "BLEU to Source", "skyblue"),
         (BLEU_to_ref, "BLEU to Reference", "skyblue"),
         (COMET, "COMET", "skyblue"),
         (BERTScore_to_source, "BERTScore to Source", "skyblue"),
         (BERTScore_to_ref, "BERTScore to Reference", "skyblue"),
-        (SARI, "SARI", "skyblue")
+        (SARI, "SARI", "skyblue"),
+        (LENS, "LENS", "skyblue"),
     ]
 
-    # get correlation data
-    for metric_vals, title, color in metric_groups:
-        correlation_data = get_correlation_data(control_attr_vals, metric_vals)
-        corr_coeff = correlation_data["correlation_coefficient"]
-        significance_level = correlation_data["significance_level"]
-        corr_strength = correlation_data["correlation_strength"]
-        significance_level = correlation_data["significance_level"]
-
     for ax, (metric_vals, title, color) in zip(axs.flat, metric_groups):
-        ax.scatter(control_attr_vals, metric_vals, color=color, alpha=0.7, label=title)
-        polyfit_plot(ax, control_attr_vals, metric_vals, color="black", deg=3)
+        valid_pairs = [
+            (x, y) for x, y in zip(control_attr_vals, metric_vals)
+            if x is not None and y is not None
+        ]
+        if len(valid_pairs) < 2:
+            ax.set_title("insufficient data")
+            ax.set_xlabel(metric_key)
+            ax.set_ylabel(title)
+            continue
+
+        x_vals = [pair[0] for pair in valid_pairs]
+        y_vals = [pair[1] for pair in valid_pairs]
+
+        ax.scatter(x_vals, y_vals, color=color, alpha=0.7, label=title)
+        polyfit_plot(ax, x_vals, y_vals, color="black", deg=3)
 
         # Compute correlation
-        correlation_data = get_correlation_data(control_attr_vals, metric_vals)
+        correlation_data = get_correlation_data(x_vals, y_vals)
         corr_coeff = correlation_data["correlation_coefficient"]
         p_value = correlation_data["p_value"]
         significance_level = correlation_data["significance_level"]
@@ -279,6 +400,9 @@ def plot_ctrl_attr_vs_metrics(predictions, metric_key, output_dir):
         ax.set_xlabel(metric_key)
         ax.set_ylabel(title)
         ax.text(0.05, 0.85, f"p={p_value:.2f}\nr={corr_coeff:.2f} ({corr_strength})", transform=ax.transAxes, fontsize=10)
+
+    for ax in axs.flat[len(metric_groups):]:
+        ax.set_visible(False)
 
     plt.tight_layout()
     plt.savefig(f"{output_dir}/{metric_key}_vs_metrics.png", bbox_inches='tight', dpi=300)
@@ -305,14 +429,23 @@ def plot_errors_vs_metrics(predictions, metric_key_mapped, metric_key, output_di
                 sq_errors.append(loss_data["squared_error"])
         return metric_vals, abs_errors, sq_errors
 
-    metrics = ["BLEU", "BLEU_ref", "COMET", "BERTScore", "BERTScore_ref", "SARI"]
-    labels = ["BLEU to Source", "BLEU to Reference", "COMET", "BERTScore to Source", "BERTScore to Reference", "SARI"]
+    metrics = ["BLEU", "BLEU_ref", "COMET", "BERTScore", "BERTScore_ref", "SARI", "LENS"]
+    labels = ["BLEU to Source", "BLEU to Reference", "COMET", "BERTScore to Source", "BERTScore to Reference", "SARI", "LENS"]
 
-    fig_abs, axs_abs = plt.subplots(2, 3, figsize=(10, 6))
-    fig_sq, axs_sq = plt.subplots(2, 3, figsize=(10, 6))
+    fig_abs, axs_abs = plt.subplots(2, 4, figsize=(13, 6))
+    fig_sq, axs_sq = plt.subplots(2, 4, figsize=(13, 6))
 
     for (ax_abs, ax_sq, metric_name, label) in zip(axs_abs.flat, axs_sq.flat, metrics, labels):
         x_vals, abs_errors, sq_errors = extract_errors_and_metric(predictions, metric_name, metric_key)
+
+        if len(x_vals) < 2:
+            ax_abs.set_title("insufficient data")
+            ax_abs.set_xlabel(label)
+            ax_abs.set_ylabel("Absolute Error")
+            ax_sq.set_title("insufficient data")
+            ax_sq.set_xlabel(label)
+            ax_sq.set_ylabel("Squared Error")
+            continue
 
         abs_errors_capped = cap_outliers(abs_errors)
         sq_errors_capped = cap_outliers(sq_errors)
@@ -342,6 +475,11 @@ def plot_errors_vs_metrics(predictions, metric_key_mapped, metric_key, output_di
         ax_sq.set_xlabel(label)
         ax_sq.set_ylabel(f"Squared Error")
         ax_sq.text(0.05, 0.85, f"p={p_value_sq:.2f}\nr={corr_coeff_sq:.2f} ({corr_strength_sq})", transform=ax_sq.transAxes, fontsize=10)
+
+    for ax in axs_abs.flat[len(metrics):]:
+        ax.set_visible(False)
+    for ax in axs_sq.flat[len(metrics):]:
+        ax.set_visible(False)
 
     fig_abs.tight_layout()
     fig_sq.tight_layout()
