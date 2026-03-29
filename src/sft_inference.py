@@ -25,8 +25,20 @@ def load_json(file_path: str):
     with open(file_path, "r", encoding="utf-8") as file:
         return json.load(file)
 
-def setup_tokenizer(model_source, model_family, max_length):
-    tokenizer = AutoTokenizer.from_pretrained(model_source)
+def setup_tokenizer(model_source, model_family, max_length, fallback_source=None):
+    tokenizer_source = model_source
+
+    # Some saved checkpoints do not contain tokenizer files; fallback to base model tokenizer.
+    if os.path.isdir(model_source):
+        has_tokenizer_files = any(
+            os.path.exists(os.path.join(model_source, name))
+            for name in ["tokenizer.model", "tokenizer.json", "vocab.json"]
+        )
+        if not has_tokenizer_files and fallback_source:
+            print(f"[WARN] Missing tokenizer files in {model_source}. Falling back to tokenizer from {fallback_source}.")
+            tokenizer_source = fallback_source
+
+    tokenizer = AutoTokenizer.from_pretrained(tokenizer_source)
     # If max_length is -1, use the model's native max length
     if max_length == -1:
         # Keep the tokenizer's default max length from the model config
@@ -48,7 +60,7 @@ def setup_tokenizer(model_source, model_family, max_length):
 
 def load_and_prepare_model(model_name, model_family, model_path, model_class, max_length, peft_path=None):
 
-    tokenizer = setup_tokenizer(model_path, model_family, max_length)
+    tokenizer = setup_tokenizer(model_path, model_family, max_length, fallback_source=model_name)
 
     if peft_path is not None:
         base_model_class = LlamaForCausalLM if model_class == "llama" else AutoModelForCausalLM
@@ -80,9 +92,24 @@ def load_and_prepare_model(model_name, model_family, model_path, model_class, ma
         # base_model.resize_token_embeddings(len(tokenizer))
 
     else:
+        # Check if model_path has no model files but has checkpoint subdirectories
+        # This happens when the training job only saved checkpoints, not final output
+        actual_model_path = model_path
+        if not os.path.exists(os.path.join(model_path, "model.safetensors.index.json")) and \
+           not os.path.exists(os.path.join(model_path, "model.safetensors")) and \
+           not os.path.exists(os.path.join(model_path, "pytorch_model.bin.index.json")):
+            # Look for checkpoint-* directories
+            checkpoint_dirs = [d for d in os.listdir(model_path) 
+                             if os.path.isdir(os.path.join(model_path, d)) and d.startswith("checkpoint-")]
+            if checkpoint_dirs:
+                # Use the latest checkpoint (highest number)
+                latest_checkpoint = sorted(checkpoint_dirs, key=lambda x: int(x.split("-")[-1]))[-1]
+                actual_model_path = os.path.join(model_path, latest_checkpoint)
+                print(f"[INFO] No model weights at top level; auto-loading from checkpoint: {latest_checkpoint}")
+        
         model_class = LlamaForCausalLM if model_class == "llama" else AutoModelForCausalLM
         model = model_class.from_pretrained(
-            model_path,
+            actual_model_path,
             device_map="auto",
             # torch_dtype=torch.float16
             )
@@ -444,6 +471,20 @@ def parse_args():
 
 def main():
     args = parse_args()
+
+    # Recover base model name from training metadata when not provided at inference time.
+    if not args.model_name:
+        args_json_path = os.path.join(args.model_path, "args.json")
+        if os.path.exists(args_json_path):
+            try:
+                with open(args_json_path, "r", encoding="utf-8") as f:
+                    saved_args = json.load(f)
+                args.model_name = saved_args.get("model_name")
+                if args.model_name:
+                    print(f"[INFO] Loaded model_name from {args_json_path}: {args.model_name}")
+            except Exception as e:
+                print(f"[WARN] Failed to read {args_json_path}: {e}")
+
     print(f"Loading from {args.model_path}...")
     print(f"Inference args:\n{args}\n")
     set_seed(args.seed)
