@@ -24,6 +24,10 @@ def get_model_hatch(model_name, model_styles):
     hatch = model_styles.get(model_name, {}).get("hatches", "solid")
     return "" if hatch == "solid" else hatch
 
+def format_label(name):
+    """Replace underscores and hyphens with spaces for display."""
+    return name.replace("_", " ")
+
 def load_model_info(json_path="data/models.json"):
     with open(json_path, "r", encoding="utf-8") as f:
         return json.load(f)
@@ -178,7 +182,7 @@ def plot_comparison_metrics(results, dataset, control_attr, save_dir, output_pre
     model_styles = color_map.get("models", {})
 
     losses = {
-        "MSE": [],
+        # "MSE": [],
         "MAE": [],
         # "std_error": [],
         # "var_error": []
@@ -270,15 +274,15 @@ def plot_comparison_metrics(results, dataset, control_attr, save_dir, output_pre
             ax.bar(j, means[j], yerr=[[lower[j]], [upper[j]]],
                    color=color, edgecolor='black', hatch=hatch,
                    capsize=10)
-        ax.set_title(metric, fontsize=16)
+        ax.set_title(format_label(metric), fontsize=16)
         ax.set_xticks([])
         ax.set_xticklabels([])
         ax.grid(True, axis='y', linestyle='--', alpha=0.7)
         ax.tick_params(axis='y', labelsize=16)
         # TODO force consistent y‐ranges
-        if metric in ("BLEU_to_source", "BLEU_to_ref", "SARI"):
+        if metric in ("BLEU_to_source", "BLEU_to_ref", "SARI", "LENS"):
             ax.set_ylim(0, 100)
-        elif metric in ("BERTScore_to_source", "BERTScore_to_ref", "COMET", "LENS"):
+        elif metric in ("BERTScore_to_source", "BERTScore_to_ref", "COMET"):
             ax.set_ylim(0, 1.0)
 
 
@@ -290,7 +294,7 @@ def plot_comparison_metrics(results, dataset, control_attr, save_dir, output_pre
             color = get_model_color(model, model_styles)
             hatch = get_model_hatch(model, model_styles)
             ax.bar(k, values[k], color=color, edgecolor='black', hatch=hatch)
-        ax.set_title(loss, fontsize=16)
+        ax.set_title(format_label(loss), fontsize=16)
         ax.set_xticks([])
         ax.set_xticklabels([])
         ax.grid(True, axis='y', linestyle='--', alpha=0.7)
@@ -351,19 +355,22 @@ def plot_pairwise_correlations(results, dataset, control_attr, save_dir, output_
             "SARI": mm["SARI"]["mean"],
             "COMET": round(mm["COMET"]["mean"],2),
             "LENS": round(mm.get("LENS", {}).get("mean", np.nan), 2),
+            "MAE": losses["MAE"],
             "BERT_to_src": round(mm["BERTScore_to_source"]["mean"],2),
             "BERT_to_ref": round(mm["BERTScore_to_ref"]["mean"],2),
             "BLEU_to_src": round(mm["BLEU_to_source"]["mean"],2),
             "BLEU_to_ref": round(mm["BLEU_to_ref"]["mean"],2),
-            "MSE": losses["MSE"],
-            "MAE": losses["MAE"],
+            # "MSE": losses["MSE"],
         }
         rows.append(row)
 
     df = pd.DataFrame(rows).set_index("model")
 
+    df_display = df.copy()
+    df_display.columns = [format_label(col) for col in df_display.columns]
+
     # -------------- heatmap ---------------
-    corr = df.corr(method="pearson")
+    corr = df_display.corr(method="pearson")
     plt.figure(figsize=(7, 6))
     ax = sns.heatmap(
             corr,
@@ -388,15 +395,16 @@ def plot_pairwise_correlations(results, dataset, control_attr, save_dir, output_
     subset = ["SARI",
             "COMET",
             "LENS",
+            "MAE",
             "BERT_to_src",
             "BERT_to_ref",
             "BLEU_to_src",
             "BLEU_to_ref",
-            "MSE",
-            # "MAE"
+            # "MSE"
             ]
+    subset_display = [format_label(col) for col in subset]
     g = sns.pairplot(
-        df[subset],
+        df_display[subset_display],
         kind="reg",
         plot_kws={"line_kws":{"color":"orchid"}, "scatter_kws":{"s":30, "alpha":0.6}},
         # diag_kind="hist",
@@ -450,23 +458,23 @@ def main():
 
     plot_mean_ctrl(all_results, args.save_dir, all_means)
 
-    # plot_comparison_metrics(
-    #             all_results, 
-    #             args.dataset, 
-    #             args.control_attr, 
-    #             args.save_dir, 
-    #             output_prefix, 
-    #             args.color_map_path
-    #             )
+    plot_comparison_metrics(
+                all_results, 
+                args.dataset, 
+                args.control_attr, 
+                args.save_dir, 
+                output_prefix, 
+                args.color_map_path
+                )
 
-    # plot_pairwise_correlations(
-    #             all_results,
-    #             args.dataset,
-    #             args.control_attr,
-    #             args.save_dir,
-    #             output_prefix,
-    #             args.color_map_path
-    # )
+    plot_pairwise_correlations(
+                all_results,
+                args.dataset,
+                args.control_attr,
+                args.save_dir,
+                output_prefix,
+                args.color_map_path
+    )
 
 
 if __name__ == "__main__":

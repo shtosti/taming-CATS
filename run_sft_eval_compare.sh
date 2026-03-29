@@ -16,10 +16,10 @@ DATASETS=(
   )
 CTRL_ATTRS=(
   "FKGL" 
-  # "ARI" 
-  # "DALE-CHALL" 
-  # "CHAR_COMPRESSION" 
-  # "WORD_COMPRESSION"
+  "ARI" 
+  "DALE-CHALL" 
+  "CHAR_COMPRESSION" 
+  "WORD_COMPRESSION"
   )
 # =========================================================================
 
