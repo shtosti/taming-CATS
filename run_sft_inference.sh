@@ -4,9 +4,9 @@ echo "Script started: $(date)"
 
 # =========================================================================
 # TODO
-MODEL_DIR="CHAR_COMPRESSION-Newsela_s-token_explanation-Ministral-3b-instruct-20250602"
-METRIC_NAME="CHAR_COMPRESSION"
-DATASET="Newsela_s"
+MODEL_DIR="FKGL-Med-EASi-Ministral-3b-instruct-token_explanation-20250518"
+METRIC_NAME="FKGL"
+DATASET="Med-EASi"
 MODEL_NAME="Ministral-3b-instruct"
 
 USER_PROMPT_ID="token_explanation"
@@ -20,13 +20,13 @@ OUTPUT_DIR="output/sft_inference/$MODEL_DIR"
 mkdir -p "$OUTPUT_DIR"
 
 SEEDS=(
-  # 37 
-  # 15 
+  37 
+  15 
   96 
-  # 2 
-  # 28
+  2 
+  28
   )
-i=3
+i=1
 for SEED in "${SEEDS[@]}"; do
   echo "Running inference $i with seed $SEED..."
 
@@ -40,7 +40,7 @@ for SEED in "${SEEDS[@]}"; do
     --model_class "auto"
     --model_family "base"
     --max_length 4096
-    --batch_size 4
+    --batch_size 16
     --slice_test -1
     --output_file "$OUTPUT_FILE"
     --control_tokens "data/prompts/control_tokens.json"
@@ -72,8 +72,8 @@ INPUT_FILES=(
   "$INPUT_DIR/output_1.json"
   "$INPUT_DIR/output_2.json"
   "$INPUT_DIR/output_3.json"
-  # "$INPUT_DIR/output_4.json"
-  # "$INPUT_DIR/output_5.json"
+  "$INPUT_DIR/output_4.json"
+  "$INPUT_DIR/output_5.json"
 )
 
 python src/sft_eval.py \

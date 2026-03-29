@@ -19,8 +19,10 @@ infer_from_data_dir() {
   local dataset=""
   local remainder=""
 
-  for metric_candidate in "FKGL" "ARI" "DALE-CHALL" "CHAR_COMPRESSION" "WORD_COMPRESSION"; do
-    for dataset_candidate in "Med-EASi" "SimPA" "WikiLarge_ori_splitwise" "Newsela_s"; do
+  # for metric_candidate in "FKGL" "ARI" "DALE-CHALL" "CHAR_COMPRESSION" "WORD_COMPRESSION"; do
+  for metric_candidate in "FKGL" "CHAR_COMPRESSION" ; do
+    # for dataset_candidate in "Med-EASi" "SimPA" "WikiLarge_ori_splitwise" "Newsela_s"; do
+    for dataset_candidate in "Med-EASi_hq" "SimPA_hq" "WikiLarge_ori_splitwise_hq" "Newsela_s_hq"; do
       local prefix="${metric_candidate}-${dataset_candidate}-"
       if [[ "$data_dir" == "$prefix"* ]]; then
         metric_name="$metric_candidate"
@@ -38,8 +40,22 @@ infer_from_data_dir() {
   if [[ "$remainder" =~ ^(.+)-([0-9]{8})$ ]]; then
     local core_no_date="${BASH_REMATCH[1]}"
     local run_date="${BASH_REMATCH[2]}"
-    local user_prompt_id="${core_no_date%%-*}"
-    local model_name="${core_no_date#${user_prompt_id}-}"
+    local user_prompt_id=""
+    local model_name=""
+
+    # Support both conventions:
+    # 1) <USER_PROMPT_ID>-<MODEL_NAME>
+    # 2) <MODEL_NAME>-<USER_PROMPT_ID>
+    if [[ "$core_no_date" =~ ^(token_[^-]+)-(.*)$ ]]; then
+      user_prompt_id="${BASH_REMATCH[1]}"
+      model_name="${BASH_REMATCH[2]}"
+    elif [[ "$core_no_date" =~ ^(.*)-(token_[^-]+)$ ]]; then
+      model_name="${BASH_REMATCH[1]}"
+      user_prompt_id="${BASH_REMATCH[2]}"
+    else
+      user_prompt_id="${core_no_date%%-*}"
+      model_name="${core_no_date#${user_prompt_id}-}"
+    fi
 
     if [[ -z "$user_prompt_id" || -z "$model_name" || "$model_name" == "$core_no_date" ]]; then
       return 1

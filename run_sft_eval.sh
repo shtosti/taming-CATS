@@ -3,7 +3,7 @@
 echo "Script started: $(date)"
 
 # TODO
-DATA_DIR="ARI-Med-EASi-token_explanation-Llama-3.1-8B-Instruct-20250530"
+DATA_DIR="WORD_COMPRESSION-WikiLarge_ori_splitwise-token_explanation-Llama-3.2-1B-Instruct-20250519"
 
 # Derive metric and dataset from DATA_DIR prefix: METRIC-DATASET-...
 METRIC_NAME=""
@@ -24,7 +24,7 @@ done
 
 if [[ -z "$METRIC_NAME" || -z "$DATASET" || -z "$REMAINDER" ]]; then
   echo "[ERROR] Could not infer metric/dataset from DATA_DIR: $DATA_DIR"
-  echo "[ERROR] Expected format: <METRIC>-<DATASET>-<USER_PROMPT_ID>-<MODEL_NAME>-<YYYYMMDD>"
+  echo "[ERROR] Expected format: <METRIC>-<DATASET>-(<USER_PROMPT_ID>-<MODEL_NAME>|<MODEL_NAME>-<USER_PROMPT_ID>)-<YYYYMMDD>"
   echo "[ERROR] Supported metrics: FKGL, ARI, DALE-CHALL, CHAR_COMPRESSION, WORD_COMPRESSION"
   echo "[ERROR] Supported datasets: Med-EASi, SimPA, WikiLarge_ori_splitwise, Newsela_s"
   exit 1
@@ -40,8 +40,22 @@ else
   exit 1
 fi
 
-USER_PROMPT_ID="${CORE_NO_DATE%%-*}"
-MODEL_NAME="${CORE_NO_DATE#${USER_PROMPT_ID}-}"
+USER_PROMPT_ID=""
+MODEL_NAME=""
+
+# Support both conventions:
+# 1) <USER_PROMPT_ID>-<MODEL_NAME>
+# 2) <MODEL_NAME>-<USER_PROMPT_ID>
+if [[ "$CORE_NO_DATE" =~ ^(token_[^-]+)-(.*)$ ]]; then
+  USER_PROMPT_ID="${BASH_REMATCH[1]}"
+  MODEL_NAME="${BASH_REMATCH[2]}"
+elif [[ "$CORE_NO_DATE" =~ ^(.*)-(token_[^-]+)$ ]]; then
+  MODEL_NAME="${BASH_REMATCH[1]}"
+  USER_PROMPT_ID="${BASH_REMATCH[2]}"
+else
+  USER_PROMPT_ID="${CORE_NO_DATE%%-*}"
+  MODEL_NAME="${CORE_NO_DATE#${USER_PROMPT_ID}-}"
+fi
 
 if [[ -z "$USER_PROMPT_ID" || -z "$MODEL_NAME" || "$MODEL_NAME" == "$CORE_NO_DATE" ]]; then
   echo "[ERROR] Could not infer USER_PROMPT_ID and MODEL_NAME from: $CORE_NO_DATE"
