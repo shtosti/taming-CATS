@@ -137,9 +137,14 @@ def average_predictions_across_runs(json_files):
         for run in all_runs:
             for key, val in run[i]["prediction_metrics"].items():
                 averaged_item["prediction_metrics"][key].append(val)
-        averaged_item["prediction_metrics"] = {
-            key: np.mean(vals) for key, vals in averaged_item["prediction_metrics"].items()
-        }
+        
+        # Compute means, filtering out None and NaN values
+        final_metrics = {}
+        for key, vals in averaged_item["prediction_metrics"].items():
+            clean_vals = [v for v in vals if v is not None and not (isinstance(v, float) and np.isnan(v))]
+            final_metrics[key] = np.mean(clean_vals) if clean_vals else None
+        averaged_item["prediction_metrics"] = final_metrics
+        
         averaged_predictions.append(averaged_item)
 
     return averaged_predictions

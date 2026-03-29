@@ -1,5 +1,6 @@
 import os
 import uuid
+from pathlib import Path
 import textstat
 import sacrebleu
 import evaluate
@@ -65,9 +66,9 @@ class Metrics:
             lens_path = download_lens_model("davidheineman/lens")
             Metrics.lens_model = LENS(lens_path, rescale=True)
             return Metrics.lens_model
-        except Exception:
+        except Exception as e:
             Metrics.lens_unavailable = True
-            print("[WARN] LENS metric unavailable. Skipping LENS computation.")
+            print(f"[WARN] LENS metric unavailable. Skipping LENS computation. Error: {e}")
             return None
 
     def count_words(self):
