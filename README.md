@@ -4,9 +4,7 @@ Brief project description:
 This repository contains experiments for controllable text simplification with large language models, including dataset preparation, baseline/prompting pipelines, supervised fine-tuning (SFT), inference, and evaluation.
 
 ## Status
-- Stage: active research / thesis work
 - Institution: University of Zurich
-- Maintainers: TODO
 
 ## Project Structure
 Fill this section with a short map of important folders.
